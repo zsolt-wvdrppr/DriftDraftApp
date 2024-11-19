@@ -12,6 +12,7 @@ export default function ProgressBar({ currentStep, totalSteps }) {
             value={progressPercentage}
             max={100}
             className="my-4"
+            label={`${currentStep + 1} of ${totalSteps}`}
         />
     );
 }

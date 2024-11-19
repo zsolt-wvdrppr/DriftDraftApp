@@ -5,32 +5,32 @@ import questionsData from "@/data/questions-data.json";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Textarea, Button } from '@nextui-org/react';
 import Sidebar from './actionsBar';
 
-const StepAudience = forwardRef(({ formData, setFormData, setError }, ref) => {
-  const stepNumber = 1;
+const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref) => {
+  const stepNumber = 6;
   const content = questionsData[stepNumber];
   const formRef = useRef();
-  const [audienceIsInvalid, setAudiencelsIsInvalid] = useState(false);
+  const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
 
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      if (!formData[stepNumber].audience) {
+      if (!formData[stepNumber].brandGuidelines) {
         setError("Additional details are required.");
-        setAudiencelsIsInvalid(true);
+        setAttractionlsIsInvalid(true);
         return false;
       }
-      setAudiencelsIsInvalid(false);
+      setAttractionlsIsInvalid(false);
       return true; // Validation passed
     },
   }));
 
   const handleTextareaChange = (e) => {
     const value = e.target.value;
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], audience: value } });
+    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], brandGuidelines: value } });
 
     // Provide immediate feedback for required field
-    setAudiencelsIsInvalid(!value);
+    setAttractionlsIsInvalid(!value);
   };
 
   return (
@@ -43,16 +43,16 @@ const StepAudience = forwardRef(({ formData, setFormData, setError }, ref) => {
         </div>
         <div className="col-span-3 flex-1 space-y-4">
           <Textarea
-            label="Target Audience"
+            label="Branding"
             placeholder={content.placeholder}
             minRows={4}
-            value={formData[1].audience || ""}
+            value={formData[stepNumber].brandGuidelines || ""}
             isRequired={true}
             onChange={handleTextareaChange}
             classNames={{
               label: "!text-primary",
               input: "dark:!text-neutralDark",
-              inputWrapper: `hover:!bg-yellow-50 border ${audienceIsInvalid ? "!bg-red-50 border-danger" : ""}`,
+              inputWrapper: `hover:!bg-yellow-50 border ${attractionIsInvalid ? "!bg-red-50 border-danger" : ""}`,
             }}
           />
         </div>
@@ -62,4 +62,4 @@ const StepAudience = forwardRef(({ formData, setFormData, setError }, ref) => {
   );
 });
 
-export default StepAudience;
+export default StepBrandGuidelines;

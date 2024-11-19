@@ -1,87 +1,239 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useTransition, Suspense, use } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProgressBar from './ProgressBar';
 import StepPurpose from './StepPurpose';
 import StepAudience from './StepAudience';
-import StepAttraction from './StepAttraction';
+import StepMarketing from './StepMarketing';
+import StepCompetitors from './StepCompetitors';
+import StepUSPs from './StepUSPs';
+import StepDomain from './StepDomain';
+import StepBrandGuidelines from './StepBrandGuidelines';
+import StepEmotions from './StepEmotions';
+import StepInspirations from './StepInspirations';
+import StepContactInfo from './StepContactInfo';
+import { toast } from 'sonner';
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
+import { IconCheck, IconPlant, IconUsersGroup, IconMagnet, IconRocket, IconDiamond, IconWorldWww, IconWriting, IconMoodSmileBeam, IconBulb, IconAddressBook, IconFlagQuestion } from '@tabler/icons-react';
 
+// Step definitions
 const steps = [
-    { id: 1, component: StepPurpose },
-    { id: 2, component: StepAudience },
-    { id: 3, component: StepAttraction },
-    // Add additional steps as needed
+    { id: 0, label: "Purpose", icon: <IconPlant />, component: StepPurpose },
+    { id: 1, label: "Audience", icon: <IconUsersGroup />, component: StepAudience },
+    { id: 2, label: "Marketing", icon: <IconMagnet />, component: StepMarketing },
+    { id: 3, label: "Competitors", icon: <IconRocket />, component: StepCompetitors },
+    { id: 4, label: "Unique Selling Points", icon: <IconDiamond />, component: StepUSPs },
+    { id: 5, label: "Domain", icon: <IconWorldWww />, component: StepDomain },
+    { id: 6, label: "Brand Guidelines", icon: <IconWriting />, component: StepBrandGuidelines },
+    { id: 7, label: "Emotions", icon: <IconMoodSmileBeam />, component: StepEmotions },
+    { id: 8, label: "Inspirations", icon: <IconBulb />, component: StepInspirations },
+    { id: 9, label: "Contact Details", icon: <IconAddressBook />, component: StepContactInfo }
 ];
 
 export default function WizardContainer() {
     const [formData, setFormData] = useState({
-        purpose: '',
-        targetAudience: '',
-        attractionMethods: '',
-        competitors: [],
+        0: { id: 0, purpose: '', purposeDetails: '', serviceDescription: '', isValid: false },
+        1: { id: 1, audience: '', isValid: false },
+        2: { id: 2, marketing: '', isValid: false },
+        3: { id: 3, urls: [''], isValid: false },
+        4: { id: 4, usps: '', isValid: false },
+        5: { id: 5, domain: '', isValid: false },
+        6: { id: 6, brandGuidelines: '', isValid: false },
+        7: { id: 7, emotions: '', isValid: false },
+        8: { id: 8, inspirations: [''], urls: [''], isValid: false },
+        9: { id: 9, isValid: false },
         // Additional fields...
     });
 
-    console.log(formData);
-
     const [currentStep, setCurrentStep] = useState(0);
+    const [tabName, setTabName] = useState(steps[0]?.label || '');
+    const stepRef = useRef(null);
+    const [error, setError] = useState(null);
+    const [isPending, startTransition] = useTransition();
 
-    const CurrentStepComponent = steps[currentStep].component;
+    // Dynamically update tabName based on the current step
+    useEffect(() => {
+        setTabName(steps[currentStep]?.label || '');
+        toast.dismiss();
+    }, [currentStep]);
 
+    useEffect(() => {
+        console.log("formData", formData);
+    }, [formData]);
+
+    const errorToast = (message) => {
+        toast.error(message, { duration: 5000, closeButton: true, classNames: { toast: "text-danger" } });
+    }
+
+    // Handle error toast and reset
+    useEffect(() => {
+        if (error) {
+            errorToast(error);
+            const timeout = setTimeout(() => setError(null), 5000);
+            return () => clearTimeout(timeout);
+        }
+        setFormData((prev) => ({ ...prev, [currentStep]: { ...prev[currentStep], isValid: false } }));
+        console.log(formData);
+    }, [error]);
+
+    // Validate the current step and move to the next one
     const goToNextStep = () => {
-        if (currentStep < steps.length - 1) {
-            setCurrentStep(currentStep + 1);
-        }
-    };
-
-    const goToPreviousStep = () => {
-        if (currentStep > 0) {
-            setCurrentStep(currentStep - 1);
-        }
-    };
-
-    const handleSubmit = async () => {
-        try {
-            const response = await fetch('/api/submit', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
-            });
-    
-            if (response.ok) {
-                console.log('Form submitted successfully');
-            } else {
-                console.error('Submission failed');
+        const _isValid = handleValidation();
+        if (_isValid) {
+            if (currentStep < steps.length - 1) {
+                setCurrentStep((prev) => prev + 1);
             }
-        } catch (error) {
-            console.error('Error:', error);
         }
     };
-    
+
+    const handleValidation = () => {
+        if (stepRef.current?.validateStep()) {
+            setFormData((prev) => ({
+                ...prev,
+                [currentStep]: { ...prev[currentStep], isValid: true },
+            }));
+            return true;
+        } else {
+            //setError('Please complete the current step before proceeding.');
+            return false;
+        }
+    };
+
+    // Navigate to the previous step
+    const goToPreviousStep = () => {
+        if (currentStep > 0) setCurrentStep((prev) => prev - 1);
+    };
+
+    // Handle form submission
+    const handleSubmit = async () => {
+        // Validate all steps before submitting
+        if (steps.every((step) => formData[step.id]?.isValid)) {
+            startTransition(async() => {
+            try {
+                const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData),
+                });
+                if (response.ok) alert('Form submitted successfully!');
+                else alert('Submission failed!');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while submitting.');
+            }});
+        } else {
+            setError('Please complete all steps before submitting.');
+        }
+    };
+
+    const CurrentStepComponent = steps[currentStep]?.component;
+
+    const handleSectionPicker = (index) => {
+        const _isValid = handleValidation();
+        if (_isValid) {
+            setCurrentStep(index);
+            return;
+        }
+        const errorMsg = `Don't jump ahead! Please navigate to the next question.`;
+
+        if (index > currentStep + 1) {
+            setError(errorMsg);
+        }
+            //setCurrentStep(index);
+    }
 
     return (
-        <div className="wizard-container">
+        <div className="wizard-container relative max-w-screen-xl w-full h-max px-4 md:py-4">
             <ProgressBar currentStep={currentStep} totalSteps={steps.length} />
-            
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={currentStep} // Framer Motion needs a unique key for each step
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ duration: 0.5 }}
+            {/* Dropdown for Navigation */}
+            <div className='w-full flex justify-around'>
+            <Dropdown>
+                <DropdownTrigger>
+                    <Button variant="flat" className="capitalize w-full md:max-w-80" color="secondary">
+                        <div className="grid grid-cols-4 items-center w-full">
+                            <span className="col-span-1 text-primary">{steps[currentStep]?.icon}</span>
+                            <span className="col-span-2 text-lg">{tabName}</span>
+                            <span className="col-span-1 justify-self-end">
+                                {formData[currentStep]?.isValid && <IconCheck size={20} className='text-secondaryPersianGreen' />}
+                            </span>
+                        </div>
+                    </Button>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Step navigation" variant="flat" color="primary">
+                    {steps.map((step, index) => (
+                        <DropdownItem
+                            key={step.id}
+                            onClick={() => handleSectionPicker(index)}
+                            className={`flex flex-row ${currentStep === index ? "bg-gray-200" : ""}`}
+                            textValue={step.label}
+                        >
+                            <div className="grid grid-cols-4 items-center w-full">
+                                <span className="col-span-1 text-primary">{step.icon}</span>
+                                <span className="col-span-2">{step.label}</span>
+                                <span className="col-span-1 justify-self-end">
+                                    {formData[step.id]?.isValid && <IconCheck size={16} className='text-secondaryPersianGreen' />}
+                                </span>
+                            </div>
+                        </DropdownItem>
+                    ))}
+                </DropdownMenu>
+            </Dropdown>
+            </div>
+            {/* Step Content with Loading Placeholder */}
+            <Suspense fallback={<div className="text-center p-4">Loading...</div>}>
+                <AnimatePresence mode="wait">
+                    {CurrentStepComponent ? (
+                        <motion.div
+                            key={currentStep}
+                            initial={{ opacity: 0, x: 50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -50 }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            <CurrentStepComponent
+                                ref={stepRef}
+                                formData={formData}
+                                setFormData={setFormData}
+                                setError={setError}
+                            />
+                        </motion.div>
+                    ) : (
+                        <div className="text-center p-4">No component defined for this step.</div>
+                    )}
+                </AnimatePresence>
+            </Suspense>
+            {/* Navigation Buttons */}
+            <div className="navigation-buttons w-full flex gap-2 justify-evenly py-8">
+                <Button
+                    disabled={currentStep <= 0}
+                    variant="shadow"
+                    color="secondary"
+                    className="w-24 border border-secondaryTeal font-bold tracking-wider disabled:bg-gray-300 disabled:border-none"
+                    onClick={goToPreviousStep}
                 >
-                    <CurrentStepComponent formData={formData} setFormData={setFormData} />
-                </motion.div>
-            </AnimatePresence>
-
-            <div className="navigation-buttons">
-                {currentStep > 0 && <button onClick={goToPreviousStep}>Previous</button>}
+                    Previous
+                </Button>
                 {currentStep < steps.length - 1 ? (
-                    <button onClick={goToNextStep}>Next</button>
+                    <Button
+                        variant="shadow"
+                        color="secondary"
+                        className="w-24 border border-secondaryTeal font-bold tracking-wider"
+                        onClick={goToNextStep}
+                        disabled={isPending}
+                    >
+                        {isPending ? 'Loading...' : 'Next'}
+                    </Button>
                 ) : (
-                    <button onClick={handleSubmit}>Submit</button>
+                    <Button
+                        variant="shadow"
+                        color="secondary"
+                        className="w-24 border border-secondaryTeal font-bold tracking-wider"
+                        onClick={handleSubmit}
+                        disabled={isPending}
+                    >
+                        {isPending ? 'Submitting...' : 'Submit'}
+                    </Button>
                 )}
             </div>
         </div>

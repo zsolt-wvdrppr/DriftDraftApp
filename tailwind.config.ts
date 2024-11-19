@@ -32,6 +32,7 @@ const config: Config = {
       },
       colors: {
         primary: '#05668D',
+        secondary: '#028090',
         secondaryTeal: '#028090',
         secondaryPersianGreen: '#00A896',
         accentMint: '#02C39A',
@@ -56,7 +57,18 @@ const config: Config = {
     },
   },
   plugins: [
-    nextui()
+    nextui({
+      themes: {
+        dark: {
+          colors: {
+            default: {
+              foreground: "#ffffff", // Replace with your color
+            },
+            foreground: "#ffffff", // Replace with your color
+          },
+        },
+      },
+    }),
   ],
 };
 export default config;
