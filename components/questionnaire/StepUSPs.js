@@ -62,4 +62,6 @@ const StepUSPs = forwardRef(({ formData, setFormData, setError }, ref) => {
   );
 });
 
+StepUSPs.displayName = 'StepUSPs';
+
 export default StepUSPs;

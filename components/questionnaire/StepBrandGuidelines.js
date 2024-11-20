@@ -62,4 +62,6 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
   );
 });
 
+StepBrandGuidelines.displayName = 'StepBrandGuidelines';
+
 export default StepBrandGuidelines;

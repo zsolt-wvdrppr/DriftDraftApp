@@ -62,4 +62,6 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
   );
 });
 
+StepEmotions.displayName = 'StepEmotions';
+
 export default StepEmotions;

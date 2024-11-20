@@ -135,4 +135,6 @@ const StepCompetitors = forwardRef(({ formData, setFormData, setError }, ref) =>
   );
 });
 
+StepCompetitors.displayName = 'StepCompetitors';
+
 export default StepCompetitors;

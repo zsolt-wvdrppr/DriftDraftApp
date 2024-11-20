@@ -62,4 +62,6 @@ const StepAudience = forwardRef(({ formData, setFormData, setError }, ref) => {
   );
 });
 
+StepAudience.displayName = 'StepAudience';
+
 export default StepAudience;

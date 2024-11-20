@@ -62,4 +62,6 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
   );
 });
 
+StepMarketing.displayName = 'StepMarketing';
+
 export default StepMarketing;

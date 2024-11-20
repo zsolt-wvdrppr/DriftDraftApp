@@ -159,4 +159,6 @@ const StepInspirations = forwardRef(({ formData, setFormData, setError }, ref) =
   );
 });
 
+StepInspirations.displayName = 'StepInspirations';
+
 export default StepInspirations;

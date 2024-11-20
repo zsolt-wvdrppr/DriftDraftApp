@@ -143,4 +143,6 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
   );
 });
 
+StepPurpose.displayName = 'StepPurpose';
+
 export default StepPurpose;

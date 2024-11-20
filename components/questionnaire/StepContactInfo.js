@@ -242,4 +242,6 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
     );
 });
 
+StepContactInfo.displayName = 'StepContactInfo';
+
 export default StepContactInfo;

@@ -63,4 +63,6 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
   );
 });
 
+StepDomain.displayName = 'StepDomain';
+
 export default StepDomain;
