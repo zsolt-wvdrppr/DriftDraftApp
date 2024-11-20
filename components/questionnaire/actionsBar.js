@@ -90,4 +90,6 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
   );
 });
 
+Sidebar.displayName = 'Sidebar';
+
 export default Sidebar;
