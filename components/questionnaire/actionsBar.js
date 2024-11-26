@@ -69,7 +69,7 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
         onClick={() => handleToast('hint')}
         auto
         isLoading={isPending}
-        className={`w-[150px] min-h-20 break-words ${!hints ? 'cursor-not-allowed border border-gray-200' : ''}`}
+        className={`w-[150px] min-h-20 break-words ${!hints ? 'cursor-not-allowed border border-gray-200 hidden' : ''}`}
       >
         { !hints && <span> No Hint<br/>Available </span>}
         { hints && <span> Show Hints </span> }
@@ -81,7 +81,7 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
         onClick={() => handleToast('why')}
         auto
         isLoading={isPending}
-        className={`w-[150px] min-h-20 flex ${!whyDoWeAsk ? 'cursor-not-allowed border-gray-200' : ''}`}
+        className={`w-[150px] min-h-20 flex ${!whyDoWeAsk ? 'cursor-not-allowed border border-gray-200 hidden' : ''}`}
       >
         { !whyDoWeAsk && <span> No Reason<br/>Available </span>}
         { whyDoWeAsk && <span> Why Do We<br/>Ask This? </span> }

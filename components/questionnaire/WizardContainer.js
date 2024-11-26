@@ -165,7 +165,7 @@ export default function WizardContainer() {
                         <DropdownItem
                             key={step.id}
                             onClick={() => handleSectionPicker(index)}
-                            className={`flex flex-row ${currentStep === index ? "bg-gray-200" : ""}`}
+                            className={`flex flex-row hover:!text-slate-400 ${currentStep === index ? "bg-gray-800 font-bold" : ""}`}
                             textValue={step.label}
                         >
                             <div className="grid grid-cols-4 items-center w-full">

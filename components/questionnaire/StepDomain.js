@@ -39,7 +39,7 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
     <form ref={formRef}>
       <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
         <div className="col-span-4 flex-1">
-          <h2 className="text-lg font-semibold mb-4 text-primary">
+          <h2 className="text-lg font-semibold mb-4 text-primary dark:text-slate-100">
             {content.question} {content.required && <span className="text-red-500">*</span>}
           </h2>
         </div>
