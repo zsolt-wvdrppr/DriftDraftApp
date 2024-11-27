@@ -1,6 +1,8 @@
 import { tv } from "tailwind-variants";
 
-export const title = tv({
+export const title = () => "static-title-class"; // This is a static class
+
+/*export const title = tv({
   base: "tracking-tight inline font-semibold",
   variants: {
     color: {
@@ -50,4 +52,4 @@ export const subtitle = tv({
   defaultVariants: {
     fullWidth: true,
   },
-});
+});*/
