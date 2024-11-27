@@ -33,6 +33,49 @@ const StepUSPs = forwardRef(({ formData, setFormData, setError }, ref) => {
     setAttractionlsIsInvalid(!value);
   };
 
+  const [aiHints, setAiHints] = useState(null);
+
+  useEffect(() => {
+    if (formData[0].purpose) {
+      const question = content.question;
+      const marketing = formData[2].marketing || '';
+      const competitors = formData[3].urls.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : '';
+      const purpose = formData[0].purpose;
+      const purposeDetails = formData[0].purposeDetails || '';
+      const serviceDescription = formData[0].serviceDescription;
+      const audience = formData[1].audience;
+
+      const prompt = `I'm planning a website and I've been asked to answer the following question: ${question}. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. This is how I plan to attract my audience: ${marketing}. ${competitors}. So help me with answer the question while considering the above details. Keep the response concise and informative, ensuring it's less than 800 characters.`;
+      const fetchContent = async () => {
+        try {
+          const response = await fetch("/api/googleAi", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ prompt }),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "An unknown error occurred.");
+          }
+
+          const data = await response.json();
+          setAiHints(data.content || "No content generated.");
+        } catch (error) {
+          console.error("Error fetching content:", error);
+          setAiHints("An error occurred while generating content.");
+        }
+      };
+      console.log("fetching content");
+      fetchContent();
+    } else {
+      console.log("resetting hints");
+      setAiHints(null);
+    }
+  }, []);
+
   return (
     <form ref={formRef}>
       <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
@@ -56,7 +99,7 @@ const StepUSPs = forwardRef(({ formData, setFormData, setError }, ref) => {
             }}
           />
         </div>
-        <Sidebar hints={content.hints} whyDoWeAsk={content.why_do_we_ask} />
+        <Sidebar hints={aiHints} whyDoWeAsk={content.why_do_we_ask} />
       </div>
     </form>
   );

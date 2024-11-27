@@ -33,6 +33,47 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
     setAttractionlsIsInvalid(!value);
   };
 
+  const [ aiHints, setAiHints ] = useState(null);
+
+  useEffect(() => {
+    if (formData[stepNumber-2].purpose) {
+      const question = content.question;
+      const purpose = formData[0].purpose;
+      const purposeDetails = formData[0].purposeDetails || '';
+      const serviceDescription = formData[0].serviceDescription;
+      const audience = formData[1].audience;
+
+      const prompt = `I'm planning a website and need to answer to a question regarding my target audience. I need help with the following question: ${question}. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. Help me answering the question, and find potential incoming traffic sources. Keep it concise and to the point. Must keep it less then 600 characters.`;
+      const fetchContent = async () => {
+        try {
+          const response = await fetch("/api/googleAi", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ prompt }),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "An unknown error occurred.");
+          }
+
+          const data = await response.json();
+          setAiHints(data.content || "No content generated.");
+        } catch (error) {
+          console.error("Error fetching content:", error);
+          setAiHints("An error occurred while generating content.");
+        }
+      };
+      console.log("fetching content");
+      fetchContent();
+    } else {
+      console.log("resetting hints");
+      setAiHints(null);
+    }
+  }, []);
+
   return (
     <form ref={formRef}>
       <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
@@ -56,7 +97,7 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
             }}
           />
         </div>
-        <Sidebar hints={content.hints} whyDoWeAsk={content.why_do_we_ask} />
+        <Sidebar hints={aiHints} whyDoWeAsk={content.why_do_we_ask} />
       </div>
     </form>
   );

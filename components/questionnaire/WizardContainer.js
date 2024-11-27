@@ -43,8 +43,20 @@ export default function WizardContainer() {
         7: { id: 7, emotions: '', isValid: false },
         8: { id: 8, inspirations: [''], urls: [''], isValid: false },
         9: { id: 9, isValid: false },
-        // Additional fields...
     });
+
+    // Load saved formData from localStorage on client-side only
+    useEffect(() => {
+        const savedData = localStorage.getItem('formData');
+        if (savedData) {
+            setFormData(JSON.parse(savedData));
+        }
+    }, []);
+
+    // Save formData to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('formData', JSON.stringify(formData));
+    }, [formData]);
 
     const [currentStep, setCurrentStep] = useState(0);
     const [tabName, setTabName] = useState(steps[0]?.label || '');
@@ -109,19 +121,22 @@ export default function WizardContainer() {
     const handleSubmit = async () => {
         // Validate all steps before submitting
         if (steps.every((step) => formData[step.id]?.isValid)) {
-            startTransition(async() => {
-            try {
-                const response = await fetch('/api/submit', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData),
-                });
-                if (response.ok) alert('Form submitted successfully!');
-                else alert('Submission failed!');
-            } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while submitting.');
-            }});
+            startTransition(async () => {
+                try {
+                    const response = await fetch('/api/submit', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData),
+                    });
+                    if (response.ok) {
+                        alert('Form submitted successfully!');
+                        localStorage.removeItem('formData'); // Clear cache on success
+                    } else alert('Submission failed!');
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred while submitting.');
+                }
+            });
         } else {
             setError('Please complete all steps before submitting.');
         }
@@ -140,7 +155,7 @@ export default function WizardContainer() {
         if (index > currentStep + 1) {
             setError(errorMsg);
         }
-            //setCurrentStep(index);
+        //setCurrentStep(index);
     }
 
     return (
@@ -148,37 +163,37 @@ export default function WizardContainer() {
             <ProgressBar currentStep={currentStep} totalSteps={steps.length} />
             {/* Dropdown for Navigation */}
             <div className='w-full flex justify-around'>
-            <Dropdown>
-                <DropdownTrigger>
-                    <Button variant="flat" className="capitalize w-full md:max-w-80" color="secondary">
-                        <div className="grid grid-cols-4 items-center w-full">
-                            <span className="col-span-1 text-primary">{steps[currentStep]?.icon}</span>
-                            <span className="col-span-2 text-lg">{tabName}</span>
-                            <span className="col-span-1 justify-self-end">
-                                {formData[currentStep]?.isValid && <IconCheck size={20} className='text-secondaryPersianGreen' />}
-                            </span>
-                        </div>
-                    </Button>
-                </DropdownTrigger>
-                <DropdownMenu aria-label="Step navigation" variant="flat" color="primary">
-                    {steps.map((step, index) => (
-                        <DropdownItem
-                            key={step.id}
-                            onClick={() => handleSectionPicker(index)}
-                            className={`flex flex-row hover:!text-slate-400 ${currentStep === index ? "bg-gray-800 font-bold" : ""}`}
-                            textValue={step.label}
-                        >
+                <Dropdown>
+                    <DropdownTrigger>
+                        <Button variant="flat" className="capitalize w-full md:max-w-80" color="secondary">
                             <div className="grid grid-cols-4 items-center w-full">
-                                <span className="col-span-1 text-primary">{step.icon}</span>
-                                <span className="col-span-2">{step.label}</span>
+                                <span className="col-span-1 text-primary">{steps[currentStep]?.icon}</span>
+                                <span className="col-span-2 text-lg">{tabName}</span>
                                 <span className="col-span-1 justify-self-end">
-                                    {formData[step.id]?.isValid && <IconCheck size={16} className='text-secondaryPersianGreen' />}
+                                    {formData[currentStep]?.isValid && <IconCheck size={20} className='text-secondaryPersianGreen' />}
                                 </span>
                             </div>
-                        </DropdownItem>
-                    ))}
-                </DropdownMenu>
-            </Dropdown>
+                        </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu aria-label="Step navigation" variant="flat" color="primary">
+                        {steps.map((step, index) => (
+                            <DropdownItem
+                                key={step.id}
+                                onClick={() => handleSectionPicker(index)}
+                                className={`flex flex-row hover:!text-neutralDark ${currentStep === index ? "bg-slate-200 font-bold" : ""}`}
+                                textValue={step.label}
+                            >
+                                <div className="grid grid-cols-4 items-center w-full">
+                                    <span className="col-span-1 text-primary">{step.icon}</span>
+                                    <span className="col-span-2">{step.label}</span>
+                                    <span className="col-span-1 justify-self-end">
+                                        {formData[step.id]?.isValid && <IconCheck size={16} className='text-secondaryPersianGreen' />}
+                                    </span>
+                                </div>
+                            </DropdownItem>
+                        ))}
+                    </DropdownMenu>
+                </Dropdown>
             </div>
             {/* Step Content with Loading Placeholder */}
             <Suspense fallback={<div className="text-center p-4">Loading...</div>}>

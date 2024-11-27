@@ -27,8 +27,8 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
         setError("Please select a goal before proceeding.");
         return false;
       }
-      if (isOtherSelected && !formData[stepNumber].purposeDetails) {
-        setError("Additional details are required.");
+      if (isOtherSelected && (!formData[stepNumber].purposeDetails || formData[stepNumber].purposeDetails.length < 10)) {
+        setError("Additional details are required. (10 characters minimum)");
         setDetailsIsInvalid(true);
         return false;
       }
@@ -73,6 +73,59 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
     // Provide immediate feedback for required field
     setServiceDescIsInvalid(!value);
   };
+
+  const [aiHints, setAiHints] = useState(null);
+
+  useEffect(() => {
+    // Ensure purpose is selected
+    if (!formData[stepNumber].purpose) {
+      setAiHints(null);
+      return;
+    }
+    
+    const question = content.questionAddition2;
+    const purpose = formData[0].purpose;
+    const purposeDetails = formData[0].purposeDetails || '';
+
+    const isOtherPurpose = purpose && purpose.indexOf("other") !== -1 && purposeDetails && purposeDetails.length > 10;
+
+    if ((isOtherPurpose && purposeDetails) || !isOtherPurpose) {
+      const prompt = `I'm planning a website and need to answer to a question regarding what I offer. I need help with the following question: ${question}. Consider that the main purpose of the website is ${isOtherPurpose ? purposeDetails : purpose + purposeDetails}. Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
+
+      const fetchContent = async () => {
+        try {
+          const response = await fetch("/api/googleAi", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ prompt }),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "An unknown error occurred.");
+          }
+
+          const data = await response.json();
+          setAiHints(data.content || "No content generated.");
+        } catch (error) {
+          console.error("Error fetching content:", error);
+          setAiHints("An error occurred while generating content.");
+        }
+      };
+
+      // Debounce mechanism
+      const debounceTimer = setTimeout(() => {
+        fetchContent();
+      }, 5000); // Wait 500ms before sending the request
+
+      return () => clearTimeout(debounceTimer); // Cleanup the timeout on dependency change
+    } else {
+      setAiHints(null);
+    }
+  }, [formData[stepNumber].purpose, formData[stepNumber].purposeDetails]);
+
 
   return (
     <form ref={formRef}>
@@ -137,7 +190,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
             }}
           />
         </div>
-        <Sidebar hints={content.hints} whyDoWeAsk={content.why_do_we_ask} />
+        <Sidebar hints={aiHints} whyDoWeAsk={content.why_do_we_ask} />
       </div>
     </form>
   );

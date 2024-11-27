@@ -33,6 +33,73 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
     setAttractionlsIsInvalid(!value);
   };
 
+  const [aiHints, setAiHints] = useState(null);
+
+  useEffect(() => {
+    if (formData[0].purpose) {
+      const question = content.question;
+      const marketing = formData[2].marketing || '';
+      const competitors = formData[3].urls.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : '';
+      const purpose = formData[0].purpose;
+      const purposeDetails = formData[0].purposeDetails || '';
+      const serviceDescription = formData[0].serviceDescription;
+      const audience = formData[1].audience;
+      const usps = formData[4].usps || '';
+
+      const prompt = `I'm planning a website and need detailed ideas for brand guidelines, including colours, fonts, and logo design. The primary purpose of the website is ${purpose}, with a focus on ${purposeDetails}. Here’s an overview of what I offer: ${serviceDescription}. 
+
+      My target audience is described as: ${audience}. This is how I plan to attract them: ${marketing}. When analyzing my competitors, here are key observations: ${competitors}. My unique selling points include: ${usps}. 
+
+      Please provide thoughtful and creative brand guideline ideas that align with the following considerations:
+      1. **Logo Design**:
+        - Should effectively represent the brand's identity and values.
+        - Incorporate any symbolic meaning or unique story tied to the brand.
+        - Ensure the design can adapt to different formats (e.g., web, print, favicon).
+      2. **Colour Palette**:
+        - Suggest colors that align with the brand's purpose and evoke the right emotions (e.g., warm tones for love and passion, cool tones for trust and calmness).
+        - Provide reasoning for the suggested tones, focusing on their psychological and emotional impact on the target audience.
+        - Recommend how to balance or contrast primary and secondary colors for a harmonious aesthetic.
+      3. **Typography**:
+        - Suggest fonts that are legible and reflect the brand’s tone (e.g., elegant, modern, playful, professional).
+        - Highlight how font choices can reinforce the brand personality and ensure consistency across different mediums.
+      4. **Overall Branding**:
+        - Emphasize a cohesive, recognizable style that reflects the brand’s values and unique selling points.
+        - Suggest ways to keep the branding simple yet memorable.
+      5. **Application**:
+        - Illustrate how these guidelines can be practically applied to website design, marketing materials, and social media, ensuring consistency and visual appeal.
+
+      Focus on providing adaptable ideas that explain *why* specific elements are recommended, helping the brand resonate with its audience both emotionally and visually. Keep the response concise and informative, ensuring it's less than 800 characters.`;
+
+      const fetchContent = async () => {
+        try {
+          const response = await fetch("/api/googleAi", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ prompt }),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "An unknown error occurred.");
+          }
+
+          const data = await response.json();
+          setAiHints(data.content || "No content generated.");
+        } catch (error) {
+          console.error("Error fetching content:", error);
+          setAiHints("An error occurred while generating content.");
+        }
+      };
+      console.log("fetching content");
+      fetchContent();
+    } else {
+      console.log("resetting hints");
+      setAiHints(null);
+    }
+  }, []);
+
   return (
     <form ref={formRef}>
       <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
@@ -56,7 +123,7 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
             }}
           />
         </div>
-        <Sidebar hints={content.hints} whyDoWeAsk={content.why_do_we_ask} />
+        <Sidebar hints={aiHints} whyDoWeAsk={content.why_do_we_ask} />
       </div>
     </form>
   );
