@@ -36,19 +36,22 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
   const [aiHints, setAiHints] = useState(null);
 
   useEffect(() => {
-    if (formData[0].purpose) {
-      const question = content.question;
-      const marketing = formData[2].marketing || '';
-      const competitors = formData[3].urls.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : '';
-      const purpose = formData[0].purpose;
-      const purposeDetails = formData[0].purposeDetails || '';
-      const serviceDescription = formData[0].serviceDescription;
-      const audience = formData[1].audience;
-      const usps = formData[4].usps || '';
+    const question = content.question;
+    const marketing = formData[2].marketing || '';
+    const competitors = formData[3].urls.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : '';
+    const purpose = formData[0].purpose;
+    const purposeDetails = formData[0].purposeDetails || '';
+    const serviceDescription = formData[0].serviceDescription;
+    const audience = formData[1].audience;
+    const usps = formData[4].usps || '';
+    const domains = formData[5].domain || '';
+
+
+    if (purpose && serviceDescription && question && serviceDescription && audience && marketing && usps && domains) {
 
       const prompt = `I'm planning a website and need detailed ideas for brand guidelines, including colours, fonts, and logo design. The primary purpose of the website is ${purpose}, with a focus on ${purposeDetails}. Here’s an overview of what I offer: ${serviceDescription}. 
 
-      My target audience is described as: ${audience}. This is how I plan to attract them: ${marketing}. When analyzing my competitors, here are key observations: ${competitors}. My unique selling points include: ${usps}. 
+      My target audience is described as: ${audience}. This is how I plan to attract them: ${marketing}. ${competitors} My unique selling points include: ${usps}. 
 
       Please provide thoughtful and creative brand guideline ideas that align with the following considerations:
       1. **Logo Design**:

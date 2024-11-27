@@ -5,8 +5,8 @@ import questionsData from "@/data/questions-data.json";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Textarea, Button } from '@nextui-org/react';
 import Sidebar from './actionsBar';
 
-const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
-  const stepNumber = 2;
+const Result = forwardRef(({ formData, setFormData, setError }, ref) => {
+  const stepNumber = 4;
   const content = questionsData[stepNumber];
   const formRef = useRef();
   const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
@@ -15,7 +15,7 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      if (!formData[stepNumber].marketing) {
+      if (!formData[stepNumber].usps) {
         setError("Additional details are required.");
         setAttractionlsIsInvalid(true);
         return false;
@@ -27,13 +27,13 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
 
   const handleTextareaChange = (e) => {
     const value = e.target.value;
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], marketing: value } });
+    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], usps: value } });
 
     // Provide immediate feedback for required field
     setAttractionlsIsInvalid(!value);
   };
 
-  const [ aiHints, setAiHints ] = useState(null);
+  const [aiHints, setAiHints] = useState(null);
 
   useEffect(() => {
     const question = content.question;
@@ -41,10 +41,17 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
     const purposeDetails = formData[0].purposeDetails || '';
     const serviceDescription = formData[0].serviceDescription;
     const audience = formData[1].audience;
+    const marketing = formData[2].marketing || '';
+    const competitors = formData[3].urls.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : '';
+    const usps = formData[4].usps || '';
+    const domain = formData[5].domain || '';
+    const brandGuidelines = formData[6].brandGuidelines || '';
+    const emotions = formData[7].emotions || '';
+    const inspirations = formData[8].inspirations.toString() || '';
 
-    if (purpose && serviceDescription && question && serviceDescription && audience) {
-     
-      const prompt = `I'm planning a website and need to answer to a question regarding my target audience. I need help with the following question: ${question}. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. Help me answering the question, and find potential incoming traffic sources. Keep it concise and to the point. Must keep it less then 600 characters.`;
+    if (purpose && serviceDescription && question && serviceDescription && audience && marketing && usps && brandGuidelines && domain && emotions) {
+
+      const prompt = `Say hi.`;
       const fetchContent = async () => {
         try {
           const response = await fetch("/api/googleAi", {
@@ -85,10 +92,10 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
         </div>
         <div className="col-span-3 flex-1 space-y-4">
           <Textarea
-            label="Incoming Traffic Sources"
+            label="Unique Selling Points"
             placeholder={content.placeholder}
             minRows={4}
-            value={formData[stepNumber].marketing || ""}
+            value={formData[stepNumber].usps || ""}
             isRequired={true}
             onChange={handleTextareaChange}
             classNames={{
@@ -104,6 +111,6 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
   );
 });
 
-StepMarketing.displayName = 'StepMarketing';
+Result.displayName = 'StepUSPs';
 
-export default StepMarketing;
+export default Result;

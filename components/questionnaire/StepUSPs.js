@@ -36,14 +36,15 @@ const StepUSPs = forwardRef(({ formData, setFormData, setError }, ref) => {
   const [aiHints, setAiHints] = useState(null);
 
   useEffect(() => {
-    if (formData[0].purpose) {
-      const question = content.question;
-      const marketing = formData[2].marketing || '';
-      const competitors = formData[3].urls.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : '';
-      const purpose = formData[0].purpose;
-      const purposeDetails = formData[0].purposeDetails || '';
-      const serviceDescription = formData[0].serviceDescription;
-      const audience = formData[1].audience;
+    const question = content.question;
+    const marketing = formData[2].marketing || '';
+    const competitors = formData[3].urls.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : '';
+    const purpose = formData[0].purpose;
+    const purposeDetails = formData[0].purposeDetails || '';
+    const serviceDescription = formData[0].serviceDescription;
+    const audience = formData[1].audience;
+
+    if (purpose && serviceDescription && question && serviceDescription && audience && marketing) {
 
       const prompt = `I'm planning a website and I've been asked to answer the following question: ${question}. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. This is how I plan to attract my audience: ${marketing}. ${competitors}. So help me with answer the question while considering the above details. Keep the response concise and informative, ensuring it's less than 800 characters.`;
       const fetchContent = async () => {

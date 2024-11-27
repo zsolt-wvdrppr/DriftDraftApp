@@ -36,18 +36,20 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
   const [aiHints, setAiHints] = useState('');
 
   useEffect(() => {
-    if (formData[0].purpose) {
-      const question = content.question;
-      const marketing = formData[2].marketing || '';
-      const competitors = formData[3].urls.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : '';
-      const purpose = formData[0].purpose;
-      const purposeDetails = formData[0].purposeDetails || '';
-      const serviceDescription = formData[0].serviceDescription;
-      const audience = formData[1].audience;
-      const usps = formData[4].usps || '';
-      const brandGuidelines = formData[5].brandGuidelines || '';
+    const question = content.question;
+    const marketing = formData[2].marketing || '';
+    const competitors = formData[3].urls.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : '';
+    const purpose = formData[0].purpose;
+    const purposeDetails = formData[0].purposeDetails || '';
+    const serviceDescription = formData[0].serviceDescription;
+    const audience = formData[1].audience;
+    const usps = formData[4].usps || '';
+    const brandGuidelines = formData[5].brandGuidelines || '';
 
-      const prompt = `Help me clarify the emotional experience I want visitors to have on my website. The purpose of the website is ${purpose}, with a focus on ${purposeDetails}. Here's what the website offers: ${serviceDescription}. My target audience is: ${audience}. I want the website to make a strong emotional connection with them. Based on competitor analysis, here are some key observations: ${competitors}. My unique selling points include: ${usps}. Based on this context, please ask thought-provoking questions or provide examples to help me define the emotional tone of my website. For example:
+
+    if (purpose && serviceDescription && serviceDescription && audience && usps) {
+
+      const prompt = `Help me clarify the emotional experience I want visitors to have on my website. The purpose of the website is ${purpose}, with a focus on ${purposeDetails}. Here's what the website offers: ${serviceDescription}. My target audience is: ${audience}. I want the website to make a strong emotional connection with them. ${competitors}. My unique selling points include: ${usps}. Based on this context, please ask thought-provoking questions or provide examples to help me define the emotional tone of my website. For example:
       1. What feelings (e.g., excitement, calmness, trust, inspiration) would make my audience feel connected to the brand?
       2. How do I want visitors to describe their experience after using the website (e.g., ‘engaging,’ ‘professional,’ ‘warm,’ etc.)?
       3. What kind of impression or mood do I want to leave on visitors when they first land on my homepage?
@@ -69,7 +71,7 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
           }
 
           const data = await response.json();
-          setAiHints( content.hints + "\n\n" + data.content || "No content generated.");
+          setAiHints(content.hints + "\n\n" + data.content || "No content generated.");
         } catch (error) {
           console.error("Error fetching content:", error);
           setAiHints("An error occurred while generating content.");
