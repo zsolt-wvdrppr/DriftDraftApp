@@ -13,6 +13,7 @@ import StepBrandGuidelines from './StepBrandGuidelines';
 import StepEmotions from './StepEmotions';
 import StepInspirations from './StepInspirations';
 import StepContactInfo from './StepContactInfo';
+import Result from './Result';
 import { toast } from 'sonner';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 import { IconCheck, IconPlant, IconUsersGroup, IconMagnet, IconRocket, IconDiamond, IconWorldWww, IconWriting, IconMoodSmileBeam, IconBulb, IconAddressBook, IconFlagQuestion } from '@tabler/icons-react';
@@ -58,6 +59,7 @@ export default function WizardContainer() {
         localStorage.setItem('formData', JSON.stringify(formData));
     }, [formData]);
 
+    const [isSubmitted, setIsSubmitted] = useState(false); // Track submission state
     const [currentStep, setCurrentStep] = useState(0);
     const [tabName, setTabName] = useState(steps[0]?.label || '');
     const stepRef = useRef(null);
@@ -120,7 +122,7 @@ export default function WizardContainer() {
     // Handle form submission
     const handleSubmit = async () => {
         // Validate all steps before submitting
-        if (steps.every((step) => formData[step.id]?.isValid)) {
+        if (stepRef.current?.validateStep() && steps.every((step) => formData[step.id]?.isValid)) {
             startTransition(async () => {
                 try {
                     const response = await fetch('/api/submit', {
@@ -131,6 +133,7 @@ export default function WizardContainer() {
                     if (response.ok) {
                         alert('Form submitted successfully!');
                         localStorage.removeItem('formData'); // Clear cache on success
+                        setIsSubmitted(true);
                     } else alert('Submission failed!');
                 } catch (error) {
                     console.error('Error:', error);
@@ -156,6 +159,11 @@ export default function WizardContainer() {
             setError(errorMsg);
         }
         //setCurrentStep(index);
+    }
+
+    if (isSubmitted) {
+        // Render the Result component if the form is submitted
+        return <Result formData={formData} />;
     }
 
     return (
