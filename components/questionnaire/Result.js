@@ -6,30 +6,10 @@ import { Button } from '@nextui-org/react';
 import { IconCopy } from '@tabler/icons-react';
 import { toast } from 'sonner';
 
-const Result = forwardRef(({ formData, setFormData, setError }, ref) => {
-
-  useImperativeHandle(ref, () => ({
-    validateStep: () => {
-      // Manual validation for NextUI fields
-      if (!formData[stepNumber].usps) {
-        setError("Additional details are required.");
-        setAttractionlsIsInvalid(true);
-        return false;
-      }
-      setAttractionlsIsInvalid(false);
-      return true; // Validation passed
-    },
-  }));
-
-  const handleTextareaChange = (e) => {
-    const value = e.target.value;
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], usps: value } });
-
-    // Provide immediate feedback for required field
-    setAttractionlsIsInvalid(!value);
-  };
+const Result = ({ formData }) => {
 
   const [aiResult, setAiResult] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const purpose = formData[0].purpose;
@@ -110,6 +90,8 @@ const Result = forwardRef(({ formData, setFormData, setError }, ref) => {
         } catch (error) {
           console.error("Error fetching content:", error);
           setAiResult("An error occurred while generating content.");
+        } finally {
+          setIsLoading(false);
         }
       };
       console.log("fetching content");
@@ -117,42 +99,61 @@ const Result = forwardRef(({ formData, setFormData, setError }, ref) => {
     } else {
       console.log("resetting hints");
       setAiResult(null);
+      setIsLoading(false);
     }
   }, []);
 
   return (
     <div>
-      <div className='w-full flex justify-end'>
-      <Button
-        variant='bordered'
-        color='secondary'
-        onClick={() => {
-          navigator.clipboard.writeText(aiResult);
-          toast.success("Texts copied to clipboard", { duration: 2000, classNames: { toast: 'text-green-600' } });
-        }}
-      >
-        <IconCopy size={20} />
-        Copy
-      </Button>
-      </div>
-      <ReactMarkdown className="whitespace-pre-wrap p-8 my-12 rounded-2xl bg-yellow-100/60 max-w-screen-lg">{aiResult}</ReactMarkdown>
-      <div className='w-full flex justify-end'>
-      <Button
-        variant='bordered'
-        color='secondary'
-        onClick={() => {
-          navigator.clipboard.writeText(aiResult);
-          toast.success("Texts copied to clipboard", { duration: 2000, classNames: { toast: 'text-green-600' } });
-        }}
-      >
-        <IconCopy size={20} />
-        Copy
-      </Button>
-      </div>
+      {isLoading ? (
+        <div className="text-center py-10">
+          <p className="text-lg font-semibold text-gray-600">
+            Generating your website plan... Please wait.
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="w-full flex justify-end">
+            <Button
+              variant="bordered"
+              color="secondary"
+              onClick={() => {
+                navigator.clipboard.writeText(aiResult);
+                toast.success('Texts copied to clipboard', {
+                  duration: 2000,
+                  classNames: { toast: 'text-green-600' },
+                });
+              }}
+            >
+              <IconCopy size={20} />
+              Copy
+            </Button>
+          </div>
+          <ReactMarkdown className="whitespace-pre-wrap p-8 my-12 rounded-2xl bg-yellow-100/60 max-w-screen-lg">
+            {aiResult}
+          </ReactMarkdown>
+          <div className="w-full flex justify-end">
+            <Button
+              variant="bordered"
+              color="secondary"
+              onClick={() => {
+                navigator.clipboard.writeText(aiResult);
+                toast.success('Texts copied to clipboard', {
+                  duration: 2000,
+                  classNames: { toast: 'text-green-600' },
+                });
+              }}
+            >
+              <IconCopy size={20} />
+              Copy
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
-});
+};
 
-Result.displayName = 'StepUSPs';
+Result.displayName = 'Result';
 
 export default Result;

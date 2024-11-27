@@ -121,29 +121,66 @@ export default function WizardContainer() {
 
     // Handle form submission
     const handleSubmit = async () => {
-        // Validate all steps before submitting
-        if (stepRef.current?.validateStep() && steps.every((step) => formData[step.id]?.isValid)) {
+        // Validate the current step first
+        const isCurrentStepValid = stepRef?.current?.validateStep();
+
+        if (!isCurrentStepValid) {
+            setError(`Please complete the current step: ${steps[currentStep]?.label}`);
+            return;
+        }
+
+        // Validate all steps in formData
+        const updatedFormData = { ...formData };
+        let allStepsValid = true;
+
+        for (const step of steps) {
+            const stepId = step.id;
+            if (!updatedFormData[stepId]?.isValid) {
+                const isValid = stepRef?.current?.validateStep();
+                updatedFormData[stepId] = {
+                    ...updatedFormData[stepId],
+                    isValid,
+                };
+
+                if (!isValid) {
+                    allStepsValid = false;
+                }
+            }
+        }
+
+        // Update formData state
+        setFormData(updatedFormData);
+
+        // If all steps are valid, proceed with submission
+        if (allStepsValid) {
             startTransition(async () => {
                 try {
                     const response = await fetch('/api/submit', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(formData),
+                        body: JSON.stringify(updatedFormData),
                     });
+
                     if (response.ok) {
-                        alert('Form submitted successfully!');
-                        localStorage.removeItem('formData'); // Clear cache on success
-                        setIsSubmitted(true);
-                    } else alert('Submission failed!');
+                        //alert('Form submitted successfully!');
+                        //localStorage.removeItem('formData'); // Clear cache on success
+                        setIsSubmitted(true); // Switch to results view
+                    } else {
+                        alert('Submission failed!');
+                    }
                 } catch (error) {
                     console.error('Error:', error);
                     alert('An error occurred while submitting.');
                 }
             });
         } else {
-            setError('Please complete all steps before submitting.');
+            setError(`Please complete all steps before submitting.`);
         }
     };
+
+
+
+
 
     const CurrentStepComponent = steps[currentStep]?.component;
 
