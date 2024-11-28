@@ -163,7 +163,7 @@ export default function WizardContainer() {
 
                     if (response.ok) {
                         //alert('Form submitted successfully!');
-                        //localStorage.removeItem('formData'); // Clear cache on success
+                        localStorage.removeItem('formData'); // Clear cache on success
                         setIsSubmitted(true); // Switch to results view
                     } else {
                         alert('Submission failed!');
