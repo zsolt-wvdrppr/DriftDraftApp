@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-const colors = require("tailwindcss/colors");
+const colors = ("tailwindcss/colors");
 const { default: flattenColorPalette } = require("tailwindcss/lib/util/flattenColorPalette");
 import { nextui } from "@nextui-org/theme";
 
