@@ -2,6 +2,7 @@ import { Link } from "@nextui-org/link";
 import { Snippet } from "@nextui-org/snippet";
 import { title, subtitle } from "@/components/primitives";
 import { Button } from "@nextui-org/button";
+import ServiceSelector from "@/components/ServiceSelector";
 
 export default function Home() {
   return (
@@ -15,9 +16,13 @@ export default function Home() {
       </div>
 
       <div className="flex gap-3">
-        <Link href="/start" alt="Start planning">
+        <Link href="/website-planner" alt="Start planning">
           <Button color="primary" variant="shadow">Start Your Website Plan</Button>
         </Link>
+      </div>
+
+      <div className="mt-8">
+        <ServiceSelector />
       </div>
 
       <div className="mt-8">

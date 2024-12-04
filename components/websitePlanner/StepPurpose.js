@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef, useDeferredValue, useImperativeHandle, forwardRef, use } from 'react';
+import React, { useEffect, useState, useRef, useDeferredValue, useImperativeHandle, forwardRef } from 'react';
 import questionsData from "@/data/questions-data.json";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Textarea, Button, Input } from '@nextui-org/react';
 import Sidebar from './actionsBar';
