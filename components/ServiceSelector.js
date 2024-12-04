@@ -21,7 +21,7 @@ const ServiceSelector = () => {
                     startContent={<IconRuler className="w-9 h-9 text-accentMint" />}
                     subtitle="Beta version available"
                 >
-                    {"Create a strategic website bluepring. Our AI helps you to define your goals, target audience, content structure and more."}
+                    {"Create a strategic website blueprint. Our AI helps you to define your goals, target audience, content structure and more."}
                     <div className="flex justify-end py-2 pl-4 mt-4">
                         <Link href="/website-planner" alt="Start planning">
                             <Button color="primary" variant="shadow">Start Your Website Plan</Button>
