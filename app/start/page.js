@@ -1,9 +1,9 @@
-import WizardContainer from "../../components/questionnaire/WizardContainer";
+import WebsiteWizardContainer from "../../components/websitePlanner/WebsiteWizardContainer";
 
 export default function Start() {
   return (
     <section className="flex flex-col items-center justify-center gap-4">
-      <WizardContainer position="top-right" />
+      <WebsiteWizardContainer position="top-right" />
     </section>
   );
 }

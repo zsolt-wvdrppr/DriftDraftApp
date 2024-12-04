@@ -32,7 +32,7 @@ const steps = [
     { id: 9, label: "Contact Details", icon: <IconAddressBook />, component: StepContactInfo }
 ];
 
-export default function WizardContainer() {
+export default function WebsiteWizardContainer() {
     const [formData, setFormData] = useState({
         0: { id: 0, purpose: '', purposeDetails: '', serviceDescription: '', isValid: false },
         1: { id: 1, audience: '', isValid: false },
