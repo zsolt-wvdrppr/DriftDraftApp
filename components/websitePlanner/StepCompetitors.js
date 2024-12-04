@@ -98,7 +98,7 @@ const StepCompetitors = forwardRef(({ formData, setFormData, setError }, ref) =>
                   label={`Competitor URL ${index + 1}`}
                   placeholder={content.placeholder}
                   value={url}
-                  startContent={<IconWorldWww className='h-5 text-primary opacity-70 ml-[-3px]' />}
+                  startContent={<IconWorldWww className='h-5 text-primary dark:text-accentMint opacity-70 ml-[-3px]' />}
                   //isRequired={true}
                   onChange={(e) => handleChangeUrl(e.target.value, index)}
                   onKeyDown={(e) => {
@@ -108,9 +108,9 @@ const StepCompetitors = forwardRef(({ formData, setFormData, setError }, ref) =>
                     }
                   }}
                   classNames={{
-                    label: "!text-primary",
-                    input: `dark:!text-neutralDark`,
-                    inputWrapper: `hover:!bg-yellow-50 border ${!validateURL(url) && url ? "border-danger" : ""}`,
+                    label: "!text-primary dark:!text-accentMint",
+                    input: ``,
+                    inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${!validateURL(url) && url ? "border-danger" : ""}`,
                   }}
                 />
                 {urls.length > 1 && (

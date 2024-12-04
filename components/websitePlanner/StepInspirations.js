@@ -90,7 +90,7 @@ const StepInspirations = forwardRef(({ formData, setFormData, setError }, ref) =
     <form ref={formRef}>
       <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
         <div className="col-span-4 flex-1">
-          <h2 className="text-lg font-semibold my-4 text-primary dark:text-slate-100">
+          <h2 className="text-lg font-semibold my-4 text-primary dark:text-accentMint">
             {content.question} {content.required && <span className="text-red-500">*</span>}
           </h2>
         </div>
@@ -109,7 +109,7 @@ const StepInspirations = forwardRef(({ formData, setFormData, setError }, ref) =
                   label={`URL ${index + 1}`}
                   placeholder={content.placeholder}
                   value={url}
-                  startContent={<IconWorldWww className='h-5 text-primary opacity-70 ml-[-3px]' />}
+                  startContent={<IconWorldWww className='h-5 text-primary dark:text-accentMint opacity-70 ml-[-3px]' />}
                   //isRequired={true}
                   onChange={(e) => handleChangeUrl(e.target.value, index)}
                   onKeyDown={(e) => {
@@ -119,9 +119,9 @@ const StepInspirations = forwardRef(({ formData, setFormData, setError }, ref) =
                     }
                   }}
                   classNames={{
-                    label: "!text-primary",
-                    input: `dark:!text-neutralDark`,
-                    inputWrapper: `hover:!bg-yellow-50 border ${!validateURL(url) && url ? "border-danger" : ""}`,
+                    label: "!text-primary dark:!text-accentMint",
+                    input: ``,
+                    inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${!validateURL(url) && url ? "border-danger" : ""}`,
                   }}
                 />
                  {urls.length > 1 && (
@@ -135,9 +135,9 @@ const StepInspirations = forwardRef(({ formData, setFormData, setError }, ref) =
                   isRequired={false}
                   onChange={(e) => handleTextareaChange(e.target.value, index)}
                   classNames={{
-                    label: "!text-primary",
-                    input: "dark:!text-neutralDark",
-                    inputWrapper: `hover:!bg-yellow-50 border`,
+                    label: "!text-primary dark:!text-accentMint",
+                    input: "",
+                    inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border`,
                   }}
                 />
               </motion.div>

@@ -129,9 +129,9 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
 
   return (
     <form ref={formRef}>
-      <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
+      <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:my-10 p-4 rounded-xl max-w-screen-xl bg-content1">
         <div className="col-span-4 flex-1">
-          <h2 className="text-lg font-semibold mb-4 text-primary dark:text-slate-100">
+          <h2 className="text-lg font-semibold mb-4 text-primary dark:text-accentMint">
             {content.question}
           </h2>
         </div>
@@ -165,14 +165,14 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
               isRequired={isOtherSelected}
               onChange={handleAdditionalDetailsChange}
               classNames={{
-                label: "!text-primary",
-                input: "dark:!text-neutralDark",
-                inputWrapper: `hover:!bg-yellow-50 border ${detailsIsInvalid ? "!bg-red-50 border-danger" : ""}`,
+                label: "!text-primary dark:!text-accentMint",
+                input: "",
+                inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border  ${detailsIsInvalid ? "!bg-red-50 border-danger" : ""}`,
               }}
             />
           </div>
           <div className="col-span-4 flex-1">
-            <h2 className="text-lg font-semibold my-10 text-primary dark:text-slate-100 relative">
+            <h2 className="text-lg font-semibold my-10 text-primary dark:text-accentMint relative">
               <ReactMarkdown>{content.questionAddition2}</ReactMarkdown>
             </h2>
           </div>
@@ -184,9 +184,10 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
             isRequired={true}
             onChange={handleServiceDescriptionChange}
             classNames={{
-              label: "!text-primary",
-              input: "dark:!text-neutralDark",
-              inputWrapper: `hover:!bg-yellow-50 border ${serviceDescIsInvalid ? "!bg-red-50 border-danger" : ""}`,
+              label: "!text-primary dark:!text-accentMint",
+              input: "",
+              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${serviceDescIsInvalid ? "!bg-red-50 border-danger" : ""}`,
+              base: "",
             }}
           />
         </div>

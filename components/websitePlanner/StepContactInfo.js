@@ -150,7 +150,7 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
         <form>
             <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
                 <div className="col-span-4 flex-1">
-                    <h2 className="text-lg font-semibold my-4 text-primary dark:text-slate-100">
+                    <h2 className="text-lg font-semibold my-4 text-primary dark:text-accentMint dark:text-slate-100">
                         {content.section} {content.required && <span className="text-red-500">*</span>}
                     </h2>
                 </div>
@@ -170,21 +170,21 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
                                         )
                                     }
                                     startContent={
-                                        field.question.toLowerCase().includes('email') ? <IconMail className='text-primary' size={20} /> :
-                                            field.question.toLowerCase().includes('phone') ? <IconPhone className='text-primary' size={20} /> :
-                                                field.question.toLowerCase().includes('website') ? <IconWorldWww className='text-primary' size={20} /> :
-                                                    field.question.toLowerCase().includes('name') ? <IconId className='text-primary' size={20} /> :
-                                                        field.question.toLowerCase().includes('employee') ? <IconUsers className='text-primary' size={20} /> : ''
+                                        field.question.toLowerCase().includes('email') ? <IconMail className='text-primary dark:text-accentMint' size={20} /> :
+                                            field.question.toLowerCase().includes('phone') ? <IconPhone className='text-primary dark:text-accentMint' size={20} /> :
+                                                field.question.toLowerCase().includes('website') ? <IconWorldWww className='text-primary dark:text-accentMint' size={20} /> :
+                                                    field.question.toLowerCase().includes('name') ? <IconId className='text-primary dark:text-accentMint' size={20} /> :
+                                                        field.question.toLowerCase().includes('employee') ? <IconUsers className='text-primary dark:text-accentMint' size={20} /> : ''
                                     }
                                     isRequired={field.required}
                                     classNames={{
-                                        label: "!text-primary dark:!text-white text-sm md:text-md",
-                                        inputWrapper: `hover:!bg-yellow-50 border ${validationErrors[field.question.replace(/\s+/g, '').toLowerCase()]
+                                        label: "!text-primary dark:!text-accentMint text-sm md:text-md",
+                                        inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${validationErrors[field.question.replace(/\s+/g, '').toLowerCase()]
                                             ? 'border-danger'
                                             : ''
                                             }`,
-                                        base: "dark:!text-neutralDark pt-4",
-                                        input: "dark:!text-neutralDark",
+                                        base: "pt-4",
+                                        input: "",
                                     }}
                                 />
                             )}
@@ -202,15 +202,15 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
                                             e.target.value
                                         )
                                     }
-                                    startContent={<IconUsers className='text-primary' size={20} />}
+                                    startContent={<IconUsers className='text-primary dark:text-accentMint' size={20} />}
                                     classNames={{
-                                        label: "!text-primary dark:!text-white text-sm md:text-md",
-                                        inputWrapper: `hover:!bg-yellow-50 border ${validationErrors[field.question.replace(/\s+/g, '').toLowerCase()]
+                                        label: "!text-primary dark:!text-accentMint text-sm md:text-md",
+                                        inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${validationErrors[field.question.replace(/\s+/g, '').toLowerCase()]
                                             ? 'border-danger'
                                             : ''
                                             }`,
-                                        base: "dark:!text-neutralDark pt-4",
-                                        input: "dark:!text-neutralDark",
+                                        base: "pt-4",
+                                        input: "",
                                     }}
                                 />
                             )}
@@ -222,8 +222,9 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
                                     value={formValues['isStartup']}
                                     onChange={(e) => handleChange('isStartup', e.target.value)}
                                     orientation="horizontal"
+                                    color="secondary"
                                     classNames={{
-                                        label: "!text-primary dark:!text-white text-sm md:text-md",
+                                        label: "!text-primary dark:!text-accentMint text-sm md:text-md",
                                     }}
                                 >
                                     {field.options.map((option, idx) => (

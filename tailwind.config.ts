@@ -35,6 +35,7 @@ const config: Config = {
         secondary: '#028090',
         secondaryTeal: '#028090',
         secondaryPersianGreen: '#00A896',
+        accent: '#02C39A',
         accentMint: '#02C39A',
         accentRed: '#E83151',
         neutralDark: '#2E0219',

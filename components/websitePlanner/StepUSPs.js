@@ -81,7 +81,7 @@ const StepUSPs = forwardRef(({ formData, setFormData, setError }, ref) => {
     <form ref={formRef}>
       <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
         <div className="col-span-4 flex-1">
-          <h2 className="text-lg font-semibold mb-4 text-primary dark:text-slate-100">
+          <h2 className="text-lg font-semibold mb-4 text-primary dark:text-accentMint">
             {content.question} {content.required && <span className="text-red-500">*</span>}
           </h2>
         </div>
@@ -94,9 +94,9 @@ const StepUSPs = forwardRef(({ formData, setFormData, setError }, ref) => {
             isRequired={true}
             onChange={handleTextareaChange}
             classNames={{
-              label: "!text-primary",
-              input: "dark:!text-neutralDark",
-              inputWrapper: `hover:!bg-yellow-50 border ${attractionIsInvalid ? "!bg-red-50 border-danger" : ""}`,
+              label: "!text-primary dark:!text-accentMint",
+              input: "",
+              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${attractionIsInvalid ? "!bg-red-50 border-danger" : ""}`,
             }}
           />
         </div>
