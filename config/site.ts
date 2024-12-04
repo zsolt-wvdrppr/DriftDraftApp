@@ -1,8 +1,8 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "DriftDraft",
-  description: "Create Strategic Websites.",
+  name: "Next.js + NextUI",
+  description: "Make beautiful websites regardless of your design experience.",
   navItems: [
     {
       label: "Home",
@@ -40,6 +40,10 @@ export const siteConfig = {
     },
   ],
   links: {
+    github: "#",
+    twitter: "#",
+    docs: "#",
+    discord: "#",
     contact: "https://wavedropper.com/contact",
   },
 };
