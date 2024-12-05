@@ -7,9 +7,9 @@ import Sidebar from './actionsBar';
 import ReactMarkdown from 'react-markdown';
 
 const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
-  const [selectedKeys, setSelectedKeys] = useState(new Set([formData[0].purpose || ""]));
-  const isOtherSelected = selectedKeys.has("Other (please specify)");
-  const deferredValue = useDeferredValue(Array.from(selectedKeys).join(", ").replaceAll("_", " "));
+  const [selectedKeys, setSelectedKeys] = useState([]);
+  const [isOtherSelected, setIsOtherSelected] = useState(false); // = selectedKeys.has("Other (please specify)");
+  //const deferredValue = useDeferredValue(Array.from(selectedKeys).join(", ").replaceAll("_", " "));
   const stepNumber = 0;
   const content = questionsData[stepNumber];
   const formRef = useRef();
@@ -17,28 +17,34 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
   const [detailsIsInvalid, setDetailsIsInvalid] = useState(false);
   const [serviceDescIsInvalid, setServiceDescIsInvalid] = useState(false);
 
+  useEffect(() => {
+    if (formData?.[stepNumber]?.purpose) {
+      setSelectedKeys(new Set([formData[stepNumber].purpose]));
+      setIsOtherSelected(formData[stepNumber].purpose === "Other (please specify)");
+    }
+  }, [formData, stepNumber]);
+
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      console.log("selectedKeys", selectedKeys.currentKey);
-      if (!formData[stepNumber].purpose) {
+      //console.log("selectedKeys", selectedKeys.currentKey);
+      if (!formData[stepNumber]?.purpose) {
         setPurposeIsInvalid(true);
         setError("Please select a goal before proceeding.");
         return false;
       }
-      if (isOtherSelected && (!formData[stepNumber].purposeDetails || formData[stepNumber].purposeDetails.length < 10)) {
+      if (isOtherSelected && (!formData[stepNumber]?.purposeDetails || formData[stepNumber].purposeDetails.length < 10)) {
         setError("Additional details are required. (10 characters minimum)");
         setDetailsIsInvalid(true);
         return false;
       }
-      if (!formData[stepNumber].serviceDescription) {
+      if (!formData[stepNumber]?.serviceDescription) {
         setError("Please provide a service description.");
         setServiceDescIsInvalid(true);
         return false;
       }
       if (formData[stepNumber].serviceDescription.length < 50) {
-        console.log("formData[stepNumber].serviceDescription.length", formData[stepNumber].serviceDescription.length);
         setError("Please provide a more detailed service description. (50 characters minimum)");
         setServiceDescIsInvalid(true);
         return false;
@@ -78,7 +84,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
 
   useEffect(() => {
     // Ensure purpose is selected
-    if (!formData[stepNumber].purpose) {
+    if (!formData?.[stepNumber]?.purpose) {
       setAiHints(null);
       return;
     }
@@ -124,7 +130,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
     } else {
       setAiHints(null);
     }
-  }, [formData[stepNumber].purpose, formData[stepNumber].purposeDetails]);
+  }, [formData, stepNumber, formData?.[stepNumber]?.purpose, formData?.[stepNumber]?.purposeDetails]);
 
 
   return (
@@ -140,7 +146,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
             <Dropdown>
               <DropdownTrigger>
                 <Button variant="bordered" className="capitalize w-full" color={purposeIsInvalid ? "danger" : "default"}>
-                  {deferredValue || content.placeholder[0]}{content.required && <span className="text-red-500 ml-[-6px]">*</span>}
+                  {Array.from(selectedKeys).join(", ").replaceAll("_", " ") || content.placeholder[0]}{content.required && <span className="text-red-500 ml-[-6px]">*</span>}
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
@@ -161,12 +167,12 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
             <Input
               label="Additional Details"
               placeholder={`${content.placeholder[1]} (${isOtherSelected ? "required" : "optional"})`}
-              value={formData[0].purposeDetails || ""}
+              value={formData?.[stepNumber]?.purposeDetails || ""}
               isRequired={isOtherSelected}
               onChange={handleAdditionalDetailsChange}
               classNames={{
                 label: "!text-primary dark:!text-accentMint",
-                input: "",
+                input: "dark:!text-white",
                 inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border  ${detailsIsInvalid ? "!bg-red-50 border-danger" : ""}`,
               }}
             />
@@ -180,7 +186,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
             label="Service Description"
             placeholder={content.placeholder[2]}
             minRows={4}
-            value={formData[0].serviceDescription || ""}
+            value={formData?.[stepNumber]?.serviceDescription || ""}
             isRequired={true}
             onChange={handleServiceDescriptionChange}
             classNames={{

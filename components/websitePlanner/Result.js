@@ -13,16 +13,16 @@ const Result = ({ formData }) => {
 
   useEffect(() => {
     const purpose = formData[0].purpose;
-    const purposeDetails = formData[0].purposeDetails || ''; // optional
+    const purposeDetails = formData[0]?.purposeDetails || ''; // optional
     const serviceDescription = formData[0].serviceDescription;
     const audience = formData[1].audience;
     const marketing = formData[2].marketing || '';
-    const competitors = formData[3].urls.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : ''; // optional
+    const competitors = formData[3]?.urls?.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : ''; // optional
     const usps = formData[4].usps || '';
     const domain = formData[5].domain || '';
     const brandGuidelines = formData[6].brandGuidelines || '';
     const emotions = formData[7].emotions || '';
-    const inspirations = formData[8].inspirations.toString() || ''; // optional
+    const inspirations = formData[8]?.inspirations?.toString() || ''; // optional
 
     if (purpose && serviceDescription && serviceDescription && audience && marketing && usps && brandGuidelines && domain && emotions) {
 
@@ -103,6 +103,14 @@ const Result = ({ formData }) => {
     }
   }, []);
 
+  useEffect(() => {
+    // Remove URL params after setting the step
+    if (window.history.replaceState) {
+      const newUrl = window.location.pathname;
+      window.history.replaceState(null, '', newUrl);
+    }
+  }, []);
+
   return (
     <div>
       {isLoading ? (
@@ -129,7 +137,7 @@ const Result = ({ formData }) => {
               Copy
             </Button>
           </div>
-          <ReactMarkdown className="whitespace-pre-wrap p-8 my-12 rounded-2xl bg-yellow-100/60 max-w-screen-lg">
+          <ReactMarkdown className="whitespace-pre-wrap p-8 my-12 rounded-2xl bg-yellow-100/60 dark:bg-content1 max-w-screen-lg">
             {aiResult}
           </ReactMarkdown>
           <div className="w-full flex justify-end">

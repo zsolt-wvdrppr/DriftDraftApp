@@ -28,7 +28,7 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
           setHintToastId(null);
         } else {
           const id = toast.custom((t) => (
-            <div className='p-4 shadow-lg rounded-lg bg-white/90 max-h-[90vh] overflow-y-auto'>
+            <div className='p-4 shadow-lg rounded-lg bg-white/90 max-h-[90vh] overflow-y-auto select-all'>
               <h4 className='font-bold'>Hint</h4>
               <ReactMarkdown className="whitespace-pre-wrap py-6">{hints}</ReactMarkdown>
               <div className='flex justify-between'>

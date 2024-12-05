@@ -15,7 +15,7 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      if (!formData[stepNumber].brandGuidelines) {
+      if (!formData[stepNumber]?.brandGuidelines) {
         setError("Additional details are required.");
         setAttractionlsIsInvalid(true);
         return false;
@@ -116,7 +116,7 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
             label="Branding"
             placeholder={content.placeholder}
             minRows={4}
-            value={formData[stepNumber].brandGuidelines || ""}
+            value={formData?.[stepNumber]?.brandGuidelines || ""}
             isRequired={true}
             onChange={handleTextareaChange}
             classNames={{

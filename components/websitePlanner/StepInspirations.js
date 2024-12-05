@@ -131,7 +131,7 @@ const StepInspirations = forwardRef(({ formData, setFormData, setError }, ref) =
                   label="Notes"
                   placeholder={"What do you like about this website?"}
                   minRows={4}
-                  value={formData[stepNumber].inspirations[index] || ""}
+                  value={formData?.[stepNumber]?.inspirations?.[index] || ""}
                   isRequired={false}
                   onChange={(e) => handleTextareaChange(e.target.value, index)}
                   classNames={{

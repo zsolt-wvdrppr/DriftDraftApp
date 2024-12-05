@@ -45,5 +45,6 @@ export const siteConfig = {
     docs: "#",
     discord: "#",
     contact: "https://wavedropper.com/contact",
+    activities: "/activities",
   },
 };

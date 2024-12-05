@@ -85,14 +85,14 @@ export const Navbar = () => {
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
         <NavbarItem className="hidden md:flex">
           <Button
-            isExternal
+            isExternal={false}
             as={Link}
             className="text-sm font-normal text-default-600 bg-default-200"
-            href={siteConfig.links.contact}
+            href={siteConfig.links.activities}
             startContent={<HeartFilledIcon className="text-danger" />}
             variant="flat"
           >
-            Contact
+            My Activities
           </Button>
         </NavbarItem>
       </NavbarContent>

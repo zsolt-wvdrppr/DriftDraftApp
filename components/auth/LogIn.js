@@ -3,8 +3,24 @@
 import React from "react";
 import { Button, Input, Checkbox, Link, Divider } from "@nextui-org/react";
 import { Icon } from "@iconify-icon/react";
+import { useRouter } from "next/navigation";
 
 export default function LogIn() {
+  const router = useRouter();
+  const handleLogIn = (event) => {
+    event.preventDefault();
+
+    // Mock login logic
+    const isLoggedIn = true; // Replace with actual auth logic
+
+    if (isLoggedIn) {
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectUrl = searchParams.get("redirect") || "/activities";
+      //console.log("Redirecting to:", redirectUrl);
+      router.push(redirectUrl); // Redirect user after successful login
+    }
+  };
+
   const [isVisible, setIsVisible] = React.useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
@@ -13,7 +29,7 @@ export default function LogIn() {
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large bg-content1 px-8 pb-10 pt-6 shadow-small">
         <p className="pb-2 text-xl font-medium">Log In</p>
-        <form className="flex flex-col gap-3" onSubmit={(e) => e.preventDefault()}>
+        <form className="flex flex-col gap-3" onSubmit={handleLogIn}>
           <Input
             label="Email Address"
             name="email"

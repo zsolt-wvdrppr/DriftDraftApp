@@ -2,25 +2,40 @@
 
 import React from "react";
 import {Button, Input, Checkbox, Link} from "@nextui-org/react";
-import {Icon} from "@iconify/react";
+import {Icon} from "@iconify-icon/react";
+import { useRouter } from "next/navigation";
 
 export default function SignUp() {
+  const router = useRouter();
+  const handleSignUp = (event) => {
+    event.preventDefault();
+
+    // Mock sign-up logic
+    const isSignedUp = true; // Replace with actual auth logic
+
+    if (isSignedUp) {
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectUrl = searchParams.get("redirect") || "/activities";
+      router.push(redirectUrl); // Redirect user after successful sign-up
+    }
+  };
+
   const [isVisible, setIsVisible] = React.useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = React.useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
-  const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);
+  const toggleConfirmVisibility = () => setIsConfirmVisible(!isConfirmVisible);  
 
   return (
     <div className="flex h-full w-full items-center justify-center">
       <div className="flex w-full max-w-sm flex-col gap-4 rounded-large px-8 pb-10 pt-6">
-        <p className="pb-4 text-left text-3xl font-semibold">
+        <p className="pb-4 text-left text-3xl font-semibold flex justify-between">
           Sign Up
           <span aria-label="emoji" className="ml-2" role="img">
-            👋
+            <Icon icon="noto:chess-pawn" className="pointer-events-none text-2xl text-default-400"/>
           </span>
         </p>
-        <form className="flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
+        <form className="flex flex-col gap-4" onSubmit={handleSignUp}>
           <Input
             isRequired
             label="Username"
@@ -30,7 +45,6 @@ export default function SignUp() {
             type="text"
             variant="bordered"
           />
-
           <Input
             isRequired
             label="Email"
@@ -40,7 +54,6 @@ export default function SignUp() {
             type="email"
             variant="bordered"
           />
-
           <Input
             isRequired
             endContent={
@@ -65,7 +78,6 @@ export default function SignUp() {
             type={isVisible ? "text" : "password"}
             variant="bordered"
           />
-
           <Input
             isRequired
             endContent={
@@ -90,7 +102,6 @@ export default function SignUp() {
             type={isConfirmVisible ? "text" : "password"}
             variant="bordered"
           />
-
           <Checkbox isRequired className="py-4" size="sm">
             I agree with the&nbsp;
             <Link href="#" size="sm">

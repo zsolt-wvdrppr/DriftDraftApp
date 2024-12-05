@@ -15,7 +15,7 @@ const StepAudience = ({ formData, setFormData, setError, ref, ...props }) => {
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      if (!formData[stepNumber].audience) {
+      if (!formData[stepNumber]?.audience) {
         setError("Additional details are required.");
         setAudiencelsIsInvalid(true);
         return false;
@@ -87,7 +87,7 @@ const StepAudience = ({ formData, setFormData, setError, ref, ...props }) => {
             label="Target Audience"
             placeholder={content.placeholder}
             minRows={4}
-            value={formData[1].audience || ""}
+            value={formData?.[stepNumber]?.audience || ""}
             isRequired={true}
             onChange={handleTextareaChange}
             classNames={{

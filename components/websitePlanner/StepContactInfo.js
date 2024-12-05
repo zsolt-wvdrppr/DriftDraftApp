@@ -24,7 +24,7 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
     const [validationErrors, setValidationErrors] = useState({});
 
     // Initialize formData if not present
-    useEffect(() => {
+    /*useEffect(() => {
         if (!formData[stepNumber]) {
             console.log("init formData", formData);
             setFormData((prev) => ({
@@ -32,7 +32,7 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
                 [stepNumber]: { ...formValues, isValid: false },
             }));
         }
-    }, [formData, setFormData, stepNumber]);
+    }, [formData, setFormData, stepNumber]);*/
 
     // Expose validation logic via useImperativeHandle
     useImperativeHandle(ref, () => ({
@@ -150,7 +150,7 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
         <form>
             <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
                 <div className="col-span-4 flex-1">
-                    <h2 className="text-lg font-semibold my-4 text-primary dark:text-accentMint dark:text-slate-100">
+                    <h2 className="text-lg font-semibold my-4 text-primary dark:text-slate-100">
                         {content.section} {content.required && <span className="text-red-500">*</span>}
                     </h2>
                 </div>
@@ -163,6 +163,7 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
                                     label={field.question}
                                     value={formValues[field.question.replace(/\s+/g, '').toLowerCase()]}
                                     labelPlacement='outside'
+                                    autoComplete={field.question.toLowerCase()}
                                     onChange={(e) =>
                                         handleChange(
                                             field.question.replace(/\s+/g, '').toLowerCase(),

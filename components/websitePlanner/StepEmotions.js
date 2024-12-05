@@ -15,7 +15,7 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      if (!formData[stepNumber].emotions) {
+      if (!formData[stepNumber]?.emotions) {
         setError("Additional details are required.");
         setAttractionlsIsInvalid(true);
         return false;
@@ -98,7 +98,7 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
             label="Emotions and User Experience"
             placeholder={content.placeholder}
             minRows={4}
-            value={formData[stepNumber].emotions || ""}
+            value={formData?.[stepNumber]?.emotions || ""}
             isRequired={true}
             onChange={handleTextareaChange}
             classNames={{

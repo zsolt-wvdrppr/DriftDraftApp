@@ -17,7 +17,7 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      if (!formData[stepNumber].domain) {
+      if (!formData[stepNumber]?.domain) {
         setError("Additional details are required.");
         setAttractionlsIsInvalid(true);
         return false;
@@ -92,7 +92,7 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
           <Input
             label="Domain Name"
             placeholder={content.placeholder}
-            value={formData[stepNumber].domain || ""}
+            value={formData?.[stepNumber]?.domain || ""}
             isRequired={true}
             onChange={handleTextareaChange}
             classNames={{

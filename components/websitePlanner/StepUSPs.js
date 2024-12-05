@@ -15,7 +15,7 @@ const StepUSPs = forwardRef(({ formData, setFormData, setError }, ref) => {
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      if (!formData[stepNumber].usps) {
+      if (!formData[stepNumber]?.usps) {
         setError("Additional details are required.");
         setAttractionlsIsInvalid(true);
         return false;
@@ -90,7 +90,7 @@ const StepUSPs = forwardRef(({ formData, setFormData, setError }, ref) => {
             label="Unique Selling Points"
             placeholder={content.placeholder}
             minRows={4}
-            value={formData[stepNumber].usps || ""}
+            value={formData?.[stepNumber]?.usps || ""}
             isRequired={true}
             onChange={handleTextareaChange}
             classNames={{

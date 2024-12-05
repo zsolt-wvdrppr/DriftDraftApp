@@ -15,7 +15,7 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      if (!formData[stepNumber].marketing) {
+      if (!formData[stepNumber]?.marketing) {
         setError("Additional details are required.");
         setAttractionlsIsInvalid(true);
         return false;
@@ -88,7 +88,7 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
             label="Incoming Traffic Sources"
             placeholder={content.placeholder}
             minRows={4}
-            value={formData[stepNumber].marketing || ""}
+            value={formData?.[stepNumber]?.marketing || ""}
             isRequired={true}
             onChange={handleTextareaChange}
             classNames={{
