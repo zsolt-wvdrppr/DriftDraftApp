@@ -7,8 +7,6 @@ import { IconCopy, IconSquareRoundedX, IconBulbFilled, IconZoomQuestionFilled } 
 
 const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) => {
   const [isPending, startTransition] = useTransition();
-  const [hintToastId, setHintToastId] = useState(null);
-  const [whyToastId, setWhyToastId] = useState(null);
   const [newHintAvailable, setNewHintAvailable] = useState(false);
 
   // Track changes to `hints` and show the indicator
@@ -119,9 +117,8 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
         auto
         aria-label='Why do we ask?'
         //isLoading={isPending}
-        className={`fixed bottom-0 -left-4 z-10 md:bg-transparent md:shadow-md md:relative md:left-auto md:w-32 md:h-24 flex border-3 border-transparent ${!whyDoWeAsk ? 'cursor-not-allowed border border-gray-200 hidden' : ''}`}
+        className={`select-none bottom-0 -left-4 z-10 md:bg-transparent md:shadow-md md:relative md:left-auto md:w-32 md:h-24 flex border-3 border-transparent ${!whyDoWeAsk ? 'cursor-not-allowed border border-gray-200 opacity-0' : ''}`}
       >
-        {!whyDoWeAsk && <span> No Reason <br /> Available </span>}
         {whyDoWeAsk && <span className={`hidden absolute bottom-0 md:block`}> Why We Ask </span>}
         <IconZoomQuestionFilled
           size={28}
@@ -141,24 +138,15 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
         auto
         aria-label='Check hint'
         //isLoading={isPending}
-        className={`md:w-32 md:h-24 break-words md:relative fixed bottom-0 -right-4 z-10 md:bg-transparent md:shadow-md md:right-auto flex md:border-3 md:border-transparent
-                ${!hints ? 'cursor-not-allowed border-3 border-transparent border-gray-200 hidden' : ''}
+        className={`select-none md:w-32 md:h-24 break-words md:relative bottom-0 -right-4 z-10 md:bg-transparent md:shadow-md md:right-auto flex md:border-3 md:border-transparent
+                ${!hints ? 'cursor-not-allowed border-3 border-transparent border-gray-200 opacity-0' : ''}
                 ${newHintAvailable ? 'border-yellow-400' : ''}`}
       >
-        {!hints && <span> No Hint<br />Available </span>}
         {hints && <span className={`hidden md:block absolute bottom-0 ${newHintAvailable ? 'animate-pulse font-bold' : ''}`}> Check Hint </span>}
-        {newHintAvailable && (
           <IconBulbFilled
             size={32}
-            className="top-2 left-1 text-yellow-400 animate-bounce"
+            className={`top-2 left-1 ${newHintAvailable ? "text-yellow-400 animate-bounce" : "dark:text-white text-accentMint"}`}
           />
-        )}
-        {!newHintAvailable && (
-          <IconBulbFilled
-            size={32}
-            className="top-2 left-1 dark:text-white text-accentMint"
-          />
-        )}
       </Button>
     )
   }
@@ -166,7 +154,7 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
 
   return (
     <motion.div
-      className="flex md:flex-col items-center justify-items-center gap-4"
+      className="relative mt-8 md:mt-0 flex justify-between md:flex-col md:items-center md:justify-items-center gap-4"
       initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0 }}

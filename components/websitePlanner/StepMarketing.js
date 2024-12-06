@@ -34,7 +34,7 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
     setAttractionlsIsInvalid(!value);
   };
 
-  const [ aiHints, setAiHints ] = useState(null);
+  const [aiHints, setAiHints] = useState(null);
   const { incrementCounter, checkRateLimit } = useRateLimiter(`aiResponse_${stepNumber}`, 3, 3);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
     const audience = formData[1].audience;
 
     if (purpose && serviceDescription && question && serviceDescription && audience) {
-     
+
       const prompt = `I'm planning a website and need to answer to a question regarding my target audience. I need help with the following question: ${question}. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. Help me answering the question, and find potential incoming traffic sources. Keep it concise and to the point. Must keep it less then 600 characters.`;
       const fetchContent = async () => {
         if (checkRateLimit()) {
@@ -56,7 +56,7 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
           const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
           setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
           return;
-        }    
+        }
         try {
           const response = await fetch("/api/googleAi", {
             method: "POST",
@@ -96,13 +96,11 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
 
   return (
     <form ref={formRef}>
-      <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
-        <div className="col-span-4 flex-1">
+      <div className="flex flex-col-reverse md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
+        <div className="col-span-3 flex-1 space-y-4">
           <h2 className="text-lg font-semibold mb-4 text-primary dark:text-accentMint">
             {content.question} {content.required && <span className="text-red-500">*</span>}
           </h2>
-        </div>
-        <div className="col-span-3 flex-1 space-y-4">
           <Textarea
             label="Incoming Traffic Sources"
             placeholder={content.placeholder}

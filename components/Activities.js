@@ -1,0 +1,252 @@
+'use client';
+
+import { useEffect, useState, useRef, useTransition } from 'react';
+import { Reorder, AnimatePresence } from 'framer-motion';
+import {
+    Modal,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    Button,
+    useDisclosure,
+} from "@nextui-org/react";
+import { IconEdit, IconTrash, IconEye, IconShare, IconWand, IconSquareRoundedXFilled, IconInfoCircleFilled } from '@tabler/icons-react';
+import { Tooltip } from 'react-tooltip';
+import { toast } from 'sonner';
+import Cookies from 'js-cookie';
+
+// Simulated data from Supabase
+const mockData = [
+    { id: '1', title: 'Plan A', content: 'This is the content of Plan A.', createdAt: '2024-12-01', updatedAt: '2024-12-05' },
+    { id: '2', title: 'Draft B', content: 'This is the content of Draft B.', createdAt: '2024-11-20', updatedAt: '2024-12-04' },
+    { id: '3', title: 'Plan C', content: 'This is the content of Plan C.', createdAt: '2024-10-15', updatedAt: '2024-12-01' },
+    { id: '4', title: 'Plan D', content: 'This is the content of Plan A.', createdAt: '2024-12-01', updatedAt: '2024-12-05' },
+    { id: '5', title: 'Draft E', content: 'This is the content of Draft B.', createdAt: '2024-11-20', updatedAt: '2024-12-04' },
+    { id: '6', title: 'Plan F', content: 'This is the content of Plan C.', createdAt: '2024-10-15', updatedAt: '2024-12-01' },
+];
+
+export default function UserActivities() {
+    const [items, setItems] = useState(mockData);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const { isOpen: isDeleteModalOpen, onOpen: onDeleteOpen, onOpenChange: onDeleteOpenChange } = useDisclosure();
+    const { isOpen: isViewModalOpen, onOpen: onViewOpen, onOpenChange: onViewOpenChange } = useDisclosure();
+    const [isPending, startTransition] = useTransition();
+
+    const confirmDelete = (item) => {
+        setSelectedItem(item);
+        onDeleteOpen();
+    };
+
+    const handleDelete = () => {
+        if (selectedItem) {
+            setItems(items.filter(item => item.id !== selectedItem.id));
+            setSelectedItem(null);
+        }
+        onDeleteOpenChange(false);
+    };
+
+    const viewPlan = (item) => {
+        setSelectedItem(item);
+        onViewOpen();
+    };
+
+    const legend = () => {
+        return (
+            <div className='p-4 w-fit bg-slate-200 rounded-lg'>
+                <p className='flex gap-2'><IconEdit className='edit-icon' /> - Edit</p>
+                <p className='flex gap-2'><IconTrash className='delete-icon' /> - Delete</p>
+                <p className='flex gap-2'><IconShare className='share-icon' /> - Share</p>
+                <p className='flex gap-2'><IconEye className='view-icon' /> - View</p>
+                <p className='flex gap-2'><IconWand className='quote-icon' /> - Get Quote</p>
+            </div>
+        )
+    }
+
+    const toastRef = useRef(null);
+
+    const handleToast = () => {
+        startTransition(() => {
+            if (toastRef.current) {
+                // Dismiss the toast and reset state
+                toast.dismiss(toastRef.current);
+                toastRef.current = null;
+            }
+
+            const newToastId = toast.custom((t) => (
+                <div className="relative flex justify-end">
+                    <div className='w-fit relative'>
+                        <Button
+                            className='!absolute -top-4 -left-9 p-2'
+                            onClick={() => {
+                                toast.dismiss(t)
+                                toastRef.current = null;
+                                Cookies.set('toastDismissed', true, { expires: 365 });
+                            }}
+                        >
+                            <IconSquareRoundedXFilled className='bg-white text-primary rounded-lg' />
+                        </Button>
+                        {legend()}
+                    </div>
+                </div>
+            ), {
+                duration: Infinity,
+                onDismiss: (t) => {
+                    toastRef.current = null;
+                }
+            });
+
+            toastRef.current = newToastId;
+        });
+    };
+
+    useEffect(() => {
+        // Check if the toast has been dismissed
+        const dismissed = Cookies.get('toastDismissed');
+        if (dismissed) return;
+
+        const timeout = setTimeout(() => {
+            handleToast();
+        }, 500); // Small delay to allow context and DOM readiness
+
+        return () => clearTimeout(timeout); // Cleanup on unmount
+    }, []);
+
+    return (
+        <div className="p-4 max-w-xl mx-auto overflow-hidden">
+            <div className='w-full flex justify-end my-4 text-primary'>
+                <button
+                    onClick={() => handleToast()}
+                >
+                    <IconInfoCircleFilled className='info-icon' />
+                </button>
+            </div>
+            <Reorder.Group
+                values={items}
+                onReorder={setItems}
+                className="space-y-2"
+                axis="y"
+            >
+                <AnimatePresence>
+                    {items.map(item => (
+                        <Reorder.Item
+                            key={item.id}
+                            value={item}
+                            className="bg-white dark:bg-content1 shadow-md p-4 rounded-md flex justify-between items-center"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, x: 100 }}
+                            whileTap={{ scale: 0.95 }}
+                            drag={false}
+                        >
+                            <div className='select-none'>
+                                <h2 className="font-semibold">{item.title}</h2>
+                                <p className="text-sm text-gray-500">
+                                    Created: {item.createdAt}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                    Updated: {item.updatedAt}
+                                </p>
+                            </div>
+                            <div className="flex gap-2">
+                                <div className='grid grid-cols-2 gap-3 md:flex md:gap-2'>
+                                    <button
+                                        className="btn btn-primary btn-sm"
+                                        onClick={() => console.log(`Edit item with ID: ${item.id}`)}
+                                    >
+                                        <IconEdit className='edit-icon' />
+                                        <Tooltip anchorSelect=".edit-icon" place="top">
+                                            Edit
+                                        </Tooltip>
+                                    </button>
+                                    <button
+                                        className="btn btn-warning btn-sm"
+                                        onClick={() => confirmDelete(item)}
+                                    >
+                                        <IconTrash className='delete-icon' />
+                                        <Tooltip anchorSelect=".delete-icon" place="top">
+                                            Delete
+                                        </Tooltip>
+                                    </button>
+                                    <button
+                                        className="btn btn-secondary btn-sm"
+                                        onClick={() => console.log(`Share item with ID: ${item.id}`)}
+                                    >
+                                        <IconShare className='share-icon' />
+                                        <Tooltip anchorSelect=".share-icon" place="top">
+                                            Share
+                                        </Tooltip>
+                                    </button>
+                                    <button
+                                        className="btn btn-info btn-sm"
+                                        onClick={() => viewPlan(item)}
+                                    >
+                                        <IconEye className='view-icon' />
+                                        <Tooltip anchorSelect=".view-icon" place="top">
+                                            View
+                                        </Tooltip>
+                                    </button>
+                                </div>
+                                <button
+                                    className="btn btn-success btn-sm"
+                                    onClick={() => console.log(`Submit for quote: ${item.id}`)}
+                                >
+                                    <IconWand className='quote-icon' />
+                                    <Tooltip anchorSelect=".quote-icon" place="top">
+                                        Get Quote
+                                    </Tooltip>
+                                </button>
+                            </div>
+                        </Reorder.Item>
+                    ))}
+                </AnimatePresence>
+            </Reorder.Group>
+
+            {/* Delete Confirmation Modal */}
+            <Modal isOpen={isDeleteModalOpen} onOpenChange={onDeleteOpenChange}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">Confirm Deletion</ModalHeader>
+                            <ModalBody>
+                                <p>
+                                    Are you sure you want to delete{' '}
+                                    <span className="font-semibold">{selectedItem?.title}</span>? This action cannot be undone.
+                                </p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="danger" variant="light" onPress={onClose}>
+                                    Cancel
+                                </Button>
+                                <Button color="primary" onPress={handleDelete}>
+                                    Confirm
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+
+            {/* View Plan Modal */}
+            <Modal isOpen={isViewModalOpen} onOpenChange={onViewOpenChange}>
+                <ModalContent>
+                    {(onClose) => (
+                        <>
+                            <ModalHeader className="flex flex-col gap-1">View Plan</ModalHeader>
+                            <ModalBody>
+                                <h2 className="text-lg font-semibold">{selectedItem?.title}</h2>
+                                <p className="mt-4 text-gray-700">{selectedItem?.content}</p>
+                            </ModalBody>
+                            <ModalFooter>
+                                <Button color="primary" onPress={onClose}>
+                                    Close
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
+
+        </div>
+    );
+}

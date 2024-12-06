@@ -2,7 +2,6 @@
 
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { Input, RadioGroup, Radio } from '@nextui-org/react';
-import Sidebar from './actionsBar';
 import questionsData from "@/data/questions-data.json";
 import { IconMail, IconWorldWww, IconUsers, IconId, IconPhone } from '@tabler/icons-react';
 
@@ -149,12 +148,7 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
     return (
         <form>
             <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
-                <div className="col-span-4 flex-1">
-                    <h2 className="text-lg font-semibold my-4 text-primary dark:text-slate-100">
-                        {content.section} {content.required && <span className="text-red-500">*</span>}
-                    </h2>
-                </div>
-                <div className="col-span-3 grid grid-cols-2 gap-4 items-center">
+                <div className="col-span-3 grid grid-cols-2 gap-4 items-center mt-8">
                     {content.fields.map((field, index) => (
                         <div key={index} className="relative">
                             {/* Render Input Fields */}
@@ -238,7 +232,6 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
                         </div>
                     ))}
                 </div>
-                <Sidebar hints={content.hints} whyDoWeAsk={content.why_do_we_ask} />
             </div>
         </form>
     );

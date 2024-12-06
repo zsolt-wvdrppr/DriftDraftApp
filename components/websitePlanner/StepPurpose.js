@@ -110,7 +110,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
           const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
           setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
           return;
-        }    
+        }
         try {
           const response = await fetch("/api/googleAi", {
             method: "POST",
@@ -155,13 +155,11 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
 
   return (
     <form ref={formRef}>
-      <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:my-10 p-4 rounded-xl max-w-screen-xl bg-content1">
-        <div className="col-span-4 flex-1">
+      <div className="flex flex-col-reverse md:grid md:grid-cols-4 gap-6 md:my-10 p-4 rounded-xl max-w-screen-xl bg-content1">
+        <div className="col-span-3 flex-1 space-y-4">
           <h2 className="text-lg font-semibold mb-4 text-primary dark:text-accentMint">
             {content.question}
           </h2>
-        </div>
-        <div className="col-span-3 flex-1 space-y-4">
           <div className='flex flex-col md:flex-row gap-4'>
             <Dropdown>
               <DropdownTrigger>

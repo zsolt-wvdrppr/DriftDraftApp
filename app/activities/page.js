@@ -1,8 +1,11 @@
-import React from 'react'
+import Activities from '@/components/Activities'
 
 const Page = () => {
   return (
-    <div>My activities</div>
+    <div>
+      <h1 className="text-2xl font-bold mb-4">My Activities</h1>
+    <Activities />
+    </div>
   )
 }
 

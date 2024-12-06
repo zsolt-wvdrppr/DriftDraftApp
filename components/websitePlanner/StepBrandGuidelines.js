@@ -84,7 +84,7 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
           const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
           setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
           return;
-        }    
+        }
         try {
           const response = await fetch("/api/googleAi", {
             method: "POST",
@@ -108,7 +108,7 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
 
           // Increment request count
           incrementCounter();
-          
+
         } catch (error) {
           console.error("Error fetching content:", error);
           setAiHints("An error occurred while generating content.");
@@ -124,13 +124,11 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
 
   return (
     <form ref={formRef}>
-      <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
-        <div className="col-span-4 flex-1">
+      <div className="flex flex-col-reverse md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
+        <div className="col-span-3 flex-1 space-y-4">
           <h2 className="text-lg font-semibold mb-4 text-primary dark:text-accentMint">
             {content.question} {content.required && <span className="text-red-500">*</span>}
           </h2>
-        </div>
-        <div className="col-span-3 flex-1 space-y-4">
           <Textarea
             label="Branding"
             placeholder={content.placeholder}

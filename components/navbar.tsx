@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from "react";
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -27,6 +30,9 @@ import {
 } from "@/components/icons";
 
 export const Navbar = () => {
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const searchInput = (
     <Input
       aria-label="Search"
@@ -49,7 +55,7 @@ export const Navbar = () => {
   );
 
   return (
-    <NextUINavbar maxWidth="xl" position="sticky">
+    <NextUINavbar isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen} maxWidth="xl" position="sticky">
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
@@ -102,7 +108,7 @@ export const Navbar = () => {
           <GithubIcon className="text-default-500" />
         </Link>
         <ThemeSwitch />
-        <NavbarMenuToggle />
+        <NavbarMenuToggle aria-label="Toggle navigation menu" />
       </NavbarContent>
 
       <NavbarMenu>
@@ -118,8 +124,9 @@ export const Navbar = () => {
                       ? "danger"
                       : "foreground"
                 }
-                href="#"
+                href={item.href}
                 size="lg"
+                onClick={() => setIsMenuOpen(false)}
               >
                 {item.label}
               </Link>
