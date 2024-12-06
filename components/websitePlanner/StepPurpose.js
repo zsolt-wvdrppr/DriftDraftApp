@@ -5,6 +5,7 @@ import questionsData from "@/data/questions-data.json";
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Textarea, Button, Input } from '@nextui-org/react';
 import Sidebar from './actionsBar';
 import ReactMarkdown from 'react-markdown';
+import useRateLimiter from '@/lib/useRateLimiter';
 
 const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
   const [selectedKeys, setSelectedKeys] = useState([]);
@@ -81,6 +82,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
   };
 
   const [aiHints, setAiHints] = useState(null);
+  const { incrementCounter, checkRateLimit } = useRateLimiter(`aiResponse_${stepNumber}`, 6, 3);
 
   useEffect(() => {
     // Ensure purpose is selected
@@ -88,17 +90,27 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
       setAiHints(null);
       return;
     }
-    
+
     const question = content.questionAddition2;
     const purpose = formData[0].purpose;
     const purposeDetails = formData[0].purposeDetails || '';
-
+    const serviceDescription = formData[0].serviceDescription;
+    const serviceDescriptionPrompt = `Some details about my service: ${serviceDescription}` || '';
     const isOtherPurpose = purpose && purpose.indexOf("other") !== -1 && purposeDetails && purposeDetails.length > 10;
 
-    if ((isOtherPurpose && purposeDetails) || !isOtherPurpose) {
-      const prompt = `I'm planning a website and need to answer to a question regarding what I offer. I need help with the following question: ${question}. Consider that the main purpose of the website is ${isOtherPurpose ? purposeDetails : purpose + purposeDetails}. Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
+    if (serviceDescription.length > 15) {
+      const prompt = `I'm planning a website and need to answer to a question regarding what I offer. I need help with the following question: ${question}. Consider that the main purpose of the website is ${isOtherPurpose ? purposeDetails : purpose + purposeDetails}. ${serviceDescriptionPrompt} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
 
       const fetchContent = async () => {
+        if (checkRateLimit()) {
+          console.log("rate limited");
+          const cachedResponse = localStorage.getItem(`aiResponse_${stepNumber}`);
+          const lastAiGeneratedHint = cachedResponse ? `--- *Last AI generated hint* ---\n${(cachedResponse)}` : "";
+          const limitExpires = new Date(parseInt(localStorage.getItem(`aiResponse_${stepNumber}_timestamp`)) + 3 * 60 * 60 * 1000);
+          const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
+          setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
+          return;
+        }    
         try {
           const response = await fetch("/api/googleAi", {
             method: "POST",
@@ -114,7 +126,15 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
           }
 
           const data = await response.json();
-          setAiHints(data.content || "No content generated.");
+          const aiContent = `**Service description:**\n ${data.content}` || content.hints;
+
+          // Cache response
+          localStorage.setItem(`aiResponse_${stepNumber}`, aiContent);
+          setAiHints(aiContent);
+
+          // Increment request count
+          incrementCounter();
+
         } catch (error) {
           console.error("Error fetching content:", error);
           setAiHints("An error occurred while generating content.");

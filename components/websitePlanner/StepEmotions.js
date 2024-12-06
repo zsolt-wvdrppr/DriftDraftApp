@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } f
 import questionsData from "@/data/questions-data.json";
 import { Textarea } from '@nextui-org/react';
 import Sidebar from './actionsBar';
+import useRateLimiter from '@/lib/useRateLimiter';
 
 const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
   const stepNumber = 7;
@@ -34,6 +35,7 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
   };
 
   const [aiHints, setAiHints] = useState('');
+  const { incrementCounter, checkRateLimit } = useRateLimiter(`aiResponse_${stepNumber}`, 3, 3);
 
   useEffect(() => {
     const question = content.question;
@@ -56,6 +58,15 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
       Please provide a framework or examples to help me articulate these emotions clearly, and explain why defining these emotions is critical to my website’s success. Keep it conversational and insightful, encouraging me to think deeply about the impact I want my website to have. Keep the response concise and informative, ensuring it's less than 800 characters.`;
 
       const fetchContent = async () => {
+        if (checkRateLimit()) {
+          console.log("rate limited");
+          const cachedResponse = localStorage.getItem(`aiResponse_${stepNumber}`);
+          const lastAiGeneratedHint = cachedResponse ? `--- *Last AI generated hint* ---\n${(cachedResponse)}` : "";
+          const limitExpires = new Date(parseInt(localStorage.getItem(`aiResponse_${stepNumber}_timestamp`)) + 3 * 60 * 60 * 1000);
+          const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
+          setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
+          return;
+        }    
         try {
           const response = await fetch("/api/googleAi", {
             method: "POST",
@@ -71,7 +82,15 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
           }
 
           const data = await response.json();
-          setAiHints(content.hints + "\n\n" + data.content || "No content generated.");
+          const aiContent = `${data.content}` || content.hints;
+
+          // Cache response
+          localStorage.setItem(`aiResponse_${stepNumber}`, aiContent);
+          setAiHints(aiContent);
+
+          // Increment request count
+          incrementCounter();
+
         } catch (error) {
           console.error("Error fetching content:", error);
           setAiHints("An error occurred while generating content.");

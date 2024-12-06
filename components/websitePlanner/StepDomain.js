@@ -1,11 +1,10 @@
 'use client';
 
 import React, { useRef, useState, forwardRef, useImperativeHandle, useEffect } from 'react';
-import { Input, Button } from '@nextui-org/react';
+import { Input } from '@nextui-org/react';
 import Sidebar from './actionsBar';
 import questionsData from "@/data/questions-data.json";
-import { IconXboxXFilled, IconRowInsertBottom, IconWorldWww } from '@tabler/icons-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import useRateLimiter from '@/lib/useRateLimiter';
 
 const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
   const stepNumber = 5;
@@ -36,6 +35,7 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
   };
 
   const [aiHints, setAiHints] = useState(null);
+  const { incrementCounter, checkRateLimit } = useRateLimiter(`aiResponse_${stepNumber}`, 3, 3);
 
   useEffect(() => {
     const question = content.question;
@@ -51,6 +51,15 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
 
       const prompt = `I'm planning a website and need some ideas for a domain. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. This is how I plan to attract my audience: ${marketing}. ${competitors}. About my unique selling points: ${usps}. So give me some ideas while strictly following guidelines and other SEO best practices and outline them how they're applied: ${content.hints}. The domain name must be SHORT and Concise so must not be longer than 15 characters. Keep it concise and to the point. The response must be less than 450 characters.`;
       const fetchContent = async () => {
+        if (checkRateLimit()) {
+          console.log("rate limited");
+          const cachedResponse = localStorage.getItem(`aiResponse_${stepNumber}`);
+          const lastAiGeneratedHint = cachedResponse ? `--- *Last AI generated hint* ---\n${(cachedResponse)}` : "";
+          const limitExpires = new Date(parseInt(localStorage.getItem(`aiResponse_${stepNumber}_timestamp`)) + 3 * 60 * 60 * 1000);
+          const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
+          setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
+          return;
+        }    
         try {
           const response = await fetch("/api/googleAi", {
             method: "POST",
@@ -66,7 +75,15 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
           }
 
           const data = await response.json();
-          setAiHints(data.content || "No content generated.");
+          const aiContent = `${data.content}` || content.hints;
+
+          // Cache response
+          localStorage.setItem(`aiResponse_${stepNumber}`, aiContent);
+          setAiHints(aiContent);
+
+          // Increment request count
+          incrementCounter();
+
         } catch (error) {
           console.error("Error fetching content:", error);
           setAiHints("An error occurred while generating content.");

@@ -4,7 +4,7 @@ import React, { useRef, useState, forwardRef, useImperativeHandle, useEffect } f
 import { Input, Button, Textarea } from '@nextui-org/react';
 import Sidebar from './actionsBar';
 import questionsData from "@/data/questions-data.json";
-import { IconXboxXFilled, IconRowInsertBottom, IconBulb, IconWorldWww } from '@tabler/icons-react';
+import { IconXboxXFilled, IconRowInsertBottom, IconWorldWww } from '@tabler/icons-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const StepInspirations = forwardRef(({ formData, setFormData, setError }, ref) => {

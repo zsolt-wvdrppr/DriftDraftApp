@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { Input, RadioGroup, Radio } from '@nextui-org/react';
 import Sidebar from './actionsBar';
 import questionsData from "@/data/questions-data.json";
-import { IconSignature, IconMail, IconWorldWww, IconUsers, IconId, IconPhone, IconBuilding } from '@tabler/icons-react';
+import { IconMail, IconWorldWww, IconUsers, IconId, IconPhone } from '@tabler/icons-react';
 
 const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) => {
     const stepNumber = 9;

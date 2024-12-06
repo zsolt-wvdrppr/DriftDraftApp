@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState, useRef, useDeferredValue, useImperativeHandle, forwardRef, use } from 'react';
 import questionsData from "@/data/questions-data.json";
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Textarea, Button } from '@nextui-org/react';
+import { Textarea } from '@nextui-org/react';
 import Sidebar from './actionsBar';
+import useRateLimiter from '@/lib/useRateLimiter';
 
 const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref) => {
   const stepNumber = 6;
@@ -34,6 +35,7 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
   };
 
   const [aiHints, setAiHints] = useState(null);
+  const { incrementCounter, checkRateLimit } = useRateLimiter(`aiResponse_${stepNumber}`, 3, 3);
 
   useEffect(() => {
     const question = content.question;
@@ -74,6 +76,15 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
       Focus on providing adaptable ideas that explain *why* specific elements are recommended, helping the brand resonate with its audience both emotionally and visually. Keep the response concise and informative, ensuring it's less than 800 characters.`;
 
       const fetchContent = async () => {
+        if (checkRateLimit()) {
+          console.log("rate limited");
+          const cachedResponse = localStorage.getItem(`aiResponse_${stepNumber}`);
+          const lastAiGeneratedHint = cachedResponse ? `--- *Last AI generated hint* ---\n${(cachedResponse)}` : "";
+          const limitExpires = new Date(parseInt(localStorage.getItem(`aiResponse_${stepNumber}_timestamp`)) + 3 * 60 * 60 * 1000);
+          const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
+          setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
+          return;
+        }    
         try {
           const response = await fetch("/api/googleAi", {
             method: "POST",
@@ -89,7 +100,15 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
           }
 
           const data = await response.json();
-          setAiHints(data.content || "No content generated.");
+          const aiContent = `${data.content}` || content.hints;
+
+          // Cache response
+          localStorage.setItem(`aiResponse_${stepNumber}`, aiContent);
+          setAiHints(aiContent);
+
+          // Increment request count
+          incrementCounter();
+          
         } catch (error) {
           console.error("Error fetching content:", error);
           setAiHints("An error occurred while generating content.");

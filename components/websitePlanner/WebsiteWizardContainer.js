@@ -89,7 +89,7 @@ export default function WebsiteWizardContainer() {
     }, []);
 
     const handleLogout = () => {
-        setIsLoggedIn(false);
+        setIsLoggedIn(false); // Mock logout
         localStorage.removeItem('formData');
         setFormData(initialFormData); // Reset to initial state
         router.push('/login');
@@ -264,7 +264,7 @@ export default function WebsiteWizardContainer() {
     }
 
     return (
-        <div className="wizard-container relative max-w-screen-xl w-full h-max px-4 md:py-4">
+        <div className="wizard-container relative max-w-screen-xl w-full h-max px-0 md:py-4">
             <ProgressBar currentStep={currentStep} totalSteps={steps.length} />
             {/* Dropdown for Navigation */}
             <div className='w-full flex justify-around'>

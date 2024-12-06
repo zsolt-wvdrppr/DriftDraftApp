@@ -40,6 +40,7 @@ const config: Config = {
         accentRed: '#E83151',
         neutralDark: '#2E0219',
         neutralCream: '#F0F3BD',
+        neutral: '#FFFCFF',
         neutralSnow: '#FFFCFF',
         navbarColor: 'rgba(254,254,254,0.8)',
         neutralGray: '#C9C5CB',
