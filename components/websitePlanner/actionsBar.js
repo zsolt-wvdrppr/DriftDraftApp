@@ -154,7 +154,7 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
 
   return (
     <motion.div
-      className="relative mt-8 md:mt-0 flex justify-between md:flex-col md:items-center md:justify-items-center gap-4"
+      className="relative mt-8 md:mt-0 flex justify-between md:justify-center md:flex-col md:items-center md:justify-items-center gap-4"
       initial={{ opacity: 1 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0 }}

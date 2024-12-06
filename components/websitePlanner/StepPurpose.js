@@ -98,7 +98,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
     const serviceDescriptionPrompt = `Some details about my service: ${serviceDescription}` || '';
     const isOtherPurpose = purpose && purpose.indexOf("other") !== -1 && purposeDetails && purposeDetails.length > 10;
 
-    if (serviceDescription.length > 15) {
+    if (serviceDescription?.length > 15) {
       const prompt = `I'm planning a website and need to answer to a question regarding what I offer. I need help with the following question: ${question}. Consider that the main purpose of the website is ${isOtherPurpose ? purposeDetails : purpose + purposeDetails}. ${serviceDescriptionPrompt} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
 
       const fetchContent = async () => {
@@ -155,7 +155,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
 
   return (
     <form ref={formRef}>
-      <div className="flex flex-col-reverse md:grid md:grid-cols-4 gap-6 md:my-10 p-4 rounded-xl max-w-screen-xl bg-content1">
+      <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:my-10 p-4 rounded-xl max-w-screen-xl bg-content1">
         <div className="col-span-3 flex-1 space-y-4">
           <h2 className="text-lg font-semibold mb-4 text-primary dark:text-accentMint">
             {content.question}
