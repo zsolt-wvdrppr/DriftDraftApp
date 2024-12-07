@@ -1,11 +1,14 @@
 'use client';
 
-import React, { useEffect, useState, useRef, useDeferredValue, useImperativeHandle, forwardRef } from 'react';
-import questionsData from "@/data/questions-data.json";
+import React, { useEffect, useState, useRef, useImperativeHandle, forwardRef } from 'react';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Textarea, Button, Input } from '@nextui-org/react';
-import Sidebar from './actionsBar';
 import ReactMarkdown from 'react-markdown';
+
+import questionsData from "@/data/questions-data.json";
 import useRateLimiter from '@/lib/useRateLimiter';
+import logger from '@/lib/logger';
+
+import Sidebar from './actionsBar';
 
 const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
   const [selectedKeys, setSelectedKeys] = useState([]);
@@ -29,30 +32,35 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      //console.log("selectedKeys", selectedKeys.currentKey);
+      //logger.info("selectedKeys", selectedKeys.currentKey);
       if (!formData[stepNumber]?.purpose) {
         setPurposeIsInvalid(true);
         setError("Please select a goal before proceeding.");
+
         return false;
       }
       if (isOtherSelected && (!formData[stepNumber]?.purposeDetails || formData[stepNumber].purposeDetails.length < 10)) {
         setError("Additional details are required. (10 characters minimum)");
         setDetailsIsInvalid(true);
+
         return false;
       }
       if (!formData[stepNumber]?.serviceDescription) {
         setError("Please provide a service description.");
         setServiceDescIsInvalid(true);
+
         return false;
       }
       if (formData[stepNumber].serviceDescription.length < 50) {
         setError("Please provide a more detailed service description. (50 characters minimum)");
         setServiceDescIsInvalid(true);
+
         return false;
       }
       setDetailsIsInvalid(false);
       setPurposeIsInvalid(false);
       setServiceDescIsInvalid(false);
+
       return true; // Validation passed
     },
   }));
@@ -67,6 +75,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
 
   const handleAdditionalDetailsChange = (e) => {
     const value = e.target.value;
+
     setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], purposeDetails: value } });
 
     // Provide immediate feedback for required field
@@ -75,6 +84,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
 
   const handleServiceDescriptionChange = (e) => {
     const value = e.target.value;
+
     setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], serviceDescription: value } });
 
     // Provide immediate feedback for required field
@@ -88,6 +98,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
     // Ensure purpose is selected
     if (!formData?.[stepNumber]?.purpose) {
       setAiHints(null);
+
       return;
     }
 
@@ -103,12 +114,14 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
 
       const fetchContent = async () => {
         if (checkRateLimit()) {
-          console.log("rate limited");
+          logger.info("rate limited");
           const cachedResponse = localStorage.getItem(`aiResponse_${stepNumber}`);
           const lastAiGeneratedHint = cachedResponse ? `--- *Last AI generated hint* ---\n${(cachedResponse)}` : "";
           const limitExpires = new Date(parseInt(localStorage.getItem(`aiResponse_${stepNumber}_timestamp`)) + 3 * 60 * 60 * 1000);
           const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
+
           setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
+
           return;
         }
         try {
@@ -122,6 +135,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
 
           if (!response.ok) {
             const errorData = await response.json();
+
             throw new Error(errorData.error || "An unknown error occurred.");
           }
 
@@ -136,7 +150,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
           incrementCounter();
 
         } catch (error) {
-          console.error("Error fetching content:", error);
+          logger.error("Error fetching content:", error);
           setAiHints("An error occurred while generating content.");
         }
       };
@@ -163,18 +177,18 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
           <div className='flex flex-col md:flex-row gap-4'>
             <Dropdown>
               <DropdownTrigger>
-                <Button variant="bordered" className="capitalize w-full" color={purposeIsInvalid ? "danger" : "default"}>
+                <Button className="capitalize w-full" color={purposeIsInvalid ? "danger" : "default"} variant="bordered">
                   {Array.from(selectedKeys).join(", ").replaceAll("_", " ") || content.placeholder[0]}{content.required && <span className="text-red-500 ml-[-6px]">*</span>}
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
-                aria-label="Single selection example"
-                variant="flat"
                 disallowEmptySelection
+                aria-label="Single selection example"
                 color=""
-                selectionMode="single"
-                selectedKeys={selectedKeys}
                 isRequired={content.required}
+                selectedKeys={selectedKeys}
+                selectionMode="single"
+                variant="flat"
                 onSelectionChange={handleSelectionChange}
               >
                 {content.options.map((option) => (
@@ -183,16 +197,16 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
               </DropdownMenu>
             </Dropdown>
             <Input
-              label="Additional Details"
-              placeholder={`${content.placeholder[1]} (${isOtherSelected ? "required" : "optional"})`}
-              value={formData?.[stepNumber]?.purposeDetails || ""}
-              isRequired={isOtherSelected}
-              onChange={handleAdditionalDetailsChange}
               classNames={{
                 label: "!text-primary dark:!text-accentMint",
                 input: "dark:!text-white",
                 inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border  ${detailsIsInvalid ? "!bg-red-50 border-danger" : ""}`,
               }}
+              isRequired={isOtherSelected}
+              label="Additional Details"
+              placeholder={`${content.placeholder[1]} (${isOtherSelected ? "required" : "optional"})`}
+              value={formData?.[stepNumber]?.purposeDetails || ""}
+              onChange={handleAdditionalDetailsChange}
             />
           </div>
           <div className="col-span-4 flex-1">
@@ -201,18 +215,18 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
             </h2>
           </div>
           <Textarea
-            label="Service Description"
-            placeholder={content.placeholder[2]}
-            minRows={4}
-            value={formData?.[stepNumber]?.serviceDescription || ""}
-            isRequired={true}
-            onChange={handleServiceDescriptionChange}
             classNames={{
               label: "!text-primary dark:!text-accentMint",
               input: "",
               inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${serviceDescIsInvalid ? "!bg-red-50 border-danger" : ""}`,
               base: "",
             }}
+            isRequired={true}
+            label="Service Description"
+            minRows={4}
+            placeholder={content.placeholder[2]}
+            value={formData?.[stepNumber]?.serviceDescription || ""}
+            onChange={handleServiceDescriptionChange}
           />
         </div>
         <Sidebar hints={aiHints} whyDoWeAsk={content.why_do_we_ask} />

@@ -16,6 +16,9 @@ import { Tooltip } from 'react-tooltip';
 import { toast } from 'sonner';
 import Cookies from 'js-cookie';
 
+import logger from '@/lib/logger';
+
+
 // Simulated data from Supabase
 const mockData = [
     { id: '1', title: 'Plan A', content: 'This is the content of Plan A.', createdAt: '2024-12-01', updatedAt: '2024-12-05' },
@@ -91,7 +94,7 @@ export default function UserActivities() {
                 </div>
             ), {
                 duration: Infinity,
-                onDismiss: (t) => {
+                onDismiss: () => {
                     toastRef.current = null;
                 }
             });
@@ -103,6 +106,7 @@ export default function UserActivities() {
     useEffect(() => {
         // Check if the toast has been dismissed
         const dismissed = Cookies.get('toastDismissed');
+
         if (dismissed) return;
 
         const timeout = setTimeout(() => {
@@ -122,22 +126,22 @@ export default function UserActivities() {
                 </button>
             </div>
             <Reorder.Group
+                axis="y"
+                className="space-y-2"
                 values={items}
                 onReorder={setItems}
-                className="space-y-2"
-                axis="y"
             >
                 <AnimatePresence>
                     {items.map(item => (
                         <Reorder.Item
                             key={item.id}
-                            value={item}
-                            className="bg-white dark:bg-content1 shadow-md p-4 rounded-md flex justify-between items-center"
-                            initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, x: 100 }}
-                            whileTap={{ scale: 0.95 }}
+                            className="bg-white dark:bg-content1 shadow-md p-4 rounded-md flex justify-between items-center"
                             drag={false}
+                            exit={{ opacity: 0, x: 100 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            value={item}
+                            whileTap={{ scale: 0.95 }}
                         >
                             <div className='select-none'>
                                 <h2 className="font-semibold">{item.title}</h2>
@@ -152,7 +156,7 @@ export default function UserActivities() {
                                 <div className='grid grid-cols-2 gap-3 md:flex md:gap-2'>
                                     <button
                                         className="btn btn-primary btn-sm"
-                                        onClick={() => console.log(`Edit item with ID: ${item.id}`)}
+                                        onClick={() => logger.info(`Edit item with ID: ${item.id}`)}
                                     >
                                         <IconEdit className='edit-icon' />
                                         <Tooltip anchorSelect=".edit-icon" place="top">
@@ -170,7 +174,7 @@ export default function UserActivities() {
                                     </button>
                                     <button
                                         className="btn btn-secondary btn-sm"
-                                        onClick={() => console.log(`Share item with ID: ${item.id}`)}
+                                        onClick={() => logger.info(`Share item with ID: ${item.id}`)}
                                     >
                                         <IconShare className='share-icon' />
                                         <Tooltip anchorSelect=".share-icon" place="top">
@@ -189,7 +193,7 @@ export default function UserActivities() {
                                 </div>
                                 <button
                                     className="btn btn-success btn-sm"
-                                    onClick={() => console.log(`Submit for quote: ${item.id}`)}
+                                    onClick={() => logger.info(`Submit for quote: ${item.id}`)}
                                 >
                                     <IconWand className='quote-icon' />
                                     <Tooltip anchorSelect=".quote-icon" place="top">

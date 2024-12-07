@@ -2,7 +2,8 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
-import { title, subtitle } from "@/components/primitives";
+
+import { title } from "@/components/primitives";
 
 const ServiceTitle = () => {
     const words = ["Website", "Website Blueprint", "Landing Page"];
@@ -12,6 +13,7 @@ const ServiceTitle = () => {
         const interval = setInterval(() => {
             setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length);
         }, 3000); // Change every 3 seconds
+
         return () => clearInterval(interval);
     }, []);
 
@@ -23,10 +25,10 @@ const ServiceTitle = () => {
             <AnimatePresence mode="wait">
                 <motion.span
                     key={words[currentWordIndex]}
-                    className={`${title({ color: "blue" })}`}
-                    initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
+                    className={`${title({ color: "blue" })}`}
                     exit={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.5 }}
                 >
                     {words[currentWordIndex]}&nbsp;

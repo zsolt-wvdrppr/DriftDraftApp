@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
+import logger from "@/lib/logger";
 
 const Logo = () => {
   const fillColour = "#05668d";
@@ -35,13 +36,14 @@ const Logo = () => {
     </svg>`;
 
     const dataUrl = `data:image/svg+xml;base64,${Buffer.from(svgString).toString('base64')}`;
+
     return (
       <Image
-        src={dataUrl}
         alt="Wavedropper Logo"
-        width={45}
-        height={45}
         className="block"
+        height={45}
+        src={dataUrl}
+        width={45}
       />
     );
 }
@@ -49,7 +51,7 @@ const Logo = () => {
 const CreatorLogo = () => {
   // Define the site credits
   const siteCredits = `
-%c
+
 ░██╗░░░░░░░██╗░█████╗░██╗░░░██╗███████╗██████╗░██████╗░░█████╗░██████╗░██████╗░███████╗██████╗░
 ░██║░░██╗░░██║██╔══██╗██║░░░██║██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔══██╗██╔════╝██╔══██╗
 ░╚██╗████╗██╔╝███████║╚██╗░██╔╝█████╗░░██║░░██║██████╔╝██║░░██║██████╔╝██████╔╝█████╗░░██████╔╝
@@ -70,20 +72,20 @@ font-weight: bold;
 
   // Log the credits to the console
   useEffect(() => {
-    console.log(siteCredits, style);
+    logger.credits(siteCredits, style);
   }, [siteCredits, style]);
 
   return (
     <Link
+      aria-label="Wavedropper.com"
+      className="flex items-center justify-center bg-darkL1 opacity-90 max-w-[220px] max-h-[50px] p-[5px] m-[5px] mx-auto"
       href="https://wavedropper.com"
       target="_blank"
-      className="flex items-center justify-center bg-darkL1 opacity-90 max-w-[220px] max-h-[50px] p-[5px] m-[5px] mx-auto"
-      aria-label="Wavedropper.com"
     >
       <Logo />
       <div className="flex flex-col items-start justify-center pl-4">
-        <p className="text-black text-xs m-0">Created by</p>
-        <p className="text-black text-sm m-0">Wavedropper</p>
+        <p className="text-neutralDark dark:text-slate-300 text-xs m-0">Created by</p>
+        <p className="text-neutralDark dark:text-slate-300 text-sm m-0">Wavedropper</p>
       </div>
     </Link>
   );

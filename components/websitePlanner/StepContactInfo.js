@@ -2,8 +2,10 @@
 
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import { Input, RadioGroup, Radio } from '@nextui-org/react';
-import questionsData from "@/data/questions-data.json";
 import { IconMail, IconWorldWww, IconUsers, IconId, IconPhone } from '@tabler/icons-react';
+
+import questionsData from "@/data/questions-data.json";
+import logger from '@/lib/logger';
 
 const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) => {
     const stepNumber = 9;
@@ -14,8 +16,10 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
         if (formData[stepNumber]) {
             return { ...formData[stepNumber] };
         }
+
         return content.fields.reduce((acc, field) => {
             acc[field.question.replace(/\s+/g, '').toLowerCase()] = '';
+
             return acc;
         }, {});
     });
@@ -25,7 +29,7 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
     // Initialize formData if not present
     /*useEffect(() => {
         if (!formData[stepNumber]) {
-            console.log("init formData", formData);
+            logger.info("init formData", formData);
             setFormData((prev) => ({
                 ...prev,
                 [stepNumber]: { ...formValues, isValid: false },
@@ -37,10 +41,12 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
     useImperativeHandle(ref, () => ({
         validateStep: () => {
             const isValid = validateForm();
+
             setFormData((prev) => ({
                 ...prev,
                 [stepNumber]: { ...formValues, isValid },
             }));
+
             return isValid;
         },
     }));
@@ -48,7 +54,8 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
     // Handle changes dynamically for all field types
     const handleChange = (field, value) => {
         const updatedValues = { ...formValues, [field]: value };
-        console.log("updatedValues", updatedValues);
+
+        logger.info("updatedValues", updatedValues);
         setFormValues(updatedValues);
 
         // Update formData
@@ -70,6 +77,7 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
         if (!fieldMeta) return;
 
         let error = '';
+
         if (fieldMeta.required && !value) {
             error = 'This field is required.';
         } else if (
@@ -99,9 +107,11 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
     // Validate the entire form
     const validateForm = () => {
         const errors = {};
+
         content.fields.forEach((field) => {
             const fieldKey = field.question.replace(/\s+/g, '').toLowerCase();
             const value = formValues[fieldKey];
+
             if (field.required && !value) {
                 errors[fieldKey] = 'This field is required.';
             } else if (
@@ -124,6 +134,7 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
         });
 
         setValidationErrors(errors);
+
         return Object.keys(errors).length === 0;
     };
 
@@ -142,6 +153,7 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
             (parts[0] !== 'www' && parts.length < 2)) return false;
 
         const domainPartPattern = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
+
         return parts.every(part => domainPartPattern.test(part));
     };
 
@@ -154,16 +166,19 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
                             {/* Render Input Fields */}
                             {field.type === 'text' && (
                                 <Input
-                                    label={field.question}
-                                    value={formValues[field.question.replace(/\s+/g, '').toLowerCase()]}
-                                    labelPlacement='outside'
                                     autoComplete={field.question.toLowerCase()}
-                                    onChange={(e) =>
-                                        handleChange(
-                                            field.question.replace(/\s+/g, '').toLowerCase(),
-                                            e.target.value
-                                        )
-                                    }
+                                    classNames={{
+                                        label: "!text-primary dark:!text-accentMint text-sm md:text-md",
+                                        inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${validationErrors[field.question.replace(/\s+/g, '').toLowerCase()]
+                                            ? 'border-danger'
+                                            : ''
+                                            }`,
+                                        base: "pt-4",
+                                        input: "",
+                                    }}
+                                    isRequired={field.required}
+                                    label={field.question}
+                                    labelPlacement='outside'
                                     startContent={
                                         field.question.toLowerCase().includes('email') ? <IconMail className='text-primary dark:text-accentMint' size={20} /> :
                                             field.question.toLowerCase().includes('phone') ? <IconPhone className='text-primary dark:text-accentMint' size={20} /> :
@@ -171,33 +186,19 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
                                                     field.question.toLowerCase().includes('name') ? <IconId className='text-primary dark:text-accentMint' size={20} /> :
                                                         field.question.toLowerCase().includes('employee') ? <IconUsers className='text-primary dark:text-accentMint' size={20} /> : ''
                                     }
-                                    isRequired={field.required}
-                                    classNames={{
-                                        label: "!text-primary dark:!text-accentMint text-sm md:text-md",
-                                        inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${validationErrors[field.question.replace(/\s+/g, '').toLowerCase()]
-                                            ? 'border-danger'
-                                            : ''
-                                            }`,
-                                        base: "pt-4",
-                                        input: "",
-                                    }}
-                                />
-                            )}
-
-                            {/* Render Number Fields */}
-                            {field.type === 'number' && (
-                                <Input
-                                    label={field.question}
-                                    type="number"
                                     value={formValues[field.question.replace(/\s+/g, '').toLowerCase()]}
-                                    labelPlacement='outside'
                                     onChange={(e) =>
                                         handleChange(
                                             field.question.replace(/\s+/g, '').toLowerCase(),
                                             e.target.value
                                         )
                                     }
-                                    startContent={<IconUsers className='text-primary dark:text-accentMint' size={20} />}
+                                />
+                            )}
+
+                            {/* Render Number Fields */}
+                            {field.type === 'number' && (
+                                <Input
                                     classNames={{
                                         label: "!text-primary dark:!text-accentMint text-sm md:text-md",
                                         inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${validationErrors[field.question.replace(/\s+/g, '').toLowerCase()]
@@ -207,20 +208,31 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
                                         base: "pt-4",
                                         input: "",
                                     }}
+                                    label={field.question}
+                                    labelPlacement='outside'
+                                    startContent={<IconUsers className='text-primary dark:text-accentMint' size={20} />}
+                                    type="number"
+                                    value={formValues[field.question.replace(/\s+/g, '').toLowerCase()]}
+                                    onChange={(e) =>
+                                        handleChange(
+                                            field.question.replace(/\s+/g, '').toLowerCase(),
+                                            e.target.value
+                                        )
+                                    }
                                 />
                             )}
 
                             {/* Render RadioGroup Fields */}
                             {field.type === 'select' && field.question === 'Are you a Start-Up?' && (
                                 <RadioGroup
-                                    label={field.question}
-                                    value={formValues['isStartup']}
-                                    onChange={(e) => handleChange('isStartup', e.target.value)}
-                                    orientation="horizontal"
-                                    color="secondary"
                                     classNames={{
                                         label: "!text-primary dark:!text-accentMint text-sm md:text-md",
                                     }}
+                                    color="secondary"
+                                    label={field.question}
+                                    orientation="horizontal"
+                                    value={formValues['isStartup']}
+                                    onChange={(e) => handleChange('isStartup', e.target.value)}
                                 >
                                     {field.options.map((option, idx) => (
                                         <Radio key={idx} value={option}>

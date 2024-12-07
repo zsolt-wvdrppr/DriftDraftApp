@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
-import questionsData from "@/data/questions-data.json";
 import { Textarea } from '@nextui-org/react';
-import Sidebar from './actionsBar';
+import logger from '@/lib/logger';
+import questionsData from "@/data/questions-data.json";
 import useRateLimiter from '@/lib/useRateLimiter';
+import Sidebar from './actionsBar';
 
 const StepAudience = ({ formData, setFormData, setError, ref }) => {
   const stepNumber = 1;
@@ -18,15 +19,18 @@ const StepAudience = ({ formData, setFormData, setError, ref }) => {
       if (!formData[stepNumber]?.audience) {
         setError("Additional details are required.");
         setAudiencelsIsInvalid(true);
+
         return false;
       }
       setAudiencelsIsInvalid(false);
+
       return true; // Validation passed
     },
   }));
 
   const handleTextareaChange = (e) => {
     const value = e.target.value;
+
     setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], audience: value } });
 
     // Provide immediate feedback for required field
@@ -48,12 +52,14 @@ const StepAudience = ({ formData, setFormData, setError, ref }) => {
       
       const fetchContent = async () => {
         if (checkRateLimit()) {
-          console.log("rate limited");
+          logger.info("rate limited");
           const cachedResponse = localStorage.getItem(`aiResponse_${stepNumber}`);
           const lastAiGeneratedHint = cachedResponse ? `--- *Last AI generated hint* ---\n${(cachedResponse)}` : "";
           const limitExpires = new Date(parseInt(localStorage.getItem(`aiResponse_${stepNumber}_timestamp`)) + 3 * 60 * 60 * 1000);
           const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
+
           setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
+
           return;
         }    
         try {
@@ -67,6 +73,7 @@ const StepAudience = ({ formData, setFormData, setError, ref }) => {
 
           if (!response.ok) {
             const errorData = await response.json();
+
             throw new Error(errorData.error || "An unknown error occurred.");
           }
 
@@ -80,14 +87,15 @@ const StepAudience = ({ formData, setFormData, setError, ref }) => {
           incrementCounter(); // Increment rate limit counter
 
         } catch (error) {
-          console.error("Error fetching content:", error);
+          logger.error("Error fetching content:", error);
           setAiHints("An error occurred while generating content.");
         }
       };
-      console.log("fetching content");
+
+      logger.info("fetching content");
       fetchContent();
     } else {
-      console.log("resetting hints");
+      logger.info("resetting hints");
       setAiHints(null);
     }
   }, []);
@@ -100,17 +108,17 @@ const StepAudience = ({ formData, setFormData, setError, ref }) => {
             {content.question} {content.required && <span className="text-red-500">*</span>}
           </h2>
           <Textarea
-            label="Target Audience"
-            placeholder={content.placeholder}
-            minRows={4}
-            value={formData?.[stepNumber]?.audience || ""}
-            isRequired={true}
-            onChange={handleTextareaChange}
             classNames={{
               label: "!text-primary dark:!text-accentMint",
               input: "",
               inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${audienceIsInvalid ? "!bg-red-50 border-danger" : ""}`,
             }}
+            isRequired={true}
+            label="Target Audience"
+            minRows={4}
+            placeholder={content.placeholder}
+            value={formData?.[stepNumber]?.audience || ""}
+            onChange={handleTextareaChange}
           />
         </div>
         <Sidebar hints={aiHints} whyDoWeAsk={content.why_do_we_ask} />

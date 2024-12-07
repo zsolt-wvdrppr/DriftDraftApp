@@ -9,21 +9,19 @@ import {
   NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
-} from "@nextui-org/navbar";
-import { Button } from "@nextui-org/button";
-import { Kbd } from "@nextui-org/kbd";
-import { Link } from "@nextui-org/link";
-import { Input } from "@nextui-org/input";
-import { link as linkStyles } from "@nextui-org/theme";
+} from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
+import { Kbd } from "@nextui-org/react";
+import { Link } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
+import { link as linkStyles } from "@nextui-org/react";
 import NextLink from "next/link";
 import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import {
-  TwitterIcon,
   GithubIcon,
-  DiscordIcon,
   HeartFilledIcon,
   SearchIcon,
   Logo,
@@ -55,7 +53,7 @@ export const Navbar = () => {
   );
 
   return (
-    <NextUINavbar isMenuOpen={isMenuOpen} onMenuOpenChange={setIsMenuOpen} maxWidth="xl" position="sticky">
+    <NextUINavbar isMenuOpen={isMenuOpen} maxWidth="xl" position="sticky" onMenuOpenChange={setIsMenuOpen}>
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
@@ -91,10 +89,10 @@ export const Navbar = () => {
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
         <NavbarItem className="hidden md:flex">
           <Button
-            isExternal={false}
             as={Link}
             className="text-sm font-normal text-default-600 bg-default-200"
             href={siteConfig.links.activities}
+            isExternal={false}
             startContent={<HeartFilledIcon className="text-danger" />}
             variant="flat"
           >

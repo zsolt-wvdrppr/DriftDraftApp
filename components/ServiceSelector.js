@@ -12,18 +12,18 @@ const ServiceSelector = () => {
     return (
         <div className="max-w-screen-sm w-screen">
             <h2 className="text-2xl font-semibold text-center p-8">Select a tool</h2>
-            <Accordion variant="splitted" className="w-full px-8">
+            <Accordion className="w-full px-8" variant="splitted">
                 <AccordionItem
                     key="anchor"
                     aria-label="Anchor"
                     indicator={<IconPencil />}
-                    title={<h3 className="font-semibold">Website Planner</h3>}
                     startContent={<IconRuler className="w-9 h-9 text-accentMint" />}
                     subtitle="Beta version available"
+                    title={<h3 className="font-semibold">Website Planner</h3>}
                 >
                     {"Create a strategic website blueprint. Our AI helps you to define your goals, target audience, content structure and more."}
                     <div className="flex justify-end py-2 pl-4 mt-4">
-                        <Link href="/website-planner" alt="Start planning">
+                        <Link alt="Start planning" href="/website-planner">
                             <Button color="primary" variant="shadow">Start Your Website Plan</Button>
                         </Link>
                     </div>
@@ -32,10 +32,10 @@ const ServiceSelector = () => {
                     key="moon"
                     aria-label="Moon"
                     indicator={<IconPencil />}
-                    title={<h3 className="font-semibold">Landing Page Writer</h3>}
+                    isDisabled={true}
                     startContent={<IconComet className="w-9 h-9 text-accentMint" />}
                     subtitle="Not yet available"
-                    isDisabled={true}
+                    title={<h3 className="font-semibold">Landing Page Writer</h3>}
                 >
                     {defaultContent}
                 </AccordionItem>
@@ -43,10 +43,10 @@ const ServiceSelector = () => {
                     key="sun"
                     aria-label="Sun"
                     indicator={<IconPencil />}
-                    title={<h3 className="font-semibold">Website Generator</h3>}
+                    isDisabled={true}
                     startContent={<IconSettingsBolt className="w-9 h-9 text-accentMint" />}
                     subtitle="Not yet available"
-                    isDisabled={true}
+                    title={<h3 className="font-semibold">Website Generator</h3>}
                 >
                     {defaultContent}
                 </AccordionItem>

@@ -1,18 +1,18 @@
 'use client';
 
 import React from 'react';
-import { Progress } from '@nextui-org/progress';
+import { Progress } from '@nextui-org/react';
 
 export default function ProgressBar({ currentStep, totalSteps }) {
     const progressPercentage = (currentStep / (totalSteps - 1)) * 100;
 
     return (
         <Progress
-            color="primary"
-            value={progressPercentage}
-            max={100}
             className="my-4"
+            color="primary"
             label={`${currentStep + 1} of ${totalSteps}`}
+            max={100}
+            value={progressPercentage}
         />
     );
 }

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 
+import logger from '@/lib/logger';
+
 const GoogleAiRequester = ({ prompt = "Say hi, and a joke" }) => {
   const [output, setOutput] = useState("Thinking...");
 
@@ -17,13 +19,15 @@ const GoogleAiRequester = ({ prompt = "Say hi, and a joke" }) => {
 
       if (!response.ok) {
         const errorData = await response.json();
+
         throw new Error(errorData.error || "An unknown error occurred.");
       }
 
       const data = await response.json();
+
       setOutput(data.content || "No content generated.");
     } catch (error) {
-      console.error("Error fetching content:", error);
+      logger.error("Error fetching content:", error);
       setOutput("An error occurred while generating content.");
     }
   };

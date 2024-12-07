@@ -2,6 +2,13 @@
 
 import React, { useState, useRef, useEffect, useTransition, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
+import { IconCheck, IconPlant, IconUsersGroup, IconMagnet, IconRocket, IconDiamond, IconWorldWww, IconWriting, IconMoodSmileBeam, IconBulb, IconAddressBook } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
+
+import logger from '@/lib/logger';
+
 import ProgressBar from './ProgressBar';
 import StepPurpose from './StepPurpose';
 import StepAudience from './StepAudience';
@@ -14,10 +21,6 @@ import StepEmotions from './StepEmotions';
 import StepInspirations from './StepInspirations';
 import StepContactInfo from './StepContactInfo';
 import Result from './Result';
-import { toast } from 'sonner';
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
-import { IconCheck, IconPlant, IconUsersGroup, IconMagnet, IconRocket, IconDiamond, IconWorldWww, IconWriting, IconMoodSmileBeam, IconBulb, IconAddressBook, IconFlagQuestion } from '@tabler/icons-react';
-import { useRouter } from 'next/navigation';
 
 // Step definitions
 const steps = [
@@ -38,17 +41,20 @@ export default function WebsiteWizardContainer() {
     // Initialize formData from localStorage if it exists
     const initialFormData = () => {
         const savedData = localStorage.getItem('formData');
+
         if (savedData) {
             try {
-                //console.log("restore from local storage");
+                //logger.info("restore from local storage");
                 return JSON.parse(savedData); // Restore from localStorage
             } catch (error) {
-                console.error("Error parsing saved formData:", error);
+                logger.error("Error parsing saved formData:", error);
                 localStorage.removeItem('formData'); // Clear invalid data
-                //console.log("empty local storage");
+
+                //logger.info("empty local storage");
                 return {}; // Fallback to empty object
             }
         }
+
         return {}; // Default empty state
     };
 
@@ -67,6 +73,7 @@ export default function WebsiteWizardContainer() {
     useEffect(() => {
         if (typeof window !== 'undefined') {
             const data = initialFormData();
+
             setFormData(data);
         }
     }, []);
@@ -82,6 +89,7 @@ export default function WebsiteWizardContainer() {
     useEffect(() => {
         const searchParams = new URLSearchParams(window.location.search);
         const step = searchParams.get('step') || undefined;
+
         //setIsLoggedIn(true);
         if (step) {
             setCurrentStep(parseInt(step, 10));
@@ -117,19 +125,22 @@ export default function WebsiteWizardContainer() {
             errorToast(error);
             setFormData((prev) => ({ ...prev, [currentStep]: { ...prev?.[currentStep], isValid: false } }));
             const timeout = setTimeout(() => setError(null), 5000);
+
             return () => clearTimeout(timeout);
         }
     }, [error]);
 
-    const updateUrlParams = (step) => {
+    const updateUrlParams = () => {
             //const newUrl = `${window.location.pathname}?step=${step}`;
             const newUrl = `${window.location.pathname}`;
+
             window.history.replaceState(null, '', newUrl);
     }
 
     // Validate the current step and move to the next one
     const goToNextStep = () => {
         const _isValid = handleValidation();
+
         if (_isValid) {
             if (currentStep < steps.length - 1) {
                 setCurrentStep((prev) => prev + 1);
@@ -144,6 +155,7 @@ export default function WebsiteWizardContainer() {
                 ...prev,
                 [currentStep]: { ...prev[currentStep], isValid: true },
             }));
+
             return true;
         } else {
             //setError('Please complete the current step before proceeding.');
@@ -161,12 +173,14 @@ export default function WebsiteWizardContainer() {
     const handleSubmit = async () => {
         if (!isLoggedIn) {
             const redirectPath = `/login?redirect=/website-planner?step=${currentStep}`;
+
             router.push(redirectPath);
+
             return;
         }
 
         // Submit the form if logged in
-        console.log('Form submitted successfully!');
+        logger.info('Form submitted successfully!');
         // Add submission logic here
 
 
@@ -175,6 +189,7 @@ export default function WebsiteWizardContainer() {
 
         if (!isCurrentStepValid) {
             setError(`Please complete the current step: ${steps[currentStep]?.label}`);
+
             return;
         }
 
@@ -184,8 +199,10 @@ export default function WebsiteWizardContainer() {
 
         for (const step of steps) {
             const stepId = step.id;
+
             if (!updatedFormData[stepId]?.isValid) {
                 const isValid = stepRef?.current?.validateStep();
+
                 updatedFormData[stepId] = {
                     ...updatedFormData[stepId],
                     isValid,
@@ -213,13 +230,13 @@ export default function WebsiteWizardContainer() {
                     if (response.ok) {
                         //alert('Form submitted successfully!');
                         localStorage.removeItem('formData'); // Clear cache on success
-                        //console.log('cache cleared');
+                        //logger.info('cache cleared');
                         setIsSubmitted(true); // Switch to results view
                     } else {
                         alert('Submission failed!');
                     }
                 } catch (error) {
-                    console.error('Error:', error);
+                    logger.error('Error:', error);
                     alert('An error occurred while submitting.');
                 }
             });
@@ -232,21 +249,25 @@ export default function WebsiteWizardContainer() {
 
     const handleSectionPicker = (index) => {
         const _isValid = handleValidation();
+
         if (_isValid) {
             if (index <= currentStep + 1) {
                 setCurrentStep(index);
                 updateUrlParams(index);
+
                 return;
             }
             if (formData && formData[index - 1]?.isValid) {
                 setCurrentStep(index);
                 updateUrlParams(index);
+
                 return;
             }
         } else {
             if (index < currentStep) {
                 setCurrentStep(index);
                 updateUrlParams(index);
+
                 return;
             }
         }
@@ -270,29 +291,29 @@ export default function WebsiteWizardContainer() {
             <div className='w-full flex justify-around'>
                 <Dropdown>
                     <DropdownTrigger>
-                        <Button variant="flat" className="capitalize w-full md:max-w-80" color="secondary">
+                        <Button className="capitalize w-full md:max-w-80" color="secondary" variant="flat">
                             <div className="grid grid-cols-4 items-center w-full">
                                 <span className="col-span-1 text-primary">{steps[currentStep]?.icon}</span>
                                 <span className="col-span-2 text-lg">{tabName}</span>
                                 <span className="col-span-1 justify-self-end">
-                                    {formData && formData[currentStep]?.isValid && <IconCheck size={20} className='text-secondaryPersianGreen' />}
+                                    {formData && formData[currentStep]?.isValid && <IconCheck className='text-secondaryPersianGreen' size={20} />}
                                 </span>
                             </div>
                         </Button>
                     </DropdownTrigger>
-                    <DropdownMenu aria-label="Step navigation" variant="flat" color="primary">
+                    <DropdownMenu aria-label="Step navigation" color="primary" variant="flat">
                         {steps.map((step, index) => (
                             <DropdownItem
                                 key={step.id}
-                                onClick={() => handleSectionPicker(index)}
                                 className={`flex flex-row hover:!text-neutralDark dark:hover:!text-slate-200 ${currentStep === index ? "bg-slate-200 dark:text-neutralDark font-bold" : ""}`}
                                 textValue={step.label}
+                                onClick={() => handleSectionPicker(index)}
                             >
                                 <div className="grid grid-cols-4 items-center w-full">
                                     <span className="col-span-1 text-primary">{step.icon}</span>
                                     <span className="col-span-2">{step.label}</span>
                                     <span className="col-span-1 justify-self-end">
-                                        {formData && formData[step.id]?.isValid && <IconCheck size={16} className='text-secondaryPersianGreen' />}
+                                        {formData && formData[step.id]?.isValid && <IconCheck className='text-secondaryPersianGreen' size={16} />}
                                     </span>
                                 </div>
                             </DropdownItem>
@@ -306,16 +327,16 @@ export default function WebsiteWizardContainer() {
                     {CurrentStepComponent ? (
                         <motion.div
                             key={currentStep}
-                            initial={{ opacity: 0, x: 50 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: -50 }}
+                            initial={{ opacity: 0, x: 50 }}
                             transition={{ duration: 0.5 }}
                         >
                             <CurrentStepComponent
                                 ref={stepRef}
                                 formData={formData}
-                                setFormData={setFormData}
                                 setError={setError}
+                                setFormData={setFormData}
                             />
                         </motion.div>
                     ) : (
@@ -326,31 +347,31 @@ export default function WebsiteWizardContainer() {
             {/* Navigation Buttons */}
             <div className="navigation-buttons w-full flex gap-2 justify-evenly py-8">
                 <Button
+                    className="w-32 border border-secondaryTeal font-bold tracking-wider disabled:bg-gray-300 disabled:border-none"
+                    color="secondary"
                     disabled={currentStep <= 0}
                     variant="shadow"
-                    color="secondary"
-                    className="w-32 border border-secondaryTeal font-bold tracking-wider disabled:bg-gray-300 disabled:border-none"
                     onClick={goToPreviousStep}
                 >
                     Previous
                 </Button>
                 {currentStep < steps.length - 1 ? (
                     <Button
-                        variant="shadow"
-                        color="secondary"
                         className="w-32 border border-secondaryTeal font-bold tracking-wider"
-                        onClick={goToNextStep}
+                        color="secondary"
                         disabled={isPending}
+                        variant="shadow"
+                        onClick={goToNextStep}
                     >
                         {isPending ? 'Loading...' : 'Next'}
                     </Button>
                 ) : (
                     <Button
-                        variant="shadow"
-                        color="secondary"
                         className="w-32 border border-secondaryTeal font-bold tracking-wider"
-                        onClick={handleSubmit}
+                        color="secondary"
                         disabled={isPending}
+                        variant="shadow"
+                        onClick={handleSubmit}
                     >
                         {isPending ? 'Submitting...' : 'Submit'}
                     </Button>

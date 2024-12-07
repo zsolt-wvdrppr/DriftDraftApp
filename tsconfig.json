@@ -25,6 +25,6 @@
       "@/components/*": ["components/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/page.js", "tailwind.config.js", "app/login/page.js", "app/layout.tsx", "app/signup/page.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/page.js", "tailwind.config.js", "app/login/page.js", "app/layout.tsx", "app/signup/page.js", "app/providers.js"],
   "exclude": ["node_modules"]
 }

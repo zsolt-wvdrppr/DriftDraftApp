@@ -16,6 +16,7 @@ export default function SignUp() {
     if (isSignedUp) {
       const searchParams = new URLSearchParams(window.location.search);
       const redirectUrl = searchParams.get("redirect") || "/activities";
+
       router.push(redirectUrl); // Redirect user after successful sign-up
     }
   };
@@ -32,7 +33,7 @@ export default function SignUp() {
         <p className="pb-4 text-left text-3xl font-semibold flex justify-between">
           Sign Up
           <span aria-label="emoji" className="ml-2" role="img">
-            <Icon icon="noto:chess-pawn" className="pointer-events-none text-2xl text-default-400"/>
+            <Icon className="pointer-events-none text-2xl text-default-400" icon="noto:chess-pawn"/>
           </span>
         </p>
         <form className="flex flex-col gap-4" onSubmit={handleSignUp}>

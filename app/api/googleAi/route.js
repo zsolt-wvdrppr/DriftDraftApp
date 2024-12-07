@@ -1,6 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
+import logger from '@/lib/logger';
+
 export async function POST(req) {
   try {
     // Parse the request body
@@ -21,7 +23,8 @@ export async function POST(req) {
     // Return the generated content
     return NextResponse.json({ content: result.response.text() });
   } catch (error) {
-    console.error("Error generating content:", error);
+    logger.error("Error generating content:", error);
+
     return NextResponse.json(
       { error: "Failed to generate content." },
       { status: 500 }

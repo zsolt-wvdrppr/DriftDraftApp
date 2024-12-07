@@ -2,9 +2,12 @@
 
 import React, { useRef, useState, forwardRef, useImperativeHandle, useEffect } from 'react';
 import { Input } from '@nextui-org/react';
-import Sidebar from './actionsBar';
+
 import questionsData from "@/data/questions-data.json";
 import useRateLimiter from '@/lib/useRateLimiter';
+import logger from '@/lib/logger';
+
+import Sidebar from './actionsBar';
 
 const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
   const stepNumber = 5;
@@ -19,15 +22,18 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
       if (!formData[stepNumber]?.domain) {
         setError("Additional details are required.");
         setAttractionlsIsInvalid(true);
+
         return false;
       }
       setAttractionlsIsInvalid(false);
+
       return true; // Validation passed
     },
   }));
 
   const handleTextareaChange = (e) => {
     const value = e.target.value;
+
     setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], domain: value } });
 
     // Provide immediate feedback for required field
@@ -52,12 +58,14 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
       const prompt = `I'm planning a website and need some ideas for a domain. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. This is how I plan to attract my audience: ${marketing}. ${competitors}. About my unique selling points: ${usps}. So give me some ideas while strictly following guidelines and other SEO best practices and outline them how they're applied: ${content.hints}. The domain name must be SHORT and Concise so must not be longer than 15 characters. Keep it concise and to the point. The response must be less than 450 characters.`;
       const fetchContent = async () => {
         if (checkRateLimit()) {
-          console.log("rate limited");
+          logger.info("rate limited");
           const cachedResponse = localStorage.getItem(`aiResponse_${stepNumber}`);
           const lastAiGeneratedHint = cachedResponse ? `--- *Last AI generated hint* ---\n${(cachedResponse)}` : "";
           const limitExpires = new Date(parseInt(localStorage.getItem(`aiResponse_${stepNumber}_timestamp`)) + 3 * 60 * 60 * 1000);
           const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
+
           setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
+
           return;
         }
         try {
@@ -71,6 +79,7 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
 
           if (!response.ok) {
             const errorData = await response.json();
+
             throw new Error(errorData.error || "An unknown error occurred.");
           }
 
@@ -85,14 +94,15 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
           incrementCounter();
 
         } catch (error) {
-          console.error("Error fetching content:", error);
+          logger.error("Error fetching content:", error);
           setAiHints("An error occurred while generating content.");
         }
       };
-      console.log("fetching content");
+
+      logger.info("fetching content");
       fetchContent();
     } else {
-      console.log("resetting hints");
+      logger.info("resetting hints");
       setAiHints(null);
     }
   }, []);
@@ -105,16 +115,16 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
             {content.question} {content.required && <span className="text-red-500">*</span>}
           </h2>
           <Input
-            label="Domain Name"
-            placeholder={content.placeholder}
-            value={formData?.[stepNumber]?.domain || ""}
-            isRequired={true}
-            onChange={handleTextareaChange}
             classNames={{
               label: "!text-primary dark:!text-accentMint",
               input: "",
               inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${attractionIsInvalid ? "!bg-red-50 border-danger" : ""}`,
             }}
+            isRequired={true}
+            label="Domain Name"
+            placeholder={content.placeholder}
+            value={formData?.[stepNumber]?.domain || ""}
+            onChange={handleTextareaChange}
           />
         </div>
         <Sidebar hints={aiHints} whyDoWeAsk={content.why_do_we_ask} />

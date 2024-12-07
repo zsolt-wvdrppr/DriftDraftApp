@@ -1,10 +1,13 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
-import questionsData from "@/data/questions-data.json";
 import { Textarea } from '@nextui-org/react';
-import Sidebar from './actionsBar';
+
+import questionsData from "@/data/questions-data.json";
 import useRateLimiter from '@/lib/useRateLimiter';
+import logger from '@/lib/logger';
+
+import Sidebar from './actionsBar';
 
 const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
   const stepNumber = 7;
@@ -19,15 +22,18 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
       if (!formData[stepNumber]?.emotions) {
         setError("Additional details are required.");
         setAttractionlsIsInvalid(true);
+
         return false;
       }
       setAttractionlsIsInvalid(false);
+
       return true; // Validation passed
     },
   }));
 
   const handleTextareaChange = (e) => {
     const value = e.target.value;
+
     setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], emotions: value } });
 
     // Provide immediate feedback for required field
@@ -49,7 +55,7 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
     const brandGuidelines = formData[5].brandGuidelines || '';
 
 
-    if (purpose && serviceDescription && serviceDescription && audience && usps) {
+    if (question && purpose && serviceDescription && serviceDescription && audience && usps) {
 
       const prompt = `Help me clarify the emotional experience I want visitors to have on my website. The purpose of the website is ${purpose}, with a focus on ${purposeDetails}. Here's what the website offers: ${serviceDescription}. My target audience is: ${audience}. I want the website to make a strong emotional connection with them. ${competitors}. My unique selling points include: ${usps}. Based on this context, please ask thought-provoking questions or provide examples to help me define the emotional tone of my website. For example:
       1. What feelings (e.g., excitement, calmness, trust, inspiration) would make my audience feel connected to the brand?
@@ -59,12 +65,14 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
 
       const fetchContent = async () => {
         if (checkRateLimit()) {
-          console.log("rate limited");
+          logger.info("rate limited");
           const cachedResponse = localStorage.getItem(`aiResponse_${stepNumber}`);
           const lastAiGeneratedHint = cachedResponse ? `--- *Last AI generated hint* ---\n${(cachedResponse)}` : "";
           const limitExpires = new Date(parseInt(localStorage.getItem(`aiResponse_${stepNumber}_timestamp`)) + 3 * 60 * 60 * 1000);
           const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
+
           setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
+
           return;
         }
         try {
@@ -78,6 +86,7 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
 
           if (!response.ok) {
             const errorData = await response.json();
+
             throw new Error(errorData.error || "An unknown error occurred.");
           }
 
@@ -92,14 +101,15 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
           incrementCounter();
 
         } catch (error) {
-          console.error("Error fetching content:", error);
+          logger.error("Error fetching content:", error);
           setAiHints("An error occurred while generating content.");
         }
       };
-      console.log("fetching content");
+
+      logger.info("fetching content");
       fetchContent();
     } else {
-      console.log("resetting hints");
+      logger.info("resetting hints");
       setAiHints(null);
     }
   }, []);
@@ -112,17 +122,17 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
             {content.question} {content.required && <span className="text-red-500">*</span>}
           </h2>
           <Textarea
-            label="Emotions and User Experience"
-            placeholder={content.placeholder}
-            minRows={4}
-            value={formData?.[stepNumber]?.emotions || ""}
-            isRequired={true}
-            onChange={handleTextareaChange}
             classNames={{
               label: "!text-primary dark:!text-accentMint",
               input: "",
               inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${attractionIsInvalid ? "!bg-red-50 border-danger" : ""}`,
             }}
+            isRequired={true}
+            label="Emotions and User Experience"
+            minRows={4}
+            placeholder={content.placeholder}
+            value={formData?.[stepNumber]?.emotions || ""}
+            onChange={handleTextareaChange}
           />
         </div>
         <Sidebar hints={`${aiHints}`} whyDoWeAsk={content.why_do_we_ask} />

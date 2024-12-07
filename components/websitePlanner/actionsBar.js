@@ -29,14 +29,14 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
           toast.dismiss(hintToastRef.current);
           hintToastRef.current = null;
         }
-        const newToastId = toast.custom((t) => (
+        const newToastId = toast.custom(() => (
           <div className='p-4 shadow-lg rounded-lg bg-white/90 max-h-[90vh] overflow-y-auto select-text'>
             <h4 className='font-bold'>Hint</h4>
             <ReactMarkdown className="whitespace-pre-wrap py-6">{hints}</ReactMarkdown>
             <div className='flex justify-between'>
               <Button
-                variant='bordered'
                 color='secondary'
+                variant='bordered'
                 onClick={() => {
                   navigator.clipboard.writeText(hints);
                   toast.success("Hints copied to clipboard", { duration: 2000, classNames: { toast: 'text-green-600' } });
@@ -46,8 +46,8 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
                 Copy
               </Button>
               <Button
-                variant='bordered'
                 color='danger'
+                variant='bordered'
                 onClick={() => {
                   // Ensure the correct ID is dismissed
                   toast.dismiss(newToastId);
@@ -61,7 +61,7 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
           </div>
         ), {
           duration: Infinity,
-          onDismiss: (t) => {
+          onDismiss: () => {
             hintToastRef.current = null;
           }
 
@@ -76,14 +76,14 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
           toast.dismiss(whyToastRef.current);
           whyToastRef.current = null;
         }
-        const newToastId = toast.custom((t) => (
+        const newToastId = toast.custom(() => (
           <div className='p-4 shadow-lg rounded-lg bg-white/90'>
             <h4 className='font-bold'>Reason we ask</h4>
             <ReactMarkdown className="whitespace-pre-wrap py-6">{whyDoWeAsk}</ReactMarkdown>
             <div className='flex justify-between'>
               <Button
-                variant='bordered'
                 color='danger'
+                variant='bordered'
                 onClick={() => {
                   toast.dismiss(newToastId);
                   whyToastRef.current = null;
@@ -96,10 +96,10 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
           </div>
         ), {
           duration: Infinity,
-          onDismiss: (t) => {
+          onDismiss: () => {
             whyToastRef.current = null;
           }
-         });
+        });
 
         whyToastRef.current = newToastId;
         onWhyClicked?.(); // Call the handler if provided
@@ -111,18 +111,18 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
   const WhyWeAskButton = () => {
     return (
       <Button
-        variant="none"
-        disabled={!whyDoWeAsk}
-        onClick={() => handleToast('why')}
         auto
         aria-label='Why do we ask?'
-        //isLoading={isPending}
         className={`select-none bottom-0 -left-4 z-10 md:bg-transparent md:shadow-md md:relative md:left-auto md:w-32 md:h-24 flex border-3 border-transparent ${!whyDoWeAsk ? 'cursor-not-allowed border border-gray-200 opacity-0' : ''}`}
+        disabled={!whyDoWeAsk}
+        //isLoading={isPending}
+        variant="none"
+        onClick={() => handleToast('why')}
       >
         {whyDoWeAsk && <span className={`hidden absolute bottom-0 md:block`}> Why We Ask </span>}
         <IconZoomQuestionFilled
-          size={28}
           className="dark:text-white text-accentMint"
+          size={28}
         />
       </Button>
     );
@@ -131,22 +131,21 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
   const HintButton = () => {
     return (
       <Button
-        variant="none"
-        //color={!hints ? '' : 'transparent'}
-        disabled={!hints}
-        onClick={() => handleToast('hint')}
         auto
         aria-label='Check hint'
-        //isLoading={isPending}
         className={`select-none md:w-32 md:h-24 break-words md:relative bottom-0 -right-4 z-10 md:bg-transparent md:shadow-md md:right-auto flex md:border-3 md:border-transparent
-                ${!hints ? 'cursor-not-allowed border-3 border-transparent border-gray-200 opacity-0' : ''}
-                ${newHintAvailable ? 'border-yellow-400' : ''}`}
+          ${!hints ? 'cursor-not-allowed border-3 border-transparent border-gray-200 opacity-0' : ''}
+          ${newHintAvailable ? 'border-yellow-400' : ''}`}
+        disabled={!hints}
+        //isLoading={isPending}
+        variant="none"
+        onClick={() => handleToast('hint')}
       >
         {hints && <span className={`hidden md:block absolute bottom-0 ${newHintAvailable ? 'animate-pulse font-bold' : ''}`}> Check Hint </span>}
-          <IconBulbFilled
-            size={32}
-            className={`top-2 left-1 ${newHintAvailable ? "text-yellow-400 animate-bounce" : "dark:text-white text-accentMint"}`}
-          />
+        <IconBulbFilled
+          className={`top-2 left-1 ${newHintAvailable ? "text-yellow-400 animate-bounce" : "dark:text-white text-accentMint"}`}
+          size={32}
+        />
       </Button>
     )
   }
@@ -154,9 +153,9 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
 
   return (
     <motion.div
+      animate={{ opacity: 1 }}
       className="relative mt-8 md:mt-0 flex justify-between md:justify-center md:flex-col md:items-center md:justify-items-center gap-4"
       initial={{ opacity: 1 }}
-      animate={{ opacity: 1 }}
       transition={{ duration: 0 }}
     >
       <HintButton />

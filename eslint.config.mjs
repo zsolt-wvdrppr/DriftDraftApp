@@ -66,7 +66,12 @@ export default [...fixupConfigRules(compat.extends(
     },
 
     rules: {
-        "no-console": "warn",
+        "no-console": [
+            "error",
+            {
+                allow: ["info", "warn", "error", "debug"],
+            },
+        ],
         "react/prop-types": "off",
         "react/jsx-uses-react": "off",
         "react/react-in-jsx-scope": "off",
@@ -119,13 +124,13 @@ export default [...fixupConfigRules(compat.extends(
             prev: "*",
             next: "return",
         }, {
-            blankLine: "always",
-            prev: ["const", "let", "var"],
-            next: "*",
-        }, {
-            blankLine: "any",
-            prev: ["const", "let", "var"],
-            next: ["const", "let", "var"],
-        }],
+                blankLine: "always",
+                prev: ["const", "let", "var"],
+                next: "*",
+            }, {
+                blankLine: "any",
+                prev: ["const", "let", "var"],
+                next: ["const", "let", "var"],
+            }],
     },
 }];

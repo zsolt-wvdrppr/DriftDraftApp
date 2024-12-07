@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 
+import logger from '@/lib/logger';
+
 export default function Error({
   error,
   reset,
@@ -11,8 +13,8 @@ export default function Error({
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
-    /* eslint-disable no-console */
-    console.error(error);
+     
+    logger.error(error);
   }, [error]);
 
   return (

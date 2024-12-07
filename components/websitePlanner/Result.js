@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useEffect, useState, useImperativeHandle, forwardRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Button } from '@nextui-org/react';
 import { IconCopy } from '@tabler/icons-react';
 import { toast } from 'sonner';
+
+import logger from '@/lib/logger';
 
 const Result = ({ formData }) => {
 
@@ -82,22 +84,25 @@ const Result = ({ formData }) => {
 
           if (!response.ok) {
             const errorData = await response.json();
+
             throw new Error(errorData.error || "An unknown error occurred.");
           }
 
           const data = await response.json();
+
           setAiResult(data.content || "No content generated.");
         } catch (error) {
-          console.error("Error fetching content:", error);
+          logger.error("Error fetching content:", error);
           setAiResult("An error occurred while generating content.");
         } finally {
           setIsLoading(false);
         }
       };
-      console.log("fetching content");
+
+      logger.info("fetching content");
       fetchContent();
     } else {
-      console.log("resetting hints");
+      logger.info("resetting hints");
       setAiResult(null);
       setIsLoading(false);
     }
@@ -107,6 +112,7 @@ const Result = ({ formData }) => {
     // Remove URL params after setting the step
     if (window.history.replaceState) {
       const newUrl = window.location.pathname;
+
       window.history.replaceState(null, '', newUrl);
     }
   }, []);
@@ -123,8 +129,8 @@ const Result = ({ formData }) => {
         <>
           <div className="w-full flex justify-end">
             <Button
-              variant="bordered"
               color="secondary"
+              variant="bordered"
               onClick={() => {
                 navigator.clipboard.writeText(aiResult);
                 toast.success('Texts copied to clipboard', {
@@ -142,8 +148,8 @@ const Result = ({ formData }) => {
           </ReactMarkdown>
           <div className="w-full flex justify-end">
             <Button
-              variant="bordered"
               color="secondary"
+              variant="bordered"
               onClick={() => {
                 navigator.clipboard.writeText(aiResult);
                 toast.success('Texts copied to clipboard', {

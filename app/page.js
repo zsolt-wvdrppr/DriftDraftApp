@@ -1,5 +1,5 @@
-import { Snippet } from "@nextui-org/snippet";
-import { title, subtitle } from "@/components/primitives";
+import { Snippet } from "@nextui-org/react";
+
 import ServiceSelector from "@/components/ServiceSelector";
 import ServiceTitle from "@/components/ServiceTitle";
 
@@ -12,7 +12,7 @@ export default function Home() {
       <ServiceSelector />
 
       <div className="mt-8">
-        <Snippet hideCopyButton hideSymbol variant="bordered" className="text-center">
+        <Snippet hideCopyButton hideSymbol className="text-center" variant="bordered">
           <span className="whitespace-break-spaces">
             Features Overview: Briefly outline benefits, such as “Guided Website Planning,” “Industry-Specific Recommendations,” and “Personalised Development Requirements.”
           </span>

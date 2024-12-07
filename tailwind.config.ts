@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 const colors = ("tailwindcss/colors");
 const { default: flattenColorPalette } = require("tailwindcss/lib/util/flattenColorPalette");
-import { nextui } from "@nextui-org/theme";
+import { nextui } from "@nextui-org/react";
 
 // Define the addVariablesForColors plugin
 function addVariablesForColors({ addBase, theme }: any) {
@@ -14,12 +14,13 @@ function addVariablesForColors({ addBase, theme }: any) {
     ":root": newVars,
   });
 }
+/** @type {import('tailwindcss').Config} */
 const config: Config = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   darkMode: "class",
   theme: {
@@ -28,7 +29,7 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-          "tech-bg": "url('/tech-bg.svg')",
+        "tech-bg": "url('/tech-bg.svg')",
       },
       colors: {
         primary: '#05668D',
@@ -48,7 +49,7 @@ const config: Config = {
           100: '#fffcff',
         }
       },
-      screens: { 
+      screens: {
         'mobile2': '414px',
         'mobile3': '468px',
         'mobile4': '512px',

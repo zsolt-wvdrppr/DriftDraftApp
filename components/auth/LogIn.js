@@ -14,10 +14,14 @@ export default function LogIn() {
     const isLoggedIn = true; // Replace with actual auth logic
 
     if (isLoggedIn) {
-      const searchParams = new URLSearchParams(window.location.search);
-      const redirectUrl = searchParams.get("redirect") || "/activities";
-      //console.log("Redirecting to:", redirectUrl);
-      router.push(redirectUrl); // Redirect user after successful login
+      const isBrowser = typeof window !== "undefined";
+
+      if (isBrowser) {
+        const searchParams = new URLSearchParams(window.location.search);
+        const redirectUrl = searchParams.get("redirect") || "/activities";
+
+        router.push(redirectUrl); // Redirect user after successful login
+      }
     }
   };
 
