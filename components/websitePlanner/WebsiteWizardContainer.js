@@ -51,7 +51,7 @@ export default function WebsiteWizardContainer() {
                 return JSON.parse(savedData); // Restore from localStorage
             } catch (error) {
                 logger.error("Error parsing saved formData:", error);
-                //localStorage.removeItem('formData'); // Clear invalid data
+                localStorage.removeItem('formData'); // Clear invalid data
 
                 //logger.info("empty local storage");
                 return {}; // Fallback to empty object
