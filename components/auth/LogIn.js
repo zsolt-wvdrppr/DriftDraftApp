@@ -6,8 +6,7 @@ import { Icon } from "@iconify-icon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import useSound from "use-sound";
-
-import { supabase } from "@/lib/supabaseClient";
+import { supabase, createOrUpdateProfile } from "@/lib/supabaseClient";
 import logger from "@/lib/logger";
 import { useAuth } from '@/lib/AuthContext';
 
