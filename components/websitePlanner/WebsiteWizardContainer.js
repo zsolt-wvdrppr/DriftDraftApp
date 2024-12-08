@@ -6,9 +6,7 @@ import { toast } from 'sonner';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 import { IconCheck, IconPlant, IconUsersGroup, IconMagnet, IconRocket, IconDiamond, IconWorldWww, IconWriting, IconMoodSmileBeam, IconBulb, IconAddressBook } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-
 import logger from '@/lib/logger';
-
 import ProgressBar from './ProgressBar';
 import StepPurpose from './StepPurpose';
 import StepAudience from './StepAudience';
@@ -21,6 +19,9 @@ import StepEmotions from './StepEmotions';
 import StepInspirations from './StepInspirations';
 import StepContactInfo from './StepContactInfo';
 import Result from './Result';
+import { useAuth } from '@/lib/AuthContext';
+import { createOrUpdateProfile } from "@/lib/supabaseClient";
+import { Spinner } from "@nextui-org/react";
 
 // Step definitions
 const steps = [
@@ -48,7 +49,7 @@ export default function WebsiteWizardContainer() {
                 return JSON.parse(savedData); // Restore from localStorage
             } catch (error) {
                 logger.error("Error parsing saved formData:", error);
-                localStorage.removeItem('formData'); // Clear invalid data
+                //localStorage.removeItem('formData'); // Clear invalid data
 
                 //logger.info("empty local storage");
                 return {}; // Fallback to empty object
@@ -59,7 +60,7 @@ export default function WebsiteWizardContainer() {
     };
 
     const [formData, setFormData] = useState(null); // Form data state
-
+    const { user, loading } = useAuth(); // Access user state
     const [isSubmitted, setIsSubmitted] = useState(false); // Track submission state
     const [currentStep, setCurrentStep] = useState(0);
     const [tabName, setTabName] = useState(steps[0]?.label || '');
@@ -68,7 +69,6 @@ export default function WebsiteWizardContainer() {
     const [isPending, startTransition] = useTransition();
 
     const router = useRouter();
-    const [isLoggedIn, setIsLoggedIn] = useState(true); // Mock auth flag
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -77,6 +77,12 @@ export default function WebsiteWizardContainer() {
             setFormData(data);
         }
     }, []);
+
+    useEffect(() => {
+        if (user) {
+            createOrUpdateProfile();
+        }
+    }, [user]);
 
     /*useEffect(() => {
         if (!isLoggedIn) {
@@ -90,18 +96,10 @@ export default function WebsiteWizardContainer() {
         const searchParams = new URLSearchParams(window.location.search);
         const step = searchParams.get('step') || undefined;
 
-        //setIsLoggedIn(true);
         if (step) {
             setCurrentStep(parseInt(step, 10));
         }
     }, []);
-
-    const handleLogout = () => {
-        setIsLoggedIn(false); // Mock logout
-        localStorage.removeItem('formData');
-        setFormData(initialFormData); // Reset to initial state
-        router.push('/login');
-    };
 
     // Save formData to localStorage whenever it changes
     useEffect(() => {
@@ -131,10 +129,10 @@ export default function WebsiteWizardContainer() {
     }, [error]);
 
     const updateUrlParams = () => {
-            //const newUrl = `${window.location.pathname}?step=${step}`;
-            const newUrl = `${window.location.pathname}`;
+        //const newUrl = `${window.location.pathname}?step=${step}`;
+        const newUrl = `${window.location.pathname}`;
 
-            window.history.replaceState(null, '', newUrl);
+        window.history.replaceState(null, '', newUrl);
     }
 
     // Validate the current step and move to the next one
@@ -171,11 +169,11 @@ export default function WebsiteWizardContainer() {
 
     // Handle form submission
     const handleSubmit = async () => {
-        if (!isLoggedIn) {
+        if (loading) return; // Wait until loading is complete
+
+        if (!user) {
             const redirectPath = `/login?redirect=/website-planner?step=${currentStep}`;
-
             router.push(redirectPath);
-
             return;
         }
 
@@ -282,6 +280,14 @@ export default function WebsiteWizardContainer() {
     if (isSubmitted) {
         // Render the Result component if the form is submitted
         return <Result formData={formData} />;
+    }
+
+    if (loading || isPending) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Spinner color="primary" size="large" />
+            </div>
+        );
     }
 
     return (

@@ -26,10 +26,13 @@ import {
   SearchIcon,
   Logo,
 } from "@/components/icons";
+import { useAuth } from "@/lib/AuthContext";
+import { IconPower } from "@tabler/icons-react";
 
 export const Navbar = () => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   const searchInput = (
     <Input
@@ -86,7 +89,7 @@ export const Navbar = () => {
         <NavbarItem className="hidden sm:flex gap-2">
           <ThemeSwitch />
         </NavbarItem>
-        <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+        {/*<NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>*/}
         <NavbarItem className="hidden md:flex">
           <Button
             as={Link}
@@ -98,6 +101,22 @@ export const Navbar = () => {
           >
             My Activities
           </Button>
+          <div className="actions flex items-center gap-4">
+            {user ? (
+              <>
+                <p className="text-primary dark:text-slate-200 text-xs px-4 flex flex-col"><span>Logged in:</span><span className="">{user.email}</span></p>
+                <Button as={Link} onClick={logout}>
+                  Logout
+                  <IconPower className="text-danger" />
+                </Button>
+              </>
+            ) : (
+              <Button as={Link} href="/login">
+                Login
+                <IconPower className="text-success" />
+              </Button>
+            )}
+          </div>
         </NavbarItem>
       </NavbarContent>
 
@@ -110,7 +129,7 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarMenu>
-        {searchInput}
+        {/*searchInput*/}
         <div className="mx-4 mt-2 flex flex-col gap-2">
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
@@ -130,6 +149,9 @@ export const Navbar = () => {
               </Link>
             </NavbarMenuItem>
           ))}
+          <Button as={Link} onClick={logout}>
+            Logout
+          </Button>
         </div>
       </NavbarMenu>
     </NextUINavbar>

@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
-import logger from '@/lib/logger';
+import logger from "@/lib/logger";
 
 export async function POST(req) {
   try {
@@ -10,23 +10,59 @@ export async function POST(req) {
 
     // Ensure prompt is provided
     if (!prompt) {
-      return NextResponse.json({ error: "Prompt is required." }, { status: 400 });
+      return NextResponse.json(
+        { error: "Prompt is required." },
+        { status: 400 }
+      );
     }
 
-    // Initialize Generative AI client with your secret key
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    // Check if API key exists
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      logger.error("GEMINI_API_KEY is not defined in the environment.");
+      return NextResponse.json(
+        { error: "Server configuration error. Missing API key." },
+        { status: 500 }
+      );
+    }
+
+    // Initialise the Google Generative AI client
+    const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // Generate content from the API
-    const result = await model.generateContent(prompt);
+    try {
+      // Generate content from the API
+      const result = await model.generateContent(prompt);
 
-    // Return the generated content
-    return NextResponse.json({ content: result.response.text() });
+      // Validate the response structure
+      if (!result || !result.response || typeof result.response.text !== "function") {
+        logger.error("Unexpected API response structure:", result);
+        return NextResponse.json(
+          { error: "Unexpected response from the Generative AI service." },
+          { status: 502 }
+        );
+      }
+
+      // Return the generated content
+      return NextResponse.json({ content: result.response.text() });
+    } catch (apiError) {
+      // Handle API-specific errors, such as rate limits or other service issues
+      logger.error("Google Generative AI API error:", apiError.message || apiError);
+
+      // Return a user-friendly error message
+      return NextResponse.json(
+        {
+          error: "The AI service is currently unavailable or exceeded usage limits. Please try again later.",
+        },
+        { status: 503 } // 503 Service Unavailable is appropriate for server-side issues
+      );
+    }
   } catch (error) {
-    logger.error("Error generating content:", error);
+    // Handle general server-side errors
+    logger.error("Unexpected server error:", error.message || error);
 
     return NextResponse.json(
-      { error: "Failed to generate content." },
+      { error: "An unexpected error occurred on the server." },
       { status: 500 }
     );
   }

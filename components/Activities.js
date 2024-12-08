@@ -15,8 +15,11 @@ import { IconEdit, IconTrash, IconEye, IconShare, IconWand, IconSquareRoundedXFi
 import { Tooltip } from 'react-tooltip';
 import { toast } from 'sonner';
 import Cookies from 'js-cookie';
-
+import { createOrUpdateProfile } from "@/lib/supabaseClient";
 import logger from '@/lib/logger';
+import { useAuth } from '@/lib/AuthContext';
+import { useRouter } from 'next/navigation';
+import {Spinner} from "@nextui-org/react";
 
 
 // Simulated data from Supabase
@@ -35,6 +38,25 @@ export default function UserActivities() {
     const { isOpen: isDeleteModalOpen, onOpen: onDeleteOpen, onOpenChange: onDeleteOpenChange } = useDisclosure();
     const { isOpen: isViewModalOpen, onOpen: onViewOpen, onOpenChange: onViewOpenChange } = useDisclosure();
     const [isPending, startTransition] = useTransition();
+    const { user, loading } = useAuth(); // Access user state
+    const router = useRouter();
+
+    useEffect(() => {
+        if (loading) return; // Wait until loading is complete
+    
+        if (!user) {
+          // Redirect if user is not logged in
+          const redirectPath = `/login?redirect=/activities`;
+          router.push(redirectPath);
+          return;
+        }
+    
+        const ensureProfileExists = async () => {
+          await createOrUpdateProfile();
+        };
+    
+        ensureProfileExists();
+      }, [loading, user, router]);
 
     const confirmDelete = (item) => {
         setSelectedItem(item);
@@ -115,6 +137,14 @@ export default function UserActivities() {
 
         return () => clearTimeout(timeout); // Cleanup on unmount
     }, []);
+
+    if (isPending || loading) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Spinner color="primary" />
+            </div>
+        );
+    }
 
     return (
         <div className="p-4 max-w-xl mx-auto overflow-hidden">
