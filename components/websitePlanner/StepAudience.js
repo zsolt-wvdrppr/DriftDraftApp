@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
 import { Textarea } from '@nextui-org/react';
+
 import logger from '@/lib/logger';
 import questionsData from "@/data/questions-data.json";
 import useRateLimiter from '@/lib/useRateLimiter';
+
 import Sidebar from './actionsBar';
 
 const StepAudience = ({ formData, setFormData, setError, ref }) => {

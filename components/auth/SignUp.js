@@ -4,10 +4,11 @@ import React, { useState, useEffect } from "react";
 import { Button, Input, Checkbox, Link } from "@nextui-org/react";
 import { Icon } from "@iconify-icon/react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
-import logger from "@/lib/logger";
 import { toast } from "sonner";
 import useSound from "use-sound";
+
+import { supabase } from "@/lib/supabaseClient";
+import logger from "@/lib/logger";
 import { useAuth } from "@/lib/AuthContext";
 
 export default function SignUp() {
@@ -103,8 +104,8 @@ export default function SignUp() {
             name="name"
             placeholder="Enter your full name"
             type="text"
-            variant="bordered"
             value={name}
+            variant="bordered"
             onChange={(e) => setName(e.target.value)}
           />
           <Input
@@ -113,8 +114,8 @@ export default function SignUp() {
             name="email"
             placeholder="Enter your email"
             type="email"
-            variant="bordered"
             value={email}
+            variant="bordered"
             onChange={(e) => setEmail(e.target.value)}
           />
           <Input
@@ -138,8 +139,8 @@ export default function SignUp() {
             name="password"
             placeholder="Enter your password"
             type={isVisible ? "text" : "password"}
-            variant="bordered"
             value={password}
+            variant="bordered"
             onChange={(e) => setPassword(e.target.value)}
           />
           <Checkbox isRequired className="py-4" size="sm">
@@ -152,7 +153,7 @@ export default function SignUp() {
               Privacy Policy
             </Link>
           </Checkbox>
-          <Button isLoading={loading} color="primary" type="submit" disabled={loading}>
+          <Button color="primary" disabled={loading} isLoading={loading} type="submit">
             {loading ? "Signing up..." : "Sign Up"}
           </Button>
         </form>

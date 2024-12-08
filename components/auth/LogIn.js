@@ -4,10 +4,11 @@ import React, { useState, useEffect } from "react";
 import { Button, Input, Checkbox, Link, Divider } from "@nextui-org/react";
 import { Icon } from "@iconify-icon/react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
-import logger from "@/lib/logger";
 import { toast } from "sonner";
 import useSound from "use-sound";
+
+import { supabase } from "@/lib/supabaseClient";
+import logger from "@/lib/logger";
 import { useAuth } from '@/lib/AuthContext';
 
 export default function LogIn() {
@@ -24,6 +25,7 @@ export default function LogIn() {
   useEffect(() => {
     // Update redirect from URL query parameters
     const urlRedirect = new URLSearchParams(window.location.search).get("redirect");
+
     if (urlRedirect) {
       setRedirect(urlRedirect); // Update redirect state
     }
@@ -63,6 +65,7 @@ export default function LogIn() {
           logger.error("Error logging in:", error.message);
           setError(error.message);
         }
+
         return; // Stop execution after error
       }
 
@@ -72,6 +75,7 @@ export default function LogIn() {
       // If login is successful
       await createOrUpdateProfile(); // Ensure the profile is created
       const redirectUrl = new URLSearchParams(window.location.search).get("redirect") || "/activities";
+
       router.push(redirectUrl);
     } catch (err) {
       setError("Something went wrong. Please try again later.");
@@ -125,8 +129,8 @@ export default function LogIn() {
             name="email"
             placeholder="Enter your email"
             type="email"
-            variant="bordered"
             value={email}
+            variant="bordered"
             onChange={(e) => setEmail(e.target.value)}
           />
           <Input
@@ -149,8 +153,8 @@ export default function LogIn() {
             name="password"
             placeholder="Enter your password"
             type={passwordVisible ? "text" : "password"}
-            variant="bordered"
             value={password}
+            variant="bordered"
             onChange={(e) => setPassword(e.target.value)}
           />
           <div className="flex items-center justify-between px-1 py-2">
@@ -161,7 +165,7 @@ export default function LogIn() {
               Forgot password?
             </Link>
           </div>
-          <Button color="primary" type="submit" disabled={loading}>
+          <Button color="primary" disabled={loading} type="submit">
             {loading ? "Logging in..." : "Log In"}
           </Button>
         </form>
@@ -172,10 +176,10 @@ export default function LogIn() {
         </div>
         <div className="flex flex-col gap-2">
           <Button
-            onClick={() => handleSocialLogin("google")}
+            disabled={loading}
             startContent={<Icon icon="flat-color-icons:google" width={24} />}
             variant="bordered"
-            disabled={loading}
+            onClick={() => handleSocialLogin("google")}
           >
             Continue with Google
           </Button>
@@ -185,7 +189,7 @@ export default function LogIn() {
               redirect
             )}`}
           >
-            <span className="text-center text-neutralSnow text-sm m-auto">Don't have an account? Sign Up</span>
+            <span className="text-center text-neutralSnow text-sm m-auto">{"Don't have an account? Sign Up"}</span>
           </Link>
       </div>
     </div>

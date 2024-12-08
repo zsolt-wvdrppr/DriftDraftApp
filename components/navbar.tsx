@@ -17,6 +17,7 @@ import { Input } from "@nextui-org/react";
 import { link as linkStyles } from "@nextui-org/react";
 import NextLink from "next/link";
 import clsx from "clsx";
+import { IconPower } from "@tabler/icons-react";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -27,7 +28,7 @@ import {
   Logo,
 } from "@/components/icons";
 import { useAuth } from "@/lib/AuthContext";
-import { IconPower } from "@tabler/icons-react";
+
 
 export const Navbar = () => {
 

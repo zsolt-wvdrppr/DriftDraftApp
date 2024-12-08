@@ -6,7 +6,12 @@ import { toast } from 'sonner';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 import { IconCheck, IconPlant, IconUsersGroup, IconMagnet, IconRocket, IconDiamond, IconWorldWww, IconWriting, IconMoodSmileBeam, IconBulb, IconAddressBook } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
+import { Spinner } from "@nextui-org/react";
+
 import logger from '@/lib/logger';
+import { useAuth } from '@/lib/AuthContext';
+import { createOrUpdateProfile } from "@/lib/supabaseClient";
+
 import ProgressBar from './ProgressBar';
 import StepPurpose from './StepPurpose';
 import StepAudience from './StepAudience';
@@ -19,9 +24,6 @@ import StepEmotions from './StepEmotions';
 import StepInspirations from './StepInspirations';
 import StepContactInfo from './StepContactInfo';
 import Result from './Result';
-import { useAuth } from '@/lib/AuthContext';
-import { createOrUpdateProfile } from "@/lib/supabaseClient";
-import { Spinner } from "@nextui-org/react";
 
 // Step definitions
 const steps = [
@@ -173,7 +175,9 @@ export default function WebsiteWizardContainer() {
 
         if (!user) {
             const redirectPath = `/login?redirect=/website-planner?step=${currentStep}`;
+
             router.push(redirectPath);
+
             return;
         }
 

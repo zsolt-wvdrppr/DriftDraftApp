@@ -15,11 +15,12 @@ import { IconEdit, IconTrash, IconEye, IconShare, IconWand, IconSquareRoundedXFi
 import { Tooltip } from 'react-tooltip';
 import { toast } from 'sonner';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
+import {Spinner} from "@nextui-org/react";
+
 import { createOrUpdateProfile } from "@/lib/supabaseClient";
 import logger from '@/lib/logger';
 import { useAuth } from '@/lib/AuthContext';
-import { useRouter } from 'next/navigation';
-import {Spinner} from "@nextui-org/react";
 
 
 // Simulated data from Supabase
@@ -47,7 +48,9 @@ export default function UserActivities() {
         if (!user) {
           // Redirect if user is not logged in
           const redirectPath = `/login?redirect=/activities`;
+
           router.push(redirectPath);
+
           return;
         }
     

@@ -18,8 +18,10 @@ export async function POST(req) {
 
     // Check if API key exists
     const apiKey = process.env.GEMINI_API_KEY;
+
     if (!apiKey) {
       logger.error("GEMINI_API_KEY is not defined in the environment.");
+
       return NextResponse.json(
         { error: "Server configuration error. Missing API key." },
         { status: 500 }
@@ -37,6 +39,7 @@ export async function POST(req) {
       // Validate the response structure
       if (!result || !result.response || typeof result.response.text !== "function") {
         logger.error("Unexpected API response structure:", result);
+
         return NextResponse.json(
           { error: "Unexpected response from the Generative AI service." },
           { status: 502 }
