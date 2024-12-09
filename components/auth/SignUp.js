@@ -5,7 +5,7 @@ import { Button, Input, Checkbox, Link } from "@nextui-org/react";
 import { Icon } from "@iconify-icon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import useSound from "use-sound";
+import { useToastSound } from "@/lib/useToastSound";
 
 import { supabase } from "@/lib/supabaseClient";
 import logger from "@/lib/logger";
@@ -23,7 +23,7 @@ export default function SignUp() {
   const router = useRouter();
 
   const toggleVisibility = () => setIsVisible(!isVisible);
-  const [play] = useSound("/sounds/notification-toast.mp3", { volume: 0.5 });
+  const play = useToastSound();
 
   useEffect(() => {
     // Redirect to activities page if user is already logged in

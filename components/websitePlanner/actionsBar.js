@@ -4,15 +4,18 @@ import ReactMarkdown from 'react-markdown';
 import { Button } from '@nextui-org/react';
 import { motion } from 'framer-motion';
 import { IconCopy, IconSquareRoundedX, IconBulbFilled, IconZoomQuestionFilled } from '@tabler/icons-react';
+import useToastSound from '@/lib/useToastSound';
 
 const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) => {
   const [isPending, startTransition] = useTransition();
   const [newHintAvailable, setNewHintAvailable] = useState(false);
+  const playSound = useToastSound();
 
   // Track changes to `hints` and show the indicator
   useEffect(() => {
     if (hints) {
       setNewHintAvailable(true);
+      playSound();
     }
   }, [hints]);
 

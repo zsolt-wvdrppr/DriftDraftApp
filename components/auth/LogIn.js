@@ -9,6 +9,7 @@ import useSound from "use-sound";
 import { supabase, createOrUpdateProfile } from "@/lib/supabaseClient";
 import logger from "@/lib/logger";
 import { useAuth } from '@/lib/AuthContext';
+import { useToastSound } from "@/lib/useToastSound";
 
 export default function LogIn() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function LogIn() {
   const [error, setError] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [redirect, setRedirect] = useState("/activities"); 
-  const [play] = useSound("/sounds/notification-toast.mp3", { volume: 0.5 });
+  const play = useToastSound();
   const { user } = useAuth(); // Access user state
 
   useEffect(() => {
