@@ -5,11 +5,13 @@ import { Button, Input, Checkbox, Link } from "@nextui-org/react";
 import { Icon } from "@iconify-icon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useToastSound } from "@/lib/useToastSound";
+
 
 import { supabase } from "@/lib/supabaseClient";
 import logger from "@/lib/logger";
 import { useAuth } from "@/lib/AuthContext";
+
+import { useToastSound } from "@/lib/useToastSound";
 
 export default function SignUp() {
   const [name, setName] = useState(""); // State for full name

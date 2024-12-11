@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from '@nextui-org/react';
-import NewHintNotifierIcon from './NewHintNotifierIcon';
+
 import useToastSound from '@/lib/hooks/useToastSound';
+
+import NewHintNotifierIcon from './NewHintNotifierIcon';
 
 const HintButton = ({
   hints,

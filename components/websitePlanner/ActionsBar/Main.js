@@ -3,11 +3,12 @@
 import React, { useTransition, useRef } from 'react';
 import { motion } from 'framer-motion';
 
+import logger from '@/lib/logger';
+
 import HintButton from './HintButton';
 import WhyWeAskButton from './WhyWeAskButton';
 import {showHintToast, showWhyWeAskToast} from './showToast';
 
-import logger from '@/lib/logger';
 
 const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) => {
   const [isPending, startTransition] = useTransition();
@@ -47,12 +48,12 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
       transition={{ duration: 0 }}
     >
       <HintButton
-        hints={hints}
         handleToast={() => handleToast('hint')}
+        hints={hints}
       />
       <WhyWeAskButton
-        whyDoWeAsk={whyDoWeAsk}
         handleToast={() => handleToast('why')}
+        whyDoWeAsk={whyDoWeAsk}
       />
 
     </motion.div>

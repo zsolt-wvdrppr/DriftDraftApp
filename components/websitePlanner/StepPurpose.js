@@ -7,9 +7,9 @@ import ReactMarkdown from 'react-markdown';
 import questionsData from "@/data/questions-data.json";
 import useRateLimiter from '@/lib/hooks/useRateLimiter';
 import logger from '@/lib/logger';
+import { fetchAIHint } from '@/lib/fetchAIHint';
 
 import Sidebar from './ActionsBar/Main';
-import { fetchAIHint } from '@/lib/fetchAIHint';
 
 const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
   const [selectedKeys, setSelectedKeys] = useState([]);

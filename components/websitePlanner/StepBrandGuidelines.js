@@ -6,9 +6,9 @@ import { Textarea } from '@nextui-org/react';
 import questionsData from "@/data/questions-data.json";
 import useRateLimiter from '@/lib/hooks/useRateLimiter';
 import logger from '@/lib/logger';
+import { fetchAIHint } from '@/lib/fetchAIHint';
 
 import Sidebar from './ActionsBar/Main';
-import { fetchAIHint } from '@/lib/fetchAIHint';
 
 const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref) => {
   const stepNumber = 6;

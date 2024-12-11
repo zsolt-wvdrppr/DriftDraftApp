@@ -1,30 +1,15 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useTransition, Suspense, use } from 'react';
+import React, { useState, useRef, useEffect, useTransition, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, usePopover } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 import { IconCheck, IconPlant, IconUsersGroup, IconMagnet, IconRocket, IconDiamond, IconWorldWww, IconWriting, IconMoodSmileBeam, IconBulb, IconAddressBook } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { Spinner } from "@nextui-org/react";
 
 import logger from '@/lib/logger';
 import { useAuth } from '@/lib/AuthContext';
-
-import ProgressBar from './ProgressBar';
-import StepPurpose from './StepPurpose';
-import StepAudience from './StepAudience';
-import StepMarketing from './StepMarketing';
-import StepCompetitors from './StepCompetitors';
-import StepUSPs from './StepUSPs';
-import StepDomain from './StepDomain';
-import StepBrandGuidelines from './StepBrandGuidelines';
-import StepEmotions from './StepEmotions';
-import StepInspirations from './StepInspirations';
-import StepContactInfo from './StepContactInfo';
-import Result from './Result';
-
-import { PreviousButton, NextButton, SubmitButton } from './layout/NavigationButtons';
 import {
     updateUrlParams,
     handleValidation,
@@ -38,6 +23,20 @@ import { useProfileUpdater } from '@/lib/hooks/useProfileUpdater';
 import { useRestoreStep } from '@/lib/hooks/useRestoreStep';
 import { useSaveFormData } from '@/lib/hooks/useSaveFormData';
 import { useUpdateTabName } from '@/lib/hooks/useUpdateTabName';
+
+import ProgressBar from './ProgressBar';
+import StepPurpose from './StepPurpose';
+import StepAudience from './StepAudience';
+import StepMarketing from './StepMarketing';
+import StepCompetitors from './StepCompetitors';
+import StepUSPs from './StepUSPs';
+import StepDomain from './StepDomain';
+import StepBrandGuidelines from './StepBrandGuidelines';
+import StepEmotions from './StepEmotions';
+import StepInspirations from './StepInspirations';
+import StepContactInfo from './StepContactInfo';
+import Result from './Result';
+import { PreviousButton, NextButton, SubmitButton } from './layout/NavigationButtons';
 
 // Step definitions
 const steps = [
