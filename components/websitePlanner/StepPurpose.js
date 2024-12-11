@@ -113,7 +113,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
     if (serviceDescriptionPrompt && serviceDescription?.length > 15 && purpose && question) {
       const prompt = `I'm planning a website and need to answer to a question regarding what I offer. I need help with the following question: ${question}. Consider that the main purpose of the website is ${isOtherPurpose ? purposeDetails : purpose + purposeDetails}. ${serviceDescriptionPrompt} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
 
-       const handleFetchHint = async () => {
+      const handleFetchHint = async () => {
         await fetchAIHint({
           stepNumber,
           prompt,
@@ -122,16 +122,16 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
           logger,
           incrementCounter,
           setAiHints,
+          delay: 5000,
         });
       };
-      
 
-      // Debounce mechanism
-      const debounceTimer = setTimeout(() => {
-        handleFetchHint();
-      }, 5000); // Wait 500ms before sending the request
 
-      return () => clearTimeout(debounceTimer); // Cleanup the timeout on dependency change
+
+      handleFetchHint();
+
+
+      return; // Cleanup the timeout on dependency change
     } else {
       setAiHints(null);
     }
