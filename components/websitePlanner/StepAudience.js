@@ -5,9 +5,9 @@ import { Textarea } from '@nextui-org/react';
 
 import logger from '@/lib/logger';
 import questionsData from "@/data/questions-data.json";
-import useRateLimiter from '@/lib/useRateLimiter';
+import useRateLimiter from '@/lib/hooks/useRateLimiter';
 
-import Sidebar from './actionsBar';
+import Sidebar from './ActionsBar/Main';
 
 const StepAudience = ({ formData, setFormData, setError, ref }) => {
   const stepNumber = 1;

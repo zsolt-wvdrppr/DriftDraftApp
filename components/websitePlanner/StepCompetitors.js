@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';
 
-import Sidebar from './actionsBar';
+import Sidebar from './ActionsBar/Main';
 
 const StepCompetitors = forwardRef(({ formData, setFormData, setError }, ref) => {
   const stepNumber = 3;

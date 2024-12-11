@@ -5,10 +5,10 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Textarea, Button
 import ReactMarkdown from 'react-markdown';
 
 import questionsData from "@/data/questions-data.json";
-import useRateLimiter from '@/lib/useRateLimiter';
+import useRateLimiter from '@/lib/hooks/useRateLimiter';
 import logger from '@/lib/logger';
 
-import Sidebar from './actionsBar';
+import Sidebar from './ActionsBar/Main';
 
 const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
   const [selectedKeys, setSelectedKeys] = useState([]);

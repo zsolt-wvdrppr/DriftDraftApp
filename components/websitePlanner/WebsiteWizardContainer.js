@@ -1,16 +1,15 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useTransition, Suspense } from 'react';
+import React, { useState, useRef, useEffect, useTransition, Suspense, use } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, usePopover } from "@nextui-org/react";
 import { IconCheck, IconPlant, IconUsersGroup, IconMagnet, IconRocket, IconDiamond, IconWorldWww, IconWriting, IconMoodSmileBeam, IconBulb, IconAddressBook } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { Spinner } from "@nextui-org/react";
 
 import logger from '@/lib/logger';
 import { useAuth } from '@/lib/AuthContext';
-import { createOrUpdateProfile } from "@/lib/supabaseClient";
 
 import ProgressBar from './ProgressBar';
 import StepPurpose from './StepPurpose';
@@ -24,6 +23,21 @@ import StepEmotions from './StepEmotions';
 import StepInspirations from './StepInspirations';
 import StepContactInfo from './StepContactInfo';
 import Result from './Result';
+
+import { PreviousButton, NextButton, SubmitButton } from './layout/NavigationButtons';
+import {
+    updateUrlParams,
+    handleValidation,
+    goToNextStep,
+    goToPreviousStep,
+    handleSubmit,
+    handleSectionPicker
+} from '@/lib/websitePlannerFormNavigation';
+import { useInitialiseFormData } from '@/lib/hooks/useInitialiseFormData';
+import { useProfileUpdater } from '@/lib/hooks/useProfileUpdater';
+import { useRestoreStep } from '@/lib/hooks/useRestoreStep';
+import { useSaveFormData } from '@/lib/hooks/useSaveFormData';
+import { useUpdateTabName } from '@/lib/hooks/useUpdateTabName';
 
 // Step definitions
 const steps = [
@@ -41,27 +55,6 @@ const steps = [
 
 export default function WebsiteWizardContainer() {
 
-    // Initialize formData from localStorage if it exists
-    const initialFormData = () => {
-        const savedData = localStorage.getItem('formData');
-
-        if (savedData) {
-            try {
-                //logger.info("restore from local storage");
-                return JSON.parse(savedData); // Restore from localStorage
-            } catch (error) {
-                logger.error("Error parsing saved formData:", error);
-                if (process.env.NODE_ENV !== "production") {
-                    localStorage.removeItem('formData'); // Clear invalid data
-                }
-                //logger.info("empty local storage");
-                return {}; // Fallback to empty object
-            }
-        }
-
-        return {}; // Default empty state
-    };
-
     const [formData, setFormData] = useState(null); // Form data state
     const { user, loading } = useAuth(); // Access user state
     const [isSubmitted, setIsSubmitted] = useState(false); // Track submission state
@@ -73,48 +66,11 @@ export default function WebsiteWizardContainer() {
 
     const router = useRouter();
 
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const data = initialFormData();
-
-            setFormData(data);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (user) {
-            createOrUpdateProfile();
-        }
-    }, [user]);
-
-    /*useEffect(() => {
-        if (!isLoggedIn) {
-            const redirectUrl = `/login?redirect=/website-planner?step=${currentStep}`;
-            router.push(redirectUrl);
-        }
-    }, [isLoggedIn, currentStep]);*/
-
-    // Handle navigation and restore currentStep from query params
-    useEffect(() => {
-        const searchParams = new URLSearchParams(window.location.search);
-        const step = searchParams.get('step') || undefined;
-
-        if (step) {
-            setCurrentStep(parseInt(step, 10));
-        }
-    }, []);
-
-    // Save formData to localStorage whenever it changes
-    useEffect(() => {
-        if (!formData) return;
-        localStorage.setItem('formData', JSON.stringify(formData));
-    }, [formData]);
-
-    // Dynamically update tabName based on the current step
-    useEffect(() => {
-        setTabName(steps[currentStep]?.label || '');
-        toast.dismiss();
-    }, [currentStep]);
+    useInitialiseFormData(setFormData, logger);
+    useProfileUpdater(user);
+    useRestoreStep(setCurrentStep);
+    useSaveFormData(formData);
+    useUpdateTabName(currentStep, steps, setTabName);
 
     const errorToast = (message) => {
         toast.error(message, { duration: 5000, closeButton: true, classNames: { toast: "text-danger" } });
@@ -131,156 +87,63 @@ export default function WebsiteWizardContainer() {
         }
     }, [error]);
 
-    const updateUrlParams = () => {
-        //const newUrl = `${window.location.pathname}?step=${step}`;
-        const newUrl = `${window.location.pathname}`;
-
-        window.history.replaceState(null, '', newUrl);
-    }
-
     // Validate the current step and move to the next one
-    const goToNextStep = () => {
-        const _isValid = handleValidation();
-
-        if (_isValid) {
-            if (currentStep < steps.length - 1) {
-                setCurrentStep((prev) => prev + 1);
-                updateUrlParams(currentStep + 1);
-            }
-        }
-    };
-
-    const handleValidation = () => {
-        if (stepRef.current?.validateStep()) {
-            setFormData((prev) => ({
-                ...prev,
-                [currentStep]: { ...prev[currentStep], isValid: true },
-            }));
-
-            return true;
-        } else {
-            //setError('Please complete the current step before proceeding.');
-            return false;
-        }
+    const handleNext = () => {
+        goToNextStep(
+            currentStep,
+            steps,
+            validateStep,
+            stepRef,
+            formData,
+            setFormData,
+            setCurrentStep,
+            updateUrlParams
+        );
     };
 
     // Navigate to the previous step
-    const goToPreviousStep = () => {
-        if (currentStep > 0) setCurrentStep((prev) => prev - 1);
-        updateUrlParams(currentStep - 1);
+    const handlePrevious = () => {
+        goToPreviousStep(currentStep, setCurrentStep, updateUrlParams);
     };
+
 
     // Handle form submission
-    const handleSubmit = async () => {
-        if (loading) return; // Wait until loading is complete
-
-        if (!user) {
-            const redirectPath = `/login?redirect=/website-planner?step=${currentStep}`;
-
-            router.push(redirectPath);
-
-            return;
-        }
-
-        // Submit the form if logged in
-        logger.info('Form submitted successfully!');
-        // Add submission logic here
-
-
-        // Validate the current step first
-        const isCurrentStepValid = stepRef?.current?.validateStep();
-
-        if (!isCurrentStepValid) {
-            setError(`Please complete the current step: ${steps[currentStep]?.label}`);
-
-            return;
-        }
-
-        // Validate all steps in formData
-        const updatedFormData = { ...formData };
-        let allStepsValid = true;
-
-        for (const step of steps) {
-            const stepId = step.id;
-
-            if (!updatedFormData[stepId]?.isValid) {
-                const isValid = stepRef?.current?.validateStep();
-
-                updatedFormData[stepId] = {
-                    ...updatedFormData[stepId],
-                    isValid,
-                };
-
-                if (!isValid) {
-                    allStepsValid = false;
-                }
-            }
-        }
-
-        // Update formData state
-        setFormData(updatedFormData);
-
-        // If all steps are valid, proceed with submission
-        if (allStepsValid) {
-            startTransition(async () => {
-                try {
-                    const response = await fetch('/api/submit', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(updatedFormData),
-                    });
-
-                    if (response.ok) {
-                        //alert('Form submitted successfully!');
-                        localStorage.removeItem('formData'); // Clear cache on success
-                        //logger.info('cache cleared');
-                        setIsSubmitted(true); // Switch to results view
-                    } else {
-                        alert('Submission failed!');
-                    }
-                } catch (error) {
-                    logger.error('Error:', error);
-                    alert('An error occurred while submitting.');
-                }
-            });
-        } else {
-            setError(`Please complete all steps before submitting.`);
-        }
+    const handleFormSubmit = () => {
+        handleSubmit(
+            loading,
+            user,
+            router,
+            currentStep,
+            steps,
+            stepRef,
+            formData,
+            setFormData,
+            setError,
+            setIsSubmitted,
+            logger,
+            startTransition
+        );
     };
+
 
     const CurrentStepComponent = steps[currentStep]?.component;
 
-    const handleSectionPicker = (index) => {
-        const _isValid = handleValidation();
+    const handlePicker = (index) => {
+        handleSectionPicker(
+            index,
+            currentStep,
+            validateStep,
+            formData,
+            setCurrentStep,
+            updateUrlParams,
+            setError
+        );
+    };
 
-        if (_isValid) {
-            if (index <= currentStep + 1) {
-                setCurrentStep(index);
-                updateUrlParams(index);
-
-                return;
-            }
-            if (formData && formData[index - 1]?.isValid) {
-                setCurrentStep(index);
-                updateUrlParams(index);
-
-                return;
-            }
-        } else {
-            if (index < currentStep) {
-                setCurrentStep(index);
-                updateUrlParams(index);
-
-                return;
-            }
-        }
-        const errorMsg = `Don't jump ahead! Please navigate to the next question.`;
-
-        if (index > currentStep + 1) {
-            setError(errorMsg);
-        }
-        //setCurrentStep(index);
-    }
+    const validateStep = () => {
+        return handleValidation(stepRef, currentStep, formData, setFormData);
+      };
+    
 
     if (isSubmitted) {
         // Render the Result component if the form is submitted
@@ -318,7 +181,7 @@ export default function WebsiteWizardContainer() {
                                 key={step.id}
                                 className={`flex flex-row hover:!text-neutralDark dark:hover:!text-slate-200 ${currentStep === index ? "bg-slate-200 dark:text-neutralDark font-bold" : ""}`}
                                 textValue={step.label}
-                                onClick={() => handleSectionPicker(index)}
+                                onClick={() => handlePicker(index)}
                             >
                                 <div className="grid grid-cols-4 items-center w-full">
                                     <span className="col-span-1 text-primary">{step.icon}</span>
@@ -357,35 +220,20 @@ export default function WebsiteWizardContainer() {
             </Suspense>
             {/* Navigation Buttons */}
             <div className="navigation-buttons w-full flex gap-2 justify-evenly py-8">
-                <Button
-                    className="w-32 border border-secondaryTeal font-bold tracking-wider disabled:bg-gray-300 disabled:border-none"
-                    color="secondary"
+                <PreviousButton
                     disabled={currentStep <= 0}
-                    variant="shadow"
-                    onClick={goToPreviousStep}
-                >
-                    Previous
-                </Button>
+                    onClick={handlePrevious}
+                />
                 {currentStep < steps.length - 1 ? (
-                    <Button
-                        className="w-32 border border-secondaryTeal font-bold tracking-wider"
-                        color="secondary"
-                        disabled={isPending}
-                        variant="shadow"
-                        onClick={goToNextStep}
-                    >
-                        {isPending ? 'Loading...' : 'Next'}
-                    </Button>
+                    <NextButton
+                        isPending={isPending}
+                        onClick={handleNext}
+                    />
                 ) : (
-                    <Button
-                        className="w-32 border border-secondaryTeal font-bold tracking-wider"
-                        color="secondary"
-                        disabled={isPending}
-                        variant="shadow"
-                        onClick={handleSubmit}
-                    >
-                        {isPending ? 'Submitting...' : 'Submit'}
-                    </Button>
+                    <SubmitButton
+                        isPending={isPending}
+                        onClick={handleFormSubmit}
+                    />
                 )}
             </div>
         </div>

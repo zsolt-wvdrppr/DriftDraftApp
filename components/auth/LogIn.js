@@ -9,7 +9,7 @@ import useSound from "use-sound";
 import { supabase, createOrUpdateProfile } from "@/lib/supabaseClient";
 import logger from "@/lib/logger";
 import { useAuth } from '@/lib/AuthContext';
-import { useToastSound } from "@/lib/useToastSound";
+import { useToastSound } from "@/lib/hooks/useToastSound";
 
 export default function LogIn() {
   const router = useRouter();
