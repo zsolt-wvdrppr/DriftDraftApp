@@ -8,6 +8,7 @@ import useRateLimiter from '@/lib/hooks/useRateLimiter';
 import logger from '@/lib/logger';
 
 import Sidebar from './ActionsBar/Main';
+import { fetchAIHint } from '@/lib/fetchAIHint';
 
 const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
   const stepNumber = 7;
@@ -63,51 +64,20 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
       3. What kind of impression or mood do I want to leave on visitors when they first land on my homepage?
       Please provide a framework or examples to help me articulate these emotions clearly, and explain why defining these emotions is critical to my website’s success. Keep it conversational and insightful, encouraging me to think deeply about the impact I want my website to have. Keep the response concise and informative, ensuring it's less than 800 characters.`;
 
-      const fetchContent = async () => {
-        if (checkRateLimit()) {
-          logger.info("rate limited");
-          const cachedResponse = localStorage.getItem(`aiResponse_${stepNumber}`);
-          const lastAiGeneratedHint = cachedResponse ? `--- *Last AI generated hint* ---\n${(cachedResponse)}` : "";
-          const limitExpires = new Date(parseInt(localStorage.getItem(`aiResponse_${stepNumber}_timestamp`)) + 3 * 60 * 60 * 1000);
-          const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
-
-          setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
-
-          return;
-        }
-        try {
-          const response = await fetch("/api/googleAi", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ prompt }),
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-
-            throw new Error(errorData.error || "An unknown error occurred.");
-          }
-
-          const data = await response.json();
-          const aiContent = `${data.content}` || content.hints;
-
-          // Cache response
-          localStorage.setItem(`aiResponse_${stepNumber}`, aiContent);
-          setAiHints(aiContent);
-
-          // Increment request count
-          incrementCounter();
-
-        } catch (error) {
-          logger.error("Error fetching content:", error);
-          setAiHints("An error occurred while generating content.");
-        }
+      const handleFetchHint = async () => {
+        await fetchAIHint({
+          stepNumber,
+          prompt,
+          content,
+          checkRateLimit,
+          logger,
+          incrementCounter,
+          setAiHints,
+        });
       };
 
       logger.info("fetching content");
-      fetchContent();
+      handleFetchHint();
     } else {
       logger.info("resetting hints");
       setAiHints(null);
@@ -125,7 +95,7 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
             classNames={{
               label: "!text-primary dark:!text-accentMint",
               input: "",
-              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${attractionIsInvalid ? "!bg-red-50 border-danger" : ""}`,
+              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${attractionIsInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
             }}
             isRequired={true}
             label="Emotions and User Experience"

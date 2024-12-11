@@ -9,6 +9,7 @@ import useRateLimiter from '@/lib/hooks/useRateLimiter';
 import logger from '@/lib/logger';
 
 import Sidebar from './ActionsBar/Main';
+import { fetchAIHint } from '@/lib/fetchAIHint';
 
 const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
   const [selectedKeys, setSelectedKeys] = useState([]);
@@ -112,52 +113,22 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
     if (serviceDescriptionPrompt && serviceDescription?.length > 15 && purpose && question) {
       const prompt = `I'm planning a website and need to answer to a question regarding what I offer. I need help with the following question: ${question}. Consider that the main purpose of the website is ${isOtherPurpose ? purposeDetails : purpose + purposeDetails}. ${serviceDescriptionPrompt} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
 
-      const fetchContent = async () => {
-        if (checkRateLimit()) {
-          logger.info("rate limited");
-          const cachedResponse = localStorage.getItem(`aiResponse_${stepNumber}`);
-          const lastAiGeneratedHint = cachedResponse ? `--- *Last AI generated hint* ---\n${(cachedResponse)}` : "";
-          const limitExpires = new Date(parseInt(localStorage.getItem(`aiResponse_${stepNumber}_timestamp`)) + 3 * 60 * 60 * 1000);
-          const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
-
-          setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
-
-          return;
-        }
-        try {
-          const response = await fetch("/api/googleAi", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ prompt }),
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-
-            throw new Error(errorData.error || "An unknown error occurred.");
-          }
-
-          const data = await response.json();
-          const aiContent = `**Service description:**\n ${data.content}` || content.hints;
-
-          // Cache response
-          localStorage.setItem(`aiResponse_${stepNumber}`, aiContent);
-          setAiHints(aiContent);
-
-          // Increment request count
-          incrementCounter();
-
-        } catch (error) {
-          logger.error("Error fetching content:", error);
-          setAiHints("An error occurred while generating content.");
-        }
+       const handleFetchHint = async () => {
+        await fetchAIHint({
+          stepNumber,
+          prompt,
+          content,
+          checkRateLimit,
+          logger,
+          incrementCounter,
+          setAiHints,
+        });
       };
+      
 
       // Debounce mechanism
       const debounceTimer = setTimeout(() => {
-        fetchContent();
+        handleFetchHint();
       }, 5000); // Wait 500ms before sending the request
 
       return () => clearTimeout(debounceTimer); // Cleanup the timeout on dependency change
@@ -218,7 +189,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
             classNames={{
               label: "!text-primary dark:!text-accentMint",
               input: "",
-              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${serviceDescIsInvalid ? "!bg-red-50 border-danger" : ""}`,
+              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${serviceDescIsInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
               base: "",
             }}
             isRequired={true}

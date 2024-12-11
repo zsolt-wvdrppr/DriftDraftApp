@@ -8,6 +8,7 @@ import useRateLimiter from '@/lib/hooks/useRateLimiter';
 import logger from '@/lib/logger';
 
 import Sidebar from './ActionsBar/Main';
+import { fetchAIHint } from '@/lib/fetchAIHint';
 
 const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
   const stepNumber = 2;
@@ -53,51 +54,21 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
     if (purpose && serviceDescription && question && serviceDescription && audience) {
 
       const prompt = `I'm planning a website and need to answer to a question regarding my target audience. I need help with the following question: ${question}. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. Help me answering the question, and find potential incoming traffic sources. Keep it concise and to the point. Must keep it less then 600 characters.`;
-      const fetchContent = async () => {
-        if (checkRateLimit()) {
-          logger.info("rate limited");
-          const cachedResponse = localStorage.getItem(`aiResponse_${stepNumber}`);
-          const lastAiGeneratedHint = cachedResponse ? `--- *Last AI generated hint* ---\n${(cachedResponse)}` : "";
-          const limitExpires = new Date(parseInt(localStorage.getItem(`aiResponse_${stepNumber}_timestamp`)) + 3 * 60 * 60 * 1000);
-          const limitExpiresInMinutes = Math.floor((limitExpires - new Date()) / 60000);
-
-          setAiHints(`*AI assistance limit reached for this step. Try again in ${limitExpiresInMinutes} minutes.*\n\n ${content.hints}\n\n${lastAiGeneratedHint}`);
-
-          return;
-        }
-        try {
-          const response = await fetch("/api/googleAi", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ prompt }),
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json();
-
-            throw new Error(errorData.error || "An unknown error occurred.");
-          }
-
-          const data = await response.json();
-          const aiContent = `${data.content}` || content.hints;
-
-          // Cache response
-          localStorage.setItem(`aiResponse_${stepNumber}`, aiContent);
-          setAiHints(aiContent);
-
-          // Increment request count
-          incrementCounter();
-
-        } catch (error) {
-          logger.error("Error fetching content:", error);
-          setAiHints("An error occurred while generating content.");
-        }
+      
+      const handleFetchHint = async () => {
+        await fetchAIHint({
+          stepNumber,
+          prompt,
+          content,
+          checkRateLimit,
+          logger,
+          incrementCounter,
+          setAiHints,
+        });
       };
 
       logger.info("fetching content");
-      fetchContent();
+      handleFetchHint();
     } else {
       logger.info("resetting hints");
       setAiHints(null);
@@ -115,7 +86,7 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
             classNames={{
               label: "!text-primary dark:!text-accentMint",
               input: "",
-              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${attractionIsInvalid ? "!bg-red-50 border-danger" : ""}`,
+              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${attractionIsInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
             }}
             isRequired={true}
             label="Incoming Traffic Sources"
