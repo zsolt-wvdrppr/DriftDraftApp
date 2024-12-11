@@ -28,12 +28,14 @@ import {
   Logo,
 } from "@/components/icons";
 import { useAuth } from "@/lib/AuthContext";
+import { useRedirectAfterLogin } from "@/lib/hooks/useRedirectAfterLogin";
 
 
 export const Navbar = () => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
+  const redirectAfterLogin = useRedirectAfterLogin();
 
   const searchInput = (
     <Input
@@ -112,7 +114,7 @@ export const Navbar = () => {
                 </Button>
               </>
             ) : (
-              <Button as={Link} href="/login">
+              <Button onClick={redirectAfterLogin}>
                 Login
                 <IconPower className="text-success" />
               </Button>

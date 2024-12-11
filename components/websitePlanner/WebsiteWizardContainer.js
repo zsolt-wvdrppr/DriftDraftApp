@@ -68,13 +68,15 @@ export default function WebsiteWizardContainer() {
 
     useInitialiseFormData(setFormData, logger);
     useProfileUpdater(user);
-    useRestoreStep(setCurrentStep);
+    useRestoreStep(formData, setCurrentStep, '/website-planner');
     useSaveFormData(formData);
     useUpdateTabName(currentStep, steps, setTabName);
 
     const errorToast = (message) => {
         toast.error(message, { duration: 5000, closeButton: true, classNames: { toast: "text-danger" } });
     }
+
+    useEffect(() => {logger.info(formData);}, [formData]);
 
     // Handle error toast and reset
     useEffect(() => {
@@ -142,8 +144,8 @@ export default function WebsiteWizardContainer() {
 
     const validateStep = () => {
         return handleValidation(stepRef, currentStep, formData, setFormData);
-      };
-    
+    };
+
 
     if (isSubmitted) {
         // Render the Result component if the form is submitted
