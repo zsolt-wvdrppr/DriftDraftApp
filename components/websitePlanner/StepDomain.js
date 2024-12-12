@@ -9,13 +9,15 @@ import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
 
 import Sidebar from './ActionsBar/Main';
+import { useSessionContext } from '@/lib/SessionProvider';
 
-const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
+const StepDomain = ({ ref }) => {
+  const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 5;
   const content = questionsData[stepNumber];
   const formRef = useRef();
   const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
-
+  const formData = sessionData.formData;
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -35,7 +37,7 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
   const handleTextareaChange = (e) => {
     const value = e.target.value;
 
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], domain: value } });
+    updateFormData("domain", value);
 
     // Provide immediate feedback for required field
     setAttractionlsIsInvalid(!value);
@@ -53,6 +55,7 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
     const serviceDescription = formData[0].serviceDescription;
     const audience = formData[1].audience;
     const usps = formData[4].usps || '';
+
 
     if (purpose && serviceDescription && question && serviceDescription && audience && marketing && usps) {
 
@@ -102,8 +105,6 @@ const StepDomain = forwardRef(({ formData, setFormData, setError }, ref) => {
       </div>
     </form>
   );
-});
-
-StepDomain.displayName = 'StepDomain';
+};
 
 export default StepDomain;

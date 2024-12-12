@@ -9,20 +9,22 @@ import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';
 
 import Sidebar from './ActionsBar/Main';
+import { useSessionContext } from '@/lib/SessionProvider';
 
-const StepInspirations = forwardRef(({ formData, setFormData, setError }, ref) => {
+const StepInspirations = ({ ref }) => {
+  const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 8;
   const content = questionsData[stepNumber];
   const formRef = useRef();
+  const formData = sessionData.formData;
 
   useEffect(() => {
     if (!formData[stepNumber]?.urls) {
-      setFormData({
-        ...formData,
-        [stepNumber]: { ...formData[stepNumber], urls: [''] },
-      });
+
+      updateFormData("urls", ['']);
+
     }
-  }, [formData, setFormData, stepNumber]);
+  }, [formData, stepNumber]);
 
   const [urls, setUrls] = useState(formData[stepNumber]?.urls || ['']);
   const [inspirations, setInspirations] = useState(formData[stepNumber]?.inspirations || ['']);
@@ -71,7 +73,9 @@ const StepInspirations = forwardRef(({ formData, setFormData, setError }, ref) =
 
     setUrls(newUrls);
     setInspirations(newInspirations);
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], urls: newUrls, inspirations: newInspirations } });
+    updateFormData('')
+    updateFormData("urls", newUrls);
+    updateFormData("inspirations", newInspirations);
   };
 
   const handleRemoveUrl = (index) => {
@@ -81,21 +85,22 @@ const StepInspirations = forwardRef(({ formData, setFormData, setError }, ref) =
     const updatedInspirations = inspirations.filter((_, i) => i !== index);
 
     setInspirations(updatedInspirations.length > 0 ? updatedInspirations : ['']);
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], urls: updatedUrls, inspirations: updatedInspirations } });
+    updateFormData("urls", updatedUrls);
+    updateFormData("inspirations", updatedInspirations);
   };
 
   const handleChangeUrl = (value, index) => {
     const updatedUrls = urls.map((url, i) => (i === index ? value : url));
 
     setUrls(updatedUrls);
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], urls: updatedUrls } });
+    updateFormData("urls", updatedUrls);
   };
 
   const handleTextareaChange = (value, index) => {
     const updatedInspirations = inspirations.map((inspiration, i) => (i === index ? value : inspiration));
 
     setInspirations(updatedInspirations);
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], inspirations: updatedInspirations } });
+    updateFormData("inspirations", updatedInspirations);
   };
 
   return (
@@ -167,8 +172,6 @@ const StepInspirations = forwardRef(({ formData, setFormData, setError }, ref) =
       </div>
     </form>
   );
-});
-
-StepInspirations.displayName = 'StepInspirations';
+};
 
 export default StepInspirations;

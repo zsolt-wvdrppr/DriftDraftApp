@@ -9,13 +9,15 @@ import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
 
 import Sidebar from './ActionsBar/Main';
+import { useSessionContext } from '@/lib/SessionProvider';
 
-const StepUSPs = forwardRef(({ formData, setFormData, setError }, ref) => {
+const StepUSPs = ({ ref }) => {
+  const {sessionData, updateFormData, setError} = useSessionContext();
   const stepNumber = 4;
   const content = questionsData[stepNumber];
   const formRef = useRef();
   const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
-
+  const formData = sessionData?.formData || {};
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -35,8 +37,7 @@ const StepUSPs = forwardRef(({ formData, setFormData, setError }, ref) => {
   const handleTextareaChange = (e) => {
     const value = e.target.value;
 
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], usps: value } });
-
+    updateFormData("usps", value);
     // Provide immediate feedback for required field
     setAttractionlsIsInvalid(!value);
   };
@@ -104,8 +105,6 @@ const StepUSPs = forwardRef(({ formData, setFormData, setError }, ref) => {
       </div>
     </form>
   );
-});
-
-StepUSPs.displayName = 'StepUSPs';
+};
 
 export default StepUSPs;

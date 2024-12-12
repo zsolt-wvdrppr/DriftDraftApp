@@ -9,12 +9,15 @@ import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
 
 import Sidebar from './ActionsBar/Main';
+import { useSessionContext } from "@/lib/SessionProvider";
 
-const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
+const StepMarketing = ({ref}) => {
+  const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 2;
   const content = questionsData[stepNumber];
   const formRef = useRef();
   const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
+  const formData = sessionData?.formData || {};
 
 
   useImperativeHandle(ref, () => ({
@@ -35,7 +38,7 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
   const handleTextareaChange = (e) => {
     const value = e.target.value;
 
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], marketing: value } });
+    updateFormData("marketing", value);
 
     // Provide immediate feedback for required field
     setAttractionlsIsInvalid(!value);
@@ -54,7 +57,7 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
     if (purpose && serviceDescription && question && serviceDescription && audience) {
 
       const prompt = `I'm planning a website and need to answer to a question regarding my target audience. I need help with the following question: ${question}. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. Help me answering the question, and find potential incoming traffic sources. Keep it concise and to the point. Must keep it less then 600 characters.`;
-      
+
       const handleFetchHint = async () => {
         await fetchAIHint({
           stepNumber,
@@ -100,8 +103,6 @@ const StepMarketing = forwardRef(({ formData, setFormData, setError }, ref) => {
       </div>
     </form>
   );
-});
-
-StepMarketing.displayName = 'StepMarketing';
+};
 
 export default StepMarketing;

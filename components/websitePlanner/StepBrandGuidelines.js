@@ -9,13 +9,15 @@ import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
 
 import Sidebar from './ActionsBar/Main';
+import { useSessionContext } from '@/lib/SessionProvider';
 
-const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref) => {
+const StepBrandGuidelines = ({ ref }) => {
+  const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 6;
   const content = questionsData[stepNumber];
   const formRef = useRef();
   const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
-
+  const formData = sessionData.formData;
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -34,9 +36,9 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
 
   const handleTextareaChange = (e) => {
     const value = e.target.value;
-
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], brandGuidelines: value } });
-
+    
+    updateFormData("brandGuidelines", value);
+  
     // Provide immediate feedback for required field
     setAttractionlsIsInvalid(!value);
   };
@@ -127,8 +129,6 @@ const StepBrandGuidelines = forwardRef(({ formData, setFormData, setError }, ref
       </div>
     </form>
   );
-});
-
-StepBrandGuidelines.displayName = 'StepBrandGuidelines';
+};
 
 export default StepBrandGuidelines;

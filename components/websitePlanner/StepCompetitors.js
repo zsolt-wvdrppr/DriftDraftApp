@@ -9,20 +9,20 @@ import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';
 
 import Sidebar from './ActionsBar/Main';
+import { useSessionContext } from "@/lib/SessionProvider";
 
-const StepCompetitors = forwardRef(({ formData, setFormData, setError }, ref) => {
+const StepCompetitors = ({ref}) => {
+  const { sessionData, updateFormData, setError} = useSessionContext();
   const stepNumber = 3;
   const content = questionsData[stepNumber];
   const formRef = useRef();
+  const formData = sessionData?.fomrData || {};
 
   useEffect(() => {
     if (!formData[stepNumber]?.urls) {
-      setFormData({
-        ...formData,
-        [stepNumber]: { ...formData[stepNumber], urls: [''] },
-      });
+      updateFormData("urls", ['']);
     }
-  }, [formData, setFormData, stepNumber]);
+  }, [formData, stepNumber]);
 
   const [urls, setUrls] = useState(formData[stepNumber]?.urls || ['']);
 
@@ -68,21 +68,21 @@ const StepCompetitors = forwardRef(({ formData, setFormData, setError }, ref) =>
     const newUrls = [...urls, ''];
 
     setUrls(newUrls);
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], urls: newUrls } });
+    updateFormData("urls", newUrls);
   };
 
   const handleRemoveUrl = (index) => {
     const updatedUrls = urls.filter((_, i) => i !== index);
 
     setUrls(updatedUrls.length > 0 ? updatedUrls : ['']);
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], urls: updatedUrls } });
+    updateFormData("urls", updatedUrls);
   };
 
   const handleChangeUrl = (value, index) => {
     const updatedUrls = urls.map((url, i) => (i === index ? value : url));
 
     setUrls(updatedUrls);
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], urls: updatedUrls } });
+    updateFormData("urls", updatedUrls)
   };
 
   return (
@@ -141,8 +141,6 @@ const StepCompetitors = forwardRef(({ formData, setFormData, setError }, ref) =>
       </div>
     </form>
   );
-});
-
-StepCompetitors.displayName = 'StepCompetitors';
+};
 
 export default StepCompetitors;

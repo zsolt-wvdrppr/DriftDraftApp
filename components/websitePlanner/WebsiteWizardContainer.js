@@ -24,6 +24,8 @@ import { useRestoreStep } from '@/lib/hooks/useRestoreStep';
 import { useSaveFormData } from '@/lib/hooks/useSaveFormData';
 import { useUpdateTabName } from '@/lib/hooks/useUpdateTabName';
 
+import { useManageSessionData } from '@/lib/hooks/useManageSessionData';
+
 import ProgressBar from './ProgressBar';
 import StepPurpose from './StepPurpose';
 import StepAudience from './StepAudience';
@@ -37,6 +39,9 @@ import StepInspirations from './StepInspirations';
 import StepContactInfo from './StepContactInfo';
 import Result from './Result';
 import { PreviousButton, NextButton, SubmitButton } from './layout/NavigationButtons';
+
+import { SessionProvider } from "@/lib/SessionProvider";
+
 
 // Step definitions
 const steps = [
@@ -54,18 +59,19 @@ const steps = [
 
 export default function WebsiteWizardContainer() {
 
-    const [formData, setFormData] = useState(null); // Form data state
     const { user, loading } = useAuth(); // Access user state
+    const { sessionData, updateSessionData, isInitialised } = useManageSessionData(user?.id, steps);
     const [isSubmitted, setIsSubmitted] = useState(false); // Track submission state
     const [currentStep, setCurrentStep] = useState(0);
     const [tabName, setTabName] = useState(steps[0]?.label || '');
     const stepRef = useRef(null);
     const [error, setError] = useState(null);
     const [isPending, startTransition] = useTransition();
+    const formData = sessionData?.formData || {};
 
     const router = useRouter();
 
-    useInitialiseFormData(setFormData, logger);
+    //useInitialiseFormData(setFormData, logger);
     useProfileUpdater(user);
     useRestoreStep(formData, setCurrentStep, '/website-planner');
     useSaveFormData(formData);
@@ -75,19 +81,64 @@ export default function WebsiteWizardContainer() {
         toast.error(message, { duration: 5000, closeButton: true, classNames: { toast: "text-danger" } });
     }
 
-    useEffect(() => {logger.info(formData);}, [formData]);
+    useEffect(() => {
+        console.log('WebsiteWizardContainer mounted');
+        if (isInitialised) {
+            console.log('Session Data:', sessionData);
+        }
+    }, [isInitialised, sessionData]);
 
     // Handle error toast and reset
     useEffect(() => {
         if (error) {
             errorToast(error);
-            setFormData((prev) => ({ ...prev, [currentStep]: { ...prev?.[currentStep], isValid: false } }));
+            handleFormDataUpdate("isValid", false);
+            //setFormData((prev) => ({ ...prev, [currentStep]: { ...prev?.[currentStep], isValid: false } }));
             const timeout = setTimeout(() => setError(null), 5000);
 
             return () => clearTimeout(timeout);
         }
     }, [error]);
 
+    const setFormData = (newData) => {
+        const updatedFormData = {
+            ...formData, // Keep existing steps
+            ...Object.entries(newData).reduce((acc, [key, value]) => {
+                acc[key] = {
+                    ...formData[key], // Keep existing data for this step
+                    ...value, // Merge new data for this step
+                };
+                return acc;
+            }, {}),
+        };
+        logger.debug('Updating form data:', updatedFormData);
+        // Update the centralised session data
+        updateSessionData('formData', updatedFormData);
+    };
+
+    const handleFormDataUpdate = (keyOrStep, valueOrObject) => {
+        // Check if the input is a stepNumber and object
+        const isFullStepUpdate = typeof keyOrStep === "number" && typeof valueOrObject === "object";
+        const stepNumber = isFullStepUpdate ? keyOrStep : currentStep;
+    
+        // Determine the update payload
+        const update = isFullStepUpdate
+            ? valueOrObject // Full-step object
+            : { [keyOrStep]: valueOrObject }; // Single key-value pair
+    
+        const updatedFormData = {
+            ...formData,
+            [stepNumber]: {
+                ...(formData[stepNumber] || {}), // Preserve existing data for this step
+                ...update, // Merge new data
+            },
+        };
+    
+        // Update the centralized session data in one step
+        updateSessionData("formData", updatedFormData);
+    };
+
+    //{ ...formData, [stepNumber]: { ...formData[stepNumber], serviceDescription: value } }
     // Validate the current step and move to the next one
     const handleNext = () => {
         goToNextStep(
@@ -142,7 +193,7 @@ export default function WebsiteWizardContainer() {
     };
 
     const validateStep = () => {
-        return handleValidation(stepRef, currentStep, formData, setFormData);
+        return handleValidation(stepRef, currentStep, formData, handleFormDataUpdate);
     };
 
 
@@ -151,7 +202,7 @@ export default function WebsiteWizardContainer() {
         return <Result formData={formData} />;
     }
 
-    if (loading || isPending) {
+    if (loading || isPending || !isInitialised) {
         return (
             <div className="flex items-center justify-center h-screen">
                 <Spinner color="primary" size="large" />
@@ -160,83 +211,88 @@ export default function WebsiteWizardContainer() {
     }
 
     return (
-        <div className="wizard-container relative max-w-screen-xl w-full h-max px-0 md:py-4">
-            <ProgressBar currentStep={currentStep} totalSteps={steps.length} />
-            {/* Dropdown for Navigation */}
-            <div className='w-full flex justify-around'>
-                <Dropdown>
-                    <DropdownTrigger>
-                        <Button className="capitalize w-full md:max-w-80" color="secondary" variant="flat">
-                            <div className="grid grid-cols-4 items-center w-full">
-                                <span className="col-span-1 text-primary">{steps[currentStep]?.icon}</span>
-                                <span className="col-span-2 text-lg">{tabName}</span>
-                                <span className="col-span-1 justify-self-end">
-                                    {formData && formData[currentStep]?.isValid && <IconCheck className='text-secondaryPersianGreen' size={20} />}
-                                </span>
-                            </div>
-                        </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu aria-label="Step navigation" color="primary" variant="flat">
-                        {steps.map((step, index) => (
-                            <DropdownItem
-                                key={step.id}
-                                className={`flex flex-row hover:!text-neutralDark dark:hover:!text-slate-200 ${currentStep === index ? "bg-slate-200 dark:text-neutralDark font-bold" : ""}`}
-                                textValue={step.label}
-                                onClick={() => handlePicker(index)}
-                            >
+        <SessionProvider
+            sessionData={sessionData}
+            sessionId={sessionData.sessionId}
+            updateSessionData={updateSessionData}
+            updateFormData={handleFormDataUpdate}
+            setError={setError}
+        >
+            <div className="wizard-container relative max-w-screen-xl w-full h-max px-0 md:py-4">
+                <ProgressBar currentStep={currentStep} totalSteps={steps.length} />
+                {/* Dropdown for Navigation */}
+                <div className='w-full flex justify-around'>
+                    <Dropdown>
+                        <DropdownTrigger>
+                            <Button className="capitalize w-full md:max-w-80" color="secondary" variant="flat">
                                 <div className="grid grid-cols-4 items-center w-full">
-                                    <span className="col-span-1 text-primary">{step.icon}</span>
-                                    <span className="col-span-2">{step.label}</span>
+                                    <span className="col-span-1 text-primary">{steps[currentStep]?.icon}</span>
+                                    <span className="col-span-2 text-lg">{tabName}</span>
                                     <span className="col-span-1 justify-self-end">
-                                        {formData && formData[step.id]?.isValid && <IconCheck className='text-secondaryPersianGreen' size={16} />}
+                                        {formData && formData[currentStep]?.isValid && <IconCheck className='text-secondaryPersianGreen' size={20} />}
                                     </span>
                                 </div>
-                            </DropdownItem>
-                        ))}
-                    </DropdownMenu>
-                </Dropdown>
-            </div>
-            {/* Step Content with Loading Placeholder */}
-            <Suspense fallback={<div className="text-center p-4">Loading...</div>}>
-                <AnimatePresence mode="wait">
-                    {CurrentStepComponent ? (
-                        <motion.div
-                            key={currentStep}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -50 }}
-                            initial={{ opacity: 0, x: 50 }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            <CurrentStepComponent
-                                ref={stepRef}
-                                formData={formData}
-                                setError={setError}
-                                setFormData={setFormData}
-                            />
-                        </motion.div>
+                            </Button>
+                        </DropdownTrigger>
+                        <DropdownMenu aria-label="Step navigation" color="primary" variant="flat">
+                            {steps.map((step, index) => (
+                                <DropdownItem
+                                    key={step.id}
+                                    className={`flex flex-row hover:!text-neutralDark dark:hover:!text-slate-200 ${currentStep === index ? "bg-slate-200 dark:text-neutralDark font-bold" : ""}`}
+                                    textValue={step.label}
+                                    onClick={() => handlePicker(index)}
+                                >
+                                    <div className="grid grid-cols-4 items-center w-full">
+                                        <span className="col-span-1 text-primary">{step.icon}</span>
+                                        <span className="col-span-2">{step.label}</span>
+                                        <span className="col-span-1 justify-self-end">
+                                            {formData && formData[step.id]?.isValid && <IconCheck className='text-secondaryPersianGreen' size={16} />}
+                                        </span>
+                                    </div>
+                                </DropdownItem>
+                            ))}
+                        </DropdownMenu>
+                    </Dropdown>
+                </div>
+                {/* Step Content with Loading Placeholder */}
+                <Suspense fallback={<div className="text-center p-4">Loading...</div>}>
+                    <AnimatePresence mode="wait">
+                        {CurrentStepComponent ? (
+                            <motion.div
+                                key={currentStep}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -50 }}
+                                initial={{ opacity: 0, x: 50 }}
+                                transition={{ duration: 0.5 }}
+                            >
+                                <CurrentStepComponent
+                                    ref={stepRef}
+                                />
+                            </motion.div>
+                        ) : (
+                            <div className="text-center p-4">No component defined for this step.</div>
+                        )}
+                    </AnimatePresence>
+                </Suspense>
+                {/* Navigation Buttons */}
+                <div className="navigation-buttons w-full flex gap-2 justify-evenly py-8">
+                    <PreviousButton
+                        disabled={currentStep <= 0}
+                        onClick={handlePrevious}
+                    />
+                    {currentStep < steps.length - 1 ? (
+                        <NextButton
+                            isPending={isPending}
+                            onClick={handleNext}
+                        />
                     ) : (
-                        <div className="text-center p-4">No component defined for this step.</div>
+                        <SubmitButton
+                            isPending={isPending}
+                            onClick={handleFormSubmit}
+                        />
                     )}
-                </AnimatePresence>
-            </Suspense>
-            {/* Navigation Buttons */}
-            <div className="navigation-buttons w-full flex gap-2 justify-evenly py-8">
-                <PreviousButton
-                    disabled={currentStep <= 0}
-                    onClick={handlePrevious}
-                />
-                {currentStep < steps.length - 1 ? (
-                    <NextButton
-                        isPending={isPending}
-                        onClick={handleNext}
-                    />
-                ) : (
-                    <SubmitButton
-                        isPending={isPending}
-                        onClick={handleFormSubmit}
-                    />
-                )}
+                </div>
             </div>
-        </div>
+        </SessionProvider>
     );
 }

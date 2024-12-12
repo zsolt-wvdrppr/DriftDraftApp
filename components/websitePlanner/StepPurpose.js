@@ -10,8 +10,10 @@ import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
 
 import Sidebar from './ActionsBar/Main';
+import { useSessionContext } from "@/lib/SessionProvider";
 
-const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
+const StepPurpose = ({ref}) => {
+  const { sessionData, updateFormData, setError } = useSessionContext();
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [isOtherSelected, setIsOtherSelected] = useState(false); // = selectedKeys.has("Other (please specify)");
   //const deferredValue = useDeferredValue(Array.from(selectedKeys).join(", ").replaceAll("_", " "));
@@ -21,12 +23,14 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
   const [purposeIsInvalid, setPurposeIsInvalid] = useState(false);
   const [detailsIsInvalid, setDetailsIsInvalid] = useState(false);
   const [serviceDescIsInvalid, setServiceDescIsInvalid] = useState(false);
+  const formData = sessionData?.formData || {};
 
   useEffect(() => {
     if (formData?.[stepNumber]?.purpose) {
       setSelectedKeys(new Set([formData[stepNumber].purpose]));
       setIsOtherSelected(formData[stepNumber].purpose === "Other (please specify)");
     }
+    logger.info('Child component received formData:', formData);
   }, [formData, stepNumber]);
 
 
@@ -68,28 +72,24 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
 
   const handleSelectionChange = (keys) => {
     setSelectedKeys(keys);
-    if (!keys.currentKey ? setPurposeIsInvalid(true) : setPurposeIsInvalid(false));
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], purpose: keys.currentKey } });
-    // Provide immediate feedback for required field
-    setDetailsIsInvalid(keys.has("Other (please specify)") && !formData[0].purposeDetails);
+    const selectedPurpose = keys.currentKey;
+
+    updateFormData("purpose", selectedPurpose);
+    setPurposeIsInvalid(!selectedPurpose);
   };
 
   const handleAdditionalDetailsChange = (e) => {
     const value = e.target.value;
 
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], purposeDetails: value } });
-
-    // Provide immediate feedback for required field
-    setDetailsIsInvalid(isOtherSelected && !value);
+    updateFormData("purposeDetails", value);
+    setDetailsIsInvalid(isOtherSelected && value.length < 10);
   };
 
   const handleServiceDescriptionChange = (e) => {
     const value = e.target.value;
 
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], serviceDescription: value } });
-
-    // Provide immediate feedback for required field
-    setServiceDescIsInvalid(!value);
+    updateFormData("serviceDescription", value);
+    setServiceDescIsInvalid(value.length < 50);
   };
 
   const [aiHints, setAiHints] = useState(null);
@@ -204,7 +204,7 @@ const StepPurpose = forwardRef(({ formData, setFormData, setError }, ref) => {
       </div>
     </form>
   );
-});
+};
 
 StepPurpose.displayName = 'StepPurpose';
 

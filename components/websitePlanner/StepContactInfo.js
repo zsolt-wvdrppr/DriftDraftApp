@@ -7,9 +7,13 @@ import { IconMail, IconWorldWww, IconUsers, IconId, IconPhone } from '@tabler/ic
 import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';
 
-const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) => {
+import { useSessionContext } from '@/lib/SessionProvider';
+
+const StepContactInfo = ({ ref }) => {
+    const { sessionData, updateFormData, setError } = useSessionContext();
     const stepNumber = 9;
     const content = questionsData[stepNumber];
+    const formData = sessionData.formData;
 
     // Initialize formValues from formData or create an empty structure
     const [formValues, setFormValues] = useState(() => {
@@ -42,10 +46,11 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
         validateStep: () => {
             const isValid = validateForm();
 
-            setFormData((prev) => ({
+            updateFormData(stepNumber, { ...formValues, isValid });
+            /*setFormData((prev) => ({
                 ...prev,
                 [stepNumber]: { ...formValues, isValid },
-            }));
+            }));*/
 
             return isValid;
         },
@@ -59,10 +64,11 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
         setFormValues(updatedValues);
 
         // Update formData
-        setFormData((prev) => ({
+        updateFormData(stepNumber, { ...updatedValues, isValid: false });
+        /*setFormData((prev) => ({
             ...prev,
             [stepNumber]: { ...updatedValues, isValid: false },
-        }));
+        }));*/
 
         // Validate the specific field
         validateField(field, value);
@@ -247,8 +253,6 @@ const StepContactInfo = forwardRef(({ formData, setFormData, setError }, ref) =>
             </div>
         </form>
     );
-});
-
-StepContactInfo.displayName = 'StepContactInfo';
+};
 
 export default StepContactInfo;

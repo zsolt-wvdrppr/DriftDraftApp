@@ -9,13 +9,15 @@ import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
 
 import Sidebar from './ActionsBar/Main';
+import { useSessionContext } from '@/lib/SessionProvider';
 
-const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
+const StepEmotions = ({ ref }) => {
+  const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 7;
   const content = questionsData[stepNumber];
   const formRef = useRef();
   const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
-
+  const formData = sessionData.formData;
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -35,7 +37,7 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
   const handleTextareaChange = (e) => {
     const value = e.target.value;
 
-    setFormData({ ...formData, [stepNumber]: { ...formData[stepNumber], emotions: value } });
+    updateFormData("emotions", value);
 
     // Provide immediate feedback for required field
     setAttractionlsIsInvalid(!value);
@@ -109,8 +111,6 @@ const StepEmotions = forwardRef(({ formData, setFormData, setError }, ref) => {
       </div>
     </form>
   );
-});
-
-StepEmotions.displayName = 'StepEmotions';
+};
 
 export default StepEmotions;
