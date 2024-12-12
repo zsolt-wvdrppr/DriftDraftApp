@@ -1,15 +1,15 @@
 'use client';
 
-import React, { useRef, useState, forwardRef, useImperativeHandle, useEffect } from 'react';
+import React, { useRef, useState, useImperativeHandle, useEffect } from 'react';
 import { Input } from '@nextui-org/react';
 
 import questionsData from "@/data/questions-data.json";
 import useRateLimiter from '@/lib/hooks/useRateLimiter';
 import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
+import { useSessionContext } from '@/lib/SessionProvider';
 
 import Sidebar from './ActionsBar/Main';
-import { useSessionContext } from '@/lib/SessionProvider';
 
 const StepDomain = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();

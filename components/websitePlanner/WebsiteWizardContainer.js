@@ -18,13 +18,12 @@ import {
     handleSubmit,
     handleSectionPicker
 } from '@/lib/websitePlannerFormNavigation';
-import { useInitialiseFormData } from '@/lib/hooks/useInitialiseFormData';
 import { useProfileUpdater } from '@/lib/hooks/useProfileUpdater';
 import { useRestoreStep } from '@/lib/hooks/useRestoreStep';
 import { useSaveFormData } from '@/lib/hooks/useSaveFormData';
 import { useUpdateTabName } from '@/lib/hooks/useUpdateTabName';
-
 import { useManageSessionData } from '@/lib/hooks/useManageSessionData';
+import { SessionProvider } from "@/lib/SessionProvider";
 
 import ProgressBar from './ProgressBar';
 import StepPurpose from './StepPurpose';
@@ -40,7 +39,6 @@ import StepContactInfo from './StepContactInfo';
 import Result from './Result';
 import { PreviousButton, NextButton, SubmitButton } from './layout/NavigationButtons';
 
-import { SessionProvider } from "@/lib/SessionProvider";
 
 
 // Step definitions
@@ -108,9 +106,11 @@ export default function WebsiteWizardContainer() {
                     ...formData[key], // Keep existing data for this step
                     ...value, // Merge new data for this step
                 };
+
                 return acc;
             }, {}),
         };
+
         logger.debug('Updating form data:', updatedFormData);
         // Update the centralised session data
         updateSessionData('formData', updatedFormData);
@@ -214,9 +214,9 @@ export default function WebsiteWizardContainer() {
         <SessionProvider
             sessionData={sessionData}
             sessionId={sessionData.sessionId}
-            updateSessionData={updateSessionData}
-            updateFormData={handleFormDataUpdate}
             setError={setError}
+            updateFormData={handleFormDataUpdate}
+            updateSessionData={updateSessionData}
         >
             <div className="wizard-container relative max-w-screen-xl w-full h-max px-0 md:py-4">
                 <ProgressBar currentStep={currentStep} totalSteps={steps.length} />

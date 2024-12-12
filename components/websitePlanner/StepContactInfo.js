@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useImperativeHandle } from 'react';
 import { Input, RadioGroup, Radio } from '@nextui-org/react';
 import { IconMail, IconWorldWww, IconUsers, IconId, IconPhone } from '@tabler/icons-react';
 
 import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';
-
 import { useSessionContext } from '@/lib/SessionProvider';
 
 const StepContactInfo = ({ ref }) => {

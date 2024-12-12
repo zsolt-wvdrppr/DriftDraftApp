@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef, useImperativeHandle, forwardRef } from 'react';
+import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Textarea, Button, Input } from '@nextui-org/react';
 import ReactMarkdown from 'react-markdown';
 
@@ -8,9 +8,9 @@ import questionsData from "@/data/questions-data.json";
 import useRateLimiter from '@/lib/hooks/useRateLimiter';
 import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
+import { useSessionContext } from "@/lib/SessionProvider";
 
 import Sidebar from './ActionsBar/Main';
-import { useSessionContext } from "@/lib/SessionProvider";
 
 const StepPurpose = ({ref}) => {
   const { sessionData, updateFormData, setError } = useSessionContext();

@@ -6,10 +6,10 @@ import { Button } from '@nextui-org/react';
 import { useSearchParams } from 'next/navigation';
 
 import useToastSound from '@/lib/hooks/useToastSound';
+import logger from '@/lib/logger';
 
 import NewHintNotifierIcon from './NewHintNotifierIcon';
 
-import logger from '@/lib/logger';
 
 const HintButton = ({
   hints,

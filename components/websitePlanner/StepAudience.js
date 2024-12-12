@@ -7,9 +7,9 @@ import logger from '@/lib/logger';
 import questionsData from "@/data/questions-data.json";
 import useRateLimiter from '@/lib/hooks/useRateLimiter';
 import { fetchAIHint } from '@/lib/fetchAIHint';
+import { useSessionContext } from "@/lib/SessionProvider";
 
 import Sidebar from './ActionsBar/Main';
-import { useSessionContext } from "@/lib/SessionProvider";
 
 
 const StepAudience = ({ ref }) => {

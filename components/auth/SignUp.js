@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 import logger from "@/lib/logger";
 import { useAuth } from "@/lib/AuthContext";
-
 import { useToastSound } from "@/lib/hooks/useToastSound";
 
 export default function SignUp() {

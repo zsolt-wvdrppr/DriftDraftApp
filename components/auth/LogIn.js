@@ -79,7 +79,7 @@ export default function LogIn() {
       router.push(redirectUrl);
     } catch (err) {
       setError("Something went wrong. Please try again later.");
-      console.error(err);
+      logger.error(err);
     } finally {
       setLoading(false);
     }

@@ -1,15 +1,15 @@
 'use client';
 
-import React, { useRef, useState, forwardRef, useImperativeHandle, useEffect } from 'react';
+import React, { useRef, useState, useImperativeHandle, useEffect } from 'react';
 import { Input, Button, Textarea } from '@nextui-org/react';
 import { IconXboxXFilled, IconRowInsertBottom, IconWorldWww } from '@tabler/icons-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';
+import { useSessionContext } from '@/lib/SessionProvider';
 
 import Sidebar from './ActionsBar/Main';
-import { useSessionContext } from '@/lib/SessionProvider';
 
 const StepInspirations = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
