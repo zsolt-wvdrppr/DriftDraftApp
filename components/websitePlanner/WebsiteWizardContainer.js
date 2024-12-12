@@ -80,9 +80,9 @@ export default function WebsiteWizardContainer() {
     }
 
     useEffect(() => {
-        console.log('WebsiteWizardContainer mounted');
+        logger.debug('WebsiteWizardContainer mounted');
         if (isInitialised) {
-            console.log('Session Data:', sessionData);
+            logger.debug('Session Data:', sessionData);
         }
     }, [isInitialised, sessionData]);
 
