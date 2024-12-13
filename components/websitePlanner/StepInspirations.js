@@ -85,9 +85,11 @@ const StepInspirations = ({ ref }) => {
 
   const handleRemoveUrl = (index) => {
     const updatedUrls = urls.filter((_, i) => i !== index);
+
     setUrls(updatedUrls.length > 0 ? updatedUrls : ['']);
 
     const updatedInspirations = inspirations.filter((_, i) => i !== index);
+
     setInspirations(updatedInspirations.length > 0 ? updatedInspirations : ['']);
 
     updateFormData("urls", updatedUrls);

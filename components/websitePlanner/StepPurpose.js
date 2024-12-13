@@ -78,6 +78,7 @@ const StepPurpose = ({ref}) => {
 
   const handleAdditionalDetailsChange = (e) => {
     const value = e.target.value;
+
     setLocalPurposeDetails(value);
     updateFormData("purposeDetails", value);
     setDetailsIsInvalid(isOtherSelected && value.length < 10);
@@ -85,6 +86,7 @@ const StepPurpose = ({ref}) => {
 
   const handleServiceDescriptionChange = (e) => {
     const value = e.target.value;
+
     setLocalServiceDescription(value);
     updateFormData("serviceDescription", value);
     setServiceDescIsInvalid(value.length < 50);

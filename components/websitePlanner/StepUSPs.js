@@ -41,6 +41,7 @@ const StepUSPs = ({ ref }) => {
 
   const handleTextareaChange = (e) => {
     const value = e.target.value;
+
     setLocalValue(value);
     updateFormData("usps", value);
     // Provide immediate feedback for required field

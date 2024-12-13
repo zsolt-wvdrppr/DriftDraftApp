@@ -42,6 +42,7 @@ const StepAudience = ({ ref }) => {
 
   const handleTextareaChange = (e) => {
     const value = e.target.value;
+
     setLocalValue(value);
     updateFormData("audience", value);
   };
