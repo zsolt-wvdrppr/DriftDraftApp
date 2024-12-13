@@ -18,6 +18,11 @@ const StepDomain = ({ ref }) => {
   const formRef = useRef();
   const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
   const formData = sessionData.formData;
+  const [localValue, setLocalValue] = useState(formData[stepNumber]?.domain || '');
+
+  useEffect(()=>{
+    setLocalValue(formData?.[stepNumber]?.domain || "");
+  },[formData?.[stepNumber]?.domain, stepNumber])
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -38,7 +43,7 @@ const StepDomain = ({ ref }) => {
     const value = e.target.value;
 
     updateFormData("domain", value);
-
+    setLocalValue(value);
     // Provide immediate feedback for required field
     setAttractionlsIsInvalid(!value);
   };
@@ -56,7 +61,6 @@ const StepDomain = ({ ref }) => {
     const audience = formData[1].audience;
     const usps = formData[4].usps || '';
 
-
     if (purpose && serviceDescription && question && serviceDescription && audience && marketing && usps) {
 
       const prompt = `I'm planning a website and need some ideas for a domain. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. This is how I plan to attract my audience: ${marketing}. ${competitors}. About my unique selling points: ${usps}. So give me some ideas while strictly following guidelines and other SEO best practices and outline them how they're applied: ${content.hints}. The domain name must be SHORT and Concise so must not be longer than 15 characters. Keep it concise and to the point. The response must be less than 450 characters.`;
@@ -70,6 +74,8 @@ const StepDomain = ({ ref }) => {
           logger,
           incrementCounter,
           setAiHints,
+          sessionData,
+          updateFormData,
         });
       };
 
@@ -97,7 +103,7 @@ const StepDomain = ({ ref }) => {
             isRequired={true}
             label="Domain Name"
             placeholder={content.placeholder}
-            value={formData?.[stepNumber]?.domain || ""}
+            value={localValue}
             onChange={handleTextareaChange}
           />
         </div>

@@ -5,9 +5,9 @@ import { Button, Input, Checkbox, Link, Divider } from "@nextui-org/react";
 import { Icon } from "@iconify-icon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import logger from "@/lib/logger";
 
 import { supabase, createOrUpdateProfile } from "@/lib/supabaseClient";
-import logger from "@/lib/logger";
 import { useAuth } from '@/lib/AuthContext';
 import { useToastSound } from "@/lib/hooks/useToastSound";
 

@@ -19,7 +19,12 @@ const StepAudience = ({ ref }) => {
   const formRef = useRef();
   const [audienceIsInvalid, setAudiencelsIsInvalid] = useState(false);
   const formData = sessionData?.formData || {};
+  const [localValue, setLocalValue] = useState("");
 
+  useEffect(() => {
+    setLocalValue(formData?.[stepNumber]?.audience || "");
+  }, [formData?.[stepNumber]?.audience, stepNumber]);
+  
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
@@ -37,7 +42,7 @@ const StepAudience = ({ ref }) => {
 
   const handleTextareaChange = (e) => {
     const value = e.target.value;
-
+    setLocalValue(value);
     updateFormData("audience", value);
   };
 
@@ -63,6 +68,8 @@ const StepAudience = ({ ref }) => {
           logger,
           incrementCounter,
           setAiHints,
+          sessionData,
+          updateFormData,
         });
       };
 
@@ -91,7 +98,7 @@ const StepAudience = ({ ref }) => {
             label="Target Audience"
             minRows={4}
             placeholder={content.placeholder}
-            value={formData?.[stepNumber].audience || ""}
+            value={localValue}
             onChange={handleTextareaChange}
           />
         </div>

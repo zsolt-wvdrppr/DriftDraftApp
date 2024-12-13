@@ -26,8 +26,13 @@ const StepInspirations = ({ ref }) => {
     }
   }, [formData, stepNumber]);
 
-  const [urls, setUrls] = useState(formData[stepNumber]?.urls || ['']);
-  const [inspirations, setInspirations] = useState(formData[stepNumber]?.inspirations || ['']);
+  const [urls, setUrls] = useState(['']);
+  const [inspirations, setInspirations] = useState(['']);
+
+  useEffect(()=>{
+    setUrls(formData[stepNumber]?.urls || ['']);
+    setInspirations(formData[stepNumber]?.inspirations || ['']);
+  },[])
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -80,13 +85,13 @@ const StepInspirations = ({ ref }) => {
 
   const handleRemoveUrl = (index) => {
     const updatedUrls = urls.filter((_, i) => i !== index);
-
     setUrls(updatedUrls.length > 0 ? updatedUrls : ['']);
-    const updatedInspirations = inspirations.filter((_, i) => i !== index);
 
+    const updatedInspirations = inspirations.filter((_, i) => i !== index);
     setInspirations(updatedInspirations.length > 0 ? updatedInspirations : ['']);
+
     updateFormData("urls", updatedUrls);
-    updateFormData("inspirations", updatedInspirations);
+    updateFormData("inspirations", updatedInspirations.length > 0 ? updatedInspirations : ['']);
   };
 
   const handleChangeUrl = (value, index) => {
@@ -152,7 +157,7 @@ const StepInspirations = ({ ref }) => {
                   label="Notes"
                   minRows={4}
                   placeholder={"What do you like about this website?"}
-                  value={formData?.[stepNumber]?.inspirations?.[index] || ""}
+                  value={inspirations?.[index] || ""}
                   onChange={(e) => handleTextareaChange(e.target.value, index)}
                 />
               </motion.div>

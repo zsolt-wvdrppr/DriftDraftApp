@@ -58,7 +58,7 @@ const steps = [
 export default function WebsiteWizardContainer() {
 
     const { user, loading } = useAuth(); // Access user state
-    const { sessionData, updateSessionData, isInitialised } = useManageSessionData(user?.id, steps);
+    const { sessionData, updateSessionData, isInitialised, clearLocalStorage } = useManageSessionData(user?.id, steps);
     const [isSubmitted, setIsSubmitted] = useState(false); // Track submission state
     const [currentStep, setCurrentStep] = useState(0);
     const [tabName, setTabName] = useState(steps[0]?.label || '');
@@ -72,7 +72,7 @@ export default function WebsiteWizardContainer() {
     //useInitialiseFormData(setFormData, logger);
     useProfileUpdater(user);
     useRestoreStep(formData, setCurrentStep, '/website-planner');
-    useSaveFormData(formData);
+    //useSaveFormData(formData);
     useUpdateTabName(currentStep, steps, setTabName);
 
     const errorToast = (message) => {
@@ -80,7 +80,6 @@ export default function WebsiteWizardContainer() {
     }
 
     useEffect(() => {
-        logger.debug('WebsiteWizardContainer mounted');
         if (isInitialised) {
             logger.debug('Session Data:', sessionData);
         }
@@ -97,24 +96,6 @@ export default function WebsiteWizardContainer() {
             return () => clearTimeout(timeout);
         }
     }, [error]);
-
-    const setFormData = (newData) => {
-        const updatedFormData = {
-            ...formData, // Keep existing steps
-            ...Object.entries(newData).reduce((acc, [key, value]) => {
-                acc[key] = {
-                    ...formData[key], // Keep existing data for this step
-                    ...value, // Merge new data for this step
-                };
-
-                return acc;
-            }, {}),
-        };
-
-        logger.debug('Updating form data:', updatedFormData);
-        // Update the centralised session data
-        updateSessionData('formData', updatedFormData);
-    };
 
     const handleFormDataUpdate = (keyOrStep, valueOrObject) => {
         // Check if the input is a stepNumber and object
@@ -147,7 +128,7 @@ export default function WebsiteWizardContainer() {
             validateStep,
             stepRef,
             formData,
-            setFormData,
+            handleFormDataUpdate,
             setCurrentStep,
             updateUrlParams
         );
@@ -169,10 +150,10 @@ export default function WebsiteWizardContainer() {
             steps,
             stepRef,
             formData,
-            setFormData,
+            handleFormDataUpdate,
+            clearLocalStorage,
             setError,
             setIsSubmitted,
-            logger,
             startTransition
         );
     };

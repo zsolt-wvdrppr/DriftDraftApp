@@ -18,7 +18,11 @@ const StepMarketing = ({ref}) => {
   const formRef = useRef();
   const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
   const formData = sessionData?.formData || {};
+  const [localValue, setLocalValue] = useState("");
 
+  useEffect(() => {
+    setLocalValue(formData?.[stepNumber]?.marketing || "");
+  }, [formData?.[stepNumber]?.marketing, stepNumber]);
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -39,7 +43,7 @@ const StepMarketing = ({ref}) => {
     const value = e.target.value;
 
     updateFormData("marketing", value);
-
+    setLocalValue(value);
     // Provide immediate feedback for required field
     setAttractionlsIsInvalid(!value);
   };
@@ -67,6 +71,8 @@ const StepMarketing = ({ref}) => {
           logger,
           incrementCounter,
           setAiHints,
+          sessionData,
+          updateFormData
         });
       };
 
@@ -95,7 +101,7 @@ const StepMarketing = ({ref}) => {
             label="Incoming Traffic Sources"
             minRows={4}
             placeholder={content.placeholder}
-            value={formData?.[stepNumber]?.marketing || ""}
+            value={localValue}
             onChange={handleTextareaChange}
           />
         </div>

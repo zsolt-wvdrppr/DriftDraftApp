@@ -13,6 +13,8 @@ import { useSessionContext } from "@/lib/SessionProvider";
 import Sidebar from './ActionsBar/Main';
 
 const StepPurpose = ({ref}) => {
+  const [localPurposeDetails, setLocalPurposeDetails] = useState("");
+  const [localServiceDescription, setLocalServiceDescription] = useState("");
   const { sessionData, updateFormData, setError } = useSessionContext();
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [isOtherSelected, setIsOtherSelected] = useState(false); // = selectedKeys.has("Other (please specify)");
@@ -26,6 +28,8 @@ const StepPurpose = ({ref}) => {
   const formData = sessionData?.formData || {};
 
   useEffect(() => {
+    setLocalPurposeDetails(formData?.[stepNumber]?.purposeDetails || "");
+    setLocalServiceDescription(formData?.[stepNumber]?.serviceDescription || "");
     if (formData?.[stepNumber]?.purpose) {
       setSelectedKeys(new Set([formData[stepNumber].purpose]));
       setIsOtherSelected(formData[stepNumber].purpose === "Other (please specify)");
@@ -44,19 +48,13 @@ const StepPurpose = ({ref}) => {
 
         return false;
       }
-      if (isOtherSelected && (!formData[stepNumber]?.purposeDetails || formData[stepNumber].purposeDetails.length < 10)) {
+      if (isOtherSelected && (!localPurposeDetails || localPurposeDetails.length < 10)) {
         setError("Additional details are required. (10 characters minimum)");
         setDetailsIsInvalid(true);
 
         return false;
       }
-      if (!formData[stepNumber]?.serviceDescription) {
-        setError("Please provide a service description.");
-        setServiceDescIsInvalid(true);
-
-        return false;
-      }
-      if (formData[stepNumber].serviceDescription.length < 50) {
+      if (!localServiceDescription || localServiceDescription.length < 50) {
         setError("Please provide a more detailed service description. (50 characters minimum)");
         setServiceDescIsInvalid(true);
 
@@ -80,20 +78,20 @@ const StepPurpose = ({ref}) => {
 
   const handleAdditionalDetailsChange = (e) => {
     const value = e.target.value;
-
+    setLocalPurposeDetails(value);
     updateFormData("purposeDetails", value);
     setDetailsIsInvalid(isOtherSelected && value.length < 10);
   };
 
   const handleServiceDescriptionChange = (e) => {
     const value = e.target.value;
-
+    setLocalServiceDescription(value);
     updateFormData("serviceDescription", value);
     setServiceDescIsInvalid(value.length < 50);
   };
 
   const [aiHints, setAiHints] = useState(null);
-  const { incrementCounter, checkRateLimit } = useRateLimiter(`aiResponse_${stepNumber}`, 6, 3);
+  const { incrementCounter, checkRateLimit } = useRateLimiter(`aiResponse_${stepNumber}`, 3, 3);
 
   useEffect(() => {
     // Ensure purpose is selected
@@ -122,6 +120,8 @@ const StepPurpose = ({ref}) => {
           logger,
           incrementCounter,
           setAiHints,
+          sessionData,
+          updateFormData,
           delay: 5000,
         });
       };
@@ -176,7 +176,7 @@ const StepPurpose = ({ref}) => {
               isRequired={isOtherSelected}
               label="Additional Details"
               placeholder={`${content.placeholder[1]} (${isOtherSelected ? "required" : "optional"})`}
-              value={formData?.[stepNumber]?.purposeDetails || ""}
+              value={localPurposeDetails}
               onChange={handleAdditionalDetailsChange}
             />
           </div>
@@ -196,7 +196,7 @@ const StepPurpose = ({ref}) => {
             label="Service Description"
             minRows={4}
             placeholder={content.placeholder[2]}
-            value={formData?.[stepNumber]?.serviceDescription || ""}
+            value={localServiceDescription}
             onChange={handleServiceDescriptionChange}
           />
         </div>

@@ -18,6 +18,11 @@ const StepUSPs = ({ ref }) => {
   const formRef = useRef();
   const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
   const formData = sessionData?.formData || {};
+  const [localValue, setLocalValue] = useState("");
+
+  useEffect(()=>{
+    setLocalValue(formData?.[stepNumber]?.usps || "");
+  },[formData?.[stepNumber]?.usps, stepNumber])
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -36,7 +41,7 @@ const StepUSPs = ({ ref }) => {
 
   const handleTextareaChange = (e) => {
     const value = e.target.value;
-
+    setLocalValue(value);
     updateFormData("usps", value);
     // Provide immediate feedback for required field
     setAttractionlsIsInvalid(!value);
@@ -67,6 +72,8 @@ const StepUSPs = ({ ref }) => {
           logger,
           incrementCounter,
           setAiHints,
+          sessionData,
+          updateFormData
         });
       };
 
@@ -97,7 +104,7 @@ const StepUSPs = ({ ref }) => {
             label="Unique Selling Points"
             minRows={4}
             placeholder={content.placeholder}
-            value={formData?.[stepNumber]?.usps || ""}
+            value={localValue}
             onChange={handleTextareaChange}
           />
         </div>

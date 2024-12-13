@@ -18,6 +18,11 @@ const StepBrandGuidelines = ({ ref }) => {
   const formRef = useRef();
   const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
   const formData = sessionData.formData;
+  const [localValue, setLocalValue] = useState("");
+
+  useEffect(() => {
+    setLocalValue(formData?.[stepNumber]?.brandGuidelines || "");
+  }, [formData, stepNumber]);
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -38,7 +43,7 @@ const StepBrandGuidelines = ({ ref }) => {
     const value = e.target.value;
     
     updateFormData("brandGuidelines", value);
-  
+    setLocalValue(value);
     // Provide immediate feedback for required field
     setAttractionlsIsInvalid(!value);
   };
@@ -93,6 +98,8 @@ const StepBrandGuidelines = ({ ref }) => {
           logger,
           incrementCounter,
           setAiHints,
+          sessionData,
+          updateFormData,
         });
       };
 
@@ -121,7 +128,7 @@ const StepBrandGuidelines = ({ ref }) => {
             label="Branding"
             minRows={4}
             placeholder={content.placeholder}
-            value={formData?.[stepNumber]?.brandGuidelines || ""}
+            value={localValue}
             onChange={handleTextareaChange}
           />
         </div>

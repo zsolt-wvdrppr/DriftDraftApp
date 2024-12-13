@@ -18,6 +18,11 @@ const StepEmotions = ({ ref }) => {
   const formRef = useRef();
   const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
   const formData = sessionData.formData;
+  const [localValue, setLocalValue] = useState("");
+
+  useEffect(()=>{
+    setLocalValue(formData?.[stepNumber]?.emotions || "");
+  },[formData?.[stepNumber]?.emotions, stepNumber])
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -38,7 +43,7 @@ const StepEmotions = ({ ref }) => {
     const value = e.target.value;
 
     updateFormData("emotions", value);
-
+    setLocalValue(value);
     // Provide immediate feedback for required field
     setAttractionlsIsInvalid(!value);
   };
@@ -75,6 +80,8 @@ const StepEmotions = ({ ref }) => {
           logger,
           incrementCounter,
           setAiHints,
+          sessionData,
+          updateFormData,
         });
       };
 
@@ -103,7 +110,7 @@ const StepEmotions = ({ ref }) => {
             label="Emotions and User Experience"
             minRows={4}
             placeholder={content.placeholder}
-            value={formData?.[stepNumber]?.emotions || ""}
+            value={localValue}
             onChange={handleTextareaChange}
           />
         </div>
