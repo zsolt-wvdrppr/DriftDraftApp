@@ -9,7 +9,8 @@ import useToastSound from '@/lib/hooks/useToastSound';
 import logger from '@/lib/logger';
 
 import NewHintNotifierIcon from './NewHintNotifierIcon';
-
+import { useSessionContext } from '@/lib/SessionProvider';
+import { useCompareStrings } from '@/lib/hooks/useCompareStrings';
 
 const HintButton = ({
   hints,
@@ -18,52 +19,59 @@ const HintButton = ({
 }) => {
   const searchParams = useSearchParams();
   const stepNumber = searchParams.get('step') || 'unknown';
-
-  const storedHintState = JSON.parse(localStorage.getItem(`hintState-${stepNumber}`)) || {};
-  const [newHintAvailable, setNewHintAvailable] = useState(storedHintState.newHintAvailable || false);
+  const { sessionData, updateFormData } = useSessionContext();
+  //const storedHintState = JSON.parse(localStorage.getItem(`hintState-${stepNumber}`)) || {};
+  const storedHintState = sessionData?.formData?.[stepNumber]?.lastHint;
+  //const [newHintAvailable, setNewHintAvailable] = useState(storedHintState.newHintAvailable || false);
+  const [newHintAvailable, setNewHintAvailable] = useState(sessionData?.formData?.[stepNumber]?.newHintAvailable || false);
   const [isAnimating, setIsAnimating] = useState(false); // Track if animation is happening
-  const [lastHints, setLastHints] = useState(storedHintState.hints || null); // Last known hints
-
+  const [lastHints, setLastHints] = useState(sessionData?.formData?.[stepNumber]?.lastHint || ""); // Last known hints
+  const { calculateSimilarity } = useCompareStrings();
   const playSound = useToastSound();
 
   // Detect hint changes and update state
   useEffect(() => {
     if (!isAnimating) {
-      if (hints && hints !== lastHints) {
-        setNewHintAvailable(true);
+      logger.debug(`HintButton: hints=${hints}, lastHints=${lastHints}`);
+      // stringified hints to avoid circular updates
+      const _hints = JSON.stringify(hints);
+      const _lastHints = JSON.stringify(lastHints);
+
+      const similarity = calculateSimilarity(_hints, _lastHints);
+      logger.debug(`Hint similarity: ${similarity}`);
+      logger.debug(similarity < 0.9)
+      if (hints && lastHints && similarity < 90) {
         playSound();
 
-        localStorage.setItem(`hintState-${stepNumber}`, JSON.stringify({
-          newHintAvailable: true,
-          hints,
-        }));
-        setLastHints(hints); // Update the last known hints
-        logger.info(`New hint detected for step ${stepNumber}`);
+        // Update global state and local state
+        updateFormData("newHintAvailable", true);
+        setNewHintAvailable(true);
+
+        logger.debug(`New hint detected for step ${stepNumber}`);
       } else if (hints === lastHints) {
         logger.info(`No new hint detected for step ${stepNumber}`);
       }
     }
   }, [hints, lastHints, stepNumber, isAnimating]);
 
-  // Handle animation and state transitions during step changes
   useEffect(() => {
-    setIsAnimating(true); // Start animation when step changes
-    const timer = setTimeout(() => {
-      setIsAnimating(false); // End animation after duration
-    }, animationDuration);
+    if (hints !== lastHints) {
+      // Avoid circular updates
+      //updateFormData("lastHint", hints); // Update global state
+      setLastHints(hints); // Update local state
+    }
+  }, [hints, lastHints]);
 
-    return () => clearTimeout(timer); // Cleanup on unmount
-  }, [stepNumber, animationDuration]);
+  
 
   const handleClick = () => {
     handleToast('hint');
     setNewHintAvailable(false);
-
-    localStorage.setItem(`hintState-${stepNumber}`, JSON.stringify({
-      newHintAvailable: false,
-      hints: lastHints,
-    }));
+    //setLastHints(hints);
+    updateFormData("lastHint", hints);
+    updateFormData("newHintAvailable", false);
   };
+
 
   return (
     <div

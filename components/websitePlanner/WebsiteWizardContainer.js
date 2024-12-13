@@ -97,26 +97,30 @@ export default function WebsiteWizardContainer() {
     }, [error]);
 
     const handleFormDataUpdate = (keyOrStep, valueOrObject) => {
-        // Check if the input is a stepNumber and object
         const isFullStepUpdate = typeof keyOrStep === "number" && typeof valueOrObject === "object";
         const stepNumber = isFullStepUpdate ? keyOrStep : currentStep;
     
-        // Determine the update payload
+        const stepData = formData[stepNumber] || {};
+    
         const update = isFullStepUpdate
-            ? valueOrObject // Full-step object
-            : { [keyOrStep]: valueOrObject }; // Single key-value pair
+            ? { ...stepData, ...valueOrObject }
+            : { ...stepData, [keyOrStep]: valueOrObject };
+    
+        // Check if update is actually needed
+        if (JSON.stringify(formData[stepNumber]) === JSON.stringify(update)) {
+            console.debug("No meaningful change detected. Skipping update.");
+            return; // Prevent unnecessary update
+        }
     
         const updatedFormData = {
             ...formData,
-            [stepNumber]: {
-                ...(formData[stepNumber] || {}), // Preserve existing data for this step
-                ...update, // Merge new data
-            },
+            [stepNumber]: update,
         };
     
-        // Update the centralized session data in one step
         updateSessionData("formData", updatedFormData);
     };
+    
+    
 
     //{ ...formData, [stepNumber]: { ...formData[stepNumber], serviceDescription: value } }
     // Validate the current step and move to the next one

@@ -53,12 +53,12 @@ const StepUSPs = ({ ref }) => {
 
   useEffect(() => {
     const question = content.question;
-    const marketing = formData[2].marketing || '';
-    const competitors = formData[3].urls.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : '';
-    const purpose = formData[0].purpose;
-    const purposeDetails = formData[0].purposeDetails || '';
-    const serviceDescription = formData[0].serviceDescription;
-    const audience = formData[1].audience;
+    const marketing = formData?.[2]?.marketing || '';
+    const competitors = formData?.[3]?.urls?.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : '';
+    const purpose = formData?.[0]?.purpose;
+    const purposeDetails = formData?.[0]?.purposeDetails || '';
+    const serviceDescription = formData?.[0]?.serviceDescription;
+    const audience = formData?.[1]?.audience;
 
     if (purpose && serviceDescription && question && serviceDescription && audience && marketing) {
 
