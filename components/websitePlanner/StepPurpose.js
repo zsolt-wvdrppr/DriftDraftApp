@@ -1,18 +1,18 @@
 'use client';
 
-import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Textarea, Button, Input } from '@nextui-org/react';
+import React, { useEffect, useState, useRef, useImperativeHandle, use } from 'react';
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Textarea, Button, Input, form } from '@nextui-org/react';
+import { IconAi } from '@tabler/icons-react';
 import ReactMarkdown from 'react-markdown';
 
 import questionsData from "@/data/questions-data.json";
-import useRateLimiter from '@/lib/hooks/useRateLimiter';
 import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from "@/lib/SessionProvider";
 
 import Sidebar from './ActionsBar/Main';
 
-const StepPurpose = ({ref}) => {
+const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");
   const [localServiceDescription, setLocalServiceDescription] = useState("");
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -86,59 +86,55 @@ const StepPurpose = ({ref}) => {
 
   const handleServiceDescriptionChange = (e) => {
     const value = e.target.value;
-
+    logger.debug('value', value);
+    logger.debug('condition:', value.length > 15 && !purposeIsInvalid);
+    if (value.length > 15 && !purposeIsInvalid) {
+      setIsAIAvailable(true);
+    } else {
+      setIsAIAvailable(false);
+    }
     setLocalServiceDescription(value);
     updateFormData("serviceDescription", value);
     setServiceDescIsInvalid(value.length < 50);
   };
 
-  const [aiHints, setAiHints] = useState(null);
-  const { incrementCounter, checkRateLimit } = useRateLimiter(`aiResponse_${stepNumber}`, 3, 3);
+  const [aiHints, setAiHints] = useState(sessionData?.formData?.[stepNumber]?.aiHints || null);
+  const [userMsg, setUserMsg] = useState(null);
+  const [isAIAvailable, setIsAIAvailable] = useState(true);
+  const [isPending, setIsPending] = useState(false);
 
-  useEffect(() => {
-    // Ensure purpose is selected
-    if (!formData?.[stepNumber]?.purpose) {
-      setAiHints(null);
+  const handleFetchHint = async () => {
 
-      return;
-    }
+    logger.debug('Fetching AI hint for step', stepNumber);
+    logger.debug(!formData[stepNumber]?.purpose || !localServiceDescription || localServiceDescription.length < 15);
+
+    if (!formData[stepNumber]?.purpose || !localServiceDescription || localServiceDescription.length < 15) return;
 
     const question = content.questionAddition2;
     const purpose = formData[0].purpose;
-    const purposeDetails = formData[0].purposeDetails || '';
-    const serviceDescription = formData[0].serviceDescription;
-    const serviceDescriptionPrompt = `Some details about my service: ${serviceDescription}` || '';
-    const isOtherPurpose = purpose && purpose.indexOf("other") !== -1 && purposeDetails && purposeDetails.length > 10;
+    const serviceDescriptionPrompt = `Some details about my service: ${localServiceDescription}` || '';
+    logger.debug('serviceDescriptionPrompt', serviceDescriptionPrompt);
+    const isOtherPurpose = purpose && purpose.indexOf("other") !== -1 && localPurposeDetails && localPurposeDetails.length > 10;
 
-    if (serviceDescriptionPrompt && serviceDescription?.length > 15 && purpose && question) {
-      const prompt = `I'm planning a website and need to answer to a question regarding what I offer. I need help with the following question: ${question}. Consider that the main purpose of the website is ${isOtherPurpose ? purposeDetails : purpose + purposeDetails}. ${serviceDescriptionPrompt} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
+    const prompt = `I'm planning a website and need to answer to a question regarding what I offer. I need help with the following question: ${question}. Consider that the main purpose of the website is ${isOtherPurpose ? localPurposeDetails : purpose + localPurposeDetails}. ${serviceDescriptionPrompt} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
 
-      const handleFetchHint = async () => {
-        await fetchAIHint({
-          stepNumber,
-          prompt,
-          content,
-          checkRateLimit,
-          logger,
-          incrementCounter,
-          setAiHints,
-          sessionData,
-          updateFormData,
-          delay: 5000,
-        });
-      };
-
-
-
-      handleFetchHint();
-
-
-      return; // Cleanup the timeout on dependency change
-    } else {
-      setAiHints(null);
+    try {
+      setIsPending(true);
+      await fetchAIHint({
+        stepNumber,
+        prompt,
+        content,
+        setAiHints,
+        setUserMsg,
+        sessionData,
+        updateFormData,
+      });
+    } catch (error) {
+      logger.error('Error fetching AI hint:', error);
+    } finally {
+      setIsPending(false);
     }
-  }, [formData, stepNumber, formData?.[stepNumber]?.purpose, formData?.[stepNumber]?.purposeDetails]);
-
+  };
 
   return (
     <form ref={formRef}>
@@ -187,6 +183,18 @@ const StepPurpose = ({ref}) => {
               <ReactMarkdown>{content.questionAddition2}</ReactMarkdown>
             </h2>
           </div>
+          <div className="flex justify-end">
+            <Button
+              color="primary"
+              isLoading={isPending}
+              isDisabled={!isAIAvailable}
+              onPress={handleFetchHint}
+              className='flex items-center gap-2'
+            >
+              <IconAi size={20} />
+              Get AI Hint
+            </Button>
+          </div>
           <Textarea
             classNames={{
               label: "!text-primary dark:!text-accentMint",
@@ -202,7 +210,7 @@ const StepPurpose = ({ref}) => {
             onChange={handleServiceDescriptionChange}
           />
         </div>
-        <Sidebar hints={aiHints} whyDoWeAsk={content.why_do_we_ask} />
+        <Sidebar hints={aiHints} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
       </div>
     </form>
   );

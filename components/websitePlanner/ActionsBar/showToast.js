@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { Button } from '@nextui-org/react';
 import { IconCopy, IconSquareRoundedX } from '@tabler/icons-react';
 
-export const showHintToast = (hints, hintToastRef, onCopySuccess, onDismiss) => {
+export const showHintToast = (hints, hintToastRef, onCopySuccess, onDismiss, userMsg) => {
   if (hintToastRef.current) {
     toast.dismiss(hintToastRef.current);
     hintToastRef.current = null;
@@ -14,7 +14,8 @@ export const showHintToast = (hints, hintToastRef, onCopySuccess, onDismiss) => 
   const newToastId = toast.custom(() => (
     <div className="p-4 shadow-lg rounded-lg bg-white/90 max-h-[90vh] overflow-y-auto select-text">
       <h4 className="font-bold">Hint</h4>
-      <ReactMarkdown className="whitespace-pre-wrap py-6">{hints}</ReactMarkdown>
+      <ReactMarkdown className="whitespace-pre-wrap py-6">{`${hints}`}</ReactMarkdown>
+      {userMsg && <p className="text-sm text-gray-500 pb-6 text-right">{userMsg}</p>}
       <div className="flex justify-between">
         <Button
           color="secondary"

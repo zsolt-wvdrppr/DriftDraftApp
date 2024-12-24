@@ -108,13 +108,13 @@ export const Navbar = () => {
             {user ? (
               <>
                 <p className="text-primary dark:text-slate-200 text-xs px-4 flex flex-col"><span>Logged in:</span><span className="">{user.email}</span></p>
-                <Button as={Link} onClick={logout}>
+                <Button as={Link} onPress={logout}>
                   Logout
                   <IconPower className="text-danger" />
                 </Button>
               </>
             ) : (
-              <Button onClick={redirectAfterLogin}>
+              <Button onPress={redirectAfterLogin}>
                 Login
                 <IconPower className="text-success" />
               </Button>
@@ -146,13 +146,13 @@ export const Navbar = () => {
                 }
                 href={item.href}
                 size="lg"
-                onClick={() => setIsMenuOpen(false)}
+                onPress={() => setIsMenuOpen(false)}
               >
                 {item.label}
               </Link>
             </NavbarMenuItem>
           ))}
-          <Button as={Link} onClick={logout}>
+          <Button as={Link} onPress={logout}>
             Logout
           </Button>
         </div>

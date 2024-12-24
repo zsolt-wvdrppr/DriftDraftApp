@@ -135,7 +135,7 @@ export default function LogIn() {
           />
           <Input
             endContent={
-              <button type="button" onClick={() => setPasswordVisible(!passwordVisible)}>
+              <button type="button" onPress={() => setPasswordVisible(!passwordVisible)}>
                 {passwordVisible ? (
                   <Icon
                     className="pointer-events-none text-2xl text-default-400"
@@ -179,7 +179,7 @@ export default function LogIn() {
             disabled={loading}
             startContent={<Icon icon="flat-color-icons:google" width={24} />}
             variant="bordered"
-            onClick={() => handleSocialLogin("google")}
+            onPress={() => handleSocialLogin("google")}
           >
             Continue with Google
           </Button>

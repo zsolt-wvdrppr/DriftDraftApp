@@ -26,6 +26,7 @@
 		"react-dom": "19.0.0",
 		"react-markdown": "^9.0.1",
 		"react-tooltip": "^5.28.0",
+		"request-ip": "^3.3.0",
 		"sonner": "^1.7.0",
 		"tailwind-merge": "^2.5.5",
 		"use-sound": "^4.0.3",

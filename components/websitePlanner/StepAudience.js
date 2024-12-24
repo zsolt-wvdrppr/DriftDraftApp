@@ -48,7 +48,7 @@ const StepAudience = ({ ref }) => {
   };
 
   const [aiHints, setAiHints] = useState(null);
-  const { incrementCounter, checkRateLimit } = useRateLimiter(`aiResponse_${stepNumber}`, 3, 3);
+   const [userMsg, setUserMsg] = useState(null);
 
   useEffect(() => {
     const question = content.question;
@@ -65,10 +65,8 @@ const StepAudience = ({ ref }) => {
           stepNumber,
           prompt,
           content,
-          checkRateLimit,
-          logger,
-          incrementCounter,
           setAiHints,
+          setUserMsg,
           sessionData,
           updateFormData,
         });
@@ -79,6 +77,7 @@ const StepAudience = ({ ref }) => {
     } else {
       logger.info("resetting hints");
       setAiHints(null);
+      setUserMsg(null);
     }
   }, [formData, content]);
 
@@ -103,7 +102,7 @@ const StepAudience = ({ ref }) => {
             onChange={handleTextareaChange}
           />
         </div>
-        <Sidebar hints={aiHints} whyDoWeAsk={content.why_do_we_ask} />
+        <Sidebar hints={aiHints} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
       </div>
     </form>
   );

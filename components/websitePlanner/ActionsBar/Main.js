@@ -10,7 +10,7 @@ import WhyWeAskButton from './WhyWeAskButton';
 import {showHintToast, showWhyWeAskToast} from './showToast';
 
 
-const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) => {
+const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked, userMsg }) => {
   const [isPending, startTransition] = useTransition();
 
   const hintToastRef = useRef(null);
@@ -20,11 +20,13 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
   const handleToast = (type) => {
     startTransition(() => {
       if (type === 'hint' && hints) {
+        logger.debug('userMsg', userMsg);
         showHintToast(
           hints,
           hintToastRef,
           () => logger.info("Hint copied to clipboard!"), // Optional success callback
-          () => logger.info("Hint toast dismissed!") // Optional dismiss callback
+          () => logger.info("Hint toast dismissed!"), // Optional dismiss callback
+          userMsg
         );
         //setNewHintAvailable(false); // Reset the indicator
         onHintClicked?.(); // Call optional handler
@@ -50,6 +52,7 @@ const Sidebar = React.memo(({ hints, whyDoWeAsk, onHintClicked, onWhyClicked }) 
       <HintButton
         handleToast={() => handleToast('hint')}
         hints={hints}
+        userMsg={userMsg}
       />
       <WhyWeAskButton
         handleToast={() => handleToast('why')}

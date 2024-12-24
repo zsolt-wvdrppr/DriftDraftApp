@@ -3,11 +3,16 @@
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import { IconPencil, IconRuler, IconComet, IconSettingsBolt } from "@tabler/icons-react";
 import { Button } from "@nextui-org/react";
-import Link from "next/link";
+import { Link } from "@nextui-org/react";
 
 const ServiceSelector = () => {
 
     const defaultContent = "This feature is not available yet. Please check back later.";
+    const urls = {
+        websitePlanner: "/website-planner",
+        landingPageWriter: "/landing-page-writer",
+        websiteGenerator: "/website-generator"
+    }
 
     return (
         <div className="max-w-screen-sm w-screen">
@@ -23,9 +28,17 @@ const ServiceSelector = () => {
                 >
                     {"Create a strategic website blueprint. Our AI helps you to define your goals, target audience, content structure and more."}
                     <div className="flex justify-end py-2 pl-4 mt-4">
-                        <Link alt="Start planning" href="/website-planner">
-                            <Button color="primary" variant="shadow">Start Your Website Plan</Button>
-                        </Link>
+                        <Button
+                            as={Link}
+                            alt="Start planning"
+                            aria-label="Start Website Planner"
+                            href={urls.websitePlanner}
+                            isExternal={false}
+                            color="primary"
+                            variant="shadow"
+                        >
+                            Start Your Website Plan
+                        </Button>
                     </div>
                 </AccordionItem>
                 <AccordionItem

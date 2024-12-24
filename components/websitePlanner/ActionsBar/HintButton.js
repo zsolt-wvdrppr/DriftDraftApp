@@ -20,10 +20,9 @@ const HintButton = ({
   const searchParams = useSearchParams();
   const stepNumber = searchParams.get('step') || 'unknown';
   const { sessionData, updateFormData } = useSessionContext();
-  //const storedHintState = JSON.parse(localStorage.getItem(`hintState-${stepNumber}`)) || {};
   const storedHintState = sessionData?.formData?.[stepNumber]?.lastHint;
-  //const [newHintAvailable, setNewHintAvailable] = useState(storedHintState.newHintAvailable || false);
-  const [newHintAvailable, setNewHintAvailable] = useState(sessionData?.formData?.[stepNumber]?.newHintAvailable || false);
+  const storedNewHintAvailable = sessionData?.formData?.[stepNumber]?.newHintAvailable || false;
+  const [newHintAvailable, setNewHintAvailable] = useState(storedNewHintAvailable); // Track if new hint is available
   const [isAnimating, setIsAnimating] = useState(false); // Track if animation is happening
   const [lastHints, setLastHints] = useState(sessionData?.formData?.[stepNumber]?.lastHint || ""); // Last known hints
   const { calculateSimilarity } = useCompareStrings();
@@ -48,17 +47,24 @@ const HintButton = ({
         setNewHintAvailable(true);
 
         logger.debug(`New hint detected for step ${stepNumber}`);
-      } else if (hints === lastHints) {
-        logger.info(`No new hint detected for step ${stepNumber}`);
+      } else {
+        logger.debug(`No new hint detected for step ${stepNumber}`);
+        setNewHintAvailable(false);
       }
     }
-  }, [hints, lastHints, stepNumber, isAnimating]);
+  }, [hints, stepNumber, isAnimating]);
 
   useEffect(() => {
-    if (hints !== lastHints) {
+
+    const _hints = JSON.stringify(hints);
+    const _lastHints = JSON.stringify(lastHints);
+
+    const similarity = calculateSimilarity(_hints, _lastHints);
+    if (hints && lastHints && similarity < 90) {
       // Avoid circular updates
       //updateFormData("lastHint", hints); // Update global state
       setLastHints(hints); // Update local state
+      setNewHintAvailable(true);
     }
   }, [hints, lastHints]);
 
@@ -68,9 +74,15 @@ const HintButton = ({
     handleToast('hint');
     setNewHintAvailable(false);
     //setLastHints(hints);
-    updateFormData("lastHint", hints);
     updateFormData("newHintAvailable", false);
   };
+
+  useEffect(() => {
+    if (newHintAvailable) {
+      updateFormData("lastHint", hints);
+    }
+    logger.debug(`HintButton: new Hint Available=${newHintAvailable}`);
+  }, [newHintAvailable]);
 
 
   return (
@@ -85,7 +97,7 @@ const HintButton = ({
           ${newHintAvailable ? 'border-yellow-400' : ''}`}
         disabled={!hints}
         variant="none"
-        onClick={handleClick}
+        onPress={handleClick}
       >
         {hints && (
           <span
