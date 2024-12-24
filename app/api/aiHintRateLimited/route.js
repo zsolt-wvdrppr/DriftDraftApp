@@ -1,6 +1,6 @@
 // /api/aiHintRateLimited/route.js
 import { rateLimiter } from "@/lib/rateLimiter";
-import { fetchFromGoogleAI } from "@/lib/googleAI";
+import { fetchFromGoogleAI } from "@/lib/googleAi";
 import crypto from "crypto";
 import logger from "@/lib/logger";
 
