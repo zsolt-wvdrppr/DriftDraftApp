@@ -25,6 +25,7 @@ export async function POST(req) {
   const ip = getClientIp(req); // Retrieve IP address
   const userId = req.headers.get("x-user-id") || null; // Get userId for authenticated users
   const type = userId ? "authenticated" : "anonymous";
+  const oneHour = 60 * 60 * 1000; // 1-hour window
 
   logger.debug(`[DEBUG]: Retrieved IP address: ${ip}`);
   logger.debug(`[DEBUG]: Received request from ${type} user (${userId || ip}).`);
@@ -41,7 +42,7 @@ export async function POST(req) {
       ip: hashIp(ip), // Hash the IP securely
       type,
       limit: userId ? 60 : 18, // Higher limit for authenticated users
-      windowMs: 60 * 60 * 1000, // 1-hour window
+      windowMs: oneHour, // 1-hour window
     });
 
     logger.debug(`[DEBUG]: Remaining requests for ${type} user (${userId || ip}): ${remainingRequests}`);
