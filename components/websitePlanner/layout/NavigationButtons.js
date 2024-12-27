@@ -18,18 +18,18 @@ export const PreviousButton = ({ disabled, onClick }) => (
 
 PreviousButton.propTypes = {
   disabled: PropTypes.bool.isRequired, // Whether the button is disabled
-  onClick: PropTypes.func.isRequired, // Function to call on click
+  onPress: PropTypes.func.isRequired, // Function to call on click
 };
 
 /** Next Button Component */
-export const NextButton = ({ isPending, onClick, debounceDelay = 500 }) => {
+export const NextButton = ({ isPending, onPress, debounceDelay = 500 }) => {
   const [isDebouncing, setIsDebouncing] = useState(false);
 
   const handleClick = () => {
     if (isDebouncing || isPending) return;
 
     setIsDebouncing(true);
-    onClick(); // Execute the passed callback
+    onPress(); // Execute the passed callback
 
     setTimeout(() => {
       setIsDebouncing(false); // Reset debounce after the delay
@@ -51,17 +51,17 @@ export const NextButton = ({ isPending, onClick, debounceDelay = 500 }) => {
 
 NextButton.propTypes = {
   isPending: PropTypes.bool.isRequired, // Whether the button shows a loading state
-  onClick: PropTypes.func.isRequired, // Function to call on click
+  onPress: PropTypes.func.isRequired, // Function to call on click
 };
 
 /** Submit Button Component */
-export const SubmitButton = ({ isPending, onClick }) => (
+export const SubmitButton = ({ isPending, onPress }) => (
   <Button
     className="w-32 border border-secondaryTeal font-bold tracking-wider"
     color="secondary"
     disabled={isPending}
     variant="shadow"
-    onPress={onClick}
+    onPress={onPress}
   >
     {isPending ? 'Submitting...' : 'Submit'}
   </Button>
@@ -69,5 +69,5 @@ export const SubmitButton = ({ isPending, onClick }) => (
 
 SubmitButton.propTypes = {
   isPending: PropTypes.bool.isRequired, // Whether the button shows a loading state
-  onClick: PropTypes.func.isRequired, // Function to call on click
+  onPress: PropTypes.func.isRequired, // Function to call on click
 };
