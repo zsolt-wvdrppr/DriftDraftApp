@@ -98,7 +98,7 @@ const StepPurpose = ({ ref }) => {
     setServiceDescIsInvalid(value.length < 50);
   };
 
-  const [aiHints, setAiHints] = useState(sessionData?.formData?.[stepNumber]?.aiHints || null);
+  const [aiHint, setAiHint] = useState(sessionData?.formData?.[stepNumber]?.aiHint || null);
   const [userMsg, setUserMsg] = useState(null);
   const [isAIAvailable, setIsAIAvailable] = useState(true);
   const [isPending, setIsPending] = useState(false);
@@ -124,7 +124,7 @@ const StepPurpose = ({ ref }) => {
         stepNumber,
         prompt,
         content,
-        setAiHints,
+        setAiHint,
         setUserMsg,
         sessionData,
         updateFormData,
@@ -210,7 +210,7 @@ const StepPurpose = ({ ref }) => {
             onChange={handleServiceDescriptionChange}
           />
         </div>
-        <Sidebar hints={aiHints} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
+        <Sidebar hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
       </div>
     </form>
   );

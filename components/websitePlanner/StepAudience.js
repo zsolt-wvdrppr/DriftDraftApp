@@ -47,7 +47,7 @@ const StepAudience = ({ ref }) => {
     updateFormData("audience", value);
   };
 
-  const [aiHints, setAiHints] = useState(null);
+  const [aiHint, setAiHint] = useState(null);
    const [userMsg, setUserMsg] = useState(null);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const StepAudience = ({ ref }) => {
           stepNumber,
           prompt,
           content,
-          setAiHints,
+          setAiHint,
           setUserMsg,
           sessionData,
           updateFormData,
@@ -75,8 +75,8 @@ const StepAudience = ({ ref }) => {
       logger.info("fetching content");
       handleFetchHint();
     } else {
-      logger.info("resetting hints");
-      setAiHints(null);
+      logger.info("resetting hint");
+      setAiHint(null);
       setUserMsg(null);
     }
   }, [formData, content]);
@@ -102,7 +102,7 @@ const StepAudience = ({ ref }) => {
             onChange={handleTextareaChange}
           />
         </div>
-        <Sidebar hints={aiHints} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
+        <Sidebar hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
       </div>
     </form>
   );

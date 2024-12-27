@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from '@nextui-org/react';
 import { useSearchParams } from 'next/navigation';
@@ -13,93 +13,59 @@ import { useSessionContext } from '@/lib/SessionProvider';
 import { useCompareStrings } from '@/lib/hooks/useCompareStrings';
 
 const HintButton = ({
-  hints,
+  hints: hint,
   handleToast,
   animationDuration = 500, // Animation duration in ms
 }) => {
+  const { sessionData, updateFormData } = useSessionContext();
   const searchParams = useSearchParams();
   const stepNumber = searchParams.get('step') || 'unknown';
-  const { sessionData, updateFormData } = useSessionContext();
-  const storedHintState = sessionData?.formData?.[stepNumber]?.lastHint;
-  const storedNewHintAvailable = sessionData?.formData?.[stepNumber]?.newHintAvailable || false;
-  const [newHintAvailable, setNewHintAvailable] = useState(storedNewHintAvailable); // Track if new hint is available
-  const [isAnimating, setIsAnimating] = useState(false); // Track if animation is happening
-  const [lastHints, setLastHints] = useState(sessionData?.formData?.[stepNumber]?.lastHint || ""); // Last known hints
-  const { calculateSimilarity } = useCompareStrings();
+  const [newHintAvailable, setNewHintAvailable] = useState(false); // Track if new hint is available
+  const [lastHint, setLastHint] = useState(sessionData?.formData?.[stepNumber]?.lastHint || ""); // Last known hints
   const playSound = useToastSound();
+
+  const hintsChanged = useMemo(() => {
+    logger.debug(`HintButton: hints=${hint}, lastHints=${lastHint}`);
+    logger.debug(`HintButton: hintsChanged=${JSON.stringify(hint) !== JSON.stringify(lastHint)}`);
+    if (!hint) return false;
+    return JSON.stringify(hint) !== JSON.stringify(lastHint);
+  }, [hint, lastHint]);
+  
 
   // Detect hint changes and update state
   useEffect(() => {
-    if (!isAnimating) {
-      logger.debug(`HintButton: hints=${hints}, lastHints=${lastHints}`);
-      // stringified hints to avoid circular updates
-      const _hints = JSON.stringify(hints);
-      const _lastHints = JSON.stringify(lastHints);
-
-      const similarity = calculateSimilarity(_hints, _lastHints);
-      logger.debug(`Hint similarity: ${similarity}`);
-      logger.debug(similarity < 0.9)
-      if (hints && lastHints && similarity < 90) {
-        playSound();
-
-        // Update global state and local state
-        updateFormData("newHintAvailable", true);
-        setNewHintAvailable(true);
-
-        logger.debug(`New hint detected for step ${stepNumber}`);
-      } else {
-        logger.debug(`No new hint detected for step ${stepNumber}`);
-        setNewHintAvailable(false);
-      }
-    }
-  }, [hints, stepNumber, isAnimating]);
-
-  useEffect(() => {
-
-    const _hints = JSON.stringify(hints);
-    const _lastHints = JSON.stringify(lastHints);
-
-    const similarity = calculateSimilarity(_hints, _lastHints);
-    if (hints && lastHints && similarity < 90) {
-      // Avoid circular updates
-      //updateFormData("lastHint", hints); // Update global state
-      setLastHints(hints); // Update local state
+    if (hintsChanged) {
       setNewHintAvailable(true);
+      playSound();
     }
-  }, [hints, lastHints]);
-
-  
+  }, [hint, sessionData]);
 
   const handleClick = () => {
     handleToast('hint');
     setNewHintAvailable(false);
-    //setLastHints(hints);
-    updateFormData("newHintAvailable", false);
+    setLastHint(hint);
   };
 
   useEffect(() => {
-    if (newHintAvailable) {
-      updateFormData("lastHint", hints);
-    }
-    logger.debug(`HintButton: new Hint Available=${newHintAvailable}`);
+    updateFormData("newHintAvailable", newHintAvailable);
   }, [newHintAvailable]);
 
+  useEffect(() => {
+    updateFormData("lastHint", lastHint);
+  }, [lastHint]);
 
   return (
-    <div
-      className={isAnimating ? 'exiting-animation-class' : 'entering-animation-class'} // Apply appropriate animation
-    >
       <Button
         auto
         aria-label="Check hint"
         className={`select-none md:w-32 md:h-24 break-words md:relative bottom-0 -right-4 z-10 md:bg-transparent md:shadow-md md:right-auto flex md:border-3 md:border-transparent
-          ${!hints ? 'cursor-not-allowed border-3 border-transparent border-gray-200 opacity-0' : ''}
+          ${!hint ? 'cursor-not-allowed border-3 border-transparent border-gray-200 opacity-0' : ''}
           ${newHintAvailable ? 'border-yellow-400' : ''}`}
-        disabled={!hints}
+        disabled={!hint}
         variant="none"
         onPress={handleClick}
       >
-        {hints && (
+        {hint && (
           <span
             className={`hidden md:block absolute bottom-0 ${newHintAvailable ? 'animate-pulse font-bold' : ''}`}
           >
@@ -108,7 +74,6 @@ const HintButton = ({
         )}
         <NewHintNotifierIcon trigger={newHintAvailable} />
       </Button>
-    </div>
   );
 };
 
