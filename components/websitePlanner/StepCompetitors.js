@@ -122,7 +122,7 @@ const StepCompetitors = ({ref}) => {
                   }}
                 />
                 {urls.length > 1 && (
-                  <IconXboxXFilled className='text-danger cursor-pointer drop-shadow-lg opacity-70 hover:opacity-100 hover:scale-110 transition-all' onClick={() => handleRemoveUrl(index)} />
+                  <IconXboxXFilled className='text-danger cursor-pointer drop-shadow-lg opacity-70 hover:opacity-100 hover:scale-110 transition-all' onPress={() => handleRemoveUrl(index)} />
                 )}
               </motion.div>
             ))}
@@ -131,7 +131,7 @@ const StepCompetitors = ({ref}) => {
             className="mt-4 border hover:scale-105 transition-all focus-within:shadow-none"
             type="button"
             variant='shadow'
-            onClick={() => handleAddUrl(urls.length - 1)}
+            onPress={() => handleAddUrl(urls.length - 1)}
           >
             <IconRowInsertBottom className='text-secondaryPersianGreen' />
             Add Another URL

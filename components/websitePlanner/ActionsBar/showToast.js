@@ -20,7 +20,7 @@ export const showHintToast = (hints, hintToastRef, onCopySuccess, onDismiss, use
         <Button
           color="secondary"
           variant="bordered"
-          onClick={() => {
+          onPress={() => {
             navigator.clipboard.writeText(hints);
             toast.success("Hints copied to clipboard", { duration: 2000, classNames: { toast: 'text-green-600' } });
             onCopySuccess?.(); // Call optional onCopySuccess callback
@@ -32,7 +32,7 @@ export const showHintToast = (hints, hintToastRef, onCopySuccess, onDismiss, use
         <Button
           color="danger"
           variant="bordered"
-          onClick={() => {
+          onPress={() => {
             toast.dismiss(newToastId);
             hintToastRef.current = null;
             onDismiss?.(); // Call optional onDismiss callback
@@ -68,7 +68,7 @@ export const showWhyWeAskToast = (reason, whyToastRef, onDismiss) => {
         <Button
           color="danger"
           variant="bordered"
-          onClick={() => {
+          onPress={() => {
             toast.dismiss(newToastId);
             whyToastRef.current = null;
             onDismiss?.(); // Call optional onDismiss callback

@@ -122,7 +122,7 @@ export default function SignUp() {
           <Input
             isRequired
             endContent={
-              <button type="button" onClick={toggleVisibility}>
+              <Button type="button" onPress={toggleVisibility}>
                 {isVisible ? (
                   <Icon
                     className="pointer-events-none text-2xl text-default-400"
@@ -134,7 +134,7 @@ export default function SignUp() {
                     icon="solar:eye-bold"
                   />
                 )}
-              </button>
+              </Button>
             }
             label="Password"
             name="password"

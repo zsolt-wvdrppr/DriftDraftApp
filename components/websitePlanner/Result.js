@@ -143,7 +143,7 @@ const Result = ({ }) => {
             <Button
               color="secondary"
               variant="bordered"
-              onClick={() => {
+              onPress={() => {
                 navigator.clipboard.writeText(aiResult);
                 toast.success('Texts copied to clipboard', {
                   duration: 2000,
@@ -162,7 +162,7 @@ const Result = ({ }) => {
             <Button
               color="secondary"
               variant="bordered"
-              onClick={() => {
+              onPress={() => {
                 navigator.clipboard.writeText(aiResult);
                 toast.success('Texts copied to clipboard', {
                   duration: 2000,

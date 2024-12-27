@@ -97,7 +97,7 @@ export default function UserActivities() {
         startTransition(() => {
             if (toastRef.current) {
                 // Dismiss the toast and reset state
-                toast.dismiss(toastRef.current);
+                toast.dismiss(toastRef.current);s
                 toastRef.current = null;
             }
 
@@ -106,7 +106,7 @@ export default function UserActivities() {
                     <div className='w-fit relative'>
                         <Button
                             className='!absolute -top-4 -left-9 p-2'
-                            onClick={() => {
+                            onPress={() => {
                                 toast.dismiss(t)
                                 toastRef.current = null;
                                 Cookies.set('toastDismissed', true, { expires: 365 });
@@ -152,11 +152,11 @@ export default function UserActivities() {
     return (
         <div className="p-4 max-w-xl mx-auto overflow-hidden">
             <div className='w-full flex justify-end my-4 text-primary'>
-                <button
-                    onClick={() => handleToast()}
+                <Button
+                    onPress={() => handleToast()}
                 >
                     <IconInfoCircleFilled className='info-icon' />
-                </button>
+                </Button>
             </div>
             <Reorder.Group
                 axis="y"
@@ -187,52 +187,52 @@ export default function UserActivities() {
                             </div>
                             <div className="flex gap-2">
                                 <div className='grid grid-cols-2 gap-3 md:flex md:gap-2'>
-                                    <button
+                                    <Button
                                         className="btn btn-primary btn-sm"
-                                        onClick={() => logger.info(`Edit item with ID: ${item.id}`)}
+                                        onPress={() => logger.info(`Edit item with ID: ${item.id}`)}
                                     >
                                         <IconEdit className='edit-icon' />
                                         <Tooltip anchorSelect=".edit-icon" place="top">
                                             Edit
                                         </Tooltip>
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         className="btn btn-warning btn-sm"
-                                        onClick={() => confirmDelete(item)}
+                                        onPress={() => confirmDelete(item)}
                                     >
                                         <IconTrash className='delete-icon' />
                                         <Tooltip anchorSelect=".delete-icon" place="top">
                                             Delete
                                         </Tooltip>
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         className="btn btn-secondary btn-sm"
-                                        onClick={() => logger.info(`Share item with ID: ${item.id}`)}
+                                        onPress={() => logger.info(`Share item with ID: ${item.id}`)}
                                     >
                                         <IconShare className='share-icon' />
                                         <Tooltip anchorSelect=".share-icon" place="top">
                                             Share
                                         </Tooltip>
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         className="btn btn-info btn-sm"
-                                        onClick={() => viewPlan(item)}
+                                        onPress={() => viewPlan(item)}
                                     >
                                         <IconEye className='view-icon' />
                                         <Tooltip anchorSelect=".view-icon" place="top">
                                             View
                                         </Tooltip>
-                                    </button>
+                                    </Button>
                                 </div>
-                                <button
+                                <Button
                                     className="btn btn-success btn-sm"
-                                    onClick={() => logger.info(`Submit for quote: ${item.id}`)}
+                                    onPress={() => logger.info(`Submit for quote: ${item.id}`)}
                                 >
                                     <IconWand className='quote-icon' />
                                     <Tooltip anchorSelect=".quote-icon" place="top">
                                         Get Quote
                                     </Tooltip>
-                                </button>
+                                </Button>
                             </div>
                         </Reorder.Item>
                     ))}

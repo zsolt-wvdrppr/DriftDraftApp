@@ -12,7 +12,7 @@ const WhyWeAskButton = ({ whyDoWeAsk, handleToast }) => {
         ${!whyDoWeAsk ? 'cursor-not-allowed border border-gray-200 opacity-0' : ''}`}
       disabled={!whyDoWeAsk}
       variant="none"
-      onClick={() => handleToast('why')}
+      onPress={() => handleToast('why')}
     >
       {whyDoWeAsk && (
         <span className="hidden absolute bottom-0 md:block">

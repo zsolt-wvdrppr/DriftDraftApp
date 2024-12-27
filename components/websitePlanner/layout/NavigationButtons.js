@@ -10,7 +10,7 @@ export const PreviousButton = ({ disabled, onClick }) => (
     color="secondary"
     disabled={disabled}
     variant="shadow"
-    onClick={onClick}
+    onPress={onClick}
   >
     Previous
   </Button>
@@ -42,7 +42,7 @@ export const NextButton = ({ isPending, onClick, debounceDelay = 500 }) => {
       color="secondary"
       disabled={isPending || isDebouncing} // Disable button during debounce
       variant="shadow"
-      onClick={handleClick}
+      onPress={handleClick}
     >
       {isPending ? 'Loading...' : 'Next'}
     </Button>
@@ -61,7 +61,7 @@ export const SubmitButton = ({ isPending, onClick }) => (
     color="secondary"
     disabled={isPending}
     variant="shadow"
-    onClick={onClick}
+    onPress={onClick}
   >
     {isPending ? 'Submitting...' : 'Submit'}
   </Button>

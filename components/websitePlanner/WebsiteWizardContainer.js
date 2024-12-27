@@ -228,7 +228,7 @@ export default function WebsiteWizardContainer() {
                                         key={step.id}
                                         className={`flex flex-row hover:!text-neutralDark dark:hover:!text-slate-200 ${currentStep === index ? "bg-slate-200 dark:text-neutralDark font-bold" : ""}`}
                                         textValue={step.label}
-                                        onClick={() => handlePicker(index)}
+                                        onPress={() => handlePicker(index)}
                                     >
                                         <div className="grid grid-cols-4 items-center w-full">
                                             <span className="col-span-1 text-primary">{step.icon}</span>
@@ -266,17 +266,17 @@ export default function WebsiteWizardContainer() {
                     <div className="navigation-buttons w-full flex gap-2 justify-evenly py-8">
                         <PreviousButton
                             disabled={currentStep <= 0}
-                            onClick={handlePrevious}
+                            onPress={handlePrevious}
                         />
                         {currentStep < steps.length - 1 ? (
                             <NextButton
                                 isPending={isPending}
-                                onClick={handleNext}
+                                onPress={handleNext}
                             />
                         ) : (
                             <SubmitButton
                                 isPending={isPending}
-                                onClick={handleFormSubmit}
+                                onPress={handleFormSubmit}
                             />
                         )}
                     </div>
