@@ -6,14 +6,17 @@ import { Button } from '@nextui-org/react';
 import { IconCopy } from '@tabler/icons-react';
 import { toast } from 'sonner';
 
+import { useSessionContext } from "@/lib/SessionProvider";
 import logger from '@/lib/logger';
 
-const Result = ({ formData }) => {
+const Result = ({ }) => {
 
+  const { sessionData, updateSessionData, setError } = useSessionContext();
   const [aiResult, setAiResult] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const formData = sessionData.formData;
     const purpose = formData[0].purpose;
     const purposeDetails = formData[0]?.purposeDetails || ''; // optional
     const serviceDescription = formData[0].serviceDescription;
@@ -74,13 +77,21 @@ const Result = ({ formData }) => {
 
       const fetchContent = async () => {
         try {
-          const response = await fetch("/api/googleAi", {
+          const response = await fetch("/api/aiHintRateLimited", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ prompt }),
           });
+
+          if (response.status === 429) {
+            const { message, remainingMinutes } = await response.json();      
+            setAiResult(
+              `\n\n${message} Upgrade your subscription, or try again later.`
+            );
+            return;
+          }
 
           if (!response.ok) {
             const errorData = await response.json();
@@ -91,6 +102,7 @@ const Result = ({ formData }) => {
           const data = await response.json();
 
           setAiResult(data.content || "No content generated.");
+          updateSessionData("aiGeneratedPlan", data.content);
         } catch (error) {
           logger.error("Error fetching content:", error);
           setAiResult("An error occurred while generating content.");
@@ -102,7 +114,7 @@ const Result = ({ formData }) => {
       logger.info("fetching content");
       fetchContent();
     } else {
-      logger.info("resetting hints");
+      logger.info("resetting hint");
       setAiResult(null);
       setIsLoading(false);
     }

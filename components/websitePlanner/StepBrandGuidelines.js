@@ -48,8 +48,8 @@ const StepBrandGuidelines = ({ ref }) => {
     setAttractionlsIsInvalid(!value);
   };
 
-  const [aiHints, setAiHints] = useState(null);
-  const { incrementCounter, checkRateLimit } = useRateLimiter(`aiResponse_${stepNumber}`, 3, 3);
+  const [aiHint, setAiHint] = useState(null);
+  const [userMsg, setUserMsg] = useState(null);
 
   useEffect(() => {
     const question = content.question;
@@ -94,10 +94,8 @@ const StepBrandGuidelines = ({ ref }) => {
           stepNumber,
           prompt,
           content,
-          checkRateLimit,
-          logger,
-          incrementCounter,
-          setAiHints,
+          setAiHint,
+          setUserMsg,
           sessionData,
           updateFormData,
         });
@@ -106,8 +104,9 @@ const StepBrandGuidelines = ({ ref }) => {
       logger.info("fetching content");
       handleFetchHint();
     } else {
-      logger.info("resetting hints");
-      setAiHints(null);
+      logger.info("resetting hint");
+      setAiHint(null);
+      setUserMsg(null);
     }
   }, []);
 
@@ -132,7 +131,7 @@ const StepBrandGuidelines = ({ ref }) => {
             onChange={handleTextareaChange}
           />
         </div>
-        <Sidebar hints={aiHints} whyDoWeAsk={content.why_do_we_ask} />
+        <Sidebar hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
       </div>
     </form>
   );

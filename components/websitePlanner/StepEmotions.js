@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
 import { Textarea } from '@nextui-org/react';
 
 import questionsData from "@/data/questions-data.json";
-import useRateLimiter from '@/lib/hooks/useRateLimiter';
 import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from '@/lib/SessionProvider';
@@ -48,8 +47,8 @@ const StepEmotions = ({ ref }) => {
     setAttractionlsIsInvalid(!value);
   };
 
-  const [aiHints, setAiHints] = useState('');
-  const { incrementCounter, checkRateLimit } = useRateLimiter(`aiResponse_${stepNumber}`, 3, 3);
+  const [aiHint, setAiHint] = useState('');
+  const [userMsg, setUserMsg] = useState(null);
 
   useEffect(() => {
     const question = content.question;
@@ -76,10 +75,8 @@ const StepEmotions = ({ ref }) => {
           stepNumber,
           prompt,
           content,
-          checkRateLimit,
-          logger,
-          incrementCounter,
-          setAiHints,
+          setAiHint,
+          setUserMsg,
           sessionData,
           updateFormData,
         });
@@ -88,8 +85,9 @@ const StepEmotions = ({ ref }) => {
       logger.info("fetching content");
       handleFetchHint();
     } else {
-      logger.info("resetting hints");
-      setAiHints(null);
+      logger.info("resetting hint");
+      setAiHint(null);
+      setUserMsg(null);
     }
   }, []);
 
@@ -114,7 +112,7 @@ const StepEmotions = ({ ref }) => {
             onChange={handleTextareaChange}
           />
         </div>
-        <Sidebar hints={`${aiHints}`} whyDoWeAsk={content.why_do_we_ask} />
+        <Sidebar hint={`${aiHint}`} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
       </div>
     </form>
   );

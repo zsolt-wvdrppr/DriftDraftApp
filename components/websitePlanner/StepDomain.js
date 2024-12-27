@@ -48,8 +48,8 @@ const StepDomain = ({ ref }) => {
     setAttractionlsIsInvalid(!value);
   };
 
-  const [aiHints, setAiHints] = useState(null);
-  const { incrementCounter, checkRateLimit } = useRateLimiter(`aiResponse_${stepNumber}`, 3, 3);
+  const [aiHint, setAiHint] = useState(null);
+  const [userMsg, setUserMsg] = useState(null);
 
   useEffect(() => {
     const question = content.question;
@@ -63,17 +63,15 @@ const StepDomain = ({ ref }) => {
 
     if (purpose && serviceDescription && question && serviceDescription && audience && marketing && usps) {
 
-      const prompt = `I'm planning a website and need some ideas for a domain. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. This is how I plan to attract my audience: ${marketing}. ${competitors}. About my unique selling points: ${usps}. So give me some ideas while strictly following guidelines and other SEO best practices and outline them how they're applied: ${content.hints}. The domain name must be SHORT and Concise so must not be longer than 15 characters. Keep it concise and to the point. The response must be less than 450 characters.`;
+      const prompt = `I'm planning a website and need some ideas for a domain. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. This is how I plan to attract my audience: ${marketing}. ${competitors}. About my unique selling points: ${usps}. So give me some ideas while strictly following guidelines and other SEO best practices and outline them how they're applied: ${content.hint}. The domain name must be SHORT and Concise so must not be longer than 15 characters. Keep it concise and to the point. The response must be less than 450 characters.`;
  
       const handleFetchHint = async () => {
         await fetchAIHint({
           stepNumber,
           prompt,
           content,
-          checkRateLimit,
-          logger,
-          incrementCounter,
-          setAiHints,
+          setAiHint,
+          setUserMsg,
           sessionData,
           updateFormData,
         });
@@ -82,8 +80,9 @@ const StepDomain = ({ ref }) => {
       logger.info("fetching content");
       handleFetchHint();
     } else {
-      logger.info("resetting hints");
-      setAiHints(null);
+      logger.info("resetting hint");
+      setAiHint(null);
+      setUserMsg(null);
     }
   }, []);
 
@@ -107,7 +106,7 @@ const StepDomain = ({ ref }) => {
             onChange={handleTextareaChange}
           />
         </div>
-        <Sidebar hints={aiHints} whyDoWeAsk={content.why_do_we_ask} />
+        <Sidebar hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
       </div>
     </form>
   );
