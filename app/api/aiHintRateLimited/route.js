@@ -1,10 +1,9 @@
-// /api/aiHintRateLimited/route.js
 import { rateLimiter } from "@/lib/rateLimiter";
 import { fetchFromGoogleAI } from "@/lib/googleAi";
 import crypto from "crypto";
 import logger from "@/lib/logger";
 
-// Helper to hash IP
+// Helper to hash IP securely
 const hashIp = (ip) => {
   const safeIp = ip || "unknown"; // Fallback to 'unknown' if IP is null
   return crypto.createHash("sha256").update(safeIp).digest("hex");
@@ -28,21 +27,20 @@ export async function POST(req) {
   const type = userId ? "authenticated" : "anonymous";
   const oneHour = 60 * 60 * 1000; // 1-hour window
 
-  logger.debug(`[RATE LIMITER API]: Retrieved IP address: ${ip}`);
-  logger.debug(`[RATE LIMITER API]: Received request from ${type} user (${userId || ip}).`);
-
   try {
     const body = await req.json();
-    const { prompt } = body;
+    const { prompt, clientData } = body; // Extract prompt and clientData from the request body
 
     logger.debug(`[RATE LIMITER API]: Prompt received: ${prompt}`);
+    logger.debug(`[RATE LIMITER API]: Client data: ${JSON.stringify(clientData)}`);
 
     // Check rate limits
-    const { isRateLimited, remainingRequests, logRequest } = await rateLimiter({
+    const { isRateLimited, remainingRequests } = await rateLimiter({
       userId,
       ip: hashIp(ip), // Hash the IP securely
-      userAgent,
       type,
+      userAgent,
+      clientData,
       limit: userId ? 60 : 18, // Higher limit for authenticated users
       windowMs: oneHour, // 1-hour window
     });
@@ -75,13 +73,12 @@ export async function POST(req) {
       );
     }
 
-    // Log request only after a successful AI response
     logger.debug(`[RATE LIMITER API]: Successfully processed request for ${type} user (${userId || ip}).`);
 
     return new Response(
       JSON.stringify({
         content: aiResponse,
-        remainingRequests, // Adjust remaining count for display
+        remainingRequests, // Include remaining requests
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );

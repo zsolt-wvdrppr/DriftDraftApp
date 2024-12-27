@@ -8,12 +8,14 @@ import { toast } from 'sonner';
 
 import { useSessionContext } from "@/lib/SessionProvider";
 import logger from '@/lib/logger';
+import useClientData from "@/lib/hooks/useClientData";
 
 const Result = ({ }) => {
 
   const { sessionData, updateSessionData, setError } = useSessionContext();
   const [aiResult, setAiResult] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { clientData } = useClientData();
 
   useEffect(() => {
     const formData = sessionData.formData;
@@ -82,7 +84,7 @@ const Result = ({ }) => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ prompt }),
+            body: JSON.stringify({ prompt, clientData }),
           });
 
           if (response.status === 429) {
