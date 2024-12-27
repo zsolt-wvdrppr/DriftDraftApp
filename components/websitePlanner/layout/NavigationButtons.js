@@ -4,13 +4,13 @@ import { Button } from '@nextui-org/react';
 import { useState } from 'react';
 
 /** Previous Button Component */
-export const PreviousButton = ({ disabled, onClick }) => (
+export const PreviousButton = ({ disabled, onPress }) => (
   <Button
     className="w-32 border border-secondaryTeal font-bold tracking-wider disabled:bg-gray-300 disabled:border-none"
     color="secondary"
     disabled={disabled}
     variant="shadow"
-    onPress={onClick}
+    onPress={onPress}
   >
     Previous
   </Button>
