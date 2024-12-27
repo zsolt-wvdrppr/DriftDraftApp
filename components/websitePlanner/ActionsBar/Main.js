@@ -8,6 +8,7 @@ import logger from '@/lib/logger';
 import HintButton from './HintButton';
 import WhyWeAskButton from './WhyWeAskButton';
 import {showHintToast, showWhyWeAskToast} from './showToast';
+import { toast } from 'sonner';
 
 
 const Sidebar = React.memo(({ hint, whyDoWeAsk, onHintClicked, onWhyClicked, userMsg }) => {
@@ -18,6 +19,7 @@ const Sidebar = React.memo(({ hint, whyDoWeAsk, onHintClicked, onWhyClicked, use
 
   // Track changes to `hints` and show the indicator
   const handleToast = (type) => {
+    toast.dismiss(); // Close all active toasts
     startTransition(() => {
       if (type === 'hint' && hint) {
         logger.debug('userMsg', userMsg);

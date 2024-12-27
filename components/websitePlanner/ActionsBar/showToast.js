@@ -6,8 +6,11 @@ import { Button } from '@nextui-org/react';
 import { IconCopy, IconSquareRoundedX } from '@tabler/icons-react';
 
 export const showHintToast = (hints, hintToastRef, onCopySuccess, onDismiss, userMsg) => {
+    
+
+  // Dismiss the existing hint toast if it exists
   if (hintToastRef.current) {
-    toast.dismiss(hintToastRef.current);
+    //toast.dismiss(hintToastRef.current);
     hintToastRef.current = null;
   }
 
@@ -21,6 +24,7 @@ export const showHintToast = (hints, hintToastRef, onCopySuccess, onDismiss, use
           color="secondary"
           variant="bordered"
           onPress={() => {
+            toast.dismiss(); // Close all active toasts
             navigator.clipboard.writeText(hints);
             toast.success("Hints copied to clipboard", { duration: 2000, classNames: { toast: 'text-green-600' } });
             onCopySuccess?.(); // Call optional onCopySuccess callback
@@ -55,8 +59,10 @@ export const showHintToast = (hints, hintToastRef, onCopySuccess, onDismiss, use
 };
 
 export const showWhyWeAskToast = (reason, whyToastRef, onDismiss) => {
+
+  // Dismiss the existing why toast if it exists
   if (whyToastRef.current) {
-    toast.dismiss(whyToastRef.current);
+    //toast.dismiss(whyToastRef.current);
     whyToastRef.current = null;
   }
 
@@ -64,12 +70,12 @@ export const showWhyWeAskToast = (reason, whyToastRef, onDismiss) => {
     <div className="p-4 shadow-lg rounded-lg bg-white/90">
       <h4 className="font-bold">Reason we ask</h4>
       <ReactMarkdown className="whitespace-pre-wrap py-6">{reason}</ReactMarkdown>
-      <div className="flex justify-between">
+      <div className="flex justify-end">
         <Button
           color="danger"
           variant="bordered"
           onPress={() => {
-            toast.dismiss(newToastId);
+            toast.dismiss();
             whyToastRef.current = null;
             onDismiss?.(); // Call optional onDismiss callback
           }}
