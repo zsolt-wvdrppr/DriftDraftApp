@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useTransition, Suspense } from 'react';
+import React, { useState, useRef, useEffect, useTransition, Suspense, use } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
@@ -22,7 +22,7 @@ import { useProfileUpdater } from '@/lib/hooks/useProfileUpdater';
 import { useRestoreStep } from '@/lib/hooks/useRestoreStep';
 import { useUpdateTabName } from '@/lib/hooks/useUpdateTabName';
 import { useManageSessionData } from '@/lib/hooks/useManageSessionData';
-import { SessionProvider } from "@/lib/SessionProvider";
+import { useSessionContext } from "@/lib/SessionProvider";
 
 import ProgressBar from './ProgressBar';
 import StepPurpose from './StepPurpose';
@@ -54,24 +54,25 @@ const steps = [
     { id: 9, label: "Contact Details", icon: <IconAddressBook />, component: StepContactInfo }
 ];
 
-export default function WebsiteWizardContainer() {
+export default function WebsiteWizardContainer({ }) {
+
+    const { sessionData, updateSessionData, isInitialised, initialiseSession, error, setError, clearLocalStorage, currentStep, setCurrentStep, setSteps } = useSessionContext();
+
+    useEffect(() => {
+        setSteps(steps);
+    }, []);
 
     const { user, loading } = useAuth(); // Access user state
-    const { sessionData, updateSessionData, isInitialised, clearLocalStorage } = useManageSessionData(user?.id, steps);
     const [isSubmitted, setIsSubmitted] = useState(false); // Track submission state
-    const [currentStep, setCurrentStep] = useState(0);
     const [tabName, setTabName] = useState(steps[0]?.label || '');
     const stepRef = useRef(null);
-    const [error, setError] = useState(null);
     const [isPending, startTransition] = useTransition();
     const formData = sessionData?.formData || {};
 
     const router = useRouter();
 
-    //useInitialiseFormData(setFormData, logger);
     useProfileUpdater(user);
     useRestoreStep(formData, setCurrentStep, '/website-planner');
-    //useSaveFormData(formData);
     useUpdateTabName(currentStep, steps, setTabName);
 
     const errorToast = (message) => {
@@ -89,7 +90,6 @@ export default function WebsiteWizardContainer() {
         if (error) {
             errorToast(error);
             handleFormDataUpdate("isValid", false);
-            //setFormData((prev) => ({ ...prev, [currentStep]: { ...prev?.[currentStep], isValid: false } }));
             const timeout = setTimeout(() => setError(null), 5000);
 
             return () => clearTimeout(timeout);
@@ -121,8 +121,6 @@ export default function WebsiteWizardContainer() {
     };
 
 
-
-    //{ ...formData, [stepNumber]: { ...formData[stepNumber], serviceDescription: value } }
     // Validate the current step and move to the next one
     const handleNext = () => {
         goToNextStep(
@@ -180,12 +178,6 @@ export default function WebsiteWizardContainer() {
         return handleValidation(stepRef, currentStep, formData, handleFormDataUpdate);
     };
 
-
-    /*if (isSubmitted) {
-        // Render the Result component if the form is submitted
-        return <Result formData={formData} />;
-    }*/
-
     if (loading || isPending || !isInitialised) {
         return (
             <div className="flex items-center justify-center h-screen">
@@ -195,13 +187,7 @@ export default function WebsiteWizardContainer() {
     }
 
     return (
-        <SessionProvider
-            sessionData={sessionData}
-            sessionId={sessionData.sessionId}
-            setError={setError}
-            updateFormData={handleFormDataUpdate}
-            updateSessionData={updateSessionData}
-        >
+        <>
             {isSubmitted && <Result formData={formData} />}
 
             {(!isSubmitted) &&
@@ -282,6 +268,6 @@ export default function WebsiteWizardContainer() {
                     </div>
                 </div>
             }
-        </SessionProvider>
+        </>
     );
 }

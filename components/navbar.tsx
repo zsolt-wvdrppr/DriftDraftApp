@@ -10,14 +10,14 @@ import {
   NavbarItem,
   NavbarMenuItem,
 } from "@nextui-org/react";
-import { Button } from "@nextui-org/react";
-import { Kbd } from "@nextui-org/react";
-import { Link } from "@nextui-org/react";
-import { Input } from "@nextui-org/react";
+import { Button, Kbd, Link, Input } from "@nextui-org/react";
 import { link as linkStyles } from "@nextui-org/react";
 import NextLink from "next/link";
 import clsx from "clsx";
 import { IconPower } from "@tabler/icons-react";
+
+import LogOutBtn from "@/components/nav-layout/LogOutBtn";
+import LogInBtn from "@/components/nav-layout/LogInBtn";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
@@ -106,18 +106,9 @@ export const Navbar = () => {
           </Button>
           <div className="actions flex items-center gap-4">
             {user ? (
-              <>
-                <p className="text-primary dark:text-slate-200 text-xs px-4 flex flex-col"><span>Logged in:</span><span className="">{user.email}</span></p>
-                <Button as={Link} onPress={logout}>
-                  Logout
-                  <IconPower className="text-danger" />
-                </Button>
-              </>
+              <LogOutBtn user={user} onPress={logout}/>
             ) : (
-              <Button onPress={redirectAfterLogin}>
-                Login
-                <IconPower className="text-success" />
-              </Button>
+              <LogInBtn onPress={redirectAfterLogin}/>
             )}
           </div>
         </NavbarItem>
