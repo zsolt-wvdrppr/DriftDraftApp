@@ -10,7 +10,7 @@ const hashIp = (ip) => {
 };
 
 // Function to get the client IP
-const getClientIp = (req) => {
+const getClientIp = (req) => { 
   return (
     req.headers["x-forwarded-for"]?.split(",")[0] || // First IP from x-forwarded-for
     req.headers["x-real-ip"] ||                     // Use x-real-ip if available
@@ -26,6 +26,8 @@ export async function POST(req) {
   const userId = req.headers.get("x-user-id") || null; // Get userId for authenticated users
   const type = userId ? "authenticated" : "anonymous";
   const oneHour = 60 * 60 * 1000; // 1-hour window
+
+  logger.debug(`[RATE LIMITER API]: Received request from ${type} user (${userId || ip}).`);
 
   try {
     const body = await req.json();
