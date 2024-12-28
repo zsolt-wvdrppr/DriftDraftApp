@@ -59,7 +59,7 @@ export default function WebsiteWizardContainer({ }) {
         sessionData,
         updateSessionData,
         isInitialised,
-        initialiseSession,
+        initSession,
         error,
         setError,
         clearLocalStorage,
