@@ -55,7 +55,19 @@ const steps = [
 
 export default function WebsiteWizardContainer({ }) {
 
-    const { sessionData, updateSessionData, isInitialised, initialiseSession, error, setError, clearLocalStorage, currentStep, setCurrentStep, setSteps } = useSessionContext();
+    const {
+        sessionData,
+        updateSessionData,
+        isInitialised,
+        initialiseSession,
+        error,
+        setError,
+        clearLocalStorage,
+        currentStep,
+        setCurrentStep,
+        setSteps,
+        updateSessionInDb,
+    } = useSessionContext();
 
     useEffect(() => {
         setSteps(steps);
@@ -132,6 +144,13 @@ export default function WebsiteWizardContainer({ }) {
             setCurrentStep,
             updateUrlParams
         );
+        if(user?.id && sessionData){
+            const _userId = user.id;
+            const _sessionId = sessionData.sessionId;
+            const _sessionData = sessionData;
+
+            updateSessionInDb(_userId, _sessionId, _sessionData);
+        }
     };
 
     // Navigate to the previous step
