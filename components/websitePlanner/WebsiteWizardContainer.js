@@ -21,7 +21,6 @@ import {
 import { useProfileUpdater } from '@/lib/hooks/useProfileUpdater';
 import { useRestoreStep } from '@/lib/hooks/useRestoreStep';
 import { useUpdateTabName } from '@/lib/hooks/useUpdateTabName';
-import { useManageSessionData } from '@/lib/hooks/useManageSessionData';
 import { useSessionContext } from "@/lib/SessionProvider";
 
 import ProgressBar from './ProgressBar';
