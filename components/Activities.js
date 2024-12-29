@@ -46,11 +46,11 @@ export default function UserActivities() {
                     logger.error('Error fetching sessions from DB:', error.message);
                 }
             };
-    
+
             fetchSessions(); // Call the async function
         });
     }, []);
-    
+
 
     useEffect(() => {
         logger.debug('Items list:', items);
@@ -67,7 +67,7 @@ export default function UserActivities() {
 
             return;
         }
-
+        logger.debug('ensureProfileExists:', user);
         const ensureProfileExists = async () => {
             await createOrUpdateProfile();
         };
@@ -165,21 +165,28 @@ export default function UserActivities() {
     }
 
     const handleEdit = (item) => {
-        logger.info(`Edit item with ID: ${item.id}`);
-        initSessionFromDb(user.id, item.id);
-        router.push(`/website-planner`);
+
+        startTransition(async () => {
+            try {
+                logger.info(`Edit item with ID: ${item.id}`);
+                await initSessionFromDb(user.id, item.id); // Wait for the session initialization
+                router.push(`/website-planner`); // Redirect after completion
+            } catch (error) {
+                logger.error("Error during session initialisation:", error);
+            }
+        });
     };
 
     const formatDateToLocalBasic = (timestampz) => {
         if (!timestampz) return 'N/A'; // Handle missing or invalid timestampz
-    
+
         const date = new Date(timestampz); // Convert the timestampz to a Date object
         return date.toLocaleString(); // Format it to the user's local timezone and locale
-    };    
+    };
 
     const formatDateToLocal = (timestampz) => {
         if (!timestampz) return 'N/A';
-    
+
         const date = new Date(timestampz);
         return date.toLocaleString(undefined, {
             year: 'numeric',
@@ -191,7 +198,7 @@ export default function UserActivities() {
             timeZoneName: 'short',
         });
     };
-    
+
 
     return (
         <div className="p-4 max-w-xl mx-auto overflow-hidden">
@@ -216,80 +223,81 @@ export default function UserActivities() {
                 {items.length > 0 &&
                     <AnimatePresence>
                         {items.map(item => {
-                            
+
                             logger.debug('Item:', item.session_title);
 
                             return (
-                            <Reorder.Item
-                                key={item?.id}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="bg-white dark:bg-content1 shadow-md p-4 rounded-md flex justify-between items-center"
-                                drag={false}
-                                exit={{ opacity: 0, x: 100 }}
-                                initial={{ opacity: 0, y: 20 }}
-                                value={item}
-                                whileTap={{ scale: 0.95 }}
-                            >
-                                <div className='select-none'>
-                                    <h2 className="font-semibold">{item.session_title}</h2>
-                                    <p className="text-sm text-gray-500">
-                                        Created: {formatDateToLocalBasic(item.created_at)}
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                        Updated: {formatDateToLocalBasic(item.updated_at)}
-                                    </p>
-                                </div>
-                                <div className="flex gap-2">
-                                    <div className='grid grid-cols-2 gap-3 md:flex md:gap-2'>
+                                <Reorder.Item
+                                    key={item?.id}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-white dark:bg-content1 shadow-md p-4 rounded-md flex justify-between items-center"
+                                    drag={false}
+                                    exit={{ opacity: 0, x: 100 }}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    value={item}
+                                    whileTap={{ scale: 0.95 }}
+                                >
+                                    <div className='select-none'>
+                                        <h2 className="font-semibold">{item.session_title}</h2>
+                                        <p className="text-sm text-gray-500">
+                                            Created: {formatDateToLocalBasic(item.created_at)}
+                                        </p>
+                                        <p className="text-sm text-gray-500">
+                                            Updated: {formatDateToLocalBasic(item.updated_at)}
+                                        </p>
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <div className='grid grid-cols-2 gap-3 md:flex md:gap-2'>
+                                            <Button
+                                                className="btn btn-primary btn-sm"
+                                                onPress={() => handleEdit(item)}
+                                            >
+                                                <IconEdit className='edit-icon' />
+                                                <Tooltip anchorSelect=".edit-icon" place="top">
+                                                    Edit
+                                                </Tooltip>
+                                            </Button>
+                                            <Button
+                                                className="btn btn-warning btn-sm"
+                                                onPress={() => confirmDelete(item)}
+                                            >
+                                                <IconTrash className='delete-icon' />
+                                                <Tooltip anchorSelect=".delete-icon" place="top">
+                                                    Delete
+                                                </Tooltip>
+                                            </Button>
+                                            <Button
+                                                className="btn btn-secondary btn-sm"
+                                                onPress={() => logger.info(`Share item with ID: ${item.id}`)}
+                                            >
+                                                <IconShare className='share-icon' />
+                                                <Tooltip anchorSelect=".share-icon" place="top">
+                                                    Share
+                                                </Tooltip>
+                                            </Button>
+                                            <Button
+                                                className="btn btn-info btn-sm"
+                                                onPress={() => viewPlan(item)}
+                                            >
+                                                <IconEye className='view-icon' />
+                                                <Tooltip anchorSelect=".view-icon" place="top">
+                                                    View
+                                                </Tooltip>
+                                            </Button>
+                                        </div>
                                         <Button
-                                            className="btn btn-primary btn-sm"
-                                            onPress={() => handleEdit(item)}
+                                            className="btn btn-success btn-sm"
+                                            onPress={() => logger.info(`Submit for quote: ${item.id}`)}
                                         >
-                                            <IconEdit className='edit-icon' />
-                                            <Tooltip anchorSelect=".edit-icon" place="top">
-                                                Edit
-                                            </Tooltip>
-                                        </Button>
-                                        <Button
-                                            className="btn btn-warning btn-sm"
-                                            onPress={() => confirmDelete(item)}
-                                        >
-                                            <IconTrash className='delete-icon' />
-                                            <Tooltip anchorSelect=".delete-icon" place="top">
-                                                Delete
-                                            </Tooltip>
-                                        </Button>
-                                        <Button
-                                            className="btn btn-secondary btn-sm"
-                                            onPress={() => logger.info(`Share item with ID: ${item.id}`)}
-                                        >
-                                            <IconShare className='share-icon' />
-                                            <Tooltip anchorSelect=".share-icon" place="top">
-                                                Share
-                                            </Tooltip>
-                                        </Button>
-                                        <Button
-                                            className="btn btn-info btn-sm"
-                                            onPress={() => viewPlan(item)}
-                                        >
-                                            <IconEye className='view-icon' />
-                                            <Tooltip anchorSelect=".view-icon" place="top">
-                                                View
+                                            <IconWand className='quote-icon' />
+                                            <Tooltip anchorSelect=".quote-icon" place="top">
+                                                Get Quote
                                             </Tooltip>
                                         </Button>
                                     </div>
-                                    <Button
-                                        className="btn btn-success btn-sm"
-                                        onPress={() => logger.info(`Submit for quote: ${item.id}`)}
-                                    >
-                                        <IconWand className='quote-icon' />
-                                        <Tooltip anchorSelect=".quote-icon" place="top">
-                                            Get Quote
-                                        </Tooltip>
-                                    </Button>
-                                </div>
-                            </Reorder.Item>
-                        )})}
+                                </Reorder.Item>
+                            )
+                        })}
                     </AnimatePresence>
                 }
             </Reorder.Group>
