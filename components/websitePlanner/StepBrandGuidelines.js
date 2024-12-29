@@ -9,6 +9,7 @@ import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from '@/lib/SessionProvider';
 
 import Sidebar from './ActionsBar/Main';
+import PasteButton from './layout/PasteButton';
 
 const StepBrandGuidelines = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -40,7 +41,7 @@ const StepBrandGuidelines = ({ ref }) => {
 
   const handleTextareaChange = (e) => {
     const value = e.target.value;
-    
+
     updateFormData("brandGuidelines", value);
     setLocalValue(value);
     // Provide immediate feedback for required field
@@ -116,19 +117,21 @@ const StepBrandGuidelines = ({ ref }) => {
           <h2 className="text-lg font-semibold mb-4 text-primary dark:text-accentMint">
             {content.question} {content.required && <span className="text-red-500">*</span>}
           </h2>
-          <Textarea
-            classNames={{
-              label: "!text-primary dark:!text-accentMint",
-              input: "",
-              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${attractionIsInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
-            }}
-            isRequired={true}
-            label="Branding"
-            minRows={4}
-            placeholder={content.placeholder}
-            value={localValue}
-            onChange={handleTextareaChange}
-          />
+          <PasteButton value={localValue} handleChange={handleTextareaChange} setError={setError}>
+            <Textarea
+              classNames={{
+                label: "!text-primary dark:!text-accentMint",
+                input: "",
+                inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${attractionIsInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
+              }}
+              isRequired={true}
+              label="Branding"
+              minRows={4}
+              placeholder={content.placeholder}
+              value={localValue}
+              onChange={handleTextareaChange}
+            />
+          </PasteButton>
         </div>
         <Sidebar hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
       </div>

@@ -67,6 +67,7 @@ export default function WebsiteWizardContainer({ }) {
         setCurrentStep,
         setSteps,
         updateSessionInDb,
+        updateAiGeneratedPlanInDb,
     } = useSessionContext();
 
     useEffect(() => {

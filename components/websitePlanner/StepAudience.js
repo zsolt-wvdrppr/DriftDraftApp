@@ -9,7 +9,7 @@ import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from "@/lib/SessionProvider";
 
 import Sidebar from './ActionsBar/Main';
-
+import PasteButton from './layout/PasteButton';
 
 const StepAudience = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -87,6 +87,7 @@ const StepAudience = ({ ref }) => {
           <h2 className="text-lg font-semibold mb-4 text-primary dark:text-accentMint">
             {content.question} {content.required && <span className="text-red-500">*</span>}
           </h2>
+          <PasteButton value={localValue} handleChange={handleTextareaChange} setError={setError}>
           <Textarea
             classNames={{
               label: "!text-primary dark:!text-accentMint",
@@ -100,6 +101,7 @@ const StepAudience = ({ ref }) => {
             value={localValue}
             onChange={handleTextareaChange}
           />
+          </PasteButton>
         </div>
         <Sidebar hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
       </div>
