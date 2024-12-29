@@ -1,17 +1,20 @@
 import { Link, Button } from '@nextui-org/react';
 import { IconPower } from "@tabler/icons-react";
 import { useSessionContext } from '@/lib/SessionProvider';
+import { useRouter } from 'next/navigation';
 
 import logger from '@/lib/logger';
 
 const LogOutBtn = ({user, onPress}) => {
 
     const { clearSessionData } = useSessionContext();
+    const router = useRouter();
 
     const handleClick = () => {
         logger.info("Logging out...");
         onPress();
         clearSessionData();
+        router.push('/login');
     }
 
     return (
