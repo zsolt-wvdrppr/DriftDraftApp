@@ -82,9 +82,9 @@ export default function UserActivities() {
 
     const handleDelete = () => {
         if (selectedItem) {
-            setItems(items.filter(item => item.id !== selectedItem.id));
+            setItems(items.filter(item => item.session_id !== selectedItem.session_id));
             setSelectedItem(null);
-            deleteSessionFromDb(user.id, selectedItem.id);
+            deleteSessionFromDb(user.id, selectedItem.session_id);
         }
         onDeleteOpenChange(false);
     };
@@ -268,7 +268,7 @@ export default function UserActivities() {
                                             </Button>
                                             <Button
                                                 className="btn btn-secondary btn-sm"
-                                                onPress={() => logger.info(`Share item with ID: ${item.id}`)}
+                                                onPress={() => logger.info(`Share item with ID: ${item.session_id}`)}
                                             >
                                                 <IconShare className='share-icon' />
                                                 <Tooltip anchorSelect=".share-icon" place="top">
@@ -287,7 +287,7 @@ export default function UserActivities() {
                                         </div>
                                         <Button
                                             className="btn btn-success btn-sm"
-                                            onPress={() => logger.info(`Submit for quote: ${item.id}`)}
+                                            onPress={() => logger.info(`Submit for quote: ${item.session_id}`)}
                                         >
                                             <IconWand className='quote-icon' />
                                             <Tooltip anchorSelect=".quote-icon" place="top">
