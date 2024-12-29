@@ -168,8 +168,8 @@ export default function UserActivities() {
 
         startTransition(async () => {
             try {
-                logger.info(`Edit item with ID: ${item.id}`);
-                await initSessionFromDb(user.id, item.id); // Wait for the session initialization
+                logger.info(`Edit item with ID: ${item.session_id}`);
+                await initSessionFromDb(user.id, item.session_id); // Wait for the session initialization
                 router.push(`/website-planner`); // Redirect after completion
             } catch (error) {
                 logger.error("Error during session initialisation:", error);
@@ -228,7 +228,7 @@ export default function UserActivities() {
 
                             return (
                                 <Reorder.Item
-                                    key={item?.id}
+                                    key={item?.session_id}
                                     animate={{ opacity: 1, y: 0 }}
                                     className="bg-white dark:bg-content1 shadow-md p-4 rounded-md flex justify-between items-center"
                                     drag={false}
