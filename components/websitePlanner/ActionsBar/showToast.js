@@ -14,6 +14,17 @@ export const showHintToast = (hints, hintToastRef, onCopySuccess, onDismiss, use
     hintToastRef.current = null;
   }
 
+  const handleCopyClick = () => {
+    // Copy hint to clipboard
+    toast.dismiss(); // Close all active toasts
+    navigator.clipboard.writeText(hints);
+    // Show success toast
+    toast.success("Hints copied to clipboard", {
+      duration: 2000,
+      classNames: { toast: 'text-green-600' },
+    });
+  };
+
   const newToastId = toast.custom(() => (
     <div className="p-4 shadow-lg rounded-lg bg-white/90 max-h-[90vh] overflow-y-auto select-text">
       <h4 className="font-bold">Hint</h4>
@@ -24,9 +35,7 @@ export const showHintToast = (hints, hintToastRef, onCopySuccess, onDismiss, use
           color="secondary"
           variant="bordered"
           onPress={() => {
-            toast.dismiss(); // Close all active toasts
-            navigator.clipboard.writeText(hints);
-            toast.success("Hints copied to clipboard", { duration: 2000, classNames: { toast: 'text-green-600' } });
+            handleCopyClick();
             onCopySuccess?.(); // Call optional onCopySuccess callback
           }}
         >

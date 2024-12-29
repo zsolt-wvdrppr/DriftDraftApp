@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef, useImperativeHandle, use } from 'react';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Textarea, Button, Input, form } from '@nextui-org/react';
-import { IconAi } from '@tabler/icons-react';
+import { IconAi, IconClipboard } from '@tabler/icons-react';
 import ReactMarkdown from 'react-markdown';
 
 import questionsData from "@/data/questions-data.json";
@@ -11,6 +11,7 @@ import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from "@/lib/SessionProvider";
 
 import Sidebar from './ActionsBar/Main';
+import PasteButton from './layout/PasteButton';
 
 const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");
@@ -151,6 +152,7 @@ const StepPurpose = ({ ref }) => {
       setIsAIAvailable(false);
     }
   }, [localServiceDescription, purposeIsInvalid]);
+  
 
   return (
     <form ref={formRef}>
@@ -185,13 +187,14 @@ const StepPurpose = ({ ref }) => {
               classNames={{
                 label: "!text-primary dark:!text-accentMint",
                 input: "dark:!text-white",
-                inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border  ${detailsIsInvalid ? "!bg-red-50 border-danger" : ""}`,
+                inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${detailsIsInvalid ? "border-danger !bg-danger-50" : ""}`,
               }}
               isRequired={isOtherSelected}
               label="Additional Details"
               placeholder={`${content.placeholder[1]} (${isOtherSelected ? "required" : "optional"})`}
               value={localPurposeDetails}
               onChange={handleAdditionalDetailsChange}
+              validationBehavior='aria'
             />
           </div>
           <div className="col-span-4 flex-1">
@@ -199,7 +202,7 @@ const StepPurpose = ({ ref }) => {
               <ReactMarkdown>{content.questionAddition2}</ReactMarkdown>
             </h2>
           </div>
-          <div className="flex justify-end">
+          <div className="flex relative justify-end">
           <Button
               color="primary"
               isLoading={isPending}
@@ -221,11 +224,13 @@ const StepPurpose = ({ ref }) => {
               Get AI Hint
             </Button>
           </div>
+  
+          <PasteButton value={localServiceDescription} handleChange={handleServiceDescriptionChange} setError={setError} >
           <Textarea
             classNames={{
               label: "!text-primary dark:!text-accentMint",
               input: "",
-              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${serviceDescIsInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
+              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${serviceDescIsInvalid ? "!bg-danger-50 dark:!bg-content1 border-danger" : ""}`,
               base: "",
             }}
             isRequired={true}
@@ -234,7 +239,9 @@ const StepPurpose = ({ ref }) => {
             placeholder={content.placeholder[2]}
             value={localServiceDescription}
             onChange={handleServiceDescriptionChange}
+            validationBehavior='aria'
           />
+          </PasteButton>
         </div>
         <Sidebar hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
       </div>
