@@ -22,7 +22,7 @@ const StepPurpose = ({ ref }) => {
   const stepNumber = 0;
   const content = questionsData[stepNumber];
   const formRef = useRef();
-  const [purposeIsInvalid, setPurposeIsInvalid] = useState(false);
+  const [purposeIsInvalid, setPurposeIsInvalid] = useState(sessionData?.formData?.[stepNumber]?.purpose ? false : true);
   const [detailsIsInvalid, setDetailsIsInvalid] = useState(false);
   const [serviceDescIsInvalid, setServiceDescIsInvalid] = useState(false);
   const formData = sessionData?.formData || {};
@@ -88,11 +88,7 @@ const StepPurpose = ({ ref }) => {
     const value = e.target.value;
     logger.debug('value', value);
     logger.debug('condition:', value.length > 15 && !purposeIsInvalid);
-    if (value.length > 15 && !purposeIsInvalid) {
-      setIsAIAvailable(true);
-    } else {
-      setIsAIAvailable(false);
-    }
+  
     setLocalServiceDescription(value);
     updateFormData("serviceDescription", value);
     setServiceDescIsInvalid(value.length < 50);
@@ -104,6 +100,8 @@ const StepPurpose = ({ ref }) => {
   const [isPending, setIsPending] = useState(false);
 
   const handleFetchHint = async () => {
+
+    if (!isAIAvailable) return;
 
     logger.debug('Fetching AI hint for step', stepNumber);
     logger.debug(!formData[stepNumber]?.purpose || !localServiceDescription || localServiceDescription.length < 15);
@@ -135,6 +133,24 @@ const StepPurpose = ({ ref }) => {
       setIsPending(false);
     }
   };
+
+  const handleUnavailableGetAiHintBtn = () => {
+    logger.debug('AI hint is not available');
+
+    if (purposeIsInvalid) {
+      setError('Please select your goal first!');
+    } else {
+      setError('Please provide a more detailed service description.');
+    }
+  };
+
+  useEffect(() => {
+    if (localServiceDescription.length > 15 && !purposeIsInvalid) {
+      setIsAIAvailable(true);
+    } else {
+      setIsAIAvailable(false);
+    }
+  }, [localServiceDescription, purposeIsInvalid]);
 
   return (
     <form ref={formRef}>
@@ -184,12 +200,22 @@ const StepPurpose = ({ ref }) => {
             </h2>
           </div>
           <div className="flex justify-end">
+          <Button
+              color="primary"
+              isLoading={isPending}
+              //isDisabled={isAIAvailable}
+              onPress={handleUnavailableGetAiHintBtn}
+              className={`${isAIAvailable ? "hidden" : "flex"} items-center gap-2 opacity-50 hover:!opacity-50`}
+            >
+              <IconAi size={20} />
+              Get AI Hint
+            </Button>
             <Button
               color="primary"
               isLoading={isPending}
-              isDisabled={!isAIAvailable}
+              //isDisabled={!isAIAvailable}
               onPress={handleFetchHint}
-              className='flex items-center gap-2'
+              className={`${!isAIAvailable ? "hidden" : "flex"} items-center gap-2`}
             >
               <IconAi size={20} />
               Get AI Hint
