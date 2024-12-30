@@ -37,7 +37,7 @@ import StepContactInfo from './StepContactInfo';
 import Result from './Result';
 import { PreviousButton, NextButton, SubmitButton } from './layout/NavigationButtons';
 
-
+import Tutorial from '@/components/tutorialToaster/Tutorial';
 
 // Step definitions
 const steps = [
@@ -51,6 +51,12 @@ const steps = [
     { id: 7, label: "Emotions", icon: <IconMoodSmileBeam />, component: StepEmotions },
     { id: 8, label: "Inspirations", icon: <IconBulb />, component: StepInspirations },
     { id: 9, label: "Contact Details", icon: <IconAddressBook />, component: StepContactInfo }
+];
+
+const tutorialSteps = [
+    { title:"How To Start", message: "Hi there! Let’s take a quick tour to show you where everything is and how it works. You can click ‘END TUTORIAL’ anytime to skip.", targetClass: 'step-0' },
+    { title:"Progress Bar", message: "This is the progress bar. It shows your progress across 10 sections in total.", targetClass: 'step-1' },
+    { title:"Section Selector", message: "This drop-down menu is your section selector. Use it to quickly jump between sections. That's it for now, carry on testing.", targetClass: 'step-2' },
 ];
 
 export default function WebsiteWizardContainer({ }) {
@@ -206,15 +212,19 @@ export default function WebsiteWizardContainer({ }) {
     }
 
     return (
-        <>
+        <div className="wizard-container">
+            <div className="step-0 sicky w-full -z-50"/>
+            <Tutorial steps={tutorialSteps} localStorageKey="websitePlannerTutorialCompleted" />
             {isSubmitted && <Result formData={formData} />}
 
             {(!isSubmitted) &&
 
                 <div className="wizard-container relative max-w-screen-xl w-full h-max px-0 md:py-4">
+                    <div className="step-1">
                     <ProgressBar currentStep={currentStep} totalSteps={steps.length} />
+                    </div>
                     {/* Dropdown for Navigation */}
-                    <div className='w-full flex justify-around'>
+                    <div className='step-2 w-full flex justify-around'>
                         <Dropdown>
                             <DropdownTrigger>
                                 <Button className="capitalize w-full md:max-w-80" color="secondary" variant="flat">
@@ -287,6 +297,6 @@ export default function WebsiteWizardContainer({ }) {
                     </div>
                 </div>
             }
-        </>
+        </div>
     );
 }

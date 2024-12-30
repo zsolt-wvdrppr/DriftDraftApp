@@ -12,3 +12,14 @@ input:-webkit-autofill {
     -webkit-text-fill-color: #2E0219!important;
     box-shadow: 0 0 0px 1000px transparent inset;
 }*/
+
+.clip-rounded-ends {
+    clip-path: polygon(
+      20px 0,              /* Top left corner */
+      calc(100% - 20px) 0, /* Top right corner */
+      100% 50%,            /* Bottom right rounded corner */
+      calc(100% - 20px) 100%, /* Bottom right corner */
+      20px 100%,           /* Bottom left rounded corner */
+      0 50%                /* Top left rounded corner */
+    );
+  }
