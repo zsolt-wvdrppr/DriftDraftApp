@@ -38,6 +38,7 @@ export default function UserActivities() {
     const router = useRouter();
 
     const [selectedAiGenPlan, setSelectedAiGenPlan] = useState({});
+    const inputRefs = useRef({});
 
     useEffect(() => {
         startTransition(() => {
@@ -227,6 +228,7 @@ export default function UserActivities() {
 
     const handleEditTitle = async (item, newTitle) => {
         if (!newTitle.trim()) {
+            toast.dismiss();
             toast.error("Title cannot be empty.");
             return;
         }
@@ -237,14 +239,28 @@ export default function UserActivities() {
                     ? { ...i, session_title: newTitle, isEditing: false } // Set isEditing to false after update
                     : i
             );
-            setItems(updatedItems); // Update state immediately for UX feedback
+            setItems(updatedItems); // Update state immediately for UX 
 
             await updateSessionTitleInDb(user.id, item.session_id, newTitle); // Update DB
+            toast.dismiss();
             toast.success("Title updated successfully!", { classNames: { toast: 'text-green-600' }, });
         } catch (error) {
+            toast.dismiss();
             toast.error("Failed to update the title.");
             logger.error('Error updating title:', error.message);
         }
+    };
+
+    const startEditingTitle = (item) => {
+        // Enable editing and set focus
+        const updatedItems = items.map(i =>
+            i.session_id === item.session_id ? { ...i, isEditing: true } : i
+        );
+        setItems(updatedItems);
+
+        setTimeout(() => {
+            inputRefs.current[item.session_id]?.focus(); // Focus the correct input
+        }, 0);
     };
 
 
@@ -289,6 +305,7 @@ export default function UserActivities() {
                                     <div className='relative w-fit py-4'>
                                         {item.isEditing ? (
                                             <input
+                                                ref={(el) => (inputRefs.current[item.session_id] = el)} // Assign dynamic ref
                                                 type="text"
                                                 value={item.session_title}
                                                 onChange={(e) => {
@@ -306,7 +323,6 @@ export default function UserActivities() {
                                                     }
                                                 }}
                                                 className="border p-2 rounded-md"
-                                                autoFocus
                                             />
                                         ) : (
                                             <div>
@@ -314,12 +330,7 @@ export default function UserActivities() {
                                                 <Link
                                                     className="text-primary absolute w-4 h-4 -right-5 top-2"
                                                     onPress={() => {
-                                                        const updatedItems = items.map(i =>
-                                                            i.session_id === item.session_id
-                                                                ? { ...i, isEditing: true }
-                                                                : i
-                                                        );
-                                                        setItems(updatedItems);
+                                                        startEditingTitle(item)
                                                     }}
                                                 >
                                                     <IconPencilStar id="edit-title" />
