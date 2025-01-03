@@ -240,7 +240,7 @@ export default function UserActivities() {
             setItems(updatedItems); // Update state immediately for UX feedback
 
             await updateSessionTitleInDb(user.id, item.session_id, newTitle); // Update DB
-            toast.success("Title updated successfully!");
+            toast.success("Title updated successfully!", { classNames: { toast: 'text-green-600' }, });
         } catch (error) {
             toast.error("Failed to update the title.");
             logger.error('Error updating title:', error.message);
