@@ -9,9 +9,10 @@ import {
     ModalBody,
     ModalFooter,
     Button,
+    Link,
     useDisclosure,
 } from "@nextui-org/react";
-import { IconEdit, IconTrash, IconEye, IconShare, IconWand, IconSquareRoundedXFilled, IconInfoCircleFilled } from '@tabler/icons-react';
+import { IconEdit, IconTrash, IconEye, IconShare, IconWand, IconSquareRoundedXFilled, IconInfoCircleFilled, IconPencilStar } from '@tabler/icons-react';
 import { Tooltip } from 'react-tooltip';
 import { toast } from 'sonner';
 import Cookies from 'js-cookie';
@@ -27,7 +28,7 @@ import ReactMarkdown from 'react-markdown';
 
 export default function UserActivities() {
 
-    const { fetchAllSessionsFromDb, deleteSessionFromDb, initSessionFromDb, fetchAiGeneratedPlanFromDb } = useSessionContext();
+    const { fetchAllSessionsFromDb, deleteSessionFromDb, initSessionFromDb, fetchAiGeneratedPlanFromDb, updateSessionTitleInDb } = useSessionContext();
     const [items, setItems] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const { isOpen: isDeleteModalOpen, onOpen: onDeleteOpen, onOpenChange: onDeleteOpenChange } = useDisclosure();
@@ -122,11 +123,11 @@ export default function UserActivities() {
     const legend = () => {
         return (
             <div className='p-4 w-fit bg-slate-200 rounded-lg'>
-                <p className='flex gap-2'><IconEdit className='edit-icon' /> - Edit</p>
-                <p className='flex gap-2'><IconTrash className='delete-icon' /> - Delete</p>
-                <p className='flex gap-2'><IconShare className='share-icon' /> - Share</p>
-                <p className='flex gap-2'><IconEye className='view-icon' /> - View</p>
-                <p className='flex gap-2'><IconWand className='quote-icon' /> - Get Quote</p>
+                <p className='flex gap-2'><IconEdit /> - Edit</p>
+                <p className='flex gap-2'><IconTrash /> - Delete</p>
+                <p className='flex gap-2'><IconShare /> - Share</p>
+                <p className='flex gap-2'><IconEye /> - View</p>
+                <p className='flex gap-2'><IconWand /> - Get Quote</p>
             </div>
         )
     }
@@ -224,9 +225,31 @@ export default function UserActivities() {
         });
     };
 
+    const handleEditTitle = async (item, newTitle) => {
+        if (!newTitle.trim()) {
+            toast.error("Title cannot be empty.");
+            return;
+        }
+
+        try {
+            const updatedItems = items.map(i =>
+                i.session_id === item.session_id
+                    ? { ...i, session_title: newTitle, isEditing: false } // Set isEditing to false after update
+                    : i
+            );
+            setItems(updatedItems); // Update state immediately for UX feedback
+
+            await updateSessionTitleInDb(user.id, item.session_id, newTitle); // Update DB
+            toast.success("Title updated successfully!");
+        } catch (error) {
+            toast.error("Failed to update the title.");
+            logger.error('Error updating title:', error.message);
+        }
+    };
+
 
     return (
-        <div className="p-4 max-w-xl mx-auto overflow-hidden">
+        <div className="p-4 max-w-2xl mx-auto overflow-hidden">
             <div className='w-full flex justify-end my-4 text-primary'>
                 <Button
                     onPress={() => handleToast()}
@@ -236,7 +259,7 @@ export default function UserActivities() {
             </div>
             <Reorder.Group
                 axis="y"
-                className="space-y-2"
+                className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-4"
                 values={items}
                 onReorder={setItems}
             >
@@ -246,7 +269,7 @@ export default function UserActivities() {
                     </div>
                 }
                 {items.length > 0 &&
-                    <AnimatePresence>
+                    <AnimatePresence className="">
                         {items.map(item => {
 
                             logger.debug('Item:', item);
@@ -255,70 +278,127 @@ export default function UserActivities() {
                                 <Reorder.Item
                                     key={item?.session_id}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="bg-white dark:bg-content1 shadow-md p-4 rounded-md flex justify-between items-center"
+                                    className="bg-white dark:bg-content1 shadow-md p-4 rounded-md flex flex-col items-center gap-4 select-none"
                                     drag={false}
                                     exit={{ opacity: 0, x: 100 }}
                                     initial={{ opacity: 0, y: 20 }}
                                     value={item}
                                     whileTap={{ scale: 0.95 }}
                                 >
-                                    <div className='select-none'>
-                                        <h2 className="font-semibold">{item.session_title}</h2>
+
+                                    <div className='relative w-fit py-4'>
+                                        {item.isEditing ? (
+                                            <input
+                                                type="text"
+                                                value={item.session_title}
+                                                onChange={(e) => {
+                                                    const updatedItems = items.map(i =>
+                                                        i.session_id === item.session_id
+                                                            ? { ...i, session_title: e.target.value }
+                                                            : i
+                                                    );
+                                                    setItems(updatedItems); // Live update in state for better UX
+                                                }}
+                                                onBlur={() => handleEditTitle(item, item.session_title)} // Stop editing when blurred
+                                                onKeyDown={(e) => {
+                                                    if (e.key === "Enter") {
+                                                        handleEditTitle(item, item.session_title); // Stop editing on Enter key press
+                                                    }
+                                                }}
+                                                className="border p-2 rounded-md"
+                                                autoFocus
+                                            />
+                                        ) : (
+                                            <div>
+                                                <h2 className="font-semibold">{item.session_title}</h2>
+                                                <Link
+                                                    className="text-primary absolute w-4 h-4 -right-5 top-2"
+                                                    onPress={() => {
+                                                        const updatedItems = items.map(i =>
+                                                            i.session_id === item.session_id
+                                                                ? { ...i, isEditing: true }
+                                                                : i
+                                                        );
+                                                        setItems(updatedItems);
+                                                    }}
+                                                >
+                                                    <IconPencilStar id="edit-title" />
+                                                </Link>
+                                                <Tooltip anchorSelect="#edit-title" place="top">
+                                                    Edit Title
+                                                </Tooltip>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="flex gap-2 w-full">
+                                        <div className='flex w-full justify-around'>
+                                            <div>
+                                                <Link
+                                                    className="text-white"
+                                                    onPress={() => handleEdit(item)}
+                                                >
+                                                    <IconEdit id="edit-icon" />
+                                                </Link>
+                                                <Tooltip anchorSelect="#edit-icon" place="top">
+                                                    Edit
+                                                </Tooltip>
+                                            </div>
+                                            <div>
+                                                <Link
+                                                    className="text-white"
+                                                    onPress={() => confirmDelete(item)}
+                                                >
+                                                    <IconTrash id='delete-icon' />
+                                                </Link>
+                                                <Tooltip anchorSelect="#delete-icon" place="top">
+                                                    Delete
+                                                </Tooltip>
+                                            </div>
+                                            <div>
+                                                <Link
+                                                    className="text-white"
+                                                    onPress={() => logger.info(`Share item with ID: ${item.session_id}`)}
+                                                >
+                                                    <IconShare id='share-icon' />
+                                                </Link>
+                                                <Tooltip anchorSelect="#share-icon" place="top">
+                                                    Share
+                                                </Tooltip>
+                                            </div>
+                                            <div>
+                                                <Link
+                                                    className="text-white"
+                                                    onPress={() => viewPlan(item)}
+                                                >
+                                                    <IconEye id='view-icon' />
+                                                </Link>
+                                                <Tooltip anchorSelect="#view-icon" place="top">
+                                                    View
+                                                </Tooltip>
+                                            </div>
+                                            <div>
+                                                <Link
+                                                    alt="Get Quote"
+                                                    className="text-white"
+                                                    onPress={() => logger.info(`Submit for quote: ${item.session_id}`)}
+                                                >
+                                                    <IconWand id='quote-icon' />
+                                                </Link>
+                                                <Tooltip anchorSelect="#quote-icon" place="top">
+                                                    Get Quote
+                                                </Tooltip>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div className='flex justify-around w-full'>
                                         <p className="text-sm text-gray-500">
                                             Created: {formatDateToLocalBasic(item.created_at)}
                                         </p>
-                                        <p className="text-sm text-gray-500">
+                                        <p className="text-sm text-right text-gray-500">
                                             Updated: {formatDateToLocalBasic(item.updated_at)}
                                         </p>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <div className='grid grid-cols-2 gap-3 md:flex md:gap-2'>
-                                            <Button
-                                                className="btn btn-primary btn-sm"
-                                                onPress={() => handleEdit(item)}
-                                            >
-                                                <IconEdit className='edit-icon' />
-                                                <Tooltip anchorSelect=".edit-icon" place="top">
-                                                    Edit
-                                                </Tooltip>
-                                            </Button>
-                                            <Button
-                                                className="btn btn-warning btn-sm"
-                                                onPress={() => confirmDelete(item)}
-                                            >
-                                                <IconTrash className='delete-icon' />
-                                                <Tooltip anchorSelect=".delete-icon" place="top">
-                                                    Delete
-                                                </Tooltip>
-                                            </Button>
-                                            <Button
-                                                className="btn btn-secondary btn-sm"
-                                                onPress={() => logger.info(`Share item with ID: ${item.session_id}`)}
-                                            >
-                                                <IconShare className='share-icon' />
-                                                <Tooltip anchorSelect=".share-icon" place="top">
-                                                    Share
-                                                </Tooltip>
-                                            </Button>
-                                            <Button
-                                                className="btn btn-info btn-sm"
-                                                onPress={() => viewPlan(item)}
-                                            >
-                                                <IconEye className='view-icon' />
-                                                <Tooltip anchorSelect=".view-icon" place="top">
-                                                    View
-                                                </Tooltip>
-                                            </Button>
-                                        </div>
-                                        <Button
-                                            className="btn btn-success btn-sm"
-                                            onPress={() => logger.info(`Submit for quote: ${item.session_id}`)}
-                                        >
-                                            <IconWand className='quote-icon' />
-                                            <Tooltip anchorSelect=".quote-icon" place="top">
-                                                Get Quote
-                                            </Tooltip>
-                                        </Button>
                                     </div>
                                 </Reorder.Item>
                             )
@@ -336,7 +416,7 @@ export default function UserActivities() {
                             <ModalBody>
                                 <p>
                                     Are you sure you want to delete{' '}
-                                    <span className="font-semibold">{selectedItem?.title}</span>? This action cannot be undone.
+                                    <span className="font-semibold">{selectedItem?.session_title}</span>? This action cannot be undone.
                                 </p>
                             </ModalBody>
                             <ModalFooter>
@@ -352,9 +432,7 @@ export default function UserActivities() {
                 </ModalContent>
             </Modal>
 
-            {/* View Plan Modal */}
-            {/* View Plan Modal (Corrected and Single Instance) */}
-            {/* View Plan Modal (Corrected with Scrollable Content) */}
+            { }
             <Modal
                 isOpen={isViewModalOpen}
                 onOpenChange={onViewOpenChange}
@@ -371,9 +449,11 @@ export default function UserActivities() {
                             {/* Enable Scrolling for Content */}
                             <ModalBody className="overflow-y-auto max-h-[70vh]">
                                 <h2 className="text-lg font-semibold">{selectedItem?.session_title}</h2>
-                                <ReactMarkdown>
-                                    {selectedAiGenPlan[selectedItem?.session_id] || "Loading..."}
-                                </ReactMarkdown>
+                                {/* Conditional Rendering for Spinner or Content */}
+                                {selectedAiGenPlan[selectedItem?.session_id] === "Loading..."
+                                    ? <Spinner color="primary" />
+                                    : <ReactMarkdown>{selectedAiGenPlan[selectedItem?.session_id]}</ReactMarkdown>
+                                }
                             </ModalBody>
 
                             {/* Footer Fixed at Bottom */}
