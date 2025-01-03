@@ -23,10 +23,11 @@ import logger from '@/lib/logger';
 import { useAuth } from '@/lib/AuthContext';
 
 import { useSessionContext } from '@/lib/SessionProvider';
+import ReactMarkdown from 'react-markdown';
 
 export default function UserActivities() {
 
-    const { fetchAllSessionsFromDb, deleteSessionFromDb, initSessionFromDb } = useSessionContext();
+    const { fetchAllSessionsFromDb, deleteSessionFromDb, initSessionFromDb, fetchAiGeneratedPlanFromDb } = useSessionContext();
     const [items, setItems] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const { isOpen: isDeleteModalOpen, onOpen: onDeleteOpen, onOpenChange: onDeleteOpenChange } = useDisclosure();
@@ -34,6 +35,8 @@ export default function UserActivities() {
     const [isPending, startTransition] = useTransition();
     const { user, loading } = useAuth(); // Access user state
     const router = useRouter();
+
+    const [selectedAiGenPlan, setSelectedAiGenPlan] = useState({});
 
     useEffect(() => {
         startTransition(() => {
@@ -89,10 +92,32 @@ export default function UserActivities() {
         onDeleteOpenChange(false);
     };
 
-    const viewPlan = (item) => {
-        setSelectedItem(item);
+    const viewPlan = async (item) => {
+        setSelectedItem(item);  // Open the modal immediately
+        setSelectedAiGenPlan((prevState) => ({
+            ...prevState,
+            [item.session_id]: "Loading..."
+        }));
         onViewOpen();
+
+        try {
+            logger.info(`Fetching AI-generated plan for sessionId: ${item.session_id}`);
+            const generatedPlanFromDb = await fetchAiGeneratedPlanFromDb(item.session_id);
+
+            setSelectedAiGenPlan((prevState) => ({
+                ...prevState,
+                [item.session_id]: generatedPlanFromDb || "No AI-generated plan available."
+            }));
+            logger.info('AI-generated plan fetched successfully.');
+        } catch (error) {
+            setSelectedAiGenPlan((prevState) => ({
+                ...prevState,
+                [item.session_id]: "Error loading plan."
+            }));
+            logger.error('Error fetching AI-generated plan:', error.message);
+        }
     };
+
 
     const legend = () => {
         return (
@@ -224,7 +249,7 @@ export default function UserActivities() {
                     <AnimatePresence>
                         {items.map(item => {
 
-                            logger.debug('Item:', item.session_title);
+                            logger.debug('Item:', item);
 
                             return (
                                 <Reorder.Item
@@ -328,16 +353,31 @@ export default function UserActivities() {
             </Modal>
 
             {/* View Plan Modal */}
-            <Modal isOpen={isViewModalOpen} onOpenChange={onViewOpenChange}>
+            {/* View Plan Modal (Corrected and Single Instance) */}
+            {/* View Plan Modal (Corrected with Scrollable Content) */}
+            <Modal
+                isOpen={isViewModalOpen}
+                onOpenChange={onViewOpenChange}
+                className="max-w-4xl p-8 mx-auto top-0" // Ensure modal is properly centered and within viewport
+            >
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader className="flex flex-col gap-1">View Plan</ModalHeader>
-                            <ModalBody>
-                                <h2 className="text-lg font-semibold">{selectedItem?.title}</h2>
-                                <p className="mt-4 text-gray-700">{selectedItem?.content}</p>
+                            {/* Ensure Header Stays Fixed */}
+                            <ModalHeader className="flex flex-col gap-1 sticky top-0 z-10 shadow-md">
+                                View Plan
+                            </ModalHeader>
+
+                            {/* Enable Scrolling for Content */}
+                            <ModalBody className="overflow-y-auto max-h-[70vh]">
+                                <h2 className="text-lg font-semibold">{selectedItem?.session_title}</h2>
+                                <ReactMarkdown>
+                                    {selectedAiGenPlan[selectedItem?.session_id] || "Loading..."}
+                                </ReactMarkdown>
                             </ModalBody>
-                            <ModalFooter>
+
+                            {/* Footer Fixed at Bottom */}
+                            <ModalFooter className="sticky bottom-0 z-10 shadow-md">
                                 <Button color="primary" onPress={onClose}>
                                     Close
                                 </Button>
@@ -346,7 +386,6 @@ export default function UserActivities() {
                     )}
                 </ModalContent>
             </Modal>
-
         </div>
     );
 }

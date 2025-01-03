@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Button } from '@nextui-org/react';
 import { IconCopy } from '@tabler/icons-react';
@@ -10,12 +10,23 @@ import { useSessionContext } from "@/lib/SessionProvider";
 import logger from '@/lib/logger';
 import useClientData from "@/lib/hooks/useClientData";
 
+import { useAuth } from '@/lib/AuthContext';
+
 const Result = ({ }) => {
 
-  const { sessionData, updateSessionData, setError } = useSessionContext();
+  const { sessionData, updateSessionData, updateAiGeneratedPlanInDb, setError } = useSessionContext();
   const [aiResult, setAiResult] = useState(null);
+  const aiResultRef = useRef(aiResult);
   const [isLoading, setIsLoading] = useState(true);
   const { clientData } = useClientData();
+  const { user } = useAuth();
+  const userId = user?.id;
+  const sessionId = sessionData?.sessionId;
+
+  useEffect(() => {
+    aiResultRef.current = aiResult;
+    
+  }, [aiResult]);
 
   useEffect(() => {
     const formData = sessionData.formData;
@@ -109,6 +120,7 @@ const Result = ({ }) => {
           logger.error("Error fetching content:", error);
           setAiResult("An error occurred while generating content.");
         } finally {
+          updateAiGeneratedPlanInDb(userId, sessionId, aiResultRef.current);
           setIsLoading(false);
         }
       };

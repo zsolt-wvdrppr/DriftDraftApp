@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useTransition, Suspense, use } from 'react';
+import React, { useState, useRef, useEffect, useTransition, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
@@ -182,6 +182,13 @@ export default function WebsiteWizardContainer({ }) {
             setIsSubmitted,
             startTransition
         );
+        if(user?.id && sessionData){
+            const _userId = user.id;
+            const _sessionId = sessionData.sessionId;
+            const _sessionData = sessionData;
+
+            updateSessionInDb(_userId, _sessionId, _sessionData);
+        }
     };
 
 
