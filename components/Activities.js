@@ -202,7 +202,7 @@ export default function UserActivities() {
             try {
                 logger.info(`Edit item with ID: ${item.session_id}`);
                 await initSessionFromDb(user.id, item.session_id); // Wait for the session initialization
-                router.push(`/website-planner`); // Redirect after completion
+                router.push(`/website-planner?step=0`); // Redirect after completion
             } catch (error) {
                 logger.error("Error during session initialisation:", error);
             }

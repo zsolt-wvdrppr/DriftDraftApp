@@ -93,10 +93,11 @@ const Result = ({ }) => {
 
       const fetchContent = async () => {
         try {
-          const response = await fetch("/api/aiHintRateLimited", {
+          const response = await fetch("/api/aiReqRateLimited", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              "x-user-id": userId || "", // Pass userId if logged in
             },
             body: JSON.stringify({ prompt, clientData }),
           });
