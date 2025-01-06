@@ -25,6 +25,7 @@ const Result = ({ }) => {
   const userId = user?.id;
   const sessionId = sessionData?.sessionId;
   const { loading, error } = useGenerateTitle(sessionData?.formData[0]?.serviceDescription, updateSessionTitleInDb, userId, sessionId);
+  const alreadyFetched = useRef(false);
 
   useEffect(() => {
     aiResultRef.current = aiResult;
@@ -32,6 +33,9 @@ const Result = ({ }) => {
   }, [aiResult]);
 
   useEffect(() => {
+    if (alreadyFetched.current) return;  // Prevent second call
+    alreadyFetched.current = true;
+
     const formData = sessionData.formData;
     const purpose = formData[0].purpose;
     const purposeDetails = formData[0]?.purposeDetails || ''; // optional
@@ -91,6 +95,7 @@ const Result = ({ }) => {
 
       Output this as a well-structured document with headers, clear bullet points, and concise phrasing. Ensure the document provides enough context to help a developer or designer understand the user’s requirements and goals.`;
 
+
       const fetchContent = async () => {
         try {
           const response = await fetch("/api/aiReqRateLimited", {
@@ -124,7 +129,9 @@ const Result = ({ }) => {
           logger.error("Error fetching content:", error);
           setAiResult("An error occurred while generating content.");
         } finally {
-          updateAiGeneratedPlanInDb(userId, sessionId, aiResultRef.current);
+          if (!aiResultRef.current) {  // Prevent multiple updates
+            updateAiGeneratedPlanInDb(userId, sessionId, aiResultRef.current);
+          }
           setIsLoading(false);
         }
       };
