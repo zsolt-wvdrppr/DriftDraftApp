@@ -3,6 +3,8 @@ import { fetchFromGoogleAI } from "@/lib/googleAi";
 import crypto from "crypto";
 import logger from "@/lib/logger";
 
+import { formatTimeToLocalAMPM } from '@/lib/utils';
+
 // Helper to hash IP securely
 const hashIp = (ip) => {
   const safeIp = ip || "unknown"; // Fallback to 'unknown' if IP is null
@@ -37,7 +39,7 @@ export async function POST(req) {
     logger.debug(`[RATE LIMITER API]: Client data: ${JSON.stringify(clientData)}`);
 
     // Check rate limits
-    const { isRateLimited, remainingRequests } = await rateLimiter({
+    const { isRateLimited, remainingRequests, limitResetTimeAt } = await rateLimiter({
       userId,
       ip: hashIp(ip), // Hash the IP securely
       type,
@@ -53,7 +55,7 @@ export async function POST(req) {
       logger.warn(`[RATE LIMITER API]: Rate limit exceeded for ${type} user (${userId || ip}).`);
       return new Response(
         JSON.stringify({
-          message: "Rate limit exceeded.",
+          message: `Rate limit exceeded, and will reset at ${formatTimeToLocalAMPM(limitResetTimeAt).toUpperCase()}.`,
           remainingRequests,
         }),
         { status: 429, headers: { "Content-Type": "application/json" } }

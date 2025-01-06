@@ -101,7 +101,7 @@ const Result = ({ }) => {
           if (response.status === 429) {
             const { message, remainingMinutes } = await response.json();      
             setAiResult(
-              `\n\n${message} Upgrade your subscription, or try again later.`
+              `\n\n${message} Upgrade your subscription, or try again later in ${remainingMinutes}.`
             );
             return;
           }

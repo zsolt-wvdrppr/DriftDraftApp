@@ -26,6 +26,8 @@ import { useAuth } from '@/lib/AuthContext';
 import { useSessionContext } from '@/lib/SessionProvider';
 import ReactMarkdown from 'react-markdown';
 
+import { formatDateToLocalBasic } from '@/lib/utils';
+
 export default function UserActivities() {
 
     const { fetchAllSessionsFromDb, deleteSessionFromDb, initSessionFromDb, fetchAiGeneratedPlanFromDb, updateSessionTitleInDb } = useSessionContext();
@@ -204,28 +206,6 @@ export default function UserActivities() {
             } catch (error) {
                 logger.error("Error during session initialisation:", error);
             }
-        });
-    };
-
-    const formatDateToLocalBasic = (timestampz) => {
-        if (!timestampz) return 'N/A'; // Handle missing or invalid timestampz
-
-        const date = new Date(timestampz); // Convert the timestampz to a Date object
-        return date.toLocaleString(); // Format it to the user's local timezone and locale
-    };
-
-    const formatDateToLocal = (timestampz) => {
-        if (!timestampz) return 'N/A';
-
-        const date = new Date(timestampz);
-        return date.toLocaleString(undefined, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            timeZoneName: 'short',
         });
     };
 
