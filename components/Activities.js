@@ -389,11 +389,11 @@ export default function UserActivities() {
 
                                     </div>
                                     <div className='flex justify-around w-full'>
-                                        <p className="text-sm text-gray-500">
-                                            Created: {formatDateToLocalBasic(item.created_at)}
+                                        <p className="text-sm text-gray-500 max-w-28">
+                                            <b>Created</b> {formatDateToLocalBasic(item.created_at)}
                                         </p>
-                                        <p className="text-sm text-right text-gray-500">
-                                            Updated: {formatDateToLocalBasic(item.updated_at)}
+                                        <p className="text-sm text-right text-gray-500 max-w-28">
+                                            <b>Last edit</b> {formatDateToLocalBasic(item.updated_at)}
                                         </p>
                                     </div>
                                 </Reorder.Item>

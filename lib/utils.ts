@@ -9,6 +9,7 @@ export const formatDateToLocalBasic = (timestampz: any) => {
   if (!timestampz) return 'N/A'; // Handle missing or invalid timestampz
 
   const date = new Date(timestampz); // Convert the timestampz to a Date object
+  
   return date.toLocaleString(); // Format it to the user's local timezone and locale
 };
 
@@ -16,6 +17,7 @@ export const formatDateToLocal = (timestampz: any) => {
   if (!timestampz) return 'N/A';
 
   const date = new Date(timestampz);
+
   return date.toLocaleString(undefined, {
       year: 'numeric',
       month: 'long',
@@ -28,9 +30,11 @@ export const formatDateToLocal = (timestampz: any) => {
 };
 
 export const formatTimeToLocalAMPM = (timestampz: any) => {
+
   if (!timestampz) return 'N/A'; // Handle missing or invalid timestampz
 
   const date = new Date(timestampz);
+
   if (isNaN(date.getTime())) return 'Invalid Date'; // Validate date conversion
 
   return date.toLocaleString(undefined, {
