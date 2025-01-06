@@ -41,11 +41,14 @@ export default function UserActivities() {
     const inputRefs = useRef({});
 
     useEffect(() => {
+
+        if (!user?.id) return;
+
         startTransition(() => {
             const fetchSessions = async () => {
                 try {
                     logger.info('Fetching sessions from DB...');
-                    const sessions = await fetchAllSessionsFromDb(); // Await the data
+                    const sessions = await fetchAllSessionsFromDb(user.id); // Await the data
                     setItems(sessions); // Update the state with the fetched sessions
                 } catch (error) {
                     logger.error('Error fetching sessions from DB:', error.message);
@@ -54,7 +57,7 @@ export default function UserActivities() {
 
             fetchSessions(); // Call the async function
         });
-    }, []);
+    }, [user]);
 
 
     useEffect(() => {
