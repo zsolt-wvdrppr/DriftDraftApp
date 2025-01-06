@@ -12,9 +12,11 @@ import useClientData from "@/lib/hooks/useClientData";
 
 import { useAuth } from '@/lib/AuthContext';
 
+import useGenerateTitle from "@/lib/hooks/useGenerateTitle";
+
 const Result = ({ }) => {
 
-  const { sessionData, updateSessionData, updateAiGeneratedPlanInDb, setError } = useSessionContext();
+  const { sessionData, updateSessionData, updateAiGeneratedPlanInDb, updateSessionTitleInDb, setError } = useSessionContext();
   const [aiResult, setAiResult] = useState(null);
   const aiResultRef = useRef(aiResult);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,10 +24,11 @@ const Result = ({ }) => {
   const { user } = useAuth();
   const userId = user?.id;
   const sessionId = sessionData?.sessionId;
+  const { loading, error } = useGenerateTitle(sessionData?.formData[0]?.serviceDescription, updateSessionTitleInDb, userId, sessionId);
 
   useEffect(() => {
     aiResultRef.current = aiResult;
-    
+
   }, [aiResult]);
 
   useEffect(() => {
@@ -99,7 +102,7 @@ const Result = ({ }) => {
           });
 
           if (response.status === 429) {
-            const { message, remainingMinutes } = await response.json();      
+            const { message, remainingMinutes } = await response.json();
             setAiResult(
               `\n\n${message} Upgrade your subscription, or try again later in ${remainingMinutes}.`
             );
