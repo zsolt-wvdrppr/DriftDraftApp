@@ -13,8 +13,9 @@ import useClientData from "@/lib/hooks/useClientData";
 import { useAuth } from '@/lib/AuthContext';
 
 import useGenerateTitle from "@/lib/hooks/useGenerateTitle";
+import usePromptExecutor from "@/lib/hooks/usePromptExecutor";
 
-const Result = ({ }) => {
+const Result = () => {
 
   const { sessionData, updateSessionData, updateAiGeneratedPlanInDb, updateSessionTitleInDb, setError } = useSessionContext();
   const [aiResult, setAiResult] = useState(null);
@@ -25,8 +26,10 @@ const Result = ({ }) => {
   const userId = user?.id;
   const sessionId = sessionData?.sessionId;
   const [contentForTitleGeneration, setContentForTitleGeneration] = useState(null);
-  const { } = useGenerateTitle(contentForTitleGeneration, updateSessionTitleInDb, userId, sessionId);
+  const { loading: titleLoading, generatedTitle } = useGenerateTitle(contentForTitleGeneration, updateSessionTitleInDb, userId, sessionId);
   const alreadyFetched = useRef(false);
+
+  const { executePrompts, loading: promptLoading, error, output } = usePromptExecutor();
 
   useEffect(() => {
     aiResultRef.current = aiResult;
@@ -41,7 +44,7 @@ const Result = ({ }) => {
   }, [aiResult]);
 
   useEffect(() => {
-    if (alreadyFetched.current) return;  // Prevent second call
+    if (alreadyFetched.current || !userId || !sessionId) return;  // Prevent second call
     alreadyFetched.current = true;
 
     const formData = sessionData.formData;
@@ -59,7 +62,7 @@ const Result = ({ }) => {
 
     if (purpose && serviceDescription && serviceDescription && audience && marketing && usps && brandGuidelines && domain && emotions) {
 
-      const prompt = `Based on the provided inputs, create a concise and strategic website plan that captures the user's needs and requirements. The plan should be formatted as a professional document that can be shared with a developer or web design agency. 
+      /*const prompt = `Based on the provided inputs, create a concise and strategic website plan that captures the user's needs and requirements. The plan should be formatted as a professional document that can be shared with a developer or web design agency. 
 
       Here is the information to include:
 
@@ -102,6 +105,112 @@ const Result = ({ }) => {
           - Highlight USPs (${usps}) prominently on the homepage.
 
       Output this as a well-structured document with headers, clear bullet points, and concise phrasing. Ensure the document provides enough context to help a developer or designer understand the user’s requirements and goals.`;
+*/
+
+    const prompts = [
+      {
+          prompt: `Describe the primary purpose of the website based on the following details: 
+          - Primary Purpose: "${purpose}" 
+          - Additional Details: "${purposeDetails}"
+
+    If either detail is missing, mention its absence and recommend clarifying the website's goals. 
+    Return the result as a concise summary with bullet points and a short description.`,
+          generateNewPrompts: false
+      },
+      {
+          prompt: `Explain the services offered on the website based on the following details: 
+          - Service Description: "${serviceDescription}"
+
+    If no details are provided, suggest why clarifying the services is important for user understanding and conversion.
+    Format the output using bullet points.`,
+          generateNewPrompts: false
+      },
+      {
+          prompt: `Identify the target audience for the website based on the following details:
+          - Audience: "${audience}"
+
+    If no audience details are provided, recommend why defining the audience is essential for design and content strategy. 
+    Return the audience insights in a bullet point format.`,
+          generateNewPrompts: false
+      },
+      {
+          prompt: `Provide a marketing and growth strategy for the website using the details provided: 
+          - Marketing Strategy: "${marketing}"
+
+    If no strategy is provided, suggest basic strategies like SEO, content marketing, and paid advertising. 
+    Return the strategy as a list of 3-5 actionable recommendations.`,
+          generateNewPrompts: false
+      },
+      {
+          prompt: `Analyze the website's competitors based on the following details:
+          - Competitors: "${competitors}"
+
+    If no competitors are listed, explain why competitor analysis is valuable and how it can influence website strategy. 
+    Return the response as a brief competitor summary.`,
+          generateNewPrompts: false
+      },
+      {
+          prompt: `List the website's unique selling points (USPs) based on the following details: 
+          - USPs: "${usps}"
+
+    If no USPs are mentioned, suggest why clearly defining USPs is important and recommend identifying key strengths like faster service or unique features. 
+    Format the response in bullet points.`,
+          generateNewPrompts: false
+      },
+      {
+          prompt: `Summarize the provided brand guidelines using the following details:
+          - Brand Guidelines: "${brandGuidelines}"
+
+    If no brand guidelines are provided, explain why consistent branding matters and recommend including elements like color schemes and typography. 
+    Return the response in bullet points.`,
+          generateNewPrompts: false
+      },
+      {
+          prompt: `Describe the emotional impact the website should create based on the provided details:
+          - Emotional Impact: "${emotions}"
+
+    If no emotional goals are mentioned, suggest general emotional outcomes like trust, excitement, or professionalism. 
+    Return the emotional goals as a list.`,
+          generateNewPrompts: false
+      },
+      {
+          prompt: `List the website inspirations and references based on the following details:
+          - Inspirations: "${inspirations}"
+
+    If no inspirations are provided, explain why visual references can help in aligning the design vision. 
+    Return the response as a brief list.`,
+          generateNewPrompts: false
+      },
+      {
+          prompt: `Identify the domain preferences for the website based on the following details:
+          - Domain Preferences: "${domain}"
+
+    If no domain preferences are provided, explain why a memorable domain matters for branding and SEO. 
+    Return the domain choices clearly in bullet points.`,
+          generateNewPrompts: false
+      },
+      {
+          prompt: `Create a final strategic summary combining all previous details provided. 
+          Include:
+          - Website Purpose
+          - Services Offered
+          - Target Audience
+          - Marketing Strategy
+          - Competitor Analysis
+          - Unique Selling Points (USPs)
+          - Brand Guidelines
+          - Emotional Impact
+          - Inspirations
+          - Domain Preferences
+
+    If any section was missing or unclear, briefly explain its importance and recommend clarifying those details.
+    Format the output as a professional summary suitable for developers and clients. Use bullet points and keep it concise.`,
+          generateNewPrompts: false,
+          dependsOn: 9
+      }
+    ];
+
+
 
 
       const fetchContent = async () => {
@@ -143,14 +252,28 @@ const Result = ({ }) => {
         }
       };
 
-      logger.info("fetching content");
-      fetchContent();
+      // ✅ Execute prompts and update the session once complete
+      const generateWebsitePlan = async () => {
+        setIsLoading(true);
+        logger.info("Executing prompts for website plan generation...");
+        const results = await executePrompts(prompts, userId);
+        const combinedResult = results.join("\n\n");
+        setAiResult(combinedResult);
+        //updateSessionData("aiGeneratedPlan", combinedResult);
+        await updateAiGeneratedPlanInDb(userId, sessionId, combinedResult);
+        setIsLoading(false);
+      };
+
+      generateWebsitePlan();
+
+      //logger.info("fetching content");
+      //fetchContent();
     } else {
       logger.info("resetting hint");
       setAiResult(null);
       setIsLoading(false);
     }
-  }, []);
+  }, [userId, sessionId]);
 
   useEffect(() => {
     // Remove URL params after setting the step
@@ -182,11 +305,12 @@ const Result = ({ }) => {
 
   return (
     <div>
-      {isLoading ? (
-        <div className="flex flex-col items-center py-10">
-          <Card className="w-60 h-60 border-none bg-transparent shadow-none">
+      {isLoading || !generatedTitle ? (
+        <div className="flex flex-col left-0 top-0 bottom-0 right-0 absolute w-full items-center justify-center py-10">
+          <Card aria-label='Progress indicator' className="h-60 max-w-96 border-none bg-transparent shadow-none">
             <CardBody className="justify-center items-center pb-0">
               <CircularProgress
+                aria-label='Generating content progress'
                 classNames={{
                   svg: "w-36 h-36",
                   indicator: "stroke-neutralDark dark:stroke-white",
@@ -198,8 +322,8 @@ const Result = ({ }) => {
                 value={(currentStep + 1) / steps.length * 100}
               />
             </CardBody>
-            <CardFooter className="justify-center items-center pt-4">
-              <p className="text-neutralDark dark:text-white text-sm font-semibold">{steps[currentStep]}</p>
+            <CardFooter className="justify-center h-11 items-center pt-4">
+              <p className="text-neutralDark dark:text-white text-md font-semibold text-center tracking-wider">{steps[currentStep]}</p>
             </CardFooter>
           </Card>
         </div>
@@ -208,6 +332,7 @@ const Result = ({ }) => {
           <div className="w-full flex justify-end">
             <Button
               color="secondary"
+              aria-label='Copy the generated content to clipboard'
               variant="bordered"
               onPress={() => {
                 navigator.clipboard.writeText(aiResult);
@@ -221,6 +346,7 @@ const Result = ({ }) => {
               Copy
             </Button>
           </div>
+          <h1 className="text-3xl font-semibold text-neutralDark dark:text-white mt-8 mb-4">{generatedTitle}</h1>
           <ReactMarkdown className="whitespace-pre-wrap p-8 my-12 rounded-2xl bg-yellow-100/60 dark:bg-content1 max-w-screen-lg">
             {aiResult}
           </ReactMarkdown>
@@ -228,6 +354,7 @@ const Result = ({ }) => {
             <Button
               color="secondary"
               variant="bordered"
+              aria-label='Copy the generated content to clipboard'
               onPress={() => {
                 navigator.clipboard.writeText(aiResult);
                 toast.success('Texts copied to clipboard', {
