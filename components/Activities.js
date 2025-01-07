@@ -329,7 +329,7 @@ export default function UserActivities() {
                                         <div className='flex w-full justify-around'>
                                             <div>
                                                 <Link
-                                                    className="text-white cursor-pointer"
+                                                    className="dark:text-white cursor-pointer"
                                                     onPress={() => handleEdit(item)}
                                                 >
                                                     <IconEdit id="edit-icon" />
@@ -340,7 +340,7 @@ export default function UserActivities() {
                                             </div>
                                             <div>
                                                 <Link
-                                                    className="text-white cursor-pointer"
+                                                    className="dark:text-white cursor-pointer"
                                                     onPress={() => confirmDelete(item)}
                                                 >
                                                     <IconTrash id='delete-icon' />
@@ -351,7 +351,7 @@ export default function UserActivities() {
                                             </div>
                                             <div>
                                                 <Link
-                                                    className="text-white cursor-pointer"
+                                                    className="dark:text-white cursor-pointer"
                                                     onPress={() => logger.info(`Share item with ID: ${item.session_id}`)}
                                                     isDisabled={true}
                                                 >
@@ -363,7 +363,7 @@ export default function UserActivities() {
                                             </div>
                                             <div>
                                                 <Link
-                                                    className="text-white cursor-pointer"
+                                                    className="dark:text-white cursor-pointer"
                                                     onPress={() => viewPlan(item)}
                                                 >
                                                     <IconEye id='view-icon' />
@@ -375,7 +375,7 @@ export default function UserActivities() {
                                             <div>
                                                 <Link
                                                     alt="Get Quote"
-                                                    className="text-white cursor-pointer"
+                                                    className="dark:text-white cursor-pointer"
                                                     onPress={() => logger.info(`Submit for quote: ${item.session_id}`)}
                                                     isDisabled={true}
                                                 >

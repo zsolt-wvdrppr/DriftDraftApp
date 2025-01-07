@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useTransition } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Button } from '@nextui-org/react';
+import { Button, CircularProgress, Card, CardBody, CardFooter, Chip } from '@nextui-org/react';
 import { IconCopy } from '@tabler/icons-react';
 import { toast } from 'sonner';
 
@@ -24,12 +24,20 @@ const Result = ({ }) => {
   const { user } = useAuth();
   const userId = user?.id;
   const sessionId = sessionData?.sessionId;
-  const { loading, error } = useGenerateTitle(sessionData?.formData[0]?.serviceDescription, updateSessionTitleInDb, userId, sessionId);
+  const [contentForTitleGeneration, setContentForTitleGeneration] = useState(null);
+  const { } = useGenerateTitle(contentForTitleGeneration, updateSessionTitleInDb, userId, sessionId);
   const alreadyFetched = useRef(false);
 
   useEffect(() => {
     aiResultRef.current = aiResult;
-
+    setIsLoading(true);
+    if (aiResultRef.current !== null) {  // Prevent multiple updates
+      updateSessionData("aiGeneratedPlan", aiResultRef.current);
+      updateAiGeneratedPlanInDb(userId, sessionId, aiResultRef.current);
+      setContentForTitleGeneration(sessionData?.formData[0]?.serviceDescription);
+      //logger.debug("Updating aiGeneratedPlan in DB:", aiResultRef.current);
+      setIsLoading(false);
+    }
   }, [aiResult]);
 
   useEffect(() => {
@@ -124,14 +132,13 @@ const Result = ({ }) => {
           const data = await response.json();
 
           setAiResult(data.content || "No content generated.");
-          updateSessionData("aiGeneratedPlan", data.content);
+
         } catch (error) {
+
           logger.error("Error fetching content:", error);
           setAiResult("An error occurred while generating content.");
+
         } finally {
-          if (!aiResultRef.current) {  // Prevent multiple updates
-            updateAiGeneratedPlanInDb(userId, sessionId, aiResultRef.current);
-          }
           setIsLoading(false);
         }
       };
@@ -154,13 +161,47 @@ const Result = ({ }) => {
     }
   }, []);
 
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const steps = [
+    "Analyzing your inputs...",
+    "Formulating a strategy...",
+    "Generating website recommendations...",
+    "Finalizing content...",
+  ];
+
+  useEffect(() => {
+    let interval;
+    if (isLoading) {
+      interval = setInterval(() => {
+        setCurrentStep((prevStep) => (prevStep + 1) % steps.length);
+      }, 2000); // Update step every 2 seconds
+    }
+    return () => clearInterval(interval); // Cleanup interval
+  }, [isLoading]);
+
   return (
     <div>
       {isLoading ? (
-        <div className="text-center py-10">
-          <p className="text-lg font-semibold text-gray-600">
-            Generating your website plan... Please wait.
-          </p>
+        <div className="flex flex-col items-center py-10">
+          <Card className="w-60 h-60 border-none bg-transparent shadow-none">
+            <CardBody className="justify-center items-center pb-0">
+              <CircularProgress
+                classNames={{
+                  svg: "w-36 h-36",
+                  indicator: "stroke-neutralDark dark:stroke-white",
+                  //track: "stroke-black dark:stroke-white/10",
+                  value: "text-3xl font-semibold text-neutralDark dark:text-white",
+                }}
+                showValueLabel={false} // Hide value label
+                strokeWidth={4}
+                value={(currentStep + 1) / steps.length * 100}
+              />
+            </CardBody>
+            <CardFooter className="justify-center items-center pt-4">
+              <p className="text-neutralDark dark:text-white text-sm font-semibold">{steps[currentStep]}</p>
+            </CardFooter>
+          </Card>
         </div>
       ) : (
         <>
