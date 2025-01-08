@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { Button } from '@nextui-org/react';
 import { IconCopy, IconSquareRoundedX } from '@tabler/icons-react';
 
-export const showHintToast = (hints, hintToastRef, onCopySuccess, onDismiss, userMsg) => {
+export const showHintToast = (hints, hintToastRef, onCopySuccess, onDismiss, userMsg, copyToClipboard = null) => {
     
 
   // Dismiss the existing hint toast if it exists
@@ -15,6 +15,10 @@ export const showHintToast = (hints, hintToastRef, onCopySuccess, onDismiss, use
   }
 
   const handleCopyClick = () => {
+    if (copyToClipboard) {
+      copyToClipboard(hints);
+      return;
+    }
     // Copy hint to clipboard
     toast.dismiss(); // Close all active toasts
     navigator.clipboard.writeText(hints);

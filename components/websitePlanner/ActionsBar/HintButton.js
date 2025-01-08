@@ -10,7 +10,6 @@ import logger from '@/lib/logger';
 
 import NewHintNotifierIcon from './NewHintNotifierIcon';
 import { useSessionContext } from '@/lib/SessionProvider';
-import { useCompareStrings } from '@/lib/hooks/useCompareStrings';
 
 const HintButton = ({
   hints: hint,

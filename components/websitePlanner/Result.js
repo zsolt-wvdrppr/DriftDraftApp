@@ -13,6 +13,7 @@ import { useAuth } from '@/lib/AuthContext';
 
 import useGenerateTitle from "@/lib/hooks/useGenerateTitle";
 import usePromptExecutor from "@/lib/hooks/usePromptExecutor";
+import useClipboard from "@/lib/hooks/useClipboard";
 
 const Result = () => {
 
@@ -30,6 +31,22 @@ const Result = () => {
   const { executePrompts, executedPrompts, loading: promptLoading, error, output } = usePromptExecutor();
 
   const [prompts, setPrompts] = useState([]);
+  const { copyToClipboard, isPending } = useClipboard();
+
+  /* Form data */
+  const formData = sessionData.formData;
+  const purpose = formData[0].purpose;
+  const purposeDetails = formData[0]?.purposeDetails || ''; // optional
+  const serviceDescription = formData[0].serviceDescription;
+  const audience = formData[1].audience;
+  const marketing = formData[2].marketing || '';
+  const competitors = formData[3]?.urls?.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : ''; // optional
+  const usps = formData[4].usps || '';
+  const domain = formData[5].domain || '';
+  const brandGuidelines = formData[6].brandGuidelines || '';
+  const emotions = formData[7].emotions || '';
+  const inspirations = formData[8]?.inspirations?.toString() || ''; // optional
+  /* End of form data */
 
   useEffect(() => {
     aiResultRef.current = aiResult;
@@ -37,7 +54,7 @@ const Result = () => {
     if (aiResultRef.current !== null) {  // Prevent multiple updates
       updateSessionData("aiGeneratedPlan", aiResultRef.current);
       updateAiGeneratedPlanInDb(userId, sessionId, aiResultRef.current);
-      setContentForTitleGeneration(sessionData?.formData[0]?.serviceDescription);
+      setContentForTitleGeneration(serviceDescription + ' ' + domain + ' ' + brandGuidelines + ' ' + emotions);
       //logger.debug("Updating aiGeneratedPlan in DB:", aiResultRef.current);
     }
 
@@ -54,19 +71,6 @@ const Result = () => {
   useEffect(() => {
     if (alreadyFetched.current || !userId || !sessionId) return;  // Prevent second call
     alreadyFetched.current = true;
-
-    const formData = sessionData.formData;
-    const purpose = formData[0].purpose;
-    const purposeDetails = formData[0]?.purposeDetails || ''; // optional
-    const serviceDescription = formData[0].serviceDescription;
-    const audience = formData[1].audience;
-    const marketing = formData[2].marketing || '';
-    const competitors = formData[3]?.urls?.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : ''; // optional
-    const usps = formData[4].usps || '';
-    const domain = formData[5].domain || '';
-    const brandGuidelines = formData[6].brandGuidelines || '';
-    const emotions = formData[7].emotions || '';
-    const inspirations = formData[8]?.inspirations?.toString() || ''; // optional
 
     if (purpose && serviceDescription && serviceDescription && audience && marketing && usps && brandGuidelines && domain && emotions) {
 
@@ -220,24 +224,71 @@ const Result = () => {
 
       const prompts = [
         {
-          prompt: `Describe the primary purpose of the website based on the following details: 
-          - Primary Purpose: "${purpose}" 
-          - Additional Details: "${purposeDetails}"
-
-    If either detail is missing, mention its absence and recommend clarifying the website's goals. 
-    Return the result as a concise summary with bullet points and a short description.`,
+          prompt: `
+            Prompt 1: Strategic Foundations
+            Combine these user inputs:
+              - Purpose: "${purpose}"
+              - Purpose Details: "${purposeDetails}"
+              - Services: "${serviceDescription}"
+              - Audience: "${audience}"
+            Task:
+              - Generate a concise overview in bullet points.
+              - Highlight the main website goals, services, and target audience.
+              - If any detail is missing, mention it and why it is important to clarify.
+              - Keep it straightforward and short.
+          `,
           generateNewPrompts: false
         },
         {
-          prompt: `Explain the services offered on the website based on the following details: 
-          - Service Description: "${serviceDescription}"
-
-    If no details are provided, suggest why clarifying the services is important for user understanding and conversion.
-    Format the output using bullet points.`,
+          prompt: `
+            Prompt 2: Branding, Competition, and USP
+            Combine these user inputs:
+              - Brand Guidelines: "${brandGuidelines}"
+              - Emotions (Emotional Impact): "${emotions}"
+              - Competitors: "${competitors}"
+              - Unique Selling Points (USPs): "${usps}"
+              - Inspirations: "${inspirations}"
+            Task:
+              - Summarise how branding (colours, fonts, overall style) and emotional goals should shape the website.
+              - Briefly discuss any relevant competitor insights.
+              - Emphasise the USPs (why they're important for differentiation).
+              - If anything is unclear, note it and recommend clarifying.
+              - Provide short bullet points, focusing on design direction and overall impact.
+          `,
           generateNewPrompts: false
         },
+        {
+          prompt: `
+            Prompt 3: Marketing Strategy & Technical Requirements
+            Combine these user inputs:
+              - Marketing Strategy: "${marketing}"
+              - Domain Preferences: "${domain}"
+            Task (two parts):
+              1) Outline a concise marketing approach (SEO, content marketing, paid ads, etc.) based on the provided details.
+                 - If no strategy is given, propose 2–3 simple ideas.
+              2) Explain the essential developer requirements for building a site that is:
+                 - Technically sound (fast loading, secure, SEO-ready).
+                 - Capable of converting visitors effectively.
+                 - Clear about any important integrations or frameworks.
+              - Keep both parts brief and in bullet points.
+          `,
+          generateNewPrompts: false
+        },
+        {
+          prompt: `
+            Prompt 4: Wireframe & Final Strategic Summary
+            Task:
+              - Suggest a simple wireframe outline for the main pages (e.g., homepage, services/products, about, contact).
+              - Merge the previous prompts into a single final strategic overview that a developer or client can use.
+                * Summarise the purpose, audience, branding, marketing, and key technical needs.
+                * Include any missing info notes so the user knows what to clarify.
+              - Return the final plan in a concise bullet-point format with short paragraphs where needed.
+              - Keep it very straightforward and easy to understand.
+          `,
+          generateNewPrompts: false,
+          dependsOn: 2 // or the index you want to depend on
+        }
       ];
-
 
       setPrompts(prompts);
 
@@ -301,6 +352,8 @@ const Result = () => {
     logger.debug("[PROGRESS] - totalCount:", prompts.length);
   }, [executedPrompts, prompts, isLoading]);
 
+  const aiResultWithTitle = `# ${generatedTitle}\n\n${aiResult}`;
+
   return (
     <div>
       {isLoading ? (
@@ -333,36 +386,23 @@ const Result = () => {
               color="secondary"
               aria-label='Copy the generated content to clipboard'
               variant="bordered"
-              onPress={() => {
-                navigator.clipboard.writeText(aiResult);
-                toast.success('Texts copied to clipboard', {
-                  duration: 2000,
-                  classNames: { toast: 'text-green-600' },
-                });
-              }}
+              onPress={() => { copyToClipboard(aiResultWithTitle); }}
             >
               <IconCopy size={20} />
               Copy
             </Button>
           </div>
-          <div className="whitespace-pre-wrap p-8 my-12 rounded-2xl bg-yellow-100/60 dark:bg-content1 max-w-screen-lg">
-            <h1 className="text-3xl font-semibold text-neutralDark dark:text-white mt-8 mb-4">{generatedTitle}</h1>
+          <div className="prose lg:prose-xl prose-slate dark:prose-invert p-8 my-12 rounded-2xl bg-yellow-100/60 dark:bg-content1 max-w-screen-lg">
             <ReactMarkdown>
-              {aiResult}
+              {aiResultWithTitle}
             </ReactMarkdown>
           </div>
           <div className="w-full flex justify-end">
             <Button
               color="secondary"
-              variant="bordered"
               aria-label='Copy the generated content to clipboard'
-              onPress={() => {
-                navigator.clipboard.writeText(aiResult);
-                toast.success('Texts copied to clipboard', {
-                  duration: 2000,
-                  classNames: { toast: 'text-green-600' },
-                });
-              }}
+              variant="bordered"
+              onPress={() => { copyToClipboard(aiResultWithTitle); }}
             >
               <IconCopy size={20} />
               Copy

@@ -9,11 +9,12 @@ import HintButton from './HintButton';
 import WhyWeAskButton from './WhyWeAskButton';
 import {showHintToast, showWhyWeAskToast} from './showToast';
 import { toast } from 'sonner';
+import useClipboard from '@/lib/hooks/useClipboard';
 
 
 const Sidebar = React.memo(({ hint, whyDoWeAsk, onHintClicked, onWhyClicked, userMsg }) => {
   const [isPending, startTransition] = useTransition();
-
+  const { copyToClipboard } = useClipboard();
   const hintToastRef = useRef(null);
   const whyToastRef = useRef(null);
 
@@ -28,7 +29,8 @@ const Sidebar = React.memo(({ hint, whyDoWeAsk, onHintClicked, onWhyClicked, use
           hintToastRef,
           () => logger.info("Hint copied to clipboard!"), // Optional success callback
           () => logger.info("Hint toast dismissed!"), // Optional dismiss callback
-          userMsg
+          userMsg,
+          copyToClipboard // Optional copy handler
         );
         //setNewHintAvailable(false); // Reset the indicator
         onHintClicked?.(); // Call optional handler
