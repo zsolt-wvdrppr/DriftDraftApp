@@ -10,6 +10,7 @@ import { useSessionContext } from '@/lib/SessionProvider';
 
 import Sidebar from './ActionsBar/Main';
 import PasteButton from './layout/PasteButton';
+import { marked } from 'marked';
 
 const StepEmotions = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -103,14 +104,14 @@ const StepEmotions = ({ ref }) => {
           <Textarea
             classNames={{
               label: "!text-primary dark:!text-accentMint",
-              input: "",
+              input: "prose",
               inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${attractionIsInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
             }}
             isRequired={true}
             label="Emotions and User Experience"
             minRows={4}
             placeholder={content.placeholder}
-            value={localValue}
+            value={marked(localValue)}
             onChange={handleTextareaChange}
           />
           </PasteButton>

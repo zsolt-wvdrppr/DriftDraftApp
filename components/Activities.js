@@ -11,22 +11,94 @@ import {
     Button,
     Link,
     useDisclosure,
+    Spinner
 } from "@nextui-org/react";
 import { IconEdit, IconTrash, IconEye, IconShare, IconWand, IconSquareRoundedXFilled, IconInfoCircleFilled, IconPencilStar } from '@tabler/icons-react';
 import { Tooltip } from 'react-tooltip';
 import { toast } from 'sonner';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
-import { Spinner } from "@nextui-org/react";
 
 import { createOrUpdateProfile } from "@/lib/supabaseClient";
 import logger from '@/lib/logger';
 import { useAuth } from '@/lib/AuthContext';
 
 import { useSessionContext } from '@/lib/SessionProvider';
-import ReactMarkdown from 'react-markdown';
 
 import { formatDateToLocalBasic } from '@/lib/utils';
+
+import EditableMarkdownModal from './websitePlanner/layout/EditableMarkdownModal';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { ListNode, ListItemNode } from "@lexical/list";
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { CodeNode } from "@lexical/code";
+import { LinkNode } from "@lexical/link";
+import { TextNode } from 'lexical';
+
+const theme = {
+    code: 'editor-code',
+    heading: {
+        h1: 'editor-heading-h1',
+        h2: 'editor-heading-h2',
+        h3: 'editor-heading-h3',
+        h4: 'editor-heading-h4',
+        h5: 'editor-heading-h5',
+    },
+    image: 'editor-image',
+    link: 'editor-link',
+    list: {
+        listitem: 'editor-listitem',
+        nested: {
+            listitem: 'editor-nested-listitem',
+        },
+        ol: 'editor-list-ol',
+        ul: 'editor-list-ul',
+    },
+    ltr: 'ltr',
+    paragraph: 'editor-paragraph',
+    placeholder: 'editor-placeholder',
+    quote: 'editor-quote',
+    rtl: 'rtl',
+    text: {
+        bold: 'editor-text-bold',
+        code: 'editor-text-code',
+        hashtag: 'editor-text-hashtag',
+        italic: 'editor-text-italic',
+        overflowed: 'editor-text-overflowed',
+        strikethrough: 'editor-text-strikethrough',
+        underline: 'editor-text-underline',
+        underlineStrikethrough: 'editor-text-underlineStrikethrough',
+    },
+}
+
+const onError = (error) => {
+    try {
+        if (error && error.message) {
+            logger.error("Lexical error:", error.message);
+        } else {
+            logger.error("Unknown Lexical error occurred.", error);
+        }
+    } catch (err) {
+        logger.error("Error in the Lexical error handler itself:", err);
+    }
+}
+
+const initialConfig = {
+    namespace: "MyEditor",
+    theme,
+    onError,
+    // 👇 Register your extra node types here
+    nodes: [
+        ListNode,
+        ListItemNode,
+        HeadingNode,
+        QuoteNode,
+        CodeNode,
+        LinkNode,
+        TextNode,
+        // Add any others you need
+    ],
+};
 
 export default function UserActivities() {
 
@@ -35,6 +107,11 @@ export default function UserActivities() {
     const [selectedItem, setSelectedItem] = useState(null);
     const { isOpen: isDeleteModalOpen, onOpen: onDeleteOpen, onOpenChange: onDeleteOpenChange } = useDisclosure();
     const { isOpen: isViewModalOpen, onOpen: onViewOpen, onOpenChange: onViewOpenChange } = useDisclosure();
+
+    const { isOpen: isMarkdownModalOpen, onOpen: onMarkdownOpen, onOpenChange: onMarkdownOpenChange } = useDisclosure();
+    const [markdownContent, setMarkdownContent] = useState('');
+    const [isLoadingContent, setIsLoadingContent] = useState(false);
+
     const [isPending, startTransition] = useTransition();
     const { user, loading } = useAuth(); // Access user state
     const router = useRouter();
@@ -97,6 +174,24 @@ export default function UserActivities() {
             deleteSessionFromDb(user.id, selectedItem.session_id);
         }
         onDeleteOpenChange(false);
+    };
+
+
+    const handleOpenMarkdownModal = async (item) => {
+        setSelectedItem(item);
+        setIsLoadingContent(true);
+        onMarkdownOpen(); // Open the modal
+
+        try {
+            const generatedPlan = await fetchAiGeneratedPlanFromDb(item.session_id);
+            setMarkdownContent(generatedPlan || 'No content available.');
+            setIsLoadingContent(false);
+        } catch (error) {
+            toast.error("Failed to fetch content.");
+            setIsLoadingContent(false);
+            setMarkdownContent("Error loading content.");
+            console.error("Error fetching markdown content:", error);
+        }
     };
 
     const viewPlan = async (item) => {
@@ -364,7 +459,7 @@ export default function UserActivities() {
                                             <div>
                                                 <Link
                                                     className="dark:text-white cursor-pointer"
-                                                    onPress={() => viewPlan(item)}
+                                                    onPress={() => handleOpenMarkdownModal(item)}
                                                 >
                                                     <IconEye id='view-icon' />
                                                 </Link>
@@ -428,40 +523,17 @@ export default function UserActivities() {
                 </ModalContent>
             </Modal>
 
-            { }
-            <Modal
-                isOpen={isViewModalOpen}
-                onOpenChange={onViewOpenChange}
-                className="max-w-4xl p-8 mx-auto top-0" // Ensure modal is properly centered and within viewport
-            >
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            {/* Ensure Header Stays Fixed */}
-                            <ModalHeader className="flex flex-col gap-1 sticky top-0 z-10 shadow-md">
-                                View Plan
-                            </ModalHeader>
+            <LexicalComposer initialConfig={initialConfig}>
+                <EditableMarkdownModal
+                    item={selectedItem}
+                    isOpen={isMarkdownModalOpen}
+                    onOpenChange={onMarkdownOpenChange}
+                    markdownContent={markdownContent}
+                    setMarkdownContent={setMarkdownContent}
+                    isLoading={isLoadingContent}
+                />
+            </LexicalComposer>
 
-                            {/* Enable Scrolling for Content */}
-                            <ModalBody className="overflow-y-auto max-h-[70vh]">
-                                <h2 className="text-lg font-semibold">{selectedItem?.session_title}</h2>
-                                {/* Conditional Rendering for Spinner or Content */}
-                                {selectedAiGenPlan[selectedItem?.session_id] === "Loading..."
-                                    ? <Spinner color="primary" />
-                                    : <ReactMarkdown>{selectedAiGenPlan[selectedItem?.session_id]}</ReactMarkdown>
-                                }
-                            </ModalBody>
-
-                            {/* Footer Fixed at Bottom */}
-                            <ModalFooter className="sticky bottom-0 z-10 shadow-md">
-                                <Button color="primary" onPress={onClose}>
-                                    Close
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
         </div>
     );
 }

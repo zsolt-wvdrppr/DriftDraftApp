@@ -4,7 +4,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Button, CircularProgress, Card, CardBody, CardFooter } from '@nextui-org/react';
 import { IconCopy } from '@tabler/icons-react';
-import { toast } from 'sonner';
 
 import { useSessionContext } from "@/lib/SessionProvider";
 import logger from '@/lib/logger';
