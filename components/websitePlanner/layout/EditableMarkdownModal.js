@@ -275,12 +275,12 @@ export const EditableMarkdownModal = ({
                     {previewMode ? (
                         <>
                             <span className="font-semibold">Edit Mode</span>
-                            <IconEye />
+                            <IconEdit />
                         </>
                     ) : (
                         <>
                             <span className="font-semibold">Preview Mode</span>
-                            <IconEdit />
+                            <IconEye />
                         </>
                     )}
                 </Button>
