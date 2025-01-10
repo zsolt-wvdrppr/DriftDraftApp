@@ -25,6 +25,6 @@ input:-webkit-autofill {
   }
 
   /* Set headings in dark mode to white */
-  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, .dark .editor-text-bold, .dark ul, .dark ol, .dark p, .dark blockquote, .dark .editor-text-italic, .dark .editor-text-underline, .dark .editor-text-strikethrough, .dark .editor-text-code, .dark .editor-text-link {
-    color: white;
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, .dark .editor-text-bold, .dark ul, .dark ol, .dark p, .dark blockquote, .dark .editor-text-italic, .dark .editor-text-underline, .dark .editor-text-strikethrough, .dark .editor-text-code, .dark .editor-text-link, .dark strong {
+    color: rgb(206, 206, 206);
   }

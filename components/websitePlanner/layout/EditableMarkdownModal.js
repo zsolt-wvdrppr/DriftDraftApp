@@ -58,7 +58,7 @@ export const EditableMarkdownModal = ({
 
     
 
-    useLoadContent(editor, markdownContent);
+    useLoadContent(editor, markdownContent, item?.session_id);
 
     useEditorChangeListener(() => {        
         if (editor) {
@@ -193,6 +193,7 @@ export const EditableMarkdownModal = ({
                                                         previewMode={previewMode}
                                                     />
                                                 </div>
+                                                <AutoFocusPlugin />
                                                 <RichTextPlugin
                                                     contentEditable={
                                                         <ContentEditable className="prose p-2 min-w-full mt-24 md:p-8 border focus-visible:outline-primary rounded-md shadow-sm dark:text-white" />
