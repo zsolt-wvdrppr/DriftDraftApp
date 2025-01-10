@@ -357,11 +357,6 @@ export default function UserActivities() {
                 values={items}
                 onReorder={setItems}
             >
-                {items.length === 0 &&
-                    <div className="flex items-center justify-center h-96">
-                        <p className="text-gray-500">No items found.</p>
-                    </div>
-                }
                 {items.length > 0 &&
                     <AnimatePresence className="">
                         {items.map(item => {
