@@ -95,116 +95,116 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
     return (
         <div className="toolbar w-full fixed left-0 top-10 flex" ref={toolbarRef}>
             <div className='flex justify-around w-full px-12 flex-wrap md:flex-row gap-3 max-w-2xl mx-auto'>
-            <div className='flex gap-2'>
-                <Button
-                    variant='ghost'
-                    disabled={!canUndo}
-                    onClick={() => {
-                        editor.dispatchCommand(UNDO_COMMAND, undefined);
-                    }}
-                    className="toolbar-item min-w-10 w-10 h-10 px-0 bg-white"
-                    aria-label="Undo">
-                    <IconArrowBackUp />
-                </Button>
-                <Button
-                    variant='ghost'
-                    disabled={!canRedo}
-                    onClick={() => {
-                        editor.dispatchCommand(REDO_COMMAND, undefined);
-                    }}
-                    className="toolbar-item min-w-10 w-10 h-10 px-0 bg-white"
-                    aria-label="Redo">
-                    <IconArrowForwardUp />
-                </Button>
-            </div>
-            <div className='flex gap-2'>
-                <Button
-                    variant='ghost'
-                    onClick={() => {
-                        editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
-                    }}
-                    className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 bg-white' + (isBold ? 'active px-0 text-success' : '')}
-                    aria-label="Format Bold">
-                    <IconBold />
-                </Button>
-                <Button
-                    variant='ghost'
-                    onClick={() => {
-                        editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
-                    }}
-                    className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 bg-white' + (isItalic ? 'active px-0 text-success' : '')}
-                    aria-label="Format Italics">
-                    <IconItalic />
-                </Button>
-                {/*<Button
-        variant='ghost'
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
-        }}
-        className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0' + (isUnderline ? 'active' : '')}
-        aria-label="Format Underline">
-        <IconUnderline />
-      </Button>
-      <Button
-        variant='ghost'
-        onClick={() => {
-          editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
-        }}
-        className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0' + (isStrikethrough ? 'active' : '')}
-        aria-label="Format Strikethrough">
-        <IconStrikethrough />
-      </Button>*/}
-            </div>
-            <div className='flex gap-2'>
-                <Button
-                    variant='ghost'
-                    onClick={() => {
-                        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
-                    }}
-                    className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white'
-                    aria-label="Left Align">
-                    <IconAlignLeft2 />
-                </Button>
-                <Button
-                    variant='ghost'
-                    onClick={() => {
-                        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
-                    }}
-                    className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white'
-                    aria-label="Center Align">
-                    <IconAlignCenter />
-                </Button>
-                <Button
-                    variant='ghost'
-                    onClick={() => {
-                        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
-                    }}
-                    className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white'
-                    aria-label="Right Align">
-                    <IconAlignRight2 />
-                </Button>
-                <Button
-                    variant='ghost'
-                    onClick={() => {
-                        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
-                    }}
-                    className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white'
-                    aria-label="Justify Align">
-                    <IconAlignJustified />
-                </Button>{' '}
-            </div>
-            <div>
-                <Button
-                    variant='ghost'
-                    onClick={onSave}
-                    className={`toolbar-item min-w-10 w-10 h-10 px-0 text-white ${isSaved ? 'bg-success' : 'bg-danger'}`}
-                    aria-label="Save"
-                    isLoading={isSaveLoading}
-                    isDisabled={isSaveLoading}
-                >
-                    {!isSaveLoading && <IconDeviceFloppy />}
-                </Button>
-            </div>
+                <div className='flex gap-2'>
+                    <Button
+                        variant='ghost'
+                        disabled={!canUndo}
+                        onClick={() => {
+                            editor.dispatchCommand(UNDO_COMMAND, undefined);
+                        }}
+                        className="toolbar-item min-w-10 w-10 h-10 px-0 bg-white dark:bg-content1"
+                        aria-label="Undo">
+                        <IconArrowBackUp />
+                    </Button>
+                    <Button
+                        variant='ghost'
+                        disabled={!canRedo}
+                        onClick={() => {
+                            editor.dispatchCommand(REDO_COMMAND, undefined);
+                        }}
+                        className="toolbar-item min-w-10 w-10 h-10 px-0 bg-white dark:bg-content1"
+                        aria-label="Redo">
+                        <IconArrowForwardUp />
+                    </Button>
+                </div>
+                <div className='flex gap-2'>
+                    <Button
+                        variant='ghost'
+                        onClick={() => {
+                            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+                        }}
+                        className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 bg-white dark:bg-content1' + (isBold ? 'active px-0 text-success' : '')}
+                        aria-label="Format Bold">
+                        <IconBold />
+                    </Button>
+                    <Button
+                        variant='ghost'
+                        onClick={() => {
+                            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
+                        }}
+                        className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 bg-white dark:bg-content1' + (isItalic ? 'active px-0 text-success' : '')}
+                        aria-label="Format Italics">
+                        <IconItalic />
+                    </Button>
+                    {/*<Button
+                        variant='ghost'
+                        onClick={() => {
+                        editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
+                        }}
+                        className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0' + (isUnderline ? 'active' : '')}
+                        aria-label="Format Underline">
+                        <IconUnderline />
+                    </Button>
+                    <Button
+                        variant='ghost'
+                        onClick={() => {
+                        editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
+                        }}
+                        className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0' + (isStrikethrough ? 'active' : '')}
+                        aria-label="Format Strikethrough">
+                        <IconStrikethrough />
+                    </Button>*/}
+                </div>
+                <div className='flex gap-2'>
+                    <Button
+                        variant='ghost'
+                        onClick={() => {
+                            editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
+                        }}
+                        className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white dark:bg-content1'
+                        aria-label="Left Align">
+                        <IconAlignLeft2 />
+                    </Button>
+                    <Button
+                        variant='ghost'
+                        onClick={() => {
+                            editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
+                        }}
+                        className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white dark:bg-content1'
+                        aria-label="Center Align">
+                        <IconAlignCenter />
+                    </Button>
+                    <Button
+                        variant='ghost'
+                        onClick={() => {
+                            editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
+                        }}
+                        className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white dark:bg-content1'
+                        aria-label="Right Align">
+                        <IconAlignRight2 />
+                    </Button>
+                    <Button
+                        variant='ghost'
+                        onClick={() => {
+                            editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
+                        }}
+                        className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white dark:bg-content1'
+                        aria-label="Justify Align">
+                        <IconAlignJustified />
+                    </Button>{' '}
+                </div>
+                <div>
+                    <Button
+                        variant='ghost'
+                        onClick={onSave}
+                        className={`toolbar-item min-w-10 w-10 h-10 px-0 text-white ${isSaved ? 'bg-success' : 'bg-danger'}`}
+                        aria-label="Save"
+                        isLoading={isSaveLoading}
+                        isDisabled={isSaveLoading}
+                    >
+                        {!isSaveLoading && <IconDeviceFloppy />}
+                    </Button>
+                </div>
             </div>
         </div>
     );
