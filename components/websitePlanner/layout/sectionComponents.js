@@ -2,17 +2,23 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 import { Textarea, Button } from '@nextui-org/react';
 
-export const StepOuterWrapper = ({ className, children }) => {
+export const StepOuterWrapper = ({ className = '', children }) => {
+
+const _className = " " + className;
+
   return (
-    <div className={cn("flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl" + " " + className)}>
+    <div className={cn("flex flex-col md:grid md:grid-cols-4 gap-2 md:gap-6 md:py-10 max-w-screen-xl px-6 md:px-0" + _className)}>
       {children}
     </div>
   )
 }
 
-export const StepInnerWrapper = ({ className, children }) => {
+export const StepInnerWrapper = ({ className = '', children }) => {
+
+  const _className = " " + className;
+
   return (
-    <div className={cn("col-span-3 flex-1 space-y-4" + className)}>
+    <div className={cn("col-span-3 flex-1 md:space-y-4" + _className)}>
       {children}
     </div>
   )
@@ -20,7 +26,8 @@ export const StepInnerWrapper = ({ className, children }) => {
 
 import Sidebar from '@/components/websitePlanner/ActionsBar/Sidebar'
 
-export const StepWrapper = ({ whyDoWeAsk, userMsg, hint, className, children }) => {
+export const StepWrapper = ({ whyDoWeAsk, userMsg, hint, className = null, children }) => {
+  
   return (
     <StepOuterWrapper className={className}>
       <StepInnerWrapper>
@@ -31,9 +38,12 @@ export const StepWrapper = ({ whyDoWeAsk, userMsg, hint, className, children }) 
   )
 }
 
-export const StepQuestion = ({ content, className }) => {
+export const StepQuestion = ({ content, className = '' }) => {
+
+  const _className = " " + className;
+
   return (
-    <h2 className={cn("text-lg font-semibold mb-4 text-primary dark:text-accentMint my-4" + className)}>
+    <h2 className={cn("text-lg font-semibold mb-4 text-primary dark:text-accentMint" + _className)}>
       {content?.question} {content?.required && <span className="text-red-500">*</span>}
     </h2>
   )
@@ -42,6 +52,7 @@ export const StepQuestion = ({ content, className }) => {
 export const StepTextarea = ({ content, label, localValue, handleTextareaChange, isRequired, isInputInvalid, placeholder }) => {
   return (
     <Textarea
+      isClearable={true}
       classNames={{
         label: "!text-primary dark:!text-accentMint",
         input: "resize-none pt-2",
@@ -56,40 +67,10 @@ export const StepTextarea = ({ content, label, localValue, handleTextareaChange,
       value={localValue}
       onChange={handleTextareaChange}
       validationBehavior='aria'
-      autoGrow
+      onClear={() => handleTextareaChange({ target: { value: '' } })}
     />
   )
 }
-
-import { IconAi } from '@tabler/icons-react';
-
-export const StepGetAiHintBtn = ({ isPending, isAIAvailable, handleUnavailableBtn, handleAvailableBtn, label = 'Get AI Hint' }) => {
-  return (
-    <div className="flex relative justify-end mb-4">
-      <Button
-        color="primary"
-        isLoading={isPending}
-        //isDisabled={isAIAvailable}
-        onPress={handleUnavailableBtn}
-        className={`${isAIAvailable ? "hidden" : "flex"} items-center gap-2 opacity-50 hover:!opacity-50`}
-      >
-        <IconAi size={20} />
-        {label}
-      </Button>
-      <Button
-        color="primary"
-        isLoading={isPending}
-        //isDisabled={!isAIAvailable}
-        onPress={handleAvailableBtn}
-        className={`${!isAIAvailable ? "hidden" : "flex"} items-center gap-2`}
-      >
-        <IconAi size={20} />
-        {label}
-      </Button>
-    </div>
-  )
-}
-
 
 
 

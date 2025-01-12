@@ -233,7 +233,7 @@ export default function WebsiteWizardContainer({ }) {
                     <ProgressBar currentStep={currentStep} totalSteps={steps.length} />
                     </div>
                     {/* Dropdown for Navigation */}
-                    <div className='step-2 w-full flex justify-around'>
+                    <div className='step-2 w-full flex justify-around px-6 md:px-0 py-6 md:py-0'>
                         <Dropdown>
                             <DropdownTrigger>
                                 <Button className="capitalize w-full md:max-w-80" color="secondary" variant="flat">

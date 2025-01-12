@@ -3,7 +3,7 @@ import logger from "@/lib/logger";
 import { Link } from "@nextui-org/react";
 import { IconClipboard } from "@tabler/icons-react";
 import { Tooltip } from 'react-tooltip';
-import { htmlToPlainText, markdownToPlainText } from "@/lib/utils";
+import { markdownToPlainText } from "@/lib/utils";
 import { marked } from "marked";
 
 // Configure marked to preserve line breaks
@@ -36,7 +36,7 @@ const PasteButton = ({ value, handleChange, setError, children }) => {
     
     return (
         <div className="relative">
-            <Link variant="none" id="paste-btn" className="paste-btn absolute z-10 right-0 text-neutralSnow p-2" onPress={handlePaste}>
+            <Link variant="none" id="paste-btn" className="paste-btn absolute z-10 right-10 text-secondary dark:text-neutralSnow p-2" onPress={handlePaste}>
                 <IconClipboard size={27} />
             </Link>
             <Tooltip anchorSelect=".paste-btn" place="top" className="text-center" delayHide={500} delayShow={200}>

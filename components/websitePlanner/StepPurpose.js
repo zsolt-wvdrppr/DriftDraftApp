@@ -6,19 +6,19 @@ import ReactMarkdown from 'react-markdown';
 
 import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';
-import { fetchAIHint } from '@/lib/fetchAIHint';
+//import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from "@/lib/SessionProvider";
 
 import PasteButton from './layout/PasteButton';
-import { StepWrapper, StepQuestion, StepTextarea, StepGetAiHintBtn } from './layout/sectionComponents';
+import { StepWrapper, StepQuestion, StepTextarea } from './layout/sectionComponents';
+import { StepGetAiHintBtn } from './layout/StepGetAiHintBtn';
 
 const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");
   const [localServiceDescription, setLocalServiceDescription] = useState("");
   const { sessionData, updateFormData, setError } = useSessionContext();
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const [isOtherSelected, setIsOtherSelected] = useState(false); // = selectedKeys.has("Other (please specify)");
-  //const deferredValue = useDeferredValue(Array.from(selectedKeys).join(", ").replaceAll("_", " "));
+  const [isOtherSelected, setIsOtherSelected] = useState(false); 
   const stepNumber = 0;
   const content = questionsData[stepNumber];
   const formRef = useRef();
@@ -100,9 +100,8 @@ const StepPurpose = ({ ref }) => {
   const [aiHint, setAiHint] = useState(sessionData?.formData?.[stepNumber]?.aiHint || null);
   const [userMsg, setUserMsg] = useState(null);
   const [isAIAvailable, setIsAIAvailable] = useState(true);
-  const [isPending, setIsPending] = useState(false);
 
-  const handleFetchHint = async () => {
+  /*const handleFetchHint = async () => {
 
     if (!isAIAvailable) return;
 
@@ -135,17 +134,7 @@ const StepPurpose = ({ ref }) => {
     } finally {
       setIsPending(false);
     }
-  };
-
-  const handleUnavailableGetAiHintBtn = () => {
-    logger.debug('AI hint is not available');
-
-    if (purposeIsInvalid) {
-      setError('Please select your goal first!');
-    } else {
-      setError('Please provide a more detailed service description.');
-    }
-  };
+  };*/
 
   useEffect(() => {
     if (localServiceDescription.length > 15 && !purposeIsInvalid) {
@@ -154,6 +143,8 @@ const StepPurpose = ({ ref }) => {
       setIsAIAvailable(false);
     }
   }, [localServiceDescription, purposeIsInvalid]);
+
+  const prompt = `I'm planning a website and need help answering the question: ${content.questionAddition2}. My main purpose is ${isOtherSelected ? localPurposeDetails : formData[stepNumber]?.purpose}. Some details about my service: ${localServiceDescription}. Please keep the response informative and under 450 characters.`
 
 
   return (
@@ -197,16 +188,22 @@ const StepPurpose = ({ ref }) => {
           />
         </div>
         <div className="col-span-4 flex-1">
-          <h2 className="text-lg font-semibold my-10 text-primary dark:text-accentMint relative">
+          <h2 className="text-lg font-semibold mt-10 mb-4 md:mb-10 text-primary dark:text-accentMint relative">
             <ReactMarkdown>{content.questionAddition2}</ReactMarkdown>
           </h2>
         </div>
         <StepGetAiHintBtn
+          stepNumber={stepNumber}
+          content={content}
+          sessionData={sessionData}
+          updateFormData={updateFormData}
+          setError={setError}
+          setAiHint={setAiHint}
+          setUserMsg={setUserMsg}
+          prompt={prompt}
           isAIAvailable={isAIAvailable}
-          isPending={isPending}
-          handleAvailableBtn={handleFetchHint}
-          handleUnavailableBtn={handleUnavailableGetAiHintBtn}
         />
+
         <PasteButton value={localServiceDescription} handleChange={handleServiceDescriptionChange} setError={setError} >
           <StepTextarea
             content={content}

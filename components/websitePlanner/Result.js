@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Button, CircularProgress, Card, CardBody, CardFooter } from '@nextui-org/react';
+import { Button, CircularProgress, Card, CardBody, CardFooter, Link } from '@nextui-org/react';
 import { IconCopy } from '@tabler/icons-react';
 
 import { useSessionContext } from "@/lib/SessionProvider";
@@ -13,6 +13,8 @@ import { useAuth } from '@/lib/AuthContext';
 import useGenerateTitle from "@/lib/hooks/useGenerateTitle";
 import usePromptExecutor from "@/lib/hooks/usePromptExecutor";
 import useClipboard from "@/lib/hooks/useClipboard";
+
+import { Tooltip } from 'react-tooltip';
 
 const Result = () => {
 
@@ -354,7 +356,7 @@ const Result = () => {
   const aiResultWithTitle = `# ${generatedTitle}\n\n${aiResult}`;
 
   return (
-    <div>
+    <div className=' md:mx-auto'>
       {isLoading ? (
         <div className="flex flex-col left-0 top-0 bottom-0 right-0 absolute w-full items-center justify-center py-10">
           <Card aria-label='Progress indicator' className="h-60 max-w-96 border-none bg-transparent shadow-none">
@@ -380,32 +382,42 @@ const Result = () => {
         </div>
       ) : (
         <>
-          <div className="w-full flex justify-end">
-            <Button
-              color="secondary"
-              aria-label='Copy the generated content to clipboard'
-              variant="bordered"
-              onPress={() => { copyToClipboard(aiResultWithTitle); }}
-            >
-              <IconCopy size={20} />
-              Copy
-            </Button>
-          </div>
-          <div className="prose lg:prose-xl prose-slate dark:prose-invert p-8 my-12 rounded-2xl bg-yellow-100/60 dark:bg-content1 max-w-screen-lg">
+
+          <div className="prose relative lg:prose-lg prose-slate dark:prose-invert px-4 pt-8 pb-12 md:p-8 my-12 rounded-2xl bg-yellow-100/60 dark:bg-content1 max-w-screen-xl">
+            <div className="w-full flex justify-end md:justify-end">
+              <Link
+                alt="Copy all content to clipboard"
+                id="copy-btn-top"
+                className='absolute top-2 right-2 text-secondary'
+                aria-label='Copy the generated content to clipboard'
+                variant="none"
+                onPress={() => { copyToClipboard(aiResultWithTitle); }}
+              >
+                <IconCopy size={20} />
+              </Link>
+              <Tooltip anchorSelect="#copy-btn-top" place="left" className="text-center" delayHide={500} delayShow={200}>
+                Copy all to clipboard
+              </Tooltip>
+            </div>
             <ReactMarkdown>
               {aiResultWithTitle}
             </ReactMarkdown>
-          </div>
-          <div className="w-full flex justify-end">
-            <Button
-              color="secondary"
-              aria-label='Copy the generated content to clipboard'
-              variant="bordered"
-              onPress={() => { copyToClipboard(aiResultWithTitle); }}
-            >
-              <IconCopy size={20} />
-              Copy
-            </Button>
+            <div className="w-full flex justify-end pb-4 md:pb-8 md:justify-end">
+              <Button
+                className='absolute'
+                id='copy-btn-bottom'
+                color="secondary"
+                aria-label='Copy the generated content to clipboard'
+                variant="bordered"
+                onPress={() => { copyToClipboard(aiResultWithTitle); }}
+              >
+                <IconCopy size={20} />
+                Copy
+              </Button>
+              <Tooltip anchorSelect="#copy-btn-bottom" place="top" className="text-center" delayHide={500} delayShow={200}>
+                Copy all to clipboard
+              </Tooltip>
+            </div>
           </div>
         </>
       )}

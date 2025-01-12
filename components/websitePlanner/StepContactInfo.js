@@ -146,7 +146,7 @@ const StepContactInfo = ({ ref }) => {
 
     return (
         <form>
-            <div className="md:py-10 max-w-screen-xl">
+            <div className="md:py-10 max-w-screen-md mx-auto">
                 <div className="col-span-3 grid grid-cols-2 gap-4 items-center mt-8">
                     {content.fields.map((field, index) => (
                         <div key={index} className="relative">
