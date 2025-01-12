@@ -57,16 +57,15 @@ const HintButton = ({
       <Button
         auto
         aria-label="Check hint"
-        className={`select-none md:w-32 md:h-24 break-words md:relative bottom-0 -right-4 z-10 md:bg-transparent md:shadow-md md:right-auto flex md:border-3 md:border-transparent
-          ${!hint ? 'cursor-not-allowed border-3 border-transparent border-gray-200 opacity-0' : ''}
-          ${newHintAvailable ? 'border-yellow-400' : ''}`}
+        className={`select-none md:w-32 md:h-24 break-words md:relative bottom-0 -right-4 z-10 md:bg-transparent md:shadow-md dark:md:border-1 dark:md:border-content1 md:right-auto flex md:border-3 md:border-transparent
+          ${!hint ? 'cursor-not-allowed border-3 border-transparent opacity-0' : ''}`}
         disabled={!hint}
         variant="none"
         onPress={handleClick}
       >
         {hint && (
           <span
-            className={`hidden md:block absolute bottom-0 ${newHintAvailable ? 'animate-pulse font-bold' : ''}`}
+            className={`hidden md:block absolute bottom-0 dark:md:bottom-1 ${newHintAvailable ? 'animate-pulse font-bold' : ''}`}
           >
             Check Hint
           </span>

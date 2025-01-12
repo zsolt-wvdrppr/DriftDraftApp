@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useEffect, useState, useRef, useImperativeHandle, use } from 'react';
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Textarea, Button, Input, form } from '@nextui-org/react';
-import { IconAi, IconClipboard } from '@tabler/icons-react';
+import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Button, Input } from '@nextui-org/react';
 import ReactMarkdown from 'react-markdown';
 
 import questionsData from "@/data/questions-data.json";
@@ -10,8 +9,8 @@ import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from "@/lib/SessionProvider";
 
-import Sidebar from './ActionsBar/Main';
 import PasteButton from './layout/PasteButton';
+import { StepWrapper, StepQuestion, StepTextarea, StepGetAiHintBtn } from './layout/sectionComponents';
 
 const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");
@@ -89,7 +88,7 @@ const StepPurpose = ({ ref }) => {
     const value = e.target.value;
     logger.debug('value', value);
     logger.debug('condition:', value.length > 15 && !purposeIsInvalid);
-  
+
     setLocalServiceDescription(value);
     updateFormData("serviceDescription", value);
     setServiceDescIsInvalid(value.length < 50);
@@ -152,99 +151,70 @@ const StepPurpose = ({ ref }) => {
       setIsAIAvailable(false);
     }
   }, [localServiceDescription, purposeIsInvalid]);
-  
+
 
   return (
     <form ref={formRef}>
-      <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:my-10 p-4 rounded-xl max-w-screen-xl bg-content1">
-        <div className="col-span-3 flex-1 space-y-4">
-          <h2 className="text-lg font-semibold mb-4 text-primary dark:text-accentMint">
-            {content.question}
-          </h2>
-          <div className='flex flex-col md:flex-row gap-4'>
-            <Dropdown>
-              <DropdownTrigger>
-                <Button className="capitalize w-full" color={purposeIsInvalid ? "danger" : "default"} variant="bordered">
-                  {Array.from(selectedKeys).join(", ").replaceAll("_", " ") || content.placeholder[0]}{content.required && <span className="text-red-500 ml-[-6px]">*</span>}
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Single selection example"
-                color=""
-                isRequired={content.required}
-                selectedKeys={selectedKeys}
-                selectionMode="single"
-                variant="flat"
-                onSelectionChange={handleSelectionChange}
-              >
-                {content.options.map((option) => (
-                  <DropdownItem key={option}>{option}</DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            <Input
-              classNames={{
-                label: "!text-primary dark:!text-accentMint",
-                input: "dark:!text-white",
-                inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${detailsIsInvalid ? "border-danger !bg-danger-50" : ""}`,
-              }}
-              isRequired={isOtherSelected}
-              label="Additional Details"
-              placeholder={`${content.placeholder[1]} (${isOtherSelected ? "required" : "optional"})`}
-              value={localPurposeDetails}
-              onChange={handleAdditionalDetailsChange}
-              validationBehavior='aria'
-            />
-          </div>
-          <div className="col-span-4 flex-1">
-            <h2 className="text-lg font-semibold my-10 text-primary dark:text-accentMint relative">
-              <ReactMarkdown>{content.questionAddition2}</ReactMarkdown>
-            </h2>
-          </div>
-          <div className="flex relative justify-end">
-          <Button
-              color="primary"
-              isLoading={isPending}
-              //isDisabled={isAIAvailable}
-              onPress={handleUnavailableGetAiHintBtn}
-              className={`${isAIAvailable ? "hidden" : "flex"} items-center gap-2 opacity-50 hover:!opacity-50`}
+      <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
+        <StepQuestion content={content} />
+        <div className='flex flex-col md:flex-row gap-4'>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button className="capitalize w-full" color={purposeIsInvalid ? "danger" : "default"} variant="bordered">
+                {Array.from(selectedKeys).join(", ").replaceAll("_", " ") || content.placeholder[0]}{content.required && <span className="text-red-500 ml-[-6px]">*</span>}
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu
+              disallowEmptySelection
+              aria-label="Single selection example"
+              color=""
+              isRequired={content.required}
+              selectedKeys={selectedKeys}
+              selectionMode="single"
+              variant="flat"
+              onSelectionChange={handleSelectionChange}
             >
-              <IconAi size={20} />
-              Get AI Hint
-            </Button>
-            <Button
-              color="primary"
-              isLoading={isPending}
-              //isDisabled={!isAIAvailable}
-              onPress={handleFetchHint}
-              className={`${!isAIAvailable ? "hidden" : "flex"} items-center gap-2`}
-            >
-              <IconAi size={20} />
-              Get AI Hint
-            </Button>
-          </div>
-  
-          <PasteButton value={localServiceDescription} handleChange={handleServiceDescriptionChange} setError={setError} >
-          <Textarea
+              {content.options.map((option) => (
+                <DropdownItem key={option}>{option}</DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
+          <Input
             classNames={{
               label: "!text-primary dark:!text-accentMint",
-              input: "",
-              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${serviceDescIsInvalid ? "!bg-danger-50 dark:!bg-content1 border-danger" : ""}`,
-              base: "",
+              input: "dark:!text-white",
+              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${detailsIsInvalid ? "border-danger !bg-danger-50" : ""}`,
             }}
-            isRequired={true}
-            label="Service Description"
-            minRows={4}
-            placeholder={content.placeholder[2]}
-            value={localServiceDescription}
-            onChange={handleServiceDescriptionChange}
+            isRequired={isOtherSelected}
+            label="Additional Details"
+            placeholder={`${content.placeholder[1]} (${isOtherSelected ? "required" : "optional"})`}
+            value={localPurposeDetails}
+            onChange={handleAdditionalDetailsChange}
             validationBehavior='aria'
           />
-          </PasteButton>
         </div>
-        <Sidebar hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
-      </div>
+        <div className="col-span-4 flex-1">
+          <h2 className="text-lg font-semibold my-10 text-primary dark:text-accentMint relative">
+            <ReactMarkdown>{content.questionAddition2}</ReactMarkdown>
+          </h2>
+        </div>
+        <StepGetAiHintBtn
+          isAIAvailable={isAIAvailable}
+          isPending={isPending}
+          handleAvailableBtn={handleFetchHint}
+          handleUnavailableBtn={handleUnavailableGetAiHintBtn}
+        />
+        <PasteButton value={localServiceDescription} handleChange={handleServiceDescriptionChange} setError={setError} >
+          <StepTextarea
+            content={content}
+            label="Service Description"
+            localValue={localServiceDescription}
+            handleTextareaChange={handleServiceDescriptionChange}
+            isRequired={true}
+            isInputInvalid={serviceDescIsInvalid}
+          />
+        </PasteButton>
+      </StepWrapper>
     </form>
   );
 };

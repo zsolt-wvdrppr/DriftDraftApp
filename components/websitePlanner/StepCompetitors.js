@@ -9,10 +9,10 @@ import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';
 import { useSessionContext } from "@/lib/SessionProvider";
 
-import Sidebar from './ActionsBar/Main';
+import { StepWrapper, StepQuestion } from './layout/sectionComponents';
 
-const StepCompetitors = ({ref}) => {
-  const { sessionData, updateFormData, setError} = useSessionContext();
+const StepCompetitors = ({ ref }) => {
+  const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 3;
   const content = questionsData[stepNumber];
   const formRef = useRef();
@@ -87,58 +87,53 @@ const StepCompetitors = ({ref}) => {
 
   return (
     <form ref={formRef}>
-      <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
-        <div className="col-span-3 flex-1 space-y-4">
-          <h2 className="text-lg font-semibold my-4 text-primary dark:text-slate-100">
-            {content.question} {content.required && <span className="text-red-500">*</span>}
-          </h2>
-          <AnimatePresence initial={false}>
-            {urls.map((url, index) => (
-              <motion.div
-                key={index}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="flex items-center gap-2"
-                exit={{ opacity: 0, height: 0 }}
-                initial={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Input
-                  classNames={{
-                    label: "!text-primary dark:!text-accentMint",
-                    input: ``,
-                    inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${!validateURL(url) && url ? "border-danger" : ""}`,
-                  }}
-                  //isRequired={true}
-                  label={`Competitor URL ${index + 1}`}
-                  placeholder={content.placeholder}
-                  startContent={<IconWorldWww className='h-5 text-primary dark:text-accentMint opacity-70 ml-[-3px]' />}
-                  value={url}
-                  onChange={(e) => handleChangeUrl(e.target.value, index)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault(); // Prevent form submission
-                      handleAddUrl(index); // Call the function to add a new URL
-                    }
-                  }}
-                />
-                {urls.length > 1 && (
-                  <IconXboxXFilled className='text-danger cursor-pointer drop-shadow-lg opacity-70 hover:opacity-100 hover:scale-110 transition-all' onPress={() => handleRemoveUrl(index)} />
-                )}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-          <Button
-            className="mt-4 border hover:scale-105 transition-all focus-within:shadow-none"
-            type="button"
-            variant='shadow'
-            onPress={() => handleAddUrl(urls.length - 1)}
-          >
-            <IconRowInsertBottom className='text-secondaryPersianGreen' />
-            Add Another URL
-          </Button>
-        </div>
-        <Sidebar hints={content.hints} whyDoWeAsk={content.why_do_we_ask} />
-      </div>
+      <StepWrapper hint={null} userMsg={content.userMsg} whyDoWeAsk={content.why_do_we_ask}>
+        <StepQuestion content={content} />
+        <AnimatePresence initial={false}>
+          {urls.map((url, index) => (
+            <motion.div
+              key={index}
+              animate={{ opacity: 1, height: 'auto' }}
+              className="flex items-center gap-2"
+              exit={{ opacity: 0, height: 0 }}
+              initial={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Input
+                classNames={{
+                  label: "!text-primary dark:!text-accentMint",
+                  input: ``,
+                  inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${!validateURL(url) && url ? "border-danger" : ""}`,
+                }}
+                //isRequired={true}
+                label={`Competitor URL ${index + 1}`}
+                placeholder={content.placeholder}
+                startContent={<IconWorldWww className='h-5 text-primary dark:text-accentMint opacity-70 ml-[-3px]' />}
+                value={url}
+                onChange={(e) => handleChangeUrl(e.target.value, index)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault(); // Prevent form submission
+                    handleAddUrl(index); // Call the function to add a new URL
+                  }
+                }}
+              />
+              {urls.length > 1 && (
+                <IconXboxXFilled className='text-danger cursor-pointer drop-shadow-lg opacity-70 hover:opacity-100 hover:scale-110 transition-all' onPress={() => handleRemoveUrl(index)} />
+              )}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+        <Button
+          className="mt-4 border hover:scale-105 transition-all focus-within:shadow-none"
+          type="button"
+          variant='shadow'
+          onPress={() => handleAddUrl(urls.length - 1)}
+        >
+          <IconRowInsertBottom className='text-secondaryPersianGreen' />
+          Add Another URL
+        </Button>
+      </StepWrapper>
     </form>
   );
 };

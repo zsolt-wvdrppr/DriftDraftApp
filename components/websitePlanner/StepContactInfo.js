@@ -29,27 +29,12 @@ const StepContactInfo = ({ ref }) => {
 
     const [validationErrors, setValidationErrors] = useState({});
 
-    // Initialize formData if not present
-    /*useEffect(() => {
-        if (!formData[stepNumber]) {
-            logger.info("init formData", formData);
-            setFormData((prev) => ({
-                ...prev,
-                [stepNumber]: { ...formValues, isValid: false },
-            }));
-        }
-    }, [formData, setFormData, stepNumber]);*/
-
     // Expose validation logic via useImperativeHandle
     useImperativeHandle(ref, () => ({
         validateStep: () => {
             const isValid = validateForm();
 
             updateFormData(stepNumber, { ...formValues, isValid });
-            /*setFormData((prev) => ({
-                ...prev,
-                [stepNumber]: { ...formValues, isValid },
-            }));*/
 
             return isValid;
         },
@@ -64,10 +49,6 @@ const StepContactInfo = ({ ref }) => {
 
         // Update formData
         updateFormData(stepNumber, { ...updatedValues, isValid: false });
-        /*setFormData((prev) => ({
-            ...prev,
-            [stepNumber]: { ...updatedValues, isValid: false },
-        }));*/
 
         // Validate the specific field
         validateField(field, value);
@@ -149,6 +130,7 @@ const StepContactInfo = ({ ref }) => {
     const validateTel = (value) => /^\+?(\d.*){3,}$/.test(value);
 
     const validateURL = (url) => {
+
         // Remove protocol if present for domain validation
         const domainPart = url.replace(/^https?:\/\//, '');
         const parts = domainPart.split('.');
@@ -164,7 +146,7 @@ const StepContactInfo = ({ ref }) => {
 
     return (
         <form>
-            <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
+            <div className="md:py-10 max-w-screen-xl">
                 <div className="col-span-3 grid grid-cols-2 gap-4 items-center mt-8">
                     {content.fields.map((field, index) => (
                         <div key={index} className="relative">

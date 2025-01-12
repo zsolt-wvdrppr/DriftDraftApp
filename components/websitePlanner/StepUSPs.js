@@ -1,18 +1,17 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
-import { Textarea } from '@nextui-org/react';
 
 import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from '@/lib/SessionProvider';
 
-import Sidebar from './ActionsBar/Main';
+import { StepWrapper, StepQuestion, StepTextarea } from './layout/sectionComponents';
 import PasteButton from './layout/PasteButton';
 
 const StepUSPs = ({ ref }) => {
-  const {sessionData, updateFormData, setError} = useSessionContext();
+  const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 4;
   const content = questionsData[stepNumber];
   const formRef = useRef();
@@ -20,9 +19,9 @@ const StepUSPs = ({ ref }) => {
   const formData = sessionData?.formData || {};
   const [localValue, setLocalValue] = useState("");
 
-  useEffect(()=>{
+  useEffect(() => {
     setLocalValue(formData?.[stepNumber]?.usps || "");
-  },[formData?.[stepNumber]?.usps, stepNumber])
+  }, [formData?.[stepNumber]?.usps, stepNumber])
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -63,7 +62,7 @@ const StepUSPs = ({ ref }) => {
     if (purpose && serviceDescription && question && serviceDescription && audience && marketing) {
 
       const prompt = `I'm planning a website and I've been asked to answer the following question: ${question}. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. This is how I plan to attract my audience: ${marketing}. ${competitors}. So help me with answer the question while considering the above details. Keep the response concise and informative, ensuring it's less than 800 characters.`;
-      
+
       const handleFetchHint = async () => {
         await fetchAIHint({
           stepNumber,
@@ -87,32 +86,19 @@ const StepUSPs = ({ ref }) => {
 
   return (
     <form ref={formRef}>
-      <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
-        <div className="col-span-4 flex-1">
-          <h2 className="text-lg font-semibold mb-4 text-primary dark:text-accentMint">
-            {content.question} {content.required && <span className="text-red-500">*</span>}
-          </h2>
-        </div>
-        <div className="col-span-3 flex-1 space-y-4">
-          <PasteButton value={localValue} handleChange={handleTextareaChange} setError={setError}>
-          <Textarea
-            classNames={{
-              label: "!text-primary dark:!text-accentMint",
-              input: "",
-              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${isInputInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
-            }}
+      <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
+        <StepQuestion content={content} />
+        <PasteButton value={localValue} handleChange={handleTextareaChange} setError={setError}>
+          <StepTextarea
+            content={content}
+            label={'Unique Selling Points'}
+            localValue={localValue}
+            handleTextareaChange={handleTextareaChange}
             isRequired={true}
-            label="Unique Selling Points"
-            minRows={4}
-            placeholder={content.placeholder}
-            value={localValue}
-            onChange={handleTextareaChange}
-            validationBehavior='aria'
+            isInputInvalid={isInputInvalid}
           />
-          </PasteButton>
-        </div>
-        <Sidebar hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
-      </div>
+        </PasteButton>
+      </StepWrapper>
     </form>
   );
 };

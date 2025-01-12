@@ -1,15 +1,14 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
-import { Textarea } from '@nextui-org/react';
 
 import logger from '@/lib/logger';
 import questionsData from "@/data/questions-data.json";
 import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from "@/lib/SessionProvider";
 
-import Sidebar from './ActionsBar/Main';
 import PasteButton from './layout/PasteButton';
+import { StepWrapper, StepQuestion, StepTextarea } from './layout/sectionComponents';
 
 const StepAudience = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -85,30 +84,19 @@ const StepAudience = ({ ref }) => {
 
   return (
     <form ref={formRef}>
-      <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
-        <div className="col-span-3 flex-1 space-y-4">
-          <h2 className="text-lg font-semibold mb-4 text-primary dark:text-accentMint">
-            {content.question} {content.required && <span className="text-red-500">*</span>}
-          </h2>
-          <PasteButton value={localValue} handleChange={handleTextareaChange} setError={setError}>
-          <Textarea
-            classNames={{
-              label: "!text-primary dark:!text-accentMint",
-              input: "",
-              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${audienceIsInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
-            }}
+      <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
+        <StepQuestion content={content} />
+        <PasteButton value={localValue} handleChange={handleTextareaChange} setError={setError}>
+          <StepTextarea
+            content={content}
             isRequired={true}
             label="Target Audience"
-            minRows={4}
             placeholder={content.placeholder}
-            value={localValue}
-            onChange={handleTextareaChange}
-            validationBehavior='aria'
+            localValue={localValue}
+            handleTextareaChange={handleTextareaChange}
           />
-          </PasteButton>
-        </div>
-        <Sidebar hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
-      </div>
+        </PasteButton>
+      </StepWrapper>
     </form>
   );
 };

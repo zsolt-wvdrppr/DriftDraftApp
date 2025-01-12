@@ -9,7 +9,8 @@ import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';
 import { useSessionContext } from '@/lib/SessionProvider';
 
-import Sidebar from './ActionsBar/Main';
+import Sidebar from './ActionsBar/Sidebar';
+import { StepWrapper, StepQuestion } from './layout/sectionComponents';
 
 const StepInspirations = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -112,11 +113,8 @@ const StepInspirations = ({ ref }) => {
 
   return (
     <form ref={formRef}>
-      <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
-        <div className="col-span-3 flex-1 space-y-4">
-        <h2 className="text-lg font-semibold my-4 text-primary dark:text-accentMint">
-            {content.question} {content.required && <span className="text-red-500">*</span>}
-          </h2>
+      <StepWrapper whyDoWeAsk={content.why_do_we_ask} userMsg={content.user_msg} hint={content.hint}>
+        <StepQuestion content={content} />
           <AnimatePresence initial={false}>
             {urls.map((url, index) => (
               <motion.div
@@ -174,9 +172,7 @@ const StepInspirations = ({ ref }) => {
             <IconRowInsertBottom className='text-secondaryPersianGreen' />
             Add Another URL
           </Button>
-        </div>
-        <Sidebar hints={content.hints} whyDoWeAsk={content.why_do_we_ask} />
-      </div>
+        </StepWrapper>
     </form>
   );
 };

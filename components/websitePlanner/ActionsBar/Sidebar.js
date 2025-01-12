@@ -49,7 +49,7 @@ const Sidebar = React.memo(({ hint, whyDoWeAsk, onHintClicked, onWhyClicked, use
   return (
     <motion.div
       animate={{ opacity: 1 }}
-      className="relative mt-8 md:mt-0 flex justify-between md:justify-center md:flex-col md:items-center md:justify-items-center gap-4"
+      className="relative mt-8 md:mt-0 flex justify-around sm:justify-between md:justify-center md:flex-col md:items-center md:justify-items-center gap-4"
       initial={{ opacity: 1 }}
       transition={{ duration: 0 }}
     >

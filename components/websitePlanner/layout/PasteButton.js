@@ -13,8 +13,6 @@ marked.setOptions({
 
 const PasteButton = ({ value, handleChange, setError, children }) => {
 
-    logger.debug("PasteButton value:", value);
-
     const handlePaste = async () => {
         try {
             // Read text from clipboard
@@ -22,8 +20,6 @@ const PasteButton = ({ value, handleChange, setError, children }) => {
     
             // Convert Markdown to plain text (await the result)
             const plainText = await markdownToPlainText(pastedText);
-    
-            logger.debug("Pasted text:", plainText);
     
             // Append the pasted text to the existing value
             const updatedValue = `${value}${value ? "\n\n" : ""}${plainText}`;
@@ -41,7 +37,7 @@ const PasteButton = ({ value, handleChange, setError, children }) => {
     return (
         <div className="relative">
             <Link variant="none" id="paste-btn" className="paste-btn absolute z-10 right-0 text-neutralSnow p-2" onPress={handlePaste}>
-                <IconClipboard />
+                <IconClipboard size={27} />
             </Link>
             <Tooltip anchorSelect=".paste-btn" place="top" className="text-center" delayHide={500} delayShow={200}>
                 Paste from clipboard

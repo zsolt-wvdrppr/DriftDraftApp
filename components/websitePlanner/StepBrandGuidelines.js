@@ -8,7 +8,7 @@ import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from '@/lib/SessionProvider';
 
-import Sidebar from './ActionsBar/Main';
+import { StepWrapper, StepQuestion, StepTextarea } from './layout/sectionComponents';
 import PasteButton from './layout/PasteButton';
 
 const StepBrandGuidelines = ({ ref }) => {
@@ -112,30 +112,19 @@ const StepBrandGuidelines = ({ ref }) => {
 
   return (
     <form ref={formRef}>
-      <div className="flex flex-col md:grid md:grid-cols-4 gap-6 md:py-10 max-w-screen-xl">
-        <div className="col-span-3 flex-1 space-y-4">
-          <h2 className="text-lg font-semibold mb-4 text-primary dark:text-accentMint">
-            {content.question} {content.required && <span className="text-red-500">*</span>}
-          </h2>
+      <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
+        <StepQuestion content={content} />
           <PasteButton value={localValue} handleChange={handleTextareaChange} setError={setError}>
-            <Textarea
-              classNames={{
-                label: "!text-primary dark:!text-accentMint",
-                input: "",
-                inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${isInputInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
-              }}
+            <StepTextarea
+              content={content}
+              label='Brand Guidelines'
+              localValue={localValue}
+              handleTextareaChange={handleTextareaChange}
               isRequired={true}
-              label="Branding"
-              minRows={4}
-              placeholder={content.placeholder}
-              value={localValue}
-              onChange={handleTextareaChange}
-              validationBehavior='aria'
+              isInputInvalid={isInputInvalid}
             />
           </PasteButton>
-        </div>
-        <Sidebar hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask} />
-      </div>
+        </StepWrapper>
     </form>
   );
 };
