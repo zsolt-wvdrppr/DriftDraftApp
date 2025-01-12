@@ -16,7 +16,7 @@ const StepUSPs = ({ ref }) => {
   const stepNumber = 4;
   const content = questionsData[stepNumber];
   const formRef = useRef();
-  const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
+  const [isInputInvalid, setIsInputInvalid] = useState(false);
   const formData = sessionData?.formData || {};
   const [localValue, setLocalValue] = useState("");
 
@@ -29,11 +29,11 @@ const StepUSPs = ({ ref }) => {
       // Manual validation for NextUI fields
       if (!formData[stepNumber]?.usps) {
         setError("Additional details are required.");
-        setAttractionlsIsInvalid(true);
+        setIsInputInvalid(true);
 
         return false;
       }
-      setAttractionlsIsInvalid(false);
+      setIsInputInvalid(false);
 
       return true; // Validation passed
     },
@@ -45,7 +45,7 @@ const StepUSPs = ({ ref }) => {
     setLocalValue(value);
     updateFormData("usps", value);
     // Provide immediate feedback for required field
-    setAttractionlsIsInvalid(!value);
+    setIsInputInvalid(!value);
   };
 
   const [aiHint, setAiHint] = useState(null);
@@ -99,7 +99,7 @@ const StepUSPs = ({ ref }) => {
             classNames={{
               label: "!text-primary dark:!text-accentMint",
               input: "",
-              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${attractionIsInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
+              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${isInputInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
             }}
             isRequired={true}
             label="Unique Selling Points"
@@ -107,6 +107,7 @@ const StepUSPs = ({ ref }) => {
             placeholder={content.placeholder}
             value={localValue}
             onChange={handleTextareaChange}
+            validationBehavior='aria'
           />
           </PasteButton>
         </div>

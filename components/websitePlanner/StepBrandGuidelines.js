@@ -16,7 +16,7 @@ const StepBrandGuidelines = ({ ref }) => {
   const stepNumber = 6;
   const content = questionsData[stepNumber];
   const formRef = useRef();
-  const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
+  const [isInputInvalid, setIsInputInvalid] = useState(false);
   const formData = sessionData.formData;
   const [localValue, setLocalValue] = useState("");
 
@@ -29,11 +29,11 @@ const StepBrandGuidelines = ({ ref }) => {
       // Manual validation for NextUI fields
       if (!formData[stepNumber]?.brandGuidelines) {
         setError("Additional details are required.");
-        setAttractionlsIsInvalid(true);
+        setIsInputInvalid(true);
 
         return false;
       }
-      setAttractionlsIsInvalid(false);
+      setIsInputInvalid(false);
 
       return true; // Validation passed
     },
@@ -45,7 +45,7 @@ const StepBrandGuidelines = ({ ref }) => {
     updateFormData("brandGuidelines", value);
     setLocalValue(value);
     // Provide immediate feedback for required field
-    setAttractionlsIsInvalid(!value);
+    setIsInputInvalid(!value);
   };
 
   const [aiHint, setAiHint] = useState(null);
@@ -122,7 +122,7 @@ const StepBrandGuidelines = ({ ref }) => {
               classNames={{
                 label: "!text-primary dark:!text-accentMint",
                 input: "",
-                inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${attractionIsInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
+                inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${isInputInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
               }}
               isRequired={true}
               label="Branding"
@@ -130,6 +130,7 @@ const StepBrandGuidelines = ({ ref }) => {
               placeholder={content.placeholder}
               value={localValue}
               onChange={handleTextareaChange}
+              validationBehavior='aria'
             />
           </PasteButton>
         </div>

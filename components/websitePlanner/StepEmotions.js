@@ -17,7 +17,7 @@ const StepEmotions = ({ ref }) => {
   const stepNumber = 7;
   const content = questionsData[stepNumber];
   const formRef = useRef();
-  const [attractionIsInvalid, setAttractionlsIsInvalid] = useState(false);
+  const [isInputInvalid, setIsInputInvalid] = useState(false);
   const formData = sessionData.formData;
   const [localValue, setLocalValue] = useState("");
 
@@ -30,11 +30,11 @@ const StepEmotions = ({ ref }) => {
       // Manual validation for NextUI fields
       if (!formData[stepNumber]?.emotions) {
         setError("Additional details are required.");
-        setAttractionlsIsInvalid(true);
+        setIsInputInvalid(true);
 
         return false;
       }
-      setAttractionlsIsInvalid(false);
+      setIsInputInvalid(false);
 
       return true; // Validation passed
     },
@@ -46,7 +46,7 @@ const StepEmotions = ({ ref }) => {
     updateFormData("emotions", value);
     setLocalValue(value);
     // Provide immediate feedback for required field
-    setAttractionlsIsInvalid(!value);
+    setIsInputInvalid(!value);
   };
 
   const [aiHint, setAiHint] = useState('');
@@ -105,14 +105,15 @@ const StepEmotions = ({ ref }) => {
             classNames={{
               label: "!text-primary dark:!text-accentMint",
               input: "prose",
-              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${attractionIsInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
+              inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${isInputInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
             }}
             isRequired={true}
             label="Emotions and User Experience"
             minRows={4}
             placeholder={content.placeholder}
-            value={marked(localValue)}
+            value={localValue}
             onChange={handleTextareaChange}
+            validationBehavior='aria'
           />
           </PasteButton>
         </div>

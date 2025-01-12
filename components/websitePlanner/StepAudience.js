@@ -44,6 +44,9 @@ const StepAudience = ({ ref }) => {
 
     setLocalValue(value);
     updateFormData("audience", value);
+
+    // Provide immediate feedback for required field
+    setAudiencelsIsInvalid(!value);
   };
 
   const [aiHint, setAiHint] = useState(null);
@@ -100,6 +103,7 @@ const StepAudience = ({ ref }) => {
             placeholder={content.placeholder}
             value={localValue}
             onChange={handleTextareaChange}
+            validationBehavior='aria'
           />
           </PasteButton>
         </div>
