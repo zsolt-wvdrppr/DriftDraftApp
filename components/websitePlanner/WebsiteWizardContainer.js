@@ -153,12 +153,16 @@ export default function WebsiteWizardContainer({ }) {
             updateUrlParams
         );
         if(user?.id && sessionData){
+            logger.debug('[WIZZ] updating session data')
             const _userId = user.id;
             const _sessionId = sessionData.sessionId;
             const _sessionData = sessionData;
 
             updateSessionInDb(_userId, _sessionId, _sessionData);
+        } else {
+            logger.debug('[WIZZ] database update failed')
         }
+        
     };
 
     // Navigate to the previous step
