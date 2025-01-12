@@ -39,7 +39,7 @@ export const StepQuestion = ({ content, className }) => {
   )
 }
 
-export const StepTextarea = ({ content, label, localValue, handleTextareaChange, isRequired, isInputInvalid }) => {
+export const StepTextarea = ({ content, label, localValue, handleTextareaChange, isRequired, isInputInvalid, placeholder }) => {
   return (
     <Textarea
       classNames={{
@@ -52,7 +52,7 @@ export const StepTextarea = ({ content, label, localValue, handleTextareaChange,
       label={label}
       minRows={4}
       maxRows={25}
-      placeholder={content.placeholder}
+      placeholder={placeholder || content.placeholder}
       value={localValue}
       onChange={handleTextareaChange}
       validationBehavior='aria'

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Button, Input } from '@nextui-org/react';
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Button, Input, form } from '@nextui-org/react';
 import ReactMarkdown from 'react-markdown';
 
 import questionsData from "@/data/questions-data.json";
@@ -33,6 +33,9 @@ const StepPurpose = ({ ref }) => {
     if (formData?.[stepNumber]?.purpose) {
       setSelectedKeys(new Set([formData[stepNumber].purpose]));
       setIsOtherSelected(formData[stepNumber].purpose === "Other (please specify)");
+    }
+    if (!formData?.[stepNumber]?.purpose) {
+      setSelectedKeys(new Set([]));
     }
     logger.info('Child component received formData:', formData);
   }, [formData, stepNumber]);
@@ -187,7 +190,7 @@ const StepPurpose = ({ ref }) => {
             }}
             isRequired={isOtherSelected}
             label="Additional Details"
-            placeholder={`${content.placeholder[1]} (${isOtherSelected ? "required" : "optional"})`}
+            placeholder={`(${isOtherSelected ? "required" : "optional"}) ${content.placeholder[1]}`}
             value={localPurposeDetails}
             onChange={handleAdditionalDetailsChange}
             validationBehavior='aria'
@@ -212,6 +215,7 @@ const StepPurpose = ({ ref }) => {
             handleTextareaChange={handleServiceDescriptionChange}
             isRequired={true}
             isInputInvalid={serviceDescIsInvalid}
+            placeholder={content.placeholder[2]}
           />
         </PasteButton>
       </StepWrapper>

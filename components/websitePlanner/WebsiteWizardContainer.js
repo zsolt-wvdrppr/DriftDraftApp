@@ -38,6 +38,7 @@ import Result from './Result';
 import { PreviousButton, NextButton, SubmitButton } from './layout/NavigationButtons';
 
 import Tutorial from '@/components/tutorialToaster/Tutorial';
+import RestartSessionBtn from './layout/RestartSessionBtn';
 
 // Step definitions
 const steps = [
@@ -227,7 +228,8 @@ export default function WebsiteWizardContainer({ }) {
             {(!isSubmitted) &&
 
                 <div className="wizard-container relative max-w-screen-xl w-full h-max px-0 md:py-4">
-                    <div className="step-1">
+                    <div className="step-1 flex">
+                    <RestartSessionBtn />
                     <ProgressBar currentStep={currentStep} totalSteps={steps.length} />
                     </div>
                     {/* Dropdown for Navigation */}

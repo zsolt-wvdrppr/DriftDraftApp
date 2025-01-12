@@ -7,13 +7,13 @@ import logger from '@/lib/logger';
 
 const LogOutBtn = ({user, onPress}) => {
 
-    const { clearSessionData } = useSessionContext();
+    const { logOutUser } = useSessionContext();
     const router = useRouter();
 
     const handleClick = () => {
         logger.info("Logging out...");
         onPress();
-        clearSessionData();
+        logOutUser();
         router.push('/login');
     }
 
