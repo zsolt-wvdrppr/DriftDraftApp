@@ -22,6 +22,21 @@ const getClientIp = (req) => {
   );
 };
 
+async function verifyReCaptcha(token) {
+  const secret = process.env.RECAPTCHA_SECRET_KEY;
+  const res = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: `secret=${secret}&response=${token}`,
+  });
+
+  const data = await res.json();
+  return data.success;
+}
+
+
 export async function POST(req) {
   const ip = getClientIp(req); // Retrieve IP address
   const userAgent = req.headers.get('user-agent') || 'unknown'; // Extract User-Agent
@@ -33,10 +48,20 @@ export async function POST(req) {
 
   try {
     const body = await req.json();
-    const { prompt, clientData } = body; // Extract prompt and clientData from the request body
+    const { prompt, clientData, token } = body; // Extract prompt and clientData from the request body
 
     logger.debug(`[RATE LIMITER API]: Prompt received: ${prompt}`);
     logger.debug(`[RATE LIMITER API]: Client data: ${JSON.stringify(clientData)}`);
+
+     // Step 1: Validate reCAPTCHA Token
+     const isHuman = await verifyReCaptcha(token);
+     if (!isHuman) {
+       logger.warn(`[RATE LIMITER API]: ReCaptcha validation failed for user (${userId || ip}).`);
+       return new Response(
+         JSON.stringify({ message: "ReCaptcha verification failed. Are you a bot?" }),
+         { status: 403, headers: { "Content-Type": "application/json" } }
+       );
+     }
 
     // Check rate limits
     const { isRateLimited, remainingRequests, limitResetTimeAt } = await rateLimiter({

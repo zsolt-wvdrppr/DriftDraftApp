@@ -75,6 +75,7 @@ export default function WebsiteWizardContainer({ }) {
         setSteps,
         updateSessionInDb,
         updateAiGeneratedPlanInDb,
+        startNewSession,
     } = useSessionContext();
 
     useEffect(() => {
@@ -99,8 +100,8 @@ export default function WebsiteWizardContainer({ }) {
     }
 
     useEffect(() => {
-        if (isInitialised) {
-            logger.debug('Session Data:', sessionData);
+        if (!isInitialised && !sessionData?.sessionId) {
+            startNewSession();
         }
     }, [isInitialised, sessionData]);
 

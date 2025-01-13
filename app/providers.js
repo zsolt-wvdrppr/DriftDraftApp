@@ -8,18 +8,25 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { AuthProvider } from "@/lib/AuthContext";
 import { SessionProvider } from "@/lib/SessionProvider";
 
+import { ReCaptchaProvider } from "next-recaptcha-v3";
+
 export function Providers({ children, themeProps }) {
+
+  const reCaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+
   const router = useRouter();
 
   return (
-    <AuthProvider>
-      <NextUIProvider navigate={router.push}>
-        <NextThemesProvider {...themeProps}>
-          <SessionProvider>
-          {children}
-          </SessionProvider>
-        </NextThemesProvider>
-      </NextUIProvider>
-    </AuthProvider>
+    <ReCaptchaProvider reCaptchaKey={reCaptchaKey}>
+      <AuthProvider>
+        <NextUIProvider navigate={router.push}>
+          <NextThemesProvider {...themeProps}>
+            <SessionProvider>
+              {children}
+            </SessionProvider>
+          </NextThemesProvider>
+        </NextUIProvider>
+      </AuthProvider>
+    </ReCaptchaProvider>
   );
 }

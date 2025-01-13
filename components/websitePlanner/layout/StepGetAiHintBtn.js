@@ -3,6 +3,7 @@ import { Button } from '@nextui-org/react';
 import { IconAi } from '@tabler/icons-react';
 import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
+import { useReCaptcha } from "next-recaptcha-v3";
 
 export const StepGetAiHintBtn = ({
     prompt, 
@@ -15,6 +16,9 @@ export const StepGetAiHintBtn = ({
     updateFormData, 
     setError
 }) => {
+
+    const { executeRecaptcha } = useReCaptcha();
+
     const [isPending, setIsPending] = useState(false);
 
     const handleFetchHint = async () => {
@@ -34,6 +38,7 @@ export const StepGetAiHintBtn = ({
                 setUserMsg,
                 sessionData,
                 updateFormData,
+                executeRecaptcha,
             });
         } catch (error) {
             logger.error('Error fetching AI hint:', error);
