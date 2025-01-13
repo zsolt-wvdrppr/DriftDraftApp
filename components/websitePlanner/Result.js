@@ -16,6 +16,8 @@ import useClipboard from "@/lib/hooks/useClipboard";
 
 import { Tooltip } from 'react-tooltip';
 
+import { useReCaptcha } from "next-recaptcha-v3";
+
 const Result = () => {
 
   const { sessionData, updateSessionData, updateAiGeneratedPlanInDb, updateSessionTitleInDb, setError } = useSessionContext();
@@ -29,7 +31,9 @@ const Result = () => {
   const { loading: titleLoading, generatedTitle } = useGenerateTitle(contentForTitleGeneration, updateSessionTitleInDb, userId, sessionId);
   const alreadyFetched = useRef(false);
 
-  const { executePrompts, executedPrompts, loading: promptLoading, error, output } = usePromptExecutor();
+  const { executeRecaptcha } = useReCaptcha();
+
+  const { executePrompts, executedPrompts, loading: promptLoading, error, output } = usePromptExecutor({ executeRecaptcha });
 
   const [prompts, setPrompts] = useState([]);
   const { copyToClipboard, isPending } = useClipboard();
