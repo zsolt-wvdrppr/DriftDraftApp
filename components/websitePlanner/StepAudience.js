@@ -59,37 +59,6 @@ const StepAudience = ({ ref }) => {
 
   const prompt = `I'm planning a website and need to answer to a question regarding my target audience. I need help with the following question: ${question}. Consider that the main purpose of the website is ${purpose} ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
 
-  /*useEffect(() => {
-    const question = content.question;
-    const purpose = formData[0]?.purpose;
-    const purposeDetails = formData[0]?.purposeDetails || '';
-    const serviceDescription = formData[0]?.serviceDescription;
-
-    if (purpose && serviceDescription && question && serviceDescription) {
-
-      const prompt = `I'm planning a website and need to answer to a question regarding my target audience. I need help with the following question: ${question}. Consider that the main purpose of the website is ${purpose} ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
-
-      const handleFetchHint = async () => {
-        await fetchAIHint({
-          stepNumber,
-          prompt,
-          content,
-          setAiHint,
-          setUserMsg,
-          sessionData,
-          updateFormData,
-        });
-      };
-
-      logger.info("fetching content");
-      handleFetchHint();
-    } else {
-      logger.info("resetting hint");
-      setAiHint(null);
-      setUserMsg(null);
-    }
-  }, [formData, content]);*/
-
   return (
     <form ref={formRef}>
       <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>

@@ -223,7 +223,7 @@ export default function UserActivities() {
 
     const legend = () => {
         return (
-            <div className='p-4 w-fit bg-slate-200 rounded-lg'>
+            <div className='p-4 w-fit rounded-lg dark:bg-zinc-800'>
                 <p className='flex gap-2'><IconEdit /> - Edit</p>
                 <p className='flex gap-2'><IconTrash /> - Delete</p>
                 <p className='flex gap-2'><IconShare /> - Share</p>
