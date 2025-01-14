@@ -31,8 +31,8 @@ export const showAnchoredToast = (title, message, targetClass, options = {}) => 
         <IconArrowNarrowUpDashed size={20} className="absolute left-1/2 top-1 text-fuchsia-600 animate-bounce" />
       )}
       <div className='p-4 bg-neutralCream bg-opacity-85 dark:bg-white dark:bg-opacity-85' >
-        <h4 className="font-bold mb-2">{title}</h4>
-        <p className="">{message}</p>
+        <h4 className="font-bold dark:text-neutralDark mb-2">{title}</h4>
+        <p className="dark:text-neutralDark">{message}</p>
       </div>
       <div className={`justify-between btns-wrapper flex bg-neutralCream bg-opacity-85 dark:bg-white dark:bg-opacity-85 space-x-2 w-full -mb-1 bg-transparent`}>
         {options.previous && (
