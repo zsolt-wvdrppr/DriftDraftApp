@@ -29,6 +29,6 @@ input:-webkit-autofill {
     color: rgb(206, 206, 206);
   }
 
-  .dark .markdown p, .dar .markdown h4, .dark .markdown strong, .dark .markdown span, .dark .markdown ul, .dark .markdown li {
+  .dark .markdown p, .dar .markdown h4, .dark .markdown strong, .dark .markdown span, .dark .markdown ul, .dark .markdown li, .dark .markdown code {
     @apply text-neutralDark;
   }
