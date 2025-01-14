@@ -145,7 +145,7 @@ const StepInspirations = ({ ref }) => {
                   }}
                 />
                  {urls.length > 1 && (
-                  <IconXboxXFilled className='absolute -right-3 -top-3 md:left-1/4 md:top-14 opacity-70 text-danger cursor-pointer drop-shadow-lg hover:scale-110 hover:opacity-100 transition-all' onPress={() => handleRemoveUrl(index)} />
+                  <IconXboxXFilled className='absolute -right-3 -top-3 md:left-1/4 md:top-14 opacity-70 text-danger cursor-pointer drop-shadow-lg hover:scale-110 hover:opacity-100 transition-all' onClick={() => handleRemoveUrl(index)} />
                 )}
                 <Textarea
                   classNames={{
