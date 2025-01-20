@@ -22,6 +22,7 @@ export const showHintToast = (
   const handleCopyClick = () => {
     if (copyToClipboard) {
       copyToClipboard(hints);
+      
       return;
     }
     // Copy hint to clipboard

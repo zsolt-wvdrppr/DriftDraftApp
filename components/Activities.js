@@ -16,24 +16,22 @@ import {
 import { IconEdit, IconTrash, IconEye, IconShare, IconWand, IconSquareRoundedXFilled, IconInfoCircleFilled, IconPencilStar } from '@tabler/icons-react';
 import { Tooltip } from 'react-tooltip';
 import { toast } from 'sonner';
-import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
+import { HeadingNode, QuoteNode } from "@lexical/rich-text";
+import { CodeNode } from "@lexical/code";
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { ListNode, ListItemNode } from "@lexical/list";
+import { LinkNode } from "@lexical/link";
+import { TextNode } from 'lexical';
 
 import { createOrUpdateProfile } from "@/lib/supabaseClient";
 import logger from '@/lib/logger';
 import { useAuth } from '@/lib/AuthContext';
-
 import { useSessionContext } from '@/lib/SessionProvider';
-
 import { formatDateToLocalBasic } from '@/lib/utils';
 
 import EditableMarkdownModal from './websitePlanner/layout/EditableMarkdownModal';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { ListNode, ListItemNode } from "@lexical/list";
-import { HeadingNode, QuoteNode } from "@lexical/rich-text";
-import { CodeNode } from "@lexical/code";
-import { LinkNode } from "@lexical/link";
-import { TextNode } from 'lexical';
 
 const theme = {
     code: 'editor-code',
