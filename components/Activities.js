@@ -106,8 +106,6 @@ export default function UserActivities() {
     const [items, setItems] = useState([]);
     const [selectedItem, setSelectedItem] = useState(null);
     const { isOpen: isDeleteModalOpen, onOpen: onDeleteOpen, onOpenChange: onDeleteOpenChange } = useDisclosure();
-    const { isOpen: isViewModalOpen, onOpen: onViewOpen, onOpenChange: onViewOpenChange } = useDisclosure();
-
     const { isOpen: isMarkdownModalOpen, onOpen: onMarkdownOpen, onOpenChange: onMarkdownOpenChange } = useDisclosure();
     const [markdownContent, setMarkdownContent] = useState('');
     const [isLoadingContent, setIsLoadingContent] = useState(false);
@@ -115,8 +113,6 @@ export default function UserActivities() {
     const [isPending, startTransition] = useTransition();
     const { user, loading } = useAuth(); // Access user state
     const router = useRouter();
-
-    const [selectedAiGenPlan, setSelectedAiGenPlan] = useState({});
     const inputRefs = useRef({});
 
     useEffect(() => {
@@ -128,6 +124,7 @@ export default function UserActivities() {
                 try {
                     logger.info('Fetching sessions from DB...');
                     const sessions = await fetchAllSessionsFromDb(user.id); // Await the data
+
                     setItems(sessions); // Update the state with the fetched sessions
                 } catch (error) {
                     logger.error('Error fetching sessions from DB:', error.message);
@@ -184,6 +181,7 @@ export default function UserActivities() {
 
         try {
             const generatedPlan = await fetchAiGeneratedPlanFromDb(item.session_id);
+
             setMarkdownContent(generatedPlan || 'No content available.');
             setIsLoadingContent(false);
         } catch (error) {
@@ -191,32 +189,6 @@ export default function UserActivities() {
             setIsLoadingContent(false);
             setMarkdownContent("Error loading content.");
             console.error("Error fetching markdown content:", error);
-        }
-    };
-
-    const viewPlan = async (item) => {
-        setSelectedItem(item);  // Open the modal immediately
-        setSelectedAiGenPlan((prevState) => ({
-            ...prevState,
-            [item.session_id]: "Loading..."
-        }));
-        onViewOpen();
-
-        try {
-            logger.info(`Fetching AI-generated plan for sessionId: ${item.session_id}`);
-            const generatedPlanFromDb = await fetchAiGeneratedPlanFromDb(item.session_id);
-
-            setSelectedAiGenPlan((prevState) => ({
-                ...prevState,
-                [item.session_id]: generatedPlanFromDb || "No AI-generated plan available."
-            }));
-            logger.info('AI-generated plan fetched successfully.');
-        } catch (error) {
-            setSelectedAiGenPlan((prevState) => ({
-                ...prevState,
-                [item.session_id]: "Error loading plan."
-            }));
-            logger.error('Error fetching AI-generated plan:', error.message);
         }
     };
 
@@ -244,7 +216,7 @@ export default function UserActivities() {
             }
 
             const newToastId = toast.custom((t) => (
-                <div className="relative flex justify-end">
+                <div className="relative flex justify-end bg-yellow-100/60 shadow-md rounded-lg">
                     <div className='w-fit relative'>
                         <Button
                             className='!absolute -top-4 -left-9 p-2'
@@ -308,6 +280,7 @@ export default function UserActivities() {
         if (!newTitle.trim()) {
             toast.dismiss();
             toast.error("Title cannot be empty.");
+
             return;
         }
 
@@ -317,6 +290,7 @@ export default function UserActivities() {
                     ? { ...i, session_title: newTitle, isEditing: false } // Set isEditing to false after update
                     : i
             );
+
             setItems(updatedItems); // Update state immediately for UX 
 
             await updateSessionTitleInDb(user.id, item.session_id, newTitle); // Update DB
@@ -334,6 +308,7 @@ export default function UserActivities() {
         const updatedItems = items.map(i =>
             i.session_id === item.session_id ? { ...i, isEditing: true } : i
         );
+
         setItems(updatedItems);
 
         setTimeout(() => {
@@ -379,23 +354,24 @@ export default function UserActivities() {
                                         {item.isEditing ? (
                                             <input
                                                 ref={(el) => (inputRefs.current[item.session_id] = el)} // Assign dynamic ref
+                                                className="border p-2 rounded-md"
                                                 type="text"
                                                 value={item.session_title}
+                                                onBlur={() => handleEditTitle(item, item.session_title)} // Stop editing when blurred
                                                 onChange={(e) => {
                                                     const updatedItems = items.map(i =>
                                                         i.session_id === item.session_id
                                                             ? { ...i, session_title: e.target.value }
                                                             : i
                                                     );
+
                                                     setItems(updatedItems); // Live update in state for better UX
                                                 }}
-                                                onBlur={() => handleEditTitle(item, item.session_title)} // Stop editing when blurred
                                                 onKeyDown={(e) => {
                                                     if (e.key === "Enter") {
                                                         handleEditTitle(item, item.session_title); // Stop editing on Enter key press
                                                     }
                                                 }}
-                                                className="border p-2 rounded-md"
                                             />
                                         ) : (
                                             <div>
@@ -442,8 +418,8 @@ export default function UserActivities() {
                                             <div>
                                                 <Link
                                                     className="dark:text-white cursor-pointer"
-                                                    onPress={() => logger.info(`Share item with ID: ${item.session_id}`)}
                                                     isDisabled={true}
+                                                    onPress={() => logger.info(`Share item with ID: ${item.session_id}`)}
                                                 >
                                                     <IconShare id='share-icon' />
                                                 </Link>
@@ -466,8 +442,8 @@ export default function UserActivities() {
                                                 <Link
                                                     alt="Get Quote"
                                                     className="dark:text-white cursor-pointer"
-                                                    onPress={() => logger.info(`Submit for quote: ${item.session_id}`)}
                                                     isDisabled={true}
+                                                    onPress={() => logger.info(`Submit for quote: ${item.session_id}`)}
                                                 >
                                                     <IconWand id='quote-icon' />
                                                 </Link>
@@ -520,12 +496,12 @@ export default function UserActivities() {
 
             <LexicalComposer initialConfig={initialConfig}>
                 <EditableMarkdownModal
-                    item={selectedItem}
+                    isLoading={isLoadingContent}
                     isOpen={isMarkdownModalOpen}
-                    onOpenChange={onMarkdownOpenChange}
+                    item={selectedItem}
                     markdownContent={markdownContent}
                     setMarkdownContent={setMarkdownContent}
-                    isLoading={isLoadingContent}
+                    onOpenChange={onMarkdownOpenChange}
                 />
             </LexicalComposer>
 
