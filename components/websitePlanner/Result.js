@@ -1,39 +1,59 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState, useRef } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { Button, CircularProgress, Card, CardBody, CardFooter, Link } from '@nextui-org/react';
-import { IconCopy } from '@tabler/icons-react';
+import React, { useEffect, useState, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+import {
+  Button,
+  CircularProgress,
+  Card,
+  CardBody,
+  CardFooter,
+  Link,
+} from "@nextui-org/react";
+import { IconCopy } from "@tabler/icons-react";
+import { Tooltip } from "react-tooltip";
+import { useReCaptcha } from "next-recaptcha-v3";
 
 import { useSessionContext } from "@/lib/SessionProvider";
-import logger from '@/lib/logger';
-
-import { useAuth } from '@/lib/AuthContext';
-
+import logger from "@/lib/logger";
+import { useAuth } from "@/lib/AuthContext";
 import useGenerateTitle from "@/lib/hooks/useGenerateTitle";
 import usePromptExecutor from "@/lib/hooks/usePromptExecutor";
 import useClipboard from "@/lib/hooks/useClipboard";
 
-import { Tooltip } from 'react-tooltip';
-
-import { useReCaptcha } from "next-recaptcha-v3";
-
 const Result = () => {
-
-  const { sessionData, updateSessionData, updateAiGeneratedPlanInDb, updateSessionTitleInDb, setError } = useSessionContext();
+  const {
+    sessionData,
+    updateSessionData,
+    updateAiGeneratedPlanInDb,
+    updateSessionTitleInDb,
+    setError,
+  } = useSessionContext();
   const [aiResult, setAiResult] = useState(null);
   const aiResultRef = useRef(aiResult);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
   const userId = user?.id;
   const sessionId = sessionData?.sessionId;
-  const [contentForTitleGeneration, setContentForTitleGeneration] = useState(null);
-  const { loading: titleLoading, generatedTitle } = useGenerateTitle(contentForTitleGeneration, updateSessionTitleInDb, userId, sessionId);
+  const [contentForTitleGeneration, setContentForTitleGeneration] =
+    useState(null);
+  const { loading: titleLoading, generatedTitle } = useGenerateTitle(
+    contentForTitleGeneration,
+    updateSessionTitleInDb,
+    userId,
+    sessionId
+  );
   const alreadyFetched = useRef(false);
 
   const { executeRecaptcha } = useReCaptcha();
 
-  const { executePrompts, executedPrompts, loading: promptLoading, error, output } = usePromptExecutor({ executeRecaptcha });
+  const {
+    executePrompts,
+    executedPrompts,
+    loading: promptLoading,
+    error,
+    output,
+  } = usePromptExecutor({ executeRecaptcha });
 
   const [prompts, setPrompts] = useState([]);
   const { copyToClipboard, isPending } = useClipboard();
@@ -41,28 +61,39 @@ const Result = () => {
   /* Form data */
   const formData = sessionData.formData;
   const purpose = formData[0].purpose;
-  const purposeDetails = formData[0]?.purposeDetails || ''; // optional
+  const purposeDetails = formData[0]?.purposeDetails || ""; // optional
   const serviceDescription = formData[0].serviceDescription;
   const audience = formData[1].audience;
-  const marketing = formData[2].marketing || '';
-  const competitors = formData[3]?.urls?.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : ''; // optional
-  const usps = formData[4].usps || '';
-  const domain = formData[5].domain || '';
-  const brandGuidelines = formData[6].brandGuidelines || '';
-  const emotions = formData[7].emotions || '';
-  const inspirations = formData[8]?.inspirations?.toString() || ''; // optional
+  const marketing = formData[2].marketing || "";
+  const competitors =
+    formData[3]?.urls?.toString() !== ""
+      ? `I have identified the following competitors: ${formData[3].urls.toString()}.`
+      : ""; // optional
+  const usps = formData[4].usps || "";
+  const domain = formData[5].domain || "";
+  const brandGuidelines = formData[6].brandGuidelines || "";
+  const emotions = formData[7].emotions || "";
+  const inspirations = formData[8]?.inspirations?.toString() || ""; // optional
   /* End of form data */
 
   useEffect(() => {
     aiResultRef.current = aiResult;
 
-    if (aiResultRef.current !== null) {  // Prevent multiple updates
+    if (aiResultRef.current !== null) {
+      // Prevent multiple updates
       updateSessionData("aiGeneratedPlan", aiResultRef.current);
       updateAiGeneratedPlanInDb(userId, sessionId, aiResultRef.current);
-      setContentForTitleGeneration(serviceDescription + ' ' + domain + ' ' + brandGuidelines + ' ' + emotions);
+      setContentForTitleGeneration(
+        serviceDescription +
+          " " +
+          domain +
+          " " +
+          brandGuidelines +
+          " " +
+          emotions
+      );
       //logger.debug("Updating aiGeneratedPlan in DB:", aiResultRef.current);
     }
-
   }, [aiResult]);
 
   useEffect(() => {
@@ -74,11 +105,20 @@ const Result = () => {
   }, [aiResult, generatedTitle, titleLoading]);
 
   useEffect(() => {
-    if (alreadyFetched.current || !userId || !sessionId) return;  // Prevent second call
+    if (alreadyFetched.current || !userId || !sessionId) return; // Prevent second call
     alreadyFetched.current = true;
 
-    if (purpose && serviceDescription && serviceDescription && audience && marketing && usps && brandGuidelines && domain && emotions) {
-
+    if (
+      purpose &&
+      serviceDescription &&
+      serviceDescription &&
+      audience &&
+      marketing &&
+      usps &&
+      brandGuidelines &&
+      domain &&
+      emotions
+    ) {
       /*const prompt = `Based on the provided inputs, create a concise and strategic website plan that captures the user's needs and requirements. The plan should be formatted as a professional document that can be shared with a developer or web design agency. 
 
       Here is the information to include:
@@ -242,7 +282,7 @@ const Result = () => {
               - If any detail is missing, mention it and why it is important to clarify.
               - Keep it straightforward and short.
           `,
-          generateNewPrompts: false
+          generateNewPrompts: false,
         },
         {
           prompt: `
@@ -260,7 +300,7 @@ const Result = () => {
               - If anything is unclear, note it and recommend clarifying.
               - Provide short bullet points, focusing on design direction and overall impact.
           `,
-          generateNewPrompts: false
+          generateNewPrompts: false,
         },
         {
           prompt: `
@@ -277,7 +317,7 @@ const Result = () => {
                  - Clear about any important integrations or frameworks.
               - Keep both parts brief and in bullet points.
           `,
-          generateNewPrompts: false
+          generateNewPrompts: false,
         },
         {
           prompt: `
@@ -291,26 +331,24 @@ const Result = () => {
               - Keep it very straightforward and easy to understand.
           `,
           generateNewPrompts: false,
-          dependsOn: 2 // or the index you want to depend on
-        }
+          dependsOn: 2, // or the index you want to depend on
+        },
       ];
 
       setPrompts(prompts);
 
       // ✅ Execute prompts and update the session once complete
       const generateWebsitePlan = async () => {
-
         logger.info("Executing prompts for website plan generation...");
         const results = await executePrompts(prompts, userId);
         const combinedResult = results.join("\n\n");
+        
         setAiResult(combinedResult);
 
         await updateAiGeneratedPlanInDb(userId, sessionId, combinedResult);
-
       };
 
       generateWebsitePlan();
-
     } else {
       logger.info("resetting hint");
       setAiResult(null);
@@ -322,7 +360,7 @@ const Result = () => {
     if (window.history.replaceState) {
       const newUrl = window.location.pathname;
 
-      window.history.replaceState(null, '', newUrl);
+      window.history.replaceState(null, "", newUrl);
     }
   }, []);
 
@@ -360,17 +398,21 @@ const Result = () => {
   const aiResultWithTitle = `# ${generatedTitle}\n\n${aiResult}`;
 
   return (
-    <div className=' md:mx-auto'>
+    <div className=" md:mx-auto">
       {isLoading ? (
         <div className="flex flex-col left-0 top-0 bottom-0 right-0 absolute w-full items-center justify-center py-10">
-          <Card aria-label='Progress indicator' className="h-60 max-w-96 border-none bg-transparent shadow-none">
+          <Card
+            aria-label="Progress indicator"
+            className="h-60 max-w-96 border-none bg-transparent shadow-none"
+          >
             <CardBody className="justify-center items-center pb-0">
               <CircularProgress
-                aria-label='Generating content progress'
+                aria-label="Generating content progress"
                 classNames={{
                   svg: "w-36 h-36",
                   indicator: "stroke-neutralDark dark:stroke-white",
-                  value: "text-3xl font-semibold text-neutralDark dark:text-white",
+                  value:
+                    "text-3xl font-semibold text-neutralDark dark:text-white",
                 }}
                 showValueLabel={true}
                 strokeWidth={4}
@@ -386,39 +428,52 @@ const Result = () => {
         </div>
       ) : (
         <>
-
           <div className="prose relative lg:prose-lg prose-slate dark:prose-invert px-4 pt-8 pb-12 md:p-8 my-12 rounded-2xl bg-yellow-100/60 dark:bg-content1 max-w-screen-xl">
             <div className="w-full flex justify-end md:justify-end">
               <Link
                 alt="Copy all content to clipboard"
+                aria-label="Copy the generated content to clipboard"
+                className="absolute top-2 right-2 text-secondary"
                 id="copy-btn-top"
-                className='absolute top-2 right-2 text-secondary'
-                aria-label='Copy the generated content to clipboard'
                 variant="none"
-                onPress={() => { copyToClipboard(aiResultWithTitle); }}
+                onPress={() => {
+                  copyToClipboard(aiResultWithTitle);
+                }}
               >
                 <IconCopy size={20} />
               </Link>
-              <Tooltip anchorSelect="#copy-btn-top" place="left" className="text-center" delayHide={500} delayShow={200}>
+              <Tooltip
+                anchorSelect="#copy-btn-top"
+                className="text-center"
+                delayHide={500}
+                delayShow={200}
+                place="left"
+              >
                 Copy all to clipboard
               </Tooltip>
             </div>
-            <ReactMarkdown>
-              {aiResultWithTitle}
-            </ReactMarkdown>
+            <ReactMarkdown>{aiResultWithTitle}</ReactMarkdown>
             <div className="w-full flex justify-end pb-4 md:pb-8 md:justify-end">
               <Button
-                className='absolute'
-                id='copy-btn-bottom'
+                aria-label="Copy the generated content to clipboard"
+                className="absolute"
                 color="secondary"
-                aria-label='Copy the generated content to clipboard'
+                id="copy-btn-bottom"
                 variant="bordered"
-                onPress={() => { copyToClipboard(aiResultWithTitle); }}
+                onPress={() => {
+                  copyToClipboard(aiResultWithTitle);
+                }}
               >
                 <IconCopy size={20} />
                 Copy
               </Button>
-              <Tooltip anchorSelect="#copy-btn-bottom" place="top" className="text-center" delayHide={500} delayShow={200}>
+              <Tooltip
+                anchorSelect="#copy-btn-bottom"
+                className="text-center"
+                delayHide={500}
+                delayShow={200}
+                place="top"
+              >
                 Copy all to clipboard
               </Tooltip>
             </div>
@@ -429,6 +484,6 @@ const Result = () => {
   );
 };
 
-Result.displayName = 'Result';
+Result.displayName = "Result";
 
 export default Result;

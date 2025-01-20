@@ -14,11 +14,9 @@ import { Button, Kbd, Link, Input } from "@nextui-org/react";
 import { link as linkStyles } from "@nextui-org/react";
 import NextLink from "next/link";
 import clsx from "clsx";
-import { IconPower } from "@tabler/icons-react";
 
 import LogOutBtn from "@/components/nav-layout/LogOutBtn";
 import LogInBtn from "@/components/nav-layout/LogInBtn";
-
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import {

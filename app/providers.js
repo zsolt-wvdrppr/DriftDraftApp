@@ -4,11 +4,10 @@ import * as React from "react";
 import { NextUIProvider } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { ReCaptchaProvider } from "next-recaptcha-v3";
 
 import { AuthProvider } from "@/lib/AuthContext";
 import { SessionProvider } from "@/lib/SessionProvider";
-
-import { ReCaptchaProvider } from "next-recaptcha-v3";
 
 export function Providers({ children, themeProps }) {
 

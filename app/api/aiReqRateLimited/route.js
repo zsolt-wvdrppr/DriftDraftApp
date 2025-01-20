@@ -70,7 +70,7 @@ export async function POST(req) {
       type,
       userAgent,
       clientData,
-      limit: userId ? 60 : 18, // Higher limit for authenticated users
+      limit: userId ? 60 : 2, // Higher limit for authenticated users
       windowMs: oneHour, // 1-hour window
     });
 
