@@ -1,8 +1,8 @@
 import * as React from "react";
 
 import { IconSvgProps } from "@/types";
-import { Image } from "@nextui-org/react";
-import { ImageProps } from "@nextui-org/react";
+import { Image } from "@heroui/react";
+import { ImageProps } from "@heroui/react";
 
 export const WaveDropperLogo: React.FC<IconSvgProps> = ({
   size = 36,

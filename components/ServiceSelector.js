@@ -1,9 +1,9 @@
 'use client';
 
-import { Accordion, AccordionItem } from "@nextui-org/react";
+import { Accordion, AccordionItem } from "@heroui/react";
 import { IconPencil, IconRuler, IconComet, IconSettingsBolt } from "@tabler/icons-react";
-import { Button } from "@nextui-org/react";
-import { Link } from "@nextui-org/react";
+import { Button } from "@heroui/react";
+import { Link } from "@heroui/react";
 
 const ServiceSelector = () => {
 

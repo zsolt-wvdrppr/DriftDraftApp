@@ -9,7 +9,7 @@ import {
   CardBody,
   CardFooter,
   Link,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { IconCopy } from "@tabler/icons-react";
 import { Tooltip } from "react-tooltip";
 import { useReCaptcha } from "next-recaptcha-v3";

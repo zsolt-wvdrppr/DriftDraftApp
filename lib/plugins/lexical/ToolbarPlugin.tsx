@@ -21,7 +21,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { IconArrowBackUp, IconArrowForwardUp, IconBold, IconItalic, IconUnderline, IconStrikethrough, IconAlignLeft2, IconAlignRight2, IconAlignCenter, IconAlignJustified, IconDeviceFloppy, IconEye } from '@tabler/icons-react';
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 
 const LowPriority = 1;
 

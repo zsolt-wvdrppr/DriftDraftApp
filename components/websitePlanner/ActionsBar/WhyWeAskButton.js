@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { IconZoomQuestionFilled } from '@tabler/icons-react';
 
 const WhyWeAskButton = ({ whyDoWeAsk, handleToast }) => {

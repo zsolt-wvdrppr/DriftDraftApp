@@ -1,5 +1,5 @@
 import { toast } from 'sonner';
-import { Button, Link } from '@nextui-org/react';
+import { Button, Link } from '@heroui/react';
 import logger from '@/lib/logger';
 import { IconArrowNarrowUpDashed } from '@tabler/icons-react';
 

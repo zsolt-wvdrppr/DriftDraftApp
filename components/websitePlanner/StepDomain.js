@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useImperativeHandle, useEffect } from 'react';
-import { Input } from '@nextui-org/react';
+import { Input } from '@heroui/react';
 
 import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Progress } from '@nextui-org/react';
+import { Progress } from '@heroui/react';
 
 export default function ProgressBar({ currentStep, totalSteps }) {
     const progressPercentage = (currentStep / (totalSteps - 1)) * 100;

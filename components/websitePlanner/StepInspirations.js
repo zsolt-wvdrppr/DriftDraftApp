@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useImperativeHandle, useEffect } from 'react';
-import { Input, Button, Textarea } from '@nextui-org/react';
+import { Input, Button, Textarea } from '@heroui/react';
 import { IconXboxXFilled, IconRowInsertBottom, IconWorldWww } from '@tabler/icons-react';
 import { motion, AnimatePresence } from 'framer-motion';
 

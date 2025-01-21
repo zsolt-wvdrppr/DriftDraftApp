@@ -1,6 +1,6 @@
 import React from "react";
 import logger from "@/lib/logger";
-import { Link } from "@nextui-org/react";
+import { Link } from "@heroui/react";
 import { IconClipboard } from "@tabler/icons-react";
 import { Tooltip } from 'react-tooltip';
 import { markdownToPlainText } from "@/lib/utils";

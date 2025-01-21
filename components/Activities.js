@@ -12,7 +12,7 @@ import {
     Link,
     useDisclosure,
     Spinner
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { IconEdit, IconTrash, IconEye, IconShare, IconWand, IconSquareRoundedXFilled, IconInfoCircleFilled, IconPencilStar } from '@tabler/icons-react';
 import { Tooltip } from 'react-tooltip';
 import { toast } from 'sonner';

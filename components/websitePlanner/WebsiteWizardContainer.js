@@ -3,10 +3,10 @@
 import React, { useState, useRef, useEffect, useTransition, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
 import { IconCheck, IconPlant, IconUsersGroup, IconMagnet, IconRocket, IconDiamond, IconWorldWww, IconWriting, IconMoodSmileBeam, IconBulb, IconAddressBook } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import { Spinner } from "@nextui-org/react";
+import { Spinner } from "@heroui/react";
 
 import logger from '@/lib/logger';
 import { useAuth } from '@/lib/AuthContext';

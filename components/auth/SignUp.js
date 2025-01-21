@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Button, Input, Checkbox, Link } from "@nextui-org/react";
+import { Button, Input, Checkbox, Link } from "@heroui/react";
 import { Icon } from "@iconify-icon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";

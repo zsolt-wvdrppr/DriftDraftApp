@@ -1,6 +1,6 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
-import { Textarea, Button } from '@nextui-org/react';
+import { Textarea, Button } from '@heroui/react';
 
 export const StepOuterWrapper = ({ className = '', children }) => {
 

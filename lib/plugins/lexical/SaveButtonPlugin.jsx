@@ -1,5 +1,5 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 
 const SaveButtonPlugin = ({ onSave }) => {
   const [editor] = useLexicalComposerContext();

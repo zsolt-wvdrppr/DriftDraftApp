@@ -9,9 +9,9 @@ import {
   NavbarBrand,
   NavbarItem,
   NavbarMenuItem,
-} from "@nextui-org/react";
-import { Button, Kbd, Link, Input } from "@nextui-org/react";
-import { link as linkStyles } from "@nextui-org/react";
+} from "@heroui/react";
+import { Button, Kbd, Link, Input } from "@heroui/react";
+import { link as linkStyles } from "@heroui/react";
 import NextLink from "next/link";
 import clsx from "clsx";
 

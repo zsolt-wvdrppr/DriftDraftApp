@@ -17,7 +17,7 @@ import {
     ModalFooter,
     Button,
     Spinner,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import logger from "@/lib/logger";
 
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';

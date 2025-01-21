@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 const colors = ("tailwindcss/colors");
 const { default: flattenColorPalette } = require("tailwindcss/lib/util/flattenColorPalette");
-import { nextui } from "@nextui-org/react";
+import { heroui } from "@heroui/react";
 
 // Define the addVariablesForColors plugin
 function addVariablesForColors({ addBase, theme }: any) {
@@ -20,7 +20,7 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx,mdx}",
+    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   darkMode: "class",
   theme: {
@@ -60,7 +60,7 @@ const config: Config = {
     },
   },
   plugins: [
-    nextui({
+    heroui({
       themes: {
         dark: {
           colors: {

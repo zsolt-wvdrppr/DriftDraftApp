@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Button, Input, form } from '@nextui-org/react';
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Button, Input, form } from '@heroui/react';
 import ReactMarkdown from 'react-markdown';
 
 import questionsData from "@/data/questions-data.json";

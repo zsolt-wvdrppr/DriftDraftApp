@@ -1,4 +1,4 @@
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { IconPower } from "@tabler/icons-react";
 
 const LogInBtn = ({onPress}) => {

@@ -2,7 +2,7 @@
 
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { IconCopy, IconSquareRoundedX } from "@tabler/icons-react";
 
 export const showHintToast = (

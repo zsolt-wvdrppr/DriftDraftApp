@@ -1,4 +1,4 @@
-import { Link, Button } from '@nextui-org/react';
+import { Link, Button } from '@heroui/react';
 import { IconPower } from "@tabler/icons-react";
 import { useSessionContext } from '@/lib/SessionProvider';
 import { useRouter } from 'next/navigation';

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { useSearchParams } from 'next/navigation';
 
 import useToastSound from '@/lib/hooks/useToastSound';

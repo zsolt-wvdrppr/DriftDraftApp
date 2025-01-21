@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '@nextui-org/react';
+import { Button } from '@heroui/react';
 import { IconAi } from '@tabler/icons-react';
 import logger from '@/lib/logger';
 import { fetchAIHint } from '@/lib/fetchAIHint';
