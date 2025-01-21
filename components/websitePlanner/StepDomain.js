@@ -67,15 +67,15 @@ const StepDomain = ({ ref }) => {
       <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
         <StepQuestion content={content} />
         <StepGetAiHintBtn
-          stepNumber={stepNumber}
           content={content}
-          sessionData={sessionData}
-          updateFormData={updateFormData}
-          setError={setError}
-          setAiHint={setAiHint}
-          setUserMsg={setUserMsg}
-          prompt={prompt}
           isAIAvailable={isAIAvailable}
+          prompt={prompt}
+          sessionData={sessionData}
+          setAiHint={setAiHint}
+          setError={setError}
+          setUserMsg={setUserMsg}
+          stepNumber={stepNumber}
+          updateFormData={updateFormData}
         />
         <Input
           classNames={{
@@ -86,9 +86,9 @@ const StepDomain = ({ ref }) => {
           isRequired={true}
           label="Domain Name"
           placeholder={content.placeholder}
+          validationBehavior='aria'
           value={localValue}
           onChange={handleTextareaChange}
-          validationBehavior='aria'
         />
       </StepWrapper>
     </form>

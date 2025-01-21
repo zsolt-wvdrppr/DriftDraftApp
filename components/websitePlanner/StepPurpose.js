@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Button, Input, form } from '@heroui/react';
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Button, Input } from '@heroui/react';
 import ReactMarkdown from 'react-markdown';
 
 import questionsData from "@/data/questions-data.json";
@@ -89,6 +89,7 @@ const StepPurpose = ({ ref }) => {
 
   const handleServiceDescriptionChange = (e) => {
     const value = e.target.value;
+
     logger.debug('value', value);
     logger.debug('condition:', value.length > 15 && !purposeIsInvalid);
 
@@ -182,9 +183,9 @@ const StepPurpose = ({ ref }) => {
             isRequired={isOtherSelected}
             label="Additional Details"
             placeholder={`(${isOtherSelected ? "required" : "optional"}) ${content.placeholder[1]}`}
+            validationBehavior='aria'
             value={localPurposeDetails}
             onChange={handleAdditionalDetailsChange}
-            validationBehavior='aria'
           />
         </div>
         <div className="col-span-4 flex-1">
@@ -193,25 +194,25 @@ const StepPurpose = ({ ref }) => {
           </h2>
         </div>
         <StepGetAiHintBtn
-          stepNumber={stepNumber}
           content={content}
-          sessionData={sessionData}
-          updateFormData={updateFormData}
-          setError={setError}
-          setAiHint={setAiHint}
-          setUserMsg={setUserMsg}
-          prompt={prompt}
           isAIAvailable={isAIAvailable}
+          prompt={prompt}
+          sessionData={sessionData}
+          setAiHint={setAiHint}
+          setError={setError}
+          setUserMsg={setUserMsg}
+          stepNumber={stepNumber}
+          updateFormData={updateFormData}
         />
 
-        <PasteButton value={localServiceDescription} handleChange={handleServiceDescriptionChange} setError={setError} >
+        <PasteButton handleChange={handleServiceDescriptionChange} setError={setError} value={localServiceDescription} >
           <StepTextarea
             content={content}
+            handleTextareaChange={handleServiceDescriptionChange}
+            isInputInvalid={serviceDescIsInvalid}
+            isRequired={true}
             label="Service Description"
             localValue={localServiceDescription}
-            handleTextareaChange={handleServiceDescriptionChange}
-            isRequired={true}
-            isInputInvalid={serviceDescIsInvalid}
             placeholder={content.placeholder[2]}
           />
         </PasteButton>

@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
 
 import questionsData from "@/data/questions-data.json";
-import logger from '@/lib/logger';
 import { useSessionContext } from "@/lib/SessionProvider";
 
 import PasteButton from './layout/PasteButton';
@@ -63,24 +62,24 @@ const StepMarketing = ({ ref }) => {
       <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
         <StepQuestion content={content} />
         <StepGetAiHintBtn
-          stepNumber={stepNumber}
           content={content}
-          sessionData={sessionData}
-          updateFormData={updateFormData}
-          setError={setError}
-          setAiHint={setAiHint}
-          setUserMsg={setUserMsg}
-          prompt={prompt}
           isAIAvailable={purpose && serviceDescription && question && serviceDescription && audience}
+          prompt={prompt}
+          sessionData={sessionData}
+          setAiHint={setAiHint}
+          setError={setError}
+          setUserMsg={setUserMsg}
+          stepNumber={stepNumber}
+          updateFormData={updateFormData}
         />
-        <PasteButton value={localValue} handleChange={handleTextareaChange} setError={setError}>
+        <PasteButton handleChange={handleTextareaChange} setError={setError} value={localValue}>
           <StepTextarea
             content={content}
+            handleTextareaChange={handleTextareaChange}
+            isInputInvalid={isInputInvalid}
+            isRequired={true}
             label="Incoming Traffic Sources"
             localValue={localValue}
-            handleTextareaChange={handleTextareaChange}
-            isRequired={true}
-            isInputInvalid={isInputInvalid}
           />
         </PasteButton>
       </StepWrapper>

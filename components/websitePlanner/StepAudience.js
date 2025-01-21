@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
 
-import logger from '@/lib/logger';
 import questionsData from "@/data/questions-data.json";
 import { useSessionContext } from "@/lib/SessionProvider";
 
@@ -64,25 +63,25 @@ const StepAudience = ({ ref }) => {
       <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
         <StepQuestion content={content} />
         <StepGetAiHintBtn
-          stepNumber={stepNumber}
           content={content}
-          sessionData={sessionData}
-          updateFormData={updateFormData}
-          setError={setError}
-          setAiHint={setAiHint}
-          setUserMsg={setUserMsg}
-          prompt={prompt}
           isAIAvailable={isAIAvailable}
+          prompt={prompt}
+          sessionData={sessionData}
+          setAiHint={setAiHint}
+          setError={setError}
+          setUserMsg={setUserMsg}
+          stepNumber={stepNumber}
+          updateFormData={updateFormData}
         />
-        <PasteButton value={localValue} handleChange={handleTextareaChange} setError={setError}>
+        <PasteButton handleChange={handleTextareaChange} setError={setError} value={localValue}>
           <StepTextarea
             content={content}
-            isRequired={true}
-            label="Target Audience"
-            placeholder={content.placeholder}
-            localValue={localValue}
             handleTextareaChange={handleTextareaChange}
             isInputInvalid={audienceIsInvalid}
+            isRequired={true}
+            label="Target Audience"
+            localValue={localValue}
+            placeholder={content.placeholder}
           />
         </PasteButton>
       </StepWrapper>

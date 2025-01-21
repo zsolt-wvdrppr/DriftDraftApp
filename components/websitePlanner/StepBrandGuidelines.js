@@ -1,11 +1,8 @@
 'use client';
 
 import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
-import { Textarea } from '@heroui/react';
 
 import questionsData from "@/data/questions-data.json";
-import logger from '@/lib/logger';
-import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from '@/lib/SessionProvider';
 
 import { StepWrapper, StepQuestion, StepTextarea } from './layout/sectionComponents';
@@ -91,24 +88,24 @@ const StepBrandGuidelines = ({ ref }) => {
       <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
         <StepQuestion content={content} />
         <StepGetAiHintBtn
-          stepNumber={stepNumber}
           content={content}
-          sessionData={sessionData}
-          updateFormData={updateFormData}
-          setError={setError}
-          setAiHint={setAiHint}
-          setUserMsg={setUserMsg}
-          prompt={prompt}
           isAIAvailable={isAIAvailable}
+          prompt={prompt}
+          sessionData={sessionData}
+          setAiHint={setAiHint}
+          setError={setError}
+          setUserMsg={setUserMsg}
+          stepNumber={stepNumber}
+          updateFormData={updateFormData}
         />
-        <PasteButton value={localValue} handleChange={handleTextareaChange} setError={setError}>
+        <PasteButton handleChange={handleTextareaChange} setError={setError} value={localValue}>
           <StepTextarea
             content={content}
+            handleTextareaChange={handleTextareaChange}
+            isInputInvalid={isInputInvalid}
+            isRequired={true}
             label='Brand Guidelines'
             localValue={localValue}
-            handleTextareaChange={handleTextareaChange}
-            isRequired={true}
-            isInputInvalid={isInputInvalid}
           />
         </PasteButton>
       </StepWrapper>

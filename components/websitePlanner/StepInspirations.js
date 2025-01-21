@@ -9,7 +9,6 @@ import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';
 import { useSessionContext } from '@/lib/SessionProvider';
 
-import Sidebar from './ActionsBar/Sidebar';
 import { StepWrapper, StepQuestion } from './layout/sectionComponents';
 
 const StepInspirations = ({ ref }) => {
@@ -113,7 +112,7 @@ const StepInspirations = ({ ref }) => {
 
   return (
     <form ref={formRef}>
-      <StepWrapper whyDoWeAsk={content.why_do_we_ask} userMsg={content.user_msg} hint={content.hint}>
+      <StepWrapper hint={content.hint} userMsg={content.user_msg} whyDoWeAsk={content.why_do_we_ask}>
         <StepQuestion content={content} />
           <AnimatePresence initial={false}>
             {urls.map((url, index) => (
