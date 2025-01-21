@@ -22,6 +22,7 @@ import { useProfileUpdater } from '@/lib/hooks/useProfileUpdater';
 import { useRestoreStep } from '@/lib/hooks/useRestoreStep';
 import { useUpdateTabName } from '@/lib/hooks/useUpdateTabName';
 import { useSessionContext } from "@/lib/SessionProvider";
+import Tutorial from '@/components/tutorialToaster/Tutorial';
 
 import ProgressBar from './ProgressBar';
 import StepPurpose from './StepPurpose';
@@ -36,8 +37,6 @@ import StepInspirations from './StepInspirations';
 import StepContactInfo from './StepContactInfo';
 import Result from './Result';
 import { PreviousButton, NextButton, SubmitButton } from './layout/NavigationButtons';
-
-import Tutorial from '@/components/tutorialToaster/Tutorial';
 import RestartSessionBtn from './layout/RestartSessionBtn';
 
 // Step definitions
@@ -129,6 +128,7 @@ export default function WebsiteWizardContainer({ }) {
         // Check if update is actually needed
         if (JSON.stringify(formData[stepNumber]) === JSON.stringify(update)) {
             console.debug("No meaningful change detected. Skipping update.");
+
             return; // Prevent unnecessary update
         }
 
@@ -227,7 +227,7 @@ export default function WebsiteWizardContainer({ }) {
     return (
         <div className="wizard-container w-full">
             <div className="step-0 sicky w-full -z-50"/>
-            <Tutorial steps={tutorialSteps} localStorageKey="websitePlannerTutorialCompleted" />
+            <Tutorial localStorageKey="websitePlannerTutorialCompleted" steps={tutorialSteps}/>
             {isSubmitted && <Result formData={formData} />}
 
             {(!isSubmitted) &&
