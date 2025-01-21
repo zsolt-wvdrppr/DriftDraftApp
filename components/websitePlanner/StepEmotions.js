@@ -1,14 +1,18 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useRef, useImperativeHandle } from "react";
 
 import questionsData from "@/data/questions-data.json";
-import logger from '@/lib/logger';
-import { useSessionContext } from '@/lib/SessionProvider';
+import logger from "@/lib/logger";
+import { useSessionContext } from "@/lib/SessionProvider";
 
-import { StepWrapper, StepQuestion, StepTextarea } from './layout/sectionComponents';
-import PasteButton from './layout/PasteButton';
-import StepGetAiHintBtn from './layout/StepGetAiHintBtn';
+import {
+  StepWrapper,
+  StepQuestion,
+  StepTextarea,
+} from "./layout/sectionComponents";
+import PasteButton from "./layout/PasteButton";
+import StepGetAiHintBtn from "./layout/StepGetAiHintBtn";
 
 const StepEmotions = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -21,7 +25,7 @@ const StepEmotions = ({ ref }) => {
 
   useEffect(() => {
     setLocalValue(formData?.[stepNumber]?.emotions || "");
-  }, [formData?.[stepNumber]?.emotions, stepNumber])
+  }, [formData?.[stepNumber]?.emotions, stepNumber]);
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -47,30 +51,53 @@ const StepEmotions = ({ ref }) => {
     setIsInputInvalid(!value);
   };
 
-  const [aiHint, setAiHint] = useState(sessionData?.formData?.[stepNumber]?.aiHint || null);
+  const [aiHint, setAiHint] = useState(
+    sessionData?.formData?.[stepNumber]?.aiHint || null
+  );
   const [userMsg, setUserMsg] = useState(null);
 
   const question = content.question;
-  const marketing = formData[2].marketing || '';
-  const competitors = formData[3].urls.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : '';
-  const purpose = formData[0].purpose;
-  const purposeDetails = formData[0].purposeDetails || '';
-  const serviceDescription = formData[0].serviceDescription;
-  const audience = formData[1].audience;
-  const usps = formData[4].usps || '';
-  const brandGuidelines = formData[5].brandGuidelines || '';
+  const purpose = `${formData[0]?.purpose}.` || "";
+  const purposeDetails =
+    `Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` ||
+    "";
+  const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
+  const audience = `${formData[1].audience}. ` || "";
+  const marketing = formData?.[2]?.marketing || "";
+  const competitors =
+    formData?.[3]?.urls?.toString().trim() !== ""
+      ? `- Competitors:  ${formData[3].urls.toString()}`
+      : "";
+  const usps = formData[4].usps || "";
+  const domains = formData[5].domain || "";
+  const brandGuidelines = formData[6].brandGuidelines || "";
+  const emotionIdeas = `My thoughts regarding feelings and emotions:  ${localValue}.` || "";
 
-  const isAIAvailable = (question && purpose && serviceDescription && serviceDescription && audience && usps);
+  const isAIAvailable =
+    question &&
+    purpose &&
+    serviceDescription &&
+    audience &&
+    marketing &&
+    usps &&
+    domains &&
+    brandGuidelines;
 
-  const prompt = `Help me clarify the emotional experience I want visitors to have on my website. The purpose of the website is ${purpose}, with a focus on ${purposeDetails}. Here's what the website offers: ${serviceDescription}. My target audience is: ${audience}. I want the website to make a strong emotional connection with them. ${competitors}. My unique selling points include: ${usps}. Based on this context, please ask thought-provoking questions or provide examples to help me define the emotional tone of my website. For example:
-      1. What feelings (e.g., excitement, calmness, trust, inspiration) would make my audience feel connected to the brand?
-      2. How do I want visitors to describe their experience after using the website (e.g., ‘engaging,’ ‘professional,’ ‘warm,’ etc.)?
-      3. What kind of impression or mood do I want to leave on visitors when they first land on my homepage?
-      Please provide a framework or examples to help me articulate these emotions clearly, and explain why defining these emotions is critical to my website’s success. Keep it conversational and insightful, encouraging me to think deeply about the impact I want my website to have. Keep the response concise and informative, ensuring it's less than 800 characters.`;
+    const prompt = `Help me clarify the emotional experience I want visitors to have on my website. The primary purpose is ${purpose} ${purposeDetails} Here's what the website offers: ${serviceDescription} My target audience is: ${audience} I want to create a strong emotional connection with them. ${competitors} My unique selling points include: ${usps}. ${emotionIdeas} Based on this, ask thought-provoking questions or provide examples to help define the emotional tone of my website. For instance:
+    1. What feelings (e.g., excitement, calmness, trust, inspiration) will resonate with my audience and connect them to the brand?
+    2. How should visitors describe their experience after using the site (e.g., ‘engaging,’ ‘professional,’ ‘welcoming’)?
+    3. What first impression or mood should the homepage evoke?
+    Provide a framework or examples to articulate these emotions clearly, explaining why they are vital for the website’s success. Keep the response conversational, concise, and under 800 characters.`;
+
+    
 
   return (
     <form ref={formRef}>
-      <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
+      <StepWrapper
+        hint={aiHint}
+        userMsg={userMsg}
+        whyDoWeAsk={content.why_do_we_ask}
+      >
         <StepQuestion content={content} />
         <StepGetAiHintBtn
           content={content}
@@ -83,7 +110,11 @@ const StepEmotions = ({ ref }) => {
           stepNumber={stepNumber}
           updateFormData={updateFormData}
         />
-        <PasteButton handleChange={handleTextareaChange} setError={setError} value={localValue}>
+        <PasteButton
+          handleChange={handleTextareaChange}
+          setError={setError}
+          value={localValue}
+        >
           <StepTextarea
             content={content}
             handleTextareaChange={handleTextareaChange}

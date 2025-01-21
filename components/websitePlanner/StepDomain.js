@@ -49,17 +49,34 @@ const StepDomain = ({ ref }) => {
 
   const [aiHint, setAiHint] = useState(sessionData?.formData?.[stepNumber]?.aiHint || null);
   const [userMsg, setUserMsg] = useState(null);
+  
   const question = content.question;
-  const marketing = formData[2].marketing || '';
-  const competitors = formData[3].urls.toString() !== '' ? `I have identified the following competitors: ${formData[3].urls.toString()}.` : '';
-  const purpose = formData[0].purpose;
-  const purposeDetails = formData[0].purposeDetails || '';
-  const serviceDescription = formData[0].serviceDescription;
-  const audience = formData[1].audience;
+  const purpose = `${formData[0]?.purpose}.` || "";
+  const purposeDetails =
+    `Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` ||
+    "";
+  const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
+  const audience = `${formData[1].audience}. ` || "";
+  const marketing = formData?.[2]?.marketing || "";
+  const competitors =
+    formData?.[3]?.urls?.toString() !== ""
+      ? `- Competitors: ${formData[3].urls.toString()}.`
+      : "";
   const usps = formData[4].usps || '';
-  const isAIAvailable = (purpose && serviceDescription && question && serviceDescription && audience && marketing && usps);
+  const domainIdeas = `- My ideas regarding the domain: ${localValue}` || '';
 
-  const prompt = `I'm planning a website and need some ideas for a domain. Consider that the main purpose of the website is ${purpose}, ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. The description of my target audience is as follows: ${audience}. This is how I plan to attract my audience: ${marketing}. ${competitors}. About my unique selling points: ${usps}. So give me some ideas while strictly following guidelines and other SEO best practices and outline them how they're applied: ${content.hint}. The domain name must be SHORT and Concise so must not be longer than 15 characters. Keep it concise and to the point. The response must be less than 450 characters.`;
+  const isAIAvailable = question && purpose && serviceDescription && audience && marketing && usps;
+
+  const prompt = `I'm planning a website and need ideas for a domain name. The site has the following details:
+  - Purpose: ${purpose} ${purposeDetails}
+  - Offering: ${serviceDescription}
+  - Target audience: ${audience}
+  - Marketing strategy: ${marketing}
+  ${competitors}
+  - Unique selling points: ${usps}
+  ${domainIdeas}
+  Please suggest SEO-friendly, descriptive, and catchy domain names that are SHORT and CONCISE (no more than 15 characters). Ensure your response is concise, to the point, and less than 450 characters, and outline briefly how SEO best practices are applied in each suggestion: ${content.hint}.`;
+  
 
 
   return (

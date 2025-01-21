@@ -2,17 +2,19 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from '@heroui/react';
 import { useState } from 'react';
+import { IconCaretRight, IconCaretLeft } from '@tabler/icons-react';
 
 /** Previous Button Component */
 export const PreviousButton = ({ disabled, onPress }) => (
   <Button
-    className="w-32 border border-secondaryTeal font-bold tracking-wider disabled:bg-gray-300 disabled:border-none"
+    className="relative w-32 border border-secondaryTeal text-md font-bold tracking-wider flex justify-center disabled:bg-gray-300 disabled:border-none"
     color="secondary"
     disabled={disabled}
     variant="shadow"
     onPress={onPress}
   >
-    Previous
+    <IconCaretLeft className="min-w-4  scale-y-125 absolute left-0 opacity-50" />
+    <span>Previous</span>
   </Button>
 );
 
@@ -38,13 +40,14 @@ export const NextButton = ({ isPending, onPress, debounceDelay = 500 }) => {
 
   return (
     <Button
-      className="w-32 border border-secondaryTeal font-bold tracking-wider"
+      className="w-32 border border-secondaryTeal text-md font-bold tracking-wider flex justify-center items-center"
       color="secondary"
       disabled={isPending || isDebouncing} // Disable button during debounce
       variant="shadow"
       onPress={handleClick}
     >
       {isPending ? 'Loading...' : 'Next'}
+      <IconCaretRight className="min-w-6 scale-y-125 absolute right-0 opacity-50"/>
     </Button>
   );
 };

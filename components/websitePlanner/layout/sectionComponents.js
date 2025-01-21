@@ -1,6 +1,7 @@
-import React from 'react'
-import { cn } from '@/lib/utils'
+import React from 'react';
 import { Textarea, Button } from '@heroui/react';
+
+import { cn } from '@/lib/utils';
 
 export const StepOuterWrapper = ({ className = '', children }) => {
 
@@ -38,13 +39,15 @@ export const StepWrapper = ({ whyDoWeAsk, userMsg, hint, className = null, child
   )
 }
 
-export const StepQuestion = ({ content, className = '' }) => {
+export const StepQuestion = ({ content, question, className = '' }) => {
+
+  // check if content is an array
 
   const _className = " " + className;
 
   return (
-    <h2 className={cn("text-lg font-semibold mb-4 text-primary dark:text-accentMint" + _className)}>
-      {content?.question} {content?.required && <span className="text-red-500">*</span>}
+    <h2 className={cn("text-lg font-semibold mb-4 text-primary dark:text-accentMint whitespace-break-spaces" + _className)}>
+      {question ? question : content?.question} {content?.required && <span className="text-red-500">*</span>}
     </h2>
   )
 }
@@ -52,21 +55,21 @@ export const StepQuestion = ({ content, className = '' }) => {
 export const StepTextarea = ({ content, label, localValue, handleTextareaChange, isRequired, isInputInvalid, placeholder }) => {
   return (
     <Textarea
-      isClearable={true}
       classNames={{
         label: "!text-primary dark:!text-accentMint",
         input: "resize-none pt-2",
         base: "",
         inputWrapper: `dark:bg-content1 focus-within:!bg-content1 pt-6 border ${isInputInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
       }}
+      isClearable={true}
       isRequired={isRequired}
       label={label}
-      minRows={4}
       maxRows={25}
+      minRows={4}
       placeholder={placeholder || content.placeholder}
+      validationBehavior='aria'
       value={localValue}
       onChange={handleTextareaChange}
-      validationBehavior='aria'
       onClear={() => handleTextareaChange({ target: { value: '' } })}
     />
   )

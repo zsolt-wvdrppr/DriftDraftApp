@@ -2,7 +2,7 @@
     {
       "question": "What is the primary purpose you want your website to achieve?",
       "questionAddition1": "If you selected 'Other', please specify.",
-      "questionAddition2": "What do you offer, and how does it benefit your audience?\n\nWhat challenges or needs does it help address?",
+      "questionAddition2": "What do you offer, and how does it benefit your audience?\nWhat challenges or needs does it help address?",
       "isValid": false,
       "tabName": "Purpose",
       "type": "select",
@@ -19,7 +19,7 @@
       "placeholder": ["Select your goal","Details about your primary goal","Describe what you offer and how it benefits your audience. For example: 'We provide eco-friendly cleaning products that promote healthier homes and reduce waste.'"]
     },
     {
-      "question": "Who is your target audience? Describe your ideal customer.",
+      "question": "Who is your target audience? Describe your ideal customer or client.",
       "isValid": false,
       "tabName": "Audience",
       "type": "textarea",
@@ -69,7 +69,7 @@
       "placeholder": "e.g., mybusiness.com, bestservices.co.uk"
     },
     {
-      "question": "Do you have brand guidelines (e.g., logo, colours, fonts)? If not, what are your ideas?",
+      "question": "Do you currently have brand guidelines (e.g., logo, colours, fonts)?\nIf so, please provide details; if not, what ideas do you have?",
       "isValid": false,
       "tabName": "Brand Guidelines",
       "type": "textarea",

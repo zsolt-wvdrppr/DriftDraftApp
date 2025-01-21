@@ -1,508 +1,577 @@
-'use client';
+"use client";
 
-import { useEffect, useState, useRef, useTransition } from 'react';
-import { Reorder, AnimatePresence } from 'framer-motion';
+import { useEffect, useState, useRef, useTransition } from "react";
+import { Reorder, AnimatePresence } from "framer-motion";
 import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Button,
-    Link,
-    useDisclosure,
-    Spinner
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Link,
+  useDisclosure,
+  Spinner,
+  Switch,
 } from "@heroui/react";
-import { IconEdit, IconTrash, IconEye, IconShare, IconWand, IconSquareRoundedXFilled, IconInfoCircleFilled, IconPencilStar } from '@tabler/icons-react';
-import { Tooltip } from 'react-tooltip';
-import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
+import {
+  IconEdit,
+  IconTrash,
+  IconEye,
+  IconShare,
+  IconWand,
+  IconSquareRoundedXFilled,
+  IconInfoCircleFilled,
+  IconPencilStar,
+  IconArrowNarrowUp,
+  IconArrowNarrowDown,
+} from "@tabler/icons-react";
+import { Tooltip } from "react-tooltip";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import { HeadingNode, QuoteNode } from "@lexical/rich-text";
 import { CodeNode } from "@lexical/code";
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { ListNode, ListItemNode } from "@lexical/list";
 import { LinkNode } from "@lexical/link";
-import { TextNode } from 'lexical';
+import { TextNode } from "lexical";
 
 import { createOrUpdateProfile } from "@/lib/supabaseClient";
-import logger from '@/lib/logger';
-import { useAuth } from '@/lib/AuthContext';
-import { useSessionContext } from '@/lib/SessionProvider';
-import { formatDateToLocalBasic } from '@/lib/utils';
+import logger from "@/lib/logger";
+import { useAuth } from "@/lib/AuthContext";
+import { useSessionContext } from "@/lib/SessionProvider";
+import { formatDateToLocalBasic } from "@/lib/utils";
 
-import EditableMarkdownModal from './websitePlanner/layout/EditableMarkdownModal';
+import EditableMarkdownModal from "./websitePlanner/layout/EditableMarkdownModal";
 
 const theme = {
-    code: 'editor-code',
-    heading: {
-        h1: 'editor-heading-h1',
-        h2: 'editor-heading-h2',
-        h3: 'editor-heading-h3',
-        h4: 'editor-heading-h4',
-        h5: 'editor-heading-h5',
+  code: "editor-code",
+  heading: {
+    h1: "editor-heading-h1",
+    h2: "editor-heading-h2",
+    h3: "editor-heading-h3",
+    h4: "editor-heading-h4",
+    h5: "editor-heading-h5",
+  },
+  image: "editor-image",
+  link: "editor-link",
+  list: {
+    listitem: "editor-listitem",
+    nested: {
+      listitem: "editor-nested-listitem",
     },
-    image: 'editor-image',
-    link: 'editor-link',
-    list: {
-        listitem: 'editor-listitem',
-        nested: {
-            listitem: 'editor-nested-listitem',
-        },
-        ol: 'editor-list-ol',
-        ul: 'editor-list-ul',
-    },
-    ltr: 'ltr',
-    paragraph: 'editor-paragraph',
-    placeholder: 'editor-placeholder',
-    quote: 'editor-quote',
-    rtl: 'rtl',
-    text: {
-        bold: 'editor-text-bold',
-        code: 'editor-text-code',
-        hashtag: 'editor-text-hashtag',
-        italic: 'editor-text-italic',
-        overflowed: 'editor-text-overflowed',
-        strikethrough: 'editor-text-strikethrough',
-        underline: 'editor-text-underline',
-        underlineStrikethrough: 'editor-text-underlineStrikethrough',
-    },
-}
+    ol: "editor-list-ol",
+    ul: "editor-list-ul",
+  },
+  ltr: "ltr",
+  paragraph: "editor-paragraph",
+  placeholder: "editor-placeholder",
+  quote: "editor-quote",
+  rtl: "rtl",
+  text: {
+    bold: "editor-text-bold",
+    code: "editor-text-code",
+    hashtag: "editor-text-hashtag",
+    italic: "editor-text-italic",
+    overflowed: "editor-text-overflowed",
+    strikethrough: "editor-text-strikethrough",
+    underline: "editor-text-underline",
+    underlineStrikethrough: "editor-text-underlineStrikethrough",
+  },
+};
 
 const onError = (error) => {
-    try {
-        if (error && error.message) {
-            logger.error("Lexical error:", error.message);
-        } else {
-            logger.error("Unknown Lexical error occurred.", error);
-        }
-    } catch (err) {
-        logger.error("Error in the Lexical error handler itself:", err);
+  try {
+    if (error && error.message) {
+      logger.error("Lexical error:", error.message);
+    } else {
+      logger.error("Unknown Lexical error occurred.", error);
     }
-}
+  } catch (err) {
+    logger.error("Error in the Lexical error handler itself:", err);
+  }
+};
 
 const initialConfig = {
-    namespace: "MyEditor",
-    theme,
-    onError,
-    // 👇 Register your extra node types here
-    nodes: [
-        ListNode,
-        ListItemNode,
-        HeadingNode,
-        QuoteNode,
-        CodeNode,
-        LinkNode,
-        TextNode,
-        // Add any others you need
-    ],
+  namespace: "MyEditor",
+  theme,
+  onError,
+  // 👇 Register your extra node types here
+  nodes: [
+    ListNode,
+    ListItemNode,
+    HeadingNode,
+    QuoteNode,
+    CodeNode,
+    LinkNode,
+    TextNode,
+    // Add any others you need
+  ],
 };
 
 export default function UserActivities() {
+  const {
+    fetchAllSessionsFromDb,
+    deleteSessionFromDb,
+    initSessionFromDb,
+    fetchAiGeneratedPlanFromDb,
+    updateSessionTitleInDb,
+  } = useSessionContext();
+  const [items, setItems] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const {
+    isOpen: isDeleteModalOpen,
+    onOpen: onDeleteOpen,
+    onOpenChange: onDeleteOpenChange,
+  } = useDisclosure();
+  const {
+    isOpen: isMarkdownModalOpen,
+    onOpen: onMarkdownOpen,
+    onOpenChange: onMarkdownOpenChange,
+  } = useDisclosure();
+  const [markdownContent, setMarkdownContent] = useState("");
+  const [isLoadingContent, setIsLoadingContent] = useState(false);
 
-    const { fetchAllSessionsFromDb, deleteSessionFromDb, initSessionFromDb, fetchAiGeneratedPlanFromDb, updateSessionTitleInDb } = useSessionContext();
-    const [items, setItems] = useState([]);
-    const [selectedItem, setSelectedItem] = useState(null);
-    const { isOpen: isDeleteModalOpen, onOpen: onDeleteOpen, onOpenChange: onDeleteOpenChange } = useDisclosure();
-    const { isOpen: isMarkdownModalOpen, onOpen: onMarkdownOpen, onOpenChange: onMarkdownOpenChange } = useDisclosure();
-    const [markdownContent, setMarkdownContent] = useState('');
-    const [isLoadingContent, setIsLoadingContent] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const { user, loading } = useAuth(); // Access user state
+  const router = useRouter();
+  const inputRefs = useRef({});
 
-    const [isPending, startTransition] = useTransition();
-    const { user, loading } = useAuth(); // Access user state
-    const router = useRouter();
-    const inputRefs = useRef({});
+  useEffect(() => {
+    if (!user?.id) return;
 
-    useEffect(() => {
-
-        if (!user?.id) return;
-
-        startTransition(() => {
-            const fetchSessions = async () => {
-                try {
-                    logger.info('Fetching sessions from DB...');
-                    const sessions = await fetchAllSessionsFromDb(user.id); // Await the data
-
-                    setItems(sessions); // Update the state with the fetched sessions
-                } catch (error) {
-                    logger.error('Error fetching sessions from DB:', error.message);
-                }
-            };
-
-            fetchSessions(); // Call the async function
-        });
-    }, [user]);
-
-
-    useEffect(() => {
-        logger.debug('Items list:', items);
-    }, [items]);
-
-    useEffect(() => {
-        if (loading) return; // Wait until loading is complete
-
-        if (!user) {
-            // Redirect if user is not logged in
-            const redirectPath = `/login?redirect=/activities`;
-
-            router.push(redirectPath);
-
-            return;
-        }
-        logger.debug('ensureProfileExists:', user);
-        const ensureProfileExists = async () => {
-            await createOrUpdateProfile();
-        };
-
-        ensureProfileExists();
-    }, [loading, user, router]);
-
-    const confirmDelete = (item) => {
-        setSelectedItem(item);
-        onDeleteOpen();
-    };
-
-    const handleDelete = () => {
-        if (selectedItem) {
-            setItems(items.filter(item => item.session_id !== selectedItem.session_id));
-            setSelectedItem(null);
-            deleteSessionFromDb(user.id, selectedItem.session_id);
-        }
-        onDeleteOpenChange(false);
-    };
-
-
-    const handleOpenMarkdownModal = async (item) => {
-        setSelectedItem(item);
-        setIsLoadingContent(true);
-        onMarkdownOpen(); // Open the modal
-
+    startTransition(() => {
+      const fetchSessions = async () => {
         try {
-            const generatedPlan = await fetchAiGeneratedPlanFromDb(item.session_id);
+          logger.info("Fetching sessions from DB...");
+          const sessions = await fetchAllSessionsFromDb(user.id); // Await the data
 
-            setMarkdownContent(generatedPlan || 'No content available.');
-            setIsLoadingContent(false);
+          setItems(sessions); // Update the state with the fetched sessions
         } catch (error) {
-            toast.error("Failed to fetch content.");
-            setIsLoadingContent(false);
-            setMarkdownContent("Error loading content.");
-            console.error("Error fetching markdown content:", error);
+          logger.error("Error fetching sessions from DB:", error.message);
         }
-    };
+      };
 
+      fetchSessions(); // Call the async function
+    });
+  }, [user]);
 
-    const legend = () => {
-        return (
-            <div className='p-4 w-fit rounded-lg dark:bg-zinc-800'>
-                <p className='flex gap-2'><IconEdit /> - Edit</p>
-                <p className='flex gap-2'><IconTrash /> - Delete</p>
-                <p className='flex gap-2'><IconShare /> - Share</p>
-                <p className='flex gap-2'><IconEye /> - View</p>
-                <p className='flex gap-2'><IconWand /> - Get Quote</p>
-            </div>
-        )
+  const sortItemsByDate = (isAcending = false) => {
+    if (isAcending) {
+      const sortedItems = [...items].sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+
+      setItems(sortedItems);
+    } else {
+      const sortedItems = [...items].sort(
+        (a, b) => new Date(a.created_at) - new Date(b.created_at)
+      );
+
+      setItems(sortedItems);
     }
+  };
 
-    const toastRef = useRef(null);
+  useEffect(() => {
+    if (loading) return; // Wait until loading is complete
 
-    const handleToast = () => {
-        startTransition(() => {
-            if (toastRef.current) {
-                // Dismiss the toast and reset state
-                toast.dismiss(toastRef.current);
-                toastRef.current = null;
-            }
+    if (!user) {
+      // Redirect if user is not logged in
+      const redirectPath = `/login?redirect=/activities`;
 
-            const newToastId = toast.custom((t) => (
-                <div className="relative flex justify-end bg-yellow-100/60 shadow-md rounded-lg">
-                    <div className='w-fit relative'>
-                        <Button
-                            className='!absolute -top-4 -left-9 p-2'
-                            onPress={() => {
-                                toast.dismiss(t)
-                                toastRef.current = null;
-                                Cookies.set('toastDismissed', true, { expires: 365 });
-                            }}
-                        >
-                            <IconSquareRoundedXFilled className='bg-white text-primary rounded-lg' />
-                        </Button>
-                        {legend()}
-                    </div>
-                </div>
-            ), {
-                duration: Infinity,
-                onDismiss: () => {
-                    toastRef.current = null;
-                }
-            });
+      router.push(redirectPath);
 
-            toastRef.current = newToastId;
-        });
-    };
-
-    useEffect(() => {
-        // Check if the toast has been dismissed
-        const dismissed = Cookies.get('toastDismissed');
-
-        if (dismissed) return;
-
-        const timeout = setTimeout(() => {
-            handleToast();
-        }, 500); // Small delay to allow context and DOM readiness
-
-        return () => clearTimeout(timeout); // Cleanup on unmount
-    }, []);
-
-    if (isPending || loading) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <Spinner color="primary" />
-            </div>
-        );
+      return;
     }
-
-    const handleEdit = (item) => {
-
-        startTransition(async () => {
-            try {
-                logger.info(`Edit item with ID: ${item.session_id}`);
-                await initSessionFromDb(user.id, item.session_id); // Wait for the session initialization
-                router.push(`/website-planner?step=0`); // Redirect after completion
-            } catch (error) {
-                logger.error("Error during session initialisation:", error);
-            }
-        });
+    logger.debug("ensureProfileExists:", user);
+    const ensureProfileExists = async () => {
+      await createOrUpdateProfile();
     };
 
-    const handleEditTitle = async (item, newTitle) => {
-        if (!newTitle.trim()) {
-            toast.dismiss();
-            toast.error("Title cannot be empty.");
+    ensureProfileExists();
+  }, [loading, user, router]);
 
-            return;
-        }
+  const confirmDelete = (item) => {
+    setSelectedItem(item);
+    onDeleteOpen();
+  };
 
-        try {
-            const updatedItems = items.map(i =>
-                i.session_id === item.session_id
-                    ? { ...i, session_title: newTitle, isEditing: false } // Set isEditing to false after update
-                    : i
-            );
+  const handleDelete = () => {
+    if (selectedItem) {
+      setItems(
+        items.filter((item) => item.session_id !== selectedItem.session_id)
+      );
+      setSelectedItem(null);
+      deleteSessionFromDb(user.id, selectedItem.session_id);
+    }
+    onDeleteOpenChange(false);
+  };
 
-            setItems(updatedItems); // Update state immediately for UX 
+  const handleOpenMarkdownModal = async (item) => {
+    setSelectedItem(item);
+    setIsLoadingContent(true);
+    onMarkdownOpen(); // Open the modal
 
-            await updateSessionTitleInDb(user.id, item.session_id, newTitle); // Update DB
-            toast.dismiss();
-            toast.success("Title updated successfully!", { classNames: { toast: 'text-green-600' }, });
-        } catch (error) {
-            toast.dismiss();
-            toast.error("Failed to update the title.");
-            logger.error('Error updating title:', error.message);
-        }
-    };
+    try {
+      const generatedPlan = await fetchAiGeneratedPlanFromDb(item.session_id);
 
-    const startEditingTitle = (item) => {
-        // Enable editing and set focus
-        const updatedItems = items.map(i =>
-            i.session_id === item.session_id ? { ...i, isEditing: true } : i
-        );
+      setMarkdownContent(generatedPlan || "No content available.");
+      setIsLoadingContent(false);
+    } catch (error) {
+      toast.error("Failed to fetch content.");
+      setIsLoadingContent(false);
+      setMarkdownContent("Error loading content.");
+      console.error("Error fetching markdown content:", error);
+    }
+  };
 
-        setItems(updatedItems);
-
-        setTimeout(() => {
-            inputRefs.current[item.session_id]?.focus(); // Focus the correct input
-        }, 0);
-    };
-
-
+  const legend = () => {
     return (
-        <div className="p-4 max-w-2xl mx-auto overflow-hidden">
-            <div className='w-full flex justify-end my-4 text-primary'>
-                <Button
-                    onPress={() => handleToast()}
-                >
-                    <IconInfoCircleFilled className='info-icon' />
-                </Button>
-            </div>
-            <Reorder.Group
-                axis="y"
-                className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-4"
-                values={items}
-                onReorder={setItems}
-            >
-                {items.length > 0 &&
-                    <AnimatePresence className="">
-                        {items.map(item => {
-
-                            logger.debug('Item:', item);
-
-                            return (
-                                <Reorder.Item
-                                    key={item?.session_id}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="bg-white dark:bg-content1 shadow-md p-4 rounded-md flex flex-col items-center gap-4 select-none"
-                                    drag={false}
-                                    exit={{ opacity: 0, x: 100 }}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    value={item}
-                                    whileTap={{ scale: 0.95 }}
-                                >
-
-                                    <div className='relative w-fit py-4'>
-                                        {item.isEditing ? (
-                                            <input
-                                                ref={(el) => (inputRefs.current[item.session_id] = el)} // Assign dynamic ref
-                                                className="border p-2 rounded-md"
-                                                type="text"
-                                                value={item.session_title}
-                                                onBlur={() => handleEditTitle(item, item.session_title)} // Stop editing when blurred
-                                                onChange={(e) => {
-                                                    const updatedItems = items.map(i =>
-                                                        i.session_id === item.session_id
-                                                            ? { ...i, session_title: e.target.value }
-                                                            : i
-                                                    );
-
-                                                    setItems(updatedItems); // Live update in state for better UX
-                                                }}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === "Enter") {
-                                                        handleEditTitle(item, item.session_title); // Stop editing on Enter key press
-                                                    }
-                                                }}
-                                            />
-                                        ) : (
-                                            <div>
-                                                <h2 className="font-semibold">{item.session_title}</h2>
-                                                <Link
-                                                    className="text-primary absolute w-4 h-4 -right-5 top-2"
-                                                    onPress={() => {
-                                                        startEditingTitle(item)
-                                                    }}
-                                                >
-                                                    <IconPencilStar id="edit-title" />
-                                                </Link>
-                                                <Tooltip anchorSelect="#edit-title" place="top">
-                                                    Edit Title
-                                                </Tooltip>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div className="flex gap-2 w-full">
-                                        <div className='flex w-full justify-around'>
-                                            <div>
-                                                <Link
-                                                    className="dark:text-white cursor-pointer"
-                                                    onPress={() => handleEdit(item)}
-                                                >
-                                                    <IconEdit id="edit-icon" />
-                                                </Link>
-                                                <Tooltip anchorSelect="#edit-icon" place="top">
-                                                    Edit
-                                                </Tooltip>
-                                            </div>
-                                            <div>
-                                                <Link
-                                                    className="dark:text-white cursor-pointer"
-                                                    onPress={() => confirmDelete(item)}
-                                                >
-                                                    <IconTrash id='delete-icon' />
-                                                </Link>
-                                                <Tooltip anchorSelect="#delete-icon" place="top">
-                                                    Delete
-                                                </Tooltip>
-                                            </div>
-                                            <div>
-                                                <Link
-                                                    className="dark:text-white cursor-pointer"
-                                                    isDisabled={true}
-                                                    onPress={() => logger.info(`Share item with ID: ${item.session_id}`)}
-                                                >
-                                                    <IconShare id='share-icon' />
-                                                </Link>
-                                                <Tooltip anchorSelect="#share-icon" place="top">
-                                                    Share
-                                                </Tooltip>
-                                            </div>
-                                            <div>
-                                                <Link
-                                                    className="dark:text-white cursor-pointer"
-                                                    onPress={() => handleOpenMarkdownModal(item)}
-                                                >
-                                                    <IconEye id='view-icon' />
-                                                </Link>
-                                                <Tooltip anchorSelect="#view-icon" place="top">
-                                                    View
-                                                </Tooltip>
-                                            </div>
-                                            <div>
-                                                <Link
-                                                    alt="Get Quote"
-                                                    className="dark:text-white cursor-pointer"
-                                                    isDisabled={true}
-                                                    onPress={() => logger.info(`Submit for quote: ${item.session_id}`)}
-                                                >
-                                                    <IconWand id='quote-icon' />
-                                                </Link>
-                                                <Tooltip anchorSelect="#quote-icon" place="top">
-                                                    Get Quote
-                                                </Tooltip>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div className='flex justify-around w-full'>
-                                        <p className="text-sm text-gray-500 max-w-28">
-                                            <b>Created</b> {formatDateToLocalBasic(item.created_at)}
-                                        </p>
-                                        <p className="text-sm text-right text-gray-500 max-w-28">
-                                            <b>Last edit</b> {formatDateToLocalBasic(item.updated_at)}
-                                        </p>
-                                    </div>
-                                </Reorder.Item>
-                            )
-                        })}
-                    </AnimatePresence>
-                }
-            </Reorder.Group>
-
-            {/* Delete Confirmation Modal */}
-            <Modal isOpen={isDeleteModalOpen} onOpenChange={onDeleteOpenChange}>
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader className="flex flex-col gap-1">Confirm Deletion</ModalHeader>
-                            <ModalBody>
-                                <p>
-                                    Are you sure you want to delete{' '}
-                                    <span className="font-semibold">{selectedItem?.session_title}</span>? This action cannot be undone.
-                                </p>
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button color="danger" variant="light" onPress={onClose}>
-                                    Cancel
-                                </Button>
-                                <Button color="primary" onPress={handleDelete}>
-                                    Confirm
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
-
-            <LexicalComposer initialConfig={initialConfig}>
-                <EditableMarkdownModal
-                    isLoading={isLoadingContent}
-                    isOpen={isMarkdownModalOpen}
-                    item={selectedItem}
-                    markdownContent={markdownContent}
-                    setMarkdownContent={setMarkdownContent}
-                    onOpenChange={onMarkdownOpenChange}
-                />
-            </LexicalComposer>
-
-        </div>
+      <div className="p-4 w-fit rounded-lg dark:bg-zinc-800">
+        <p className="flex gap-2">
+          <IconEdit /> - Edit
+        </p>
+        <p className="flex gap-2">
+          <IconTrash /> - Delete
+        </p>
+        <p className="flex gap-2">
+          <IconShare /> - Share
+        </p>
+        <p className="flex gap-2">
+          <IconEye /> - View
+        </p>
+        <p className="flex gap-2">
+          <IconWand /> - Get Quote
+        </p>
+      </div>
     );
+  };
+
+  const toastRef = useRef(null);
+
+  const handleToast = () => {
+    startTransition(() => {
+      if (toastRef.current) {
+        // Dismiss the toast and reset state
+        toast.dismiss(toastRef.current);
+        toastRef.current = null;
+      }
+
+      const newToastId = toast.custom(
+        (t) => (
+          <div className="relative flex justify-end bg-yellow-100/60 shadow-md rounded-lg">
+            <div className="w-fit relative">
+              <Button
+                className="!absolute -top-4 -left-9 p-2"
+                onPress={() => {
+                  toast.dismiss(t);
+                  toastRef.current = null;
+                  Cookies.set("toastDismissed", true, { expires: 365 });
+                }}
+              >
+                <IconSquareRoundedXFilled className="bg-white text-primary rounded-lg" />
+              </Button>
+              {legend()}
+            </div>
+          </div>
+        ),
+        {
+          duration: Infinity,
+          onDismiss: () => {
+            toastRef.current = null;
+          },
+        }
+      );
+
+      toastRef.current = newToastId;
+    });
+  };
+
+  useEffect(() => {
+    // Check if the toast has been dismissed
+    const dismissed = Cookies.get("toastDismissed");
+
+    if (dismissed) return;
+
+    const timeout = setTimeout(() => {
+      handleToast();
+    }, 500); // Small delay to allow context and DOM readiness
+
+    return () => clearTimeout(timeout); // Cleanup on unmount
+  }, []);
+
+  if (isPending || loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner color="primary" />
+      </div>
+    );
+  }
+
+  const handleEdit = (item) => {
+    startTransition(async () => {
+      try {
+        logger.info(`Edit item with ID: ${item.session_id}`);
+        await initSessionFromDb(user.id, item.session_id); // Wait for the session initialization
+        router.push(`/website-planner?step=0`); // Redirect after completion
+      } catch (error) {
+        logger.error("Error during session initialisation:", error);
+      }
+    });
+  };
+
+  const handleEditTitle = async (item, newTitle) => {
+    if (!newTitle.trim()) {
+      toast.dismiss();
+      toast.error("Title cannot be empty.");
+
+      return;
+    }
+
+    try {
+      const updatedItems = items.map((i) =>
+        i.session_id === item.session_id
+          ? { ...i, session_title: newTitle, isEditing: false } // Set isEditing to false after update
+          : i
+      );
+
+      setItems(updatedItems); // Update state immediately for UX
+
+      await updateSessionTitleInDb(user.id, item.session_id, newTitle); // Update DB
+      toast.dismiss();
+      toast.success("Title updated successfully!", {
+        classNames: { toast: "text-green-600" },
+      });
+    } catch (error) {
+      toast.dismiss();
+      toast.error("Failed to update the title.");
+      logger.error("Error updating title:", error.message);
+    }
+  };
+
+  const startEditingTitle = (item) => {
+    // Enable editing and set focus
+    const updatedItems = items.map((i) =>
+      i.session_id === item.session_id ? { ...i, isEditing: true } : i
+    );
+
+    setItems(updatedItems);
+
+    setTimeout(() => {
+      inputRefs.current[item.session_id]?.focus(); // Focus the correct input
+    }, 0);
+  };
+
+  return (
+    <div className="light dark:dark p-4 max-w-2xl mx-auto overflow-hidden">
+      <div className="w-full flex justify-end my-4 text-primary">
+        <Button onPress={() => handleToast()}>
+          <IconInfoCircleFilled className="info-icon text-secondary" />
+        </Button>
+
+        <Switch
+          defaultSelected
+          color="default"
+          endContent={<IconArrowNarrowUp className="text-secondary" />}
+          size="md"
+          startContent={<IconArrowNarrowDown />}
+          onValueChange={(value) => {
+            sortItemsByDate(value);
+          }}
+        >
+          <span className="text-xs leading-4 flex flex-col">
+            <span>Sort by</span>
+            <span>Date</span>
+          </span>
+        </Switch>
+      </div>
+      <Reorder.Group
+        axis="y"
+        className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-4"
+        values={items}
+        onReorder={setItems}
+      >
+        {items.length > 0 && (
+          <AnimatePresence className="">
+            {items.map((item) => {
+              logger.debug("Item:", item);
+
+              return (
+                <Reorder.Item
+                  key={item?.session_id}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-white dark:bg-content1 shadow-md p-4 rounded-md flex flex-col items-center gap-4 select-none"
+                  drag={false}
+                  exit={{ opacity: 0, x: 100 }}
+                  initial={{ opacity: 0, y: 20 }}
+                  value={item}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <div className="relative w-fit py-4">
+                    {item.isEditing ? (
+                      <input
+                        ref={(el) => (inputRefs.current[item.session_id] = el)} // Assign dynamic ref
+                        className="border p-2 rounded-md"
+                        type="text"
+                        value={item.session_title}
+                        onBlur={() => handleEditTitle(item, item.session_title)} // Stop editing when blurred
+                        onChange={(e) => {
+                          const updatedItems = items.map((i) =>
+                            i.session_id === item.session_id
+                              ? { ...i, session_title: e.target.value }
+                              : i
+                          );
+
+                          setItems(updatedItems); // Live update in state for better UX
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleEditTitle(item, item.session_title); // Stop editing on Enter key press
+                          }
+                        }}
+                      />
+                    ) : (
+                      <div>
+                        <h2 className="font-semibold">{item.session_title}</h2>
+                        <Link
+                          className="text-primary absolute w-4 h-4 -right-5 top-2"
+                          onPress={() => {
+                            startEditingTitle(item);
+                          }}
+                        >
+                          <IconPencilStar id="edit-title" />
+                        </Link>
+                        <Tooltip anchorSelect="#edit-title" place="top">
+                          Edit Title
+                        </Tooltip>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex gap-2 w-full">
+                    <div className="flex w-full justify-around">
+                      <div>
+                        <Link
+                          className="dark:text-white cursor-pointer"
+                          onPress={() => handleEdit(item)}
+                        >
+                          <IconEdit id="edit-icon" />
+                        </Link>
+                        <Tooltip anchorSelect="#edit-icon" place="top">
+                          Edit
+                        </Tooltip>
+                      </div>
+                      <div>
+                        <Link
+                          className="dark:text-white cursor-pointer"
+                          onPress={() => confirmDelete(item)}
+                        >
+                          <IconTrash id="delete-icon" />
+                        </Link>
+                        <Tooltip anchorSelect="#delete-icon" place="top">
+                          Delete
+                        </Tooltip>
+                      </div>
+                      <div>
+                        <Link
+                          className="dark:text-white cursor-pointer"
+                          isDisabled={true}
+                          onPress={() =>
+                            logger.info(
+                              `Share item with ID: ${item.session_id}`
+                            )
+                          }
+                        >
+                          <IconShare id="share-icon" />
+                        </Link>
+                        <Tooltip anchorSelect="#share-icon" place="top">
+                          Share
+                        </Tooltip>
+                      </div>
+                      <div>
+                        <Link
+                          className="dark:text-white cursor-pointer"
+                          onPress={() => handleOpenMarkdownModal(item)}
+                        >
+                          <IconEye id="view-icon" />
+                        </Link>
+                        <Tooltip anchorSelect="#view-icon" place="top">
+                          View
+                        </Tooltip>
+                      </div>
+                      <div>
+                        <Link
+                          alt="Get Quote"
+                          className="dark:text-white cursor-pointer"
+                          isDisabled={true}
+                          onPress={() =>
+                            logger.info(`Submit for quote: ${item.session_id}`)
+                          }
+                        >
+                          <IconWand id="quote-icon" />
+                        </Link>
+                        <Tooltip anchorSelect="#quote-icon" place="top">
+                          Get Quote
+                        </Tooltip>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-around w-full">
+                    <p className="text-sm text-gray-500 max-w-28">
+                      <b>Created</b> {formatDateToLocalBasic(item.created_at)}
+                    </p>
+                    <p className="text-sm text-right text-gray-500 max-w-28">
+                      <b>Last edit</b> {formatDateToLocalBasic(item.updated_at)}
+                    </p>
+                  </div>
+                </Reorder.Item>
+              );
+            })}
+          </AnimatePresence>
+        )}
+      </Reorder.Group>
+
+      {/* Delete Confirmation Modal */}
+      <Modal isOpen={isDeleteModalOpen} onOpenChange={onDeleteOpenChange}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Confirm Deletion
+              </ModalHeader>
+              <ModalBody>
+                <p>
+                  Are you sure you want to delete{" "}
+                  <span className="font-semibold">
+                    {selectedItem?.session_title}
+                  </span>
+                  ? This action cannot be undone.
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Cancel
+                </Button>
+                <Button color="primary" onPress={handleDelete}>
+                  Confirm
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+
+      <LexicalComposer initialConfig={initialConfig}>
+        <EditableMarkdownModal
+          isLoading={isLoadingContent}
+          isOpen={isMarkdownModalOpen}
+          item={selectedItem}
+          markdownContent={markdownContent}
+          setMarkdownContent={setMarkdownContent}
+          onOpenChange={onMarkdownOpenChange}
+        />
+      </LexicalComposer>
+    </div>
+  );
 }

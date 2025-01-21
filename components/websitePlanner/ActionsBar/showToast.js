@@ -39,7 +39,7 @@ export const showHintToast = (
     () => (
       <div className="p-4 shadow-lg rounded-lg bg-neutralSnow dark:bg-zinc-900 md:bg-neutralSnow/95 dark:md:bg-zinc-900 max-h-[90vh] overflow-y-auto select-text">
         <h4 className="font-bold dark:text-neutralSnow">Hint</h4>
-        <ReactMarkdown className="whitespace-pre-wrap py-6 dark:text-slate-200">{`${hints}`}</ReactMarkdown>
+        <ReactMarkdown className="prose py-6 dark:text-slate-200">{`${hints}`}</ReactMarkdown>
         {userMsg && <p className="text-sm pb-6 text-right">{userMsg}</p>}
         <div className="flex justify-between">
           <Button
@@ -90,8 +90,7 @@ export const showWhyWeAskToast = (reason, whyToastRef, onDismiss) => {
   const newToastId = toast.custom(
     () => (
       <div className="p-4 shadow-lg rounded-lg bg-white/90 dark:bg-zinc-900 dark:md:bg-zinc-900 ">
-        <h4 className="font-bold dark:text-neutralSnow">Reason we ask</h4>
-        <ReactMarkdown className="whitespace-pre-wrap py-6">
+        <ReactMarkdown className="prose">
           {reason}
         </ReactMarkdown>
         <div className="flex justify-end">

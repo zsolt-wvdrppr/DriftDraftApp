@@ -51,12 +51,16 @@ const StepAudience = ({ ref }) => {
   const [userMsg, setUserMsg] = useState(null);
 
   const question = content.question;
-  const purpose = formData[0]?.purpose;
-  const purposeDetails = formData[0]?.purposeDetails || '';
-  const serviceDescription = formData[0]?.serviceDescription;
-  const isAIAvailable = purpose && serviceDescription && question && serviceDescription;
+  const purpose = `- The purpose of the website: ${formData[0]?.purpose}\n` || '';
+  const purposeDetails = `- Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` || '';
+  const serviceDescription = `- What I offer to my audience: ${formData[0]?.serviceDescription}\n` || '';
+  const audience = `- Details about the audience or ideal customer/client: ${localValue}\n` || '';
+  const isAIAvailable = question && purpose && serviceDescription;
+  const promptImprover = `A target audience is the group that most needs your product or service. Consider their demographics (age, location), beliefs, lifestyle and subcultures. Focus on what motivates them, their challenges and how you can address these needs, ensuring an authentic, relevant brand voice.
+`;
 
-  const prompt = `I'm planning a website and need to answer to a question regarding my target audience. I need help with the following question: ${question}. Consider that the main purpose of the website is ${purpose} ${purposeDetails} and here's a description about what I offer: ${serviceDescription}. Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
+
+  const prompt = `I'm planning a website and need help describing my target audience. More specifically I need help with the following question: ${question}. Here are some information you must consider: \n${purpose} ${purposeDetails} ${serviceDescription} ${audience} ${promptImprover} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
 
   return (
     <form ref={formRef}>

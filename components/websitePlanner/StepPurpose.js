@@ -102,41 +102,6 @@ const StepPurpose = ({ ref }) => {
   const [userMsg, setUserMsg] = useState(null);
   const [isAIAvailable, setIsAIAvailable] = useState(true);
 
-  /*const handleFetchHint = async () => {
-
-    if (!isAIAvailable) return;
-
-    logger.debug('Fetching AI hint for step', stepNumber);
-    logger.debug(!formData[stepNumber]?.purpose || !localServiceDescription || localServiceDescription.length < 15);
-
-    if (!formData[stepNumber]?.purpose || !localServiceDescription || localServiceDescription.length < 15) return;
-
-    const question = content.questionAddition2;
-    const purpose = formData[0].purpose;
-    const serviceDescriptionPrompt = `Some details about my service: ${localServiceDescription}` || '';
-    logger.debug('serviceDescriptionPrompt', serviceDescriptionPrompt);
-    const isOtherPurpose = purpose && purpose.indexOf("other") !== -1 && localPurposeDetails && localPurposeDetails.length > 10;
-
-    const prompt = `I'm planning a website and need to answer to a question regarding what I offer. I need help with the following question: ${question}. Consider that the main purpose of the website is ${isOtherPurpose ? localPurposeDetails : purpose + localPurposeDetails}. ${serviceDescriptionPrompt} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
-
-    try {
-      setIsPending(true);
-      await fetchAIHint({
-        stepNumber,
-        prompt,
-        content,
-        setAiHint,
-        setUserMsg,
-        sessionData,
-        updateFormData,
-      });
-    } catch (error) {
-      logger.error('Error fetching AI hint:', error);
-    } finally {
-      setIsPending(false);
-    }
-  };*/
-
   useEffect(() => {
     if (localServiceDescription.length > 15 && !purposeIsInvalid) {
       setIsAIAvailable(true);
@@ -145,7 +110,12 @@ const StepPurpose = ({ ref }) => {
     }
   }, [localServiceDescription, purposeIsInvalid]);
 
-  const prompt = `I'm planning a website and need help answering the question: ${content.questionAddition2}. My main purpose is ${isOtherSelected ? localPurposeDetails : formData[stepNumber]?.purpose}. Some details about my service: ${localServiceDescription}. Please keep the response informative and under 450 characters.`
+  const purpose = selectedKeys ? `My main purpose is ${selectedKeys}.` : "";
+  const purposeDetails = localPurposeDetails ? `Some more details about my service's purpose: ${localPurposeDetails}.` : "";
+  const serviceDescription = localServiceDescription ? `Some details about what I offer to my audience: ${localServiceDescription}.` : "";
+  const stepQuestion = content.questionAddition2;
+
+  const prompt = `I'm planning a website and need help answering the question: ${stepQuestion}. ${purpose} ${purposeDetails} ${serviceDescription} Please keep the response informative and under 450 characters.`
 
 
   return (
@@ -188,10 +158,8 @@ const StepPurpose = ({ ref }) => {
             onChange={handleAdditionalDetailsChange}
           />
         </div>
-        <div className="col-span-4 flex-1">
-          <h2 className="text-lg font-semibold mt-10 mb-4 md:mb-10 text-primary dark:text-accentMint relative">
-            <ReactMarkdown>{content.questionAddition2}</ReactMarkdown>
-          </h2>
+        <div className="col-span-4 flex-1 pt-8">
+        <StepQuestion content={content} question={content.questionAddition2} />
         </div>
         <StepGetAiHintBtn
           content={content}
