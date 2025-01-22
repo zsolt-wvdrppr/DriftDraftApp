@@ -373,9 +373,13 @@ export default function UserActivities() {
         <Switch
           defaultSelected
           color="default"
-          endContent={<IconArrowNarrowUp className="text-secondary" />}
+          //endContent={<IconArrowNarrowUp className="text-secondary" />}
           size="md"
-          startContent={<IconArrowNarrowDown />}
+          //startContent={<IconArrowNarrowDown />}
+          thumbIcon={({isSelected}) =>
+            <IconArrowNarrowUp className={`${isSelected ? "" : "-rotate-180"} transition-all text-primary`} />
+            //isSelected ? <IconArrowNarrowUp className={className} /> : <IconArrowNarrowDown className={className} />
+          }
           onValueChange={(value) => {
             sortItemsByDate(value);
           }}

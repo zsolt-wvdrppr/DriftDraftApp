@@ -1,13 +1,14 @@
+import crypto from "crypto";
+
 import { rateLimiter } from "@/lib/rateLimiter";
 import { fetchFromGoogleAI } from "@/lib/googleAi";
-import crypto from "crypto";
 import logger from "@/lib/logger";
-
 import { formatTimeToLocalAMPM } from '@/lib/utils';
 
 // Helper to hash IP securely
 const hashIp = (ip) => {
   const safeIp = ip || "unknown"; // Fallback to 'unknown' if IP is null
+
   return crypto.createHash("sha256").update(safeIp).digest("hex");
 };
 
@@ -33,6 +34,7 @@ async function verifyReCaptcha(token) {
   });
 
   const data = await res.json();
+
   return data.success;
 }
 
@@ -55,8 +57,10 @@ export async function POST(req) {
 
      // Step 1: Validate reCAPTCHA Token
      const isHuman = await verifyReCaptcha(token);
+
      if (!isHuman) {
        logger.warn(`[RATE LIMITER API]: ReCaptcha validation failed for user (${userId || ip}).`);
+
        return new Response(
          JSON.stringify({ message: "ReCaptcha verification failed. Are you a bot?" }),
          { status: 403, headers: { "Content-Type": "application/json" } }
@@ -78,6 +82,7 @@ export async function POST(req) {
 
     if (isRateLimited) {
       logger.warn(`[RATE LIMITER API]: Rate limit exceeded for ${type} user (${userId || ip}).`);
+
       return new Response(
         JSON.stringify({
           message: `Rate limit exceeded, and will reset at ${formatTimeToLocalAMPM(limitResetTimeAt).toUpperCase()}.`,
@@ -89,11 +94,13 @@ export async function POST(req) {
 
     // Fetch AI response
     let aiResponse;
+
     try {
       aiResponse = await fetchFromGoogleAI(prompt);
       logger.debug(`[RATE LIMITER API]: AI response generated for ${type} user (${userId || ip}).`);
     } catch (aiError) {
       logger.error(`[RATE LIMITER API]: AI model error: ${aiError.message}`);
+
       return new Response(
         JSON.stringify({
           message: "Error fetching AI response. Please try again later.",
@@ -113,6 +120,7 @@ export async function POST(req) {
     );
   } catch (error) {
     logger.error(`[RATE LIMITER API]: Error processing request: ${error.message}`);
+
     return new Response(
       JSON.stringify({
         message: "Internal server error",
