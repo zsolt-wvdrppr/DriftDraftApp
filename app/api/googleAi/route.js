@@ -6,7 +6,7 @@ import logger from "@/lib/logger";
 export async function POST(req) {
   try {
     // Parse the request body
-    const { prompt } = await req.json();
+    const { prompt, pickedModel = null } = await req.json();
 
     // Ensure prompt is provided
     if (!prompt) {
@@ -30,7 +30,9 @@ export async function POST(req) {
 
     // Initialise the Google Generative AI client
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: pickedModel !== null ? pickedModel : "gemini-1.5-flash" });
+   
+    logger.info(`[GOOGLE AI] Using model: ${model.model}`);
 
     try {
       // Generate content from the API

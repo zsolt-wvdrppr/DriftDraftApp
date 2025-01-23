@@ -47,13 +47,13 @@ export async function POST(req) {
   const oneHour = 60 * 60 * 1000; // 1-hour window
 
   logger.debug(`[RATE LIMITER API]: Received request from ${type} user (${userId || ip}).`);
-
   try {
     const body = await req.json();
-    const { prompt, clientData, token } = body; // Extract prompt and clientData from the request body
+    const { prompt, clientData, token, pickedModel = null } = body; // Extract prompt and clientData from the request body
 
     logger.debug(`[RATE LIMITER API]: Prompt received: ${prompt}`);
     logger.debug(`[RATE LIMITER API]: Client data: ${JSON.stringify(clientData)}`);
+    logger.info('[RATE LIMITER API]: Picked model:', pickedModel);
 
      // Step 1: Validate reCAPTCHA Token
      const isHuman = await verifyReCaptcha(token);
@@ -96,7 +96,7 @@ export async function POST(req) {
     let aiResponse;
 
     try {
-      aiResponse = await fetchFromGoogleAI(prompt);
+      aiResponse = await fetchFromGoogleAI(prompt, pickedModel);
       logger.debug(`[RATE LIMITER API]: AI response generated for ${type} user (${userId || ip}).`);
     } catch (aiError) {
       logger.error(`[RATE LIMITER API]: AI model error: ${aiError.message}`);
