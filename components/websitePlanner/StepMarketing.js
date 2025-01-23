@@ -63,7 +63,7 @@ const StepMarketing = ({ ref }) => {
   const serviceDescription =
     `${formData[0]?.serviceDescription}\n` || "";
   const audience =
-    `Details about the audience or ideal customer/client: ${formData[1].audience}. ` || "";
+    `Details about the audience or ideal customer/client: ${formData[1]?.audience}. ` || "";
   const marketing =
     `Some details about the marketing strategy: ${localValue}. ` || "";
   const promptImprover = `
