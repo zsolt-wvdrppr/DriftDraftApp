@@ -1,6 +1,4 @@
 import type { Config } from "tailwindcss";
-const colors = ("tailwindcss/colors");
-const { default: flattenColorPalette } = require("tailwindcss/lib/util/flattenColorPalette");
 import { heroui } from "@heroui/react";
 
 
