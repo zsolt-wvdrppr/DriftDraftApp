@@ -3,17 +3,7 @@ const colors = ("tailwindcss/colors");
 const { default: flattenColorPalette } = require("tailwindcss/lib/util/flattenColorPalette");
 import { heroui } from "@heroui/react";
 
-// Define the addVariablesForColors plugin
-function addVariablesForColors({ addBase, theme }: any) {
-  let allColors = flattenColorPalette(theme("colors"));
-  let newVars = Object.fromEntries(
-    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
-  );
 
-  addBase({
-    ":root": newVars,
-  });
-}
 /** @type {import('tailwindcss').Config} */
 const config: Config = {
   content: [
