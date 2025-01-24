@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
 import { ContentEditable } from '@lexical/react/LexicalContentEditable';
@@ -7,7 +7,6 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
-
 import { marked } from "marked";
 import {
     Modal,
@@ -18,23 +17,19 @@ import {
     Button,
     Spinner,
 } from "@heroui/react";
-import logger from "@/lib/logger";
-
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import LoadContentPlugin from "@/lib/plugins/lexical/LoadContentPlugin";
+import { toast } from "sonner";
+import { IconEye, IconEdit } from "@tabler/icons-react";
+import { motion, AnimatePresence } from "framer-motion";
+
+import logger from "@/lib/logger";
 import ToolbarPlugin from "@/lib/plugins/lexical/ToolbarPlugin";
-import OnChangePlugin from "@/lib/plugins/lexical/OnChangePlugin";
 import SaveButtonPlugin from "@/lib/plugins/lexical/SaveButtonPlugin";
 import useLoadContent from "@/lib/plugins/lexical/useLoadContent";
 import useEditorChangeListener from "@/lib/plugins/lexical/useEditorChangeListener";
-
-import { toast } from "sonner";
-
 import { useSessionContext } from "@/lib/SessionProvider";
 import { useAuth } from "@/lib/AuthContext";
 
-import { IconEye, IconEdit } from "@tabler/icons-react";
-import { motion, AnimatePresence } from "framer-motion";
 
 export const EditableMarkdownModal = ({
     item,
@@ -64,6 +59,7 @@ export const EditableMarkdownModal = ({
         if (editor) {
             editor.read(() => {
                 const newMarkdown = $convertToMarkdownString(TRANSFORMERS);
+
                 if (newMarkdown !== lastSavedContent) {
                     setMarkdownContent(newMarkdown);
                     logger.debug("Markdown content updated:", newMarkdown);
@@ -81,6 +77,7 @@ export const EditableMarkdownModal = ({
     const handleSave = async () => {
         setIsSaveLoading(true);
         let md = "";
+
         editor.read(() => {
             md = $convertToMarkdownString(TRANSFORMERS);
             setMarkdownContent(md);
@@ -112,25 +109,12 @@ export const EditableMarkdownModal = ({
 
     }), [item?.session_id];
 
-    const handleEditorChange = () => {
-        editor.update(() => {
-            const newMarkdown = $convertToMarkdownString(TRANSFORMERS);
-
-            setMarkdownContent(newMarkdown);
-        
-            // Only update the ref, avoid re-rendering state
-            setIsSaved(newMarkdown === lastSavedContent);
-
-        });
-    };
-
-
     return (
         <Modal
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
             className="absolute max-w-screen-2xl md:p-4 mx-auto top-0 m-1 mb-8 md:max-h-[90vh]"
             isDismissable={false}
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
         >
             <ModalContent className="flex flex-col h-[90vh] overflow-hidden">
                 {(onClose) => (
@@ -139,13 +123,14 @@ export const EditableMarkdownModal = ({
                         <div className="flex justify-around md:justify-start items-center">
                             <ModalHeader className="w-full">
                                 <p className="text-md md:text-xl py-3 px-4 text-center text-primary bg-slate-100 dark:bg-zinc-800 rounded-xl w-full">
-                                    {previewMode ? "Viewing Session" : "Editing Session"}
+                                    {previewMode ? "Viewing Your Plan" : "Editing Your Plan"}
                                 </p>
                             </ModalHeader>
                             <Button
-                                color="secondary"
-                                onPress={() => setPreviewMode((p) => !p)}
                                 className="min-w-16 w-10 h-12 mr-10 md:mr-5"
+                                color="secondary"
+                                isDisabled={markdownContent === "No content available."}
+                                onPress={() => setPreviewMode((p) => !p)}
                             >
                                 {previewMode ? <IconEdit /> : <IconEye />}
                             </Button>
@@ -165,42 +150,41 @@ export const EditableMarkdownModal = ({
                                     <AnimatePresence mode="wait">
                                         {previewMode ? (
                                             <motion.div
-                                                key="preview"
-                                                initial={{ opacity: 0, x: 0 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -20 }}
-                                                transition={{ duration: 0.3, ease: "easeInOut" }}
-                                                className="prose min-w-full md:p-8 mt-6 border rounded-md shadow-sm dark:text-white"
                                                 dangerouslySetInnerHTML={{
                                                     __html: marked(markdownContent),
                                                 }}
+                                                key="preview"
+                                                animate={{ opacity: 1, x: 0 }}
+                                                className="prose min-w-full md:p-8 mt-6 border rounded-md shadow-sm dark:text-white"
+                                                exit={{ opacity: 0, x: -20 }}
+                                                initial={{ opacity: 0, x: 0 }}
+                                                transition={{ duration: 0.3, ease: "easeInOut" }}
                                             />
                                         ) : (
                                             <motion.div
                                                 key="editor"
-                                                initial={{ opacity: 0, x: 0 }}
                                                 animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: 20 }}
-                                                transition={{ duration: 0.3, ease: "easeInOut" }}
                                                 className="prose min-w-full"
+                                                exit={{ opacity: 0, x: 20 }}
+                                                initial={{ opacity: 0, x: 0 }}
+                                                transition={{ duration: 0.3, ease: "easeInOut" }}
                                             >
                                                 <div className="flex justify-end">
                                                     <ToolbarPlugin
-                                                        onSave={handleSave}
-                                                        isSaved={isSaved}
                                                         isSaveLoding={isSaveLoding}
-                                                        setPreviewMode={setPreviewMode}
+                                                        isSaved={isSaved}
                                                         previewMode={previewMode}
+                                                        setPreviewMode={setPreviewMode}
+                                                        onSave={handleSave}
                                                     />
                                                 </div>
                                                 <AutoFocusPlugin />
                                                 <RichTextPlugin
+                                                    ErrorBoundary={LexicalErrorBoundary}
                                                     contentEditable={
                                                         <ContentEditable className="prose p-2 min-w-full mt-24 md:p-8 border focus-visible:outline-primary rounded-md shadow-sm dark:text-white" />
                                                     }
-                                                    ErrorBoundary={LexicalErrorBoundary}
                                                 />
-                                                {/*<OnChangePlugin onChange={handleEditorChange} />*/}
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
@@ -214,9 +198,9 @@ export const EditableMarkdownModal = ({
                                 <p className="font-semibold">Cancel</p>
                             </Button>
                             <Button
+                                className="w-40 flex justify-between items-center"
                                 color="secondary"
                                 onPress={() => setPreviewMode((p) => !p)}
-                                className="w-40 flex justify-between items-center"
                             >
                                 {previewMode ? (
                                     <>

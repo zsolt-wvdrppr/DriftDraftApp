@@ -460,7 +460,7 @@ export default function UserActivities() {
                           className="dark:text-white cursor-pointer"
                           onPress={() => handleReview(item)}
                         >
-                          <IconReorder id="review-icon" />
+                          <IconReorder className="text-violet-500" id="review-icon" />
                         </Link>
                         <Tooltip anchorSelect="#review-icon" place="top">
                           Review Questionnaire & Regenerate Plan
@@ -471,7 +471,7 @@ export default function UserActivities() {
                           className="dark:text-white cursor-pointer"
                           onPress={() => confirmDelete(item)}
                         >
-                          <IconTrash id="delete-icon" />
+                          <IconTrash className="text-red-500" id="delete-icon" />
                         </Link>
                         <Tooltip anchorSelect="#delete-icon" place="top">
                           Delete
@@ -485,7 +485,7 @@ export default function UserActivities() {
                             confirmDownload(item)
                           }
                         >
-                          <IconDownload id="download-icon" />
+                          <IconDownload className="text-teal-500" id="download-icon" />
                         </Link>
                         <Tooltip anchorSelect="#download-icon" place="top">
                           Download as PDF
@@ -496,7 +496,7 @@ export default function UserActivities() {
                           className="dark:text-white cursor-pointer"
                           onPress={() => handleOpenMarkdownModal(item)}
                         >
-                          <IconEye id="view-icon" />
+                          <IconEye className="text-lime-500" id="view-icon" />
                         </Link>
                         <Tooltip anchorSelect="#view-icon" place="top">
                           View & Edit plan
@@ -511,7 +511,7 @@ export default function UserActivities() {
                             confirmGetQuote(item)
                           }
                         >
-                          <IconMessageDollar id="quote-icon" />
+                          <IconMessageDollar className="text-orange-500" id="quote-icon"/>
                         </Link>
                         <Tooltip anchorSelect="#quote-icon" place="top">
                           Get Quote
