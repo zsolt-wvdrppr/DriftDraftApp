@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+
 import { heroui } from "@heroui/react";
 
 
@@ -63,4 +64,5 @@ const config: Config = {
     require("@tailwindcss/typography"),
   ],
 };
+
 export default config;
