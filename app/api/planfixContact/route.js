@@ -1,4 +1,7 @@
+// api/planfixContact/route.js
+
 import { NextResponse } from 'next/server';
+
 import { checkIfContactExists, createContact, createTask } from '@/lib/planfixServices';
 
 
@@ -14,6 +17,7 @@ async function verifyReCaptcha(token) {
   });
 
   const data = await res.json();
+
   return data.success;
 }
 
@@ -24,6 +28,7 @@ export async function POST(req) {
 
     // Verify reCAPTCHA token
     const isHuman = await verifyReCaptcha(token);
+
     if (!isHuman) {
       return NextResponse.json(
         { message: "Failed reCAPTCHA verification" },
@@ -41,6 +46,7 @@ export async function POST(req) {
 
     // Check if the contact exists or create a new one
     let contactId = await checkIfContactExists(email);
+
     if (!contactId) {
       contactId = await createContact(firstName, lastName, email, phone, organisation);
     }
@@ -52,6 +58,7 @@ export async function POST(req) {
     return NextResponse.json({ message: 'Task created successfully' }, { status: 200 });
   } catch (error) {
     console.error('Error creating task or contact:', error.message);
+
     return NextResponse.json(
       { message: 'Internal Server Error', error: error.message },
       { status: 500 }

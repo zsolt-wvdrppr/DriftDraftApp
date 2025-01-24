@@ -3,11 +3,6 @@
 import { useEffect, useState, useRef, useTransition } from "react";
 import { Reorder, AnimatePresence } from "framer-motion";
 import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
   Button,
   Link,
   useDisclosure,
@@ -15,7 +10,7 @@ import {
   Switch,
 } from "@heroui/react";
 import {
-  IconInputCheck,
+  IconReorder,
   IconTrash,
   IconEye,
   IconMessageDollar,
@@ -23,13 +18,14 @@ import {
   IconInfoCircleFilled,
   IconPencilStar,
   IconArrowNarrowUp,
-  IconDownload
+  IconDownload,
 } from "@tabler/icons-react";
 import { Tooltip } from "react-tooltip";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { useReCaptcha } from "next-recaptcha-v3";
 
 import { createOrUpdateProfile } from "@/lib/supabaseClient";
 import logger from "@/lib/logger";
@@ -42,6 +38,8 @@ import EditableMarkdownModal from "../websitePlanner/layout/EditableMarkdownModa
 
 import { initialConfig } from "./lexical_config";
 import { legend } from "./utils";
+import sendSessionToPlanfix from "./sendSessionToPlanfix";
+import ConfirmationModal from "./ConfirmationModal";
 
 
 
@@ -50,6 +48,7 @@ import { legend } from "./utils";
 export default function UserActivities() {
   const {
     fetchAllSessionsFromDb,
+    fetchSessionFromDb,
     deleteSessionFromDb,
     initSessionFromDb,
     fetchAiGeneratedPlanFromDb,
@@ -63,6 +62,16 @@ export default function UserActivities() {
     onOpenChange: onDeleteOpenChange,
   } = useDisclosure();
   const {
+    isOpen: isQuoteModalOpen,
+    onOpen: onQuoteOpen,
+    onOpenChange: onQuoteOpenChange,
+  } = useDisclosure();
+  const {
+    isOpen: isDownloadModalOpen,
+    onOpen: onDownloadOpen,
+    onOpenChange: onDownloadOpenChange,
+  } = useDisclosure();
+  const {
     isOpen: isMarkdownModalOpen,
     onOpen: onMarkdownOpen,
     onOpenChange: onMarkdownOpenChange,
@@ -74,8 +83,11 @@ export default function UserActivities() {
   const { user, loading } = useAuth(); // Access user state
   const router = useRouter();
   const inputRefs = useRef({});
+  const { executeRecaptcha } = useReCaptcha(); // Hook to generate token
 
   const { generatePdf } = useGeneratePdf();
+
+  const [isProcessLoading, setIsProcessLoading] = useState(false);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -139,6 +151,7 @@ export default function UserActivities() {
   };
 
   const handleDelete = () => {
+    setIsProcessLoading(true);
     if (selectedItem) {
       setItems(
         items.filter((item) => item.session_id !== selectedItem.session_id)
@@ -147,6 +160,7 @@ export default function UserActivities() {
       deleteSessionFromDb(user.id, selectedItem.session_id);
     }
     onDeleteOpenChange(false);
+    setIsProcessLoading(false);
   };
 
   const handleOpenMarkdownModal = async (item) => {
@@ -160,7 +174,9 @@ export default function UserActivities() {
       setMarkdownContent(generatedPlan || "No content available.");
       setIsLoadingContent(false);
     } catch (error) {
-      toast.error("Failed to fetch content.");
+      toast.error("Failed to fetch content.", {
+        classNames: { toast: "text-danger" },
+      });
       setIsLoadingContent(false);
       setMarkdownContent("Error loading content.");
       console.error("Error fetching markdown content:", error);
@@ -230,7 +246,7 @@ export default function UserActivities() {
     );
   }
 
-  const handleEdit = (item) => {
+  const handleReview = (item) => {
     startTransition(async () => {
       try {
         logger.info(`Edit item with ID: ${item.session_id}`);
@@ -245,7 +261,9 @@ export default function UserActivities() {
   const handleEditTitle = async (item, newTitle) => {
     if (!newTitle.trim()) {
       toast.dismiss();
-      toast.error("Title cannot be empty.");
+      toast.error("Title cannot be empty.", {
+        classNames: { toast: "text-danger" },
+      });
 
       return;
     }
@@ -266,7 +284,9 @@ export default function UserActivities() {
       });
     } catch (error) {
       toast.dismiss();
-      toast.error("Failed to update the title.");
+      toast.error("Failed to update the title.", {
+        classNames: { toast: "text-danger" },
+      });
       logger.error("Error updating title:", error.message);
     }
   };
@@ -284,9 +304,27 @@ export default function UserActivities() {
     }, 0);
   };
 
-  const handleDownload = async (item) => {
+  const confirmDownload = (item) => {
+    setSelectedItem(item);
+    onDownloadOpen();
+  };
 
+  const handleDownload = async (item) => {
+    setIsProcessLoading(true);
     const generatedPlan = await fetchAiGeneratedPlanFromDb(item.session_id); 
+
+    if (generatedPlan === null || generatedPlan === "" || generatedPlan?.length < 150) {
+      toast.error("Your planning isn't complete yet, and no website plan is available. Please finish the planning to proceed.", {
+        classNames: { toast: "text-danger" },
+        closeButton: true,
+        duration: 10000,
+      });
+
+      setIsProcessLoading(false);
+      onDownloadOpenChange(false);
+
+      return;
+    }
 
     try {
       generatePdf(generatedPlan, item.session_title, `${sanitizeFilename(item.session_title)}.pdf`);
@@ -294,7 +332,36 @@ export default function UserActivities() {
       logger.error("Error generating PDF:", error);
     }
 
+    setIsProcessLoading(false);
+    onDownloadOpenChange(false);
   };
+
+  const confirmGetQuote = (item) => {
+    setSelectedItem(item);
+    onQuoteOpen();
+  };
+
+  const handleGetQuote = async (item) => {
+    setIsProcessLoading(true);
+    const token = await executeRecaptcha("get_quote");
+
+    if (!token) {
+      toast.error("Failed to generate token.", {
+        classNames: { toast: "text-danger" },
+      });
+
+      return;
+    }
+
+    try {
+      await sendSessionToPlanfix(user, item.session_id, fetchSessionFromDb, token);
+    } catch (error) {
+      logger.error("Error sending session to Planfix:", error);
+    }
+
+    onQuoteOpenChange(false);
+    setIsProcessLoading(false);
+  }
 
   return (
     <div className="light dark:dark p-4 max-w-2xl mx-auto overflow-hidden">
@@ -391,9 +458,9 @@ export default function UserActivities() {
                       <div>
                         <Link
                           className="dark:text-white cursor-pointer"
-                          onPress={() => handleEdit(item)}
+                          onPress={() => handleReview(item)}
                         >
-                          <IconInputCheck id="review-icon" />
+                          <IconReorder id="review-icon" />
                         </Link>
                         <Tooltip anchorSelect="#review-icon" place="top">
                           Review Questionnaire & Regenerate Plan
@@ -415,7 +482,7 @@ export default function UserActivities() {
                           className="dark:text-white cursor-pointer"
                           isDisabled={false}
                           onPress={() =>
-                            handleDownload(item)
+                            confirmDownload(item)
                           }
                         >
                           <IconDownload id="download-icon" />
@@ -439,9 +506,9 @@ export default function UserActivities() {
                         <Link
                           alt="Get Quote"
                           className="dark:text-white cursor-pointer"
-                          isDisabled={true}
+                          isDisabled={false}
                           onPress={() =>
-                            logger.info(`Submit for quote: ${item.session_id}`)
+                            confirmGetQuote(item)
                           }
                         >
                           <IconMessageDollar id="quote-icon" />
@@ -468,34 +535,39 @@ export default function UserActivities() {
       </Reorder.Group>
 
       {/* Delete Confirmation Modal */}
-      <Modal isOpen={isDeleteModalOpen} onOpenChange={onDeleteOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                Confirm Deletion
-              </ModalHeader>
-              <ModalBody>
-                <p>
-                  Are you sure you want to delete{" "}
-                  <span className="font-semibold">
-                    {selectedItem?.session_title}
-                  </span>
-                  ? This action cannot be undone.
-                </p>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button color="primary" onPress={handleDelete}>
-                  Confirm
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <ConfirmationModal 
+        acceptLabel="Confirm" 
+        body={`Are you sure you want to delete ${selectedItem?.session_title}? This action CANNOT BE UNDONE.`} 
+        handleAccept={handleDelete}
+        isOpen={isDeleteModalOpen}
+        rejectLabel="Cancel"
+        title="Confirm Deletion"
+        onOpenChange={onDeleteOpenChange}
+      />
+
+      {/* Get Quote Confirmation Modal */}
+      <ConfirmationModal 
+        acceptLabel="Get Quote" 
+        body={`Are you sure you want to get a quote for ${selectedItem?.session_title}?`} 
+        handleAccept={() => handleGetQuote(selectedItem)}
+        isLoading={isProcessLoading}
+        isOpen={isQuoteModalOpen}
+        rejectLabel="Cancel"
+        title="Get Quote"
+        onOpenChange={onQuoteOpenChange}
+      />
+
+      {/* Download Confirmation Modal */}
+      <ConfirmationModal 
+        acceptLabel="Download" 
+        body={`Are you sure you want to download ${selectedItem?.session_title}?`} 
+        handleAccept={() => handleDownload(selectedItem)}
+        isLoading={isProcessLoading}
+        isOpen={isDownloadModalOpen}
+        rejectLabel="Cancel"
+        title="Download PDF"
+        onOpenChange={onDownloadOpenChange}
+      />
 
       <LexicalComposer initialConfig={initialConfig}>
         <EditableMarkdownModal
