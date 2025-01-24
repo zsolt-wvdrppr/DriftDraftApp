@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+/* Define page margins for headers and footers */
+@page {
+    margin: 15mm 15mm 15mm 15mm; /* Top, Right, Bottom, Left */
+  }
+  
+  /* Reset body styling */
+  body {
+    font-family: 'Poppins' ,'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    color: #2E0219;
+  }
+  
+  /* Content container (automatically paginated) */
+  body::after {
+    content: ""; /* Ensures content respects page margins */
+  }  
+  
+  /* Main Content (respects @page margins) */
+  main {
+    margin: 0; /* No explicit margin needed; content respects @page */
+  }
+  
+  h1, h2, h3 {
+    color: #05668D;
+    margin-bottom: 16px;
+    font-weight: bold;
+  }
+  
+  h1 {
+    font-size: 26px;
+    border-bottom: 2px solid #028090;
+    padding-bottom: 8px;
+    margin-bottom: 24px;
+  }
+  
+  h2 {
+    font-size: 22px;
+    margin-top: 24px;
+  }
+  
+  h3 {
+    font-size: 18px;
+    margin-top: 16px;
+  }
+  
+  p {
+    margin-bottom: 12px;
+    text-align: justify;
+  }
+  
+  ul {
+    list-style: square;
+    padding-left: 20px;
+    margin-bottom: 16px;
+  }
+  
+  ol {
+    list-style: decimal;
+    padding-left: 20px;
+    margin-bottom: 16px;
+  }
+  
+  li {
+    margin-bottom: 8px;
+  }
+  
+  blockquote {
+    border-left: 4px solid #ccc;
+    margin: 16px 0;
+    padding: 10px 20px;
+    color: #555;
+    font-style: italic;
+    background-color: #f9f9f9;
+  }
+  
+  pre {
+    background: #f4f4f4;
+    padding: 12px;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 16px;
+  }
+  
+  code {
+    background: #f9f9f9;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+  }
+  
+  footer {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 40px;
+    color: #888;
+    border-top: 1px solid #ddd;
+    padding-top: 8px;
+  }
+  

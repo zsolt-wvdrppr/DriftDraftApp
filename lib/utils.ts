@@ -64,6 +64,7 @@ export const htmlToPlainText = (htmlString: string): string => {
   } else {
       // CSR Safe: Use DOM parsing for better accuracy in the browser
       const tempElement = document.createElement('div');
+
       tempElement.innerHTML = htmlString;
       
       // Replace <br> tags with newlines before stripping
@@ -71,6 +72,7 @@ export const htmlToPlainText = (htmlString: string): string => {
 
       // Extract plain text with HTML entity decoding handled by the browser
       const plainText = tempElement.textContent || '';
+
       return plainText.trim();
   }
 };
@@ -87,6 +89,7 @@ export async function markdownToPlainText(markdownText: string): Promise<string>
 
   // Create a temporary element for parsing the HTML and stripping tags
   const tempElement = document.createElement('div');
+
   tempElement.innerHTML = html;
 
   // Replace <br> tags with line breaks and decode HTML entities
@@ -101,6 +104,16 @@ export async function markdownToPlainText(markdownText: string): Promise<string>
       .trim();
 
   return plainText;
+}
+
+export const sanitizeFilename = (title:string) => {
+
+  if (!title) return "document"; // Fallback to "document" if title is empty or undefined
+
+  return title
+    .toLowerCase() // Convert to lowercase
+    .replace(/\s+/g, "_") // Replace spaces with underscores
+    .replace(/[^a-z0-9_\-]/g, ""); // Remove invalid characters
 }
 
 
