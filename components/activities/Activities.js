@@ -504,7 +504,7 @@ export default function UserActivities() {
                       </div>
                       <div>
                         <Link
-                          alt="Get Quote"
+                          alt="Request Quote"
                           className="dark:text-white cursor-pointer"
                           isDisabled={false}
                           onPress={() =>
@@ -514,7 +514,7 @@ export default function UserActivities() {
                           <IconMessageDollar className="text-orange-500" id="quote-icon"/>
                         </Link>
                         <Tooltip anchorSelect="#quote-icon" place="top">
-                          Get Quote
+                          Request a Quote from Wavedropper LTD.
                         </Tooltip>
                       </div>
                     </div>
@@ -548,12 +548,12 @@ export default function UserActivities() {
       {/* Get Quote Confirmation Modal */}
       <ConfirmationModal 
         acceptLabel="Get Quote" 
-        body={`Are you sure you want to get a quote for ${selectedItem?.session_title}?`} 
+        body={`Are you sure you want to request a quote for ${selectedItem?.session_title}?`} 
         handleAccept={() => handleGetQuote(selectedItem)}
         isLoading={isProcessLoading}
         isOpen={isQuoteModalOpen}
         rejectLabel="Cancel"
-        title="Get Quote"
+        title="Request a Quote"
         onOpenChange={onQuoteOpenChange}
       />
 
