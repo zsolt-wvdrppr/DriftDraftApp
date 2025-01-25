@@ -35,7 +35,7 @@ export async function POST(req) {
     </html>`;
 
     // Use CHROMIUM_PATH from the Netlify Chromium plugin
-    const chromiumPath = process.env.CHROMIUM_PATH;
+    const chromiumPath = process.env.CHROME_PATH;
 
     if (!chromiumPath) {
       throw new Error("CHROMIUM_PATH environment variable is not set.");
