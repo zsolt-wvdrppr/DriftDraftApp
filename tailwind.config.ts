@@ -36,7 +36,12 @@ const config: Config = {
         neutralGray: '#C9C5CB',
         default: {
           100: '#fffcff',
-        }
+        },
+        highlightYellow: '#FFBE0B',
+        highlightOrange: '#FB5607',
+        highlightPink: '#FF006E',
+        highlightPurple: '#8338EC',
+        highlightBlue: '#3A86FF',
       },
       screens: {
         'mobile2': '414px',

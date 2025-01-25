@@ -14,13 +14,13 @@ import { Button, Kbd, Link, Input } from "@heroui/react";
 import { link as linkStyles } from "@heroui/react";
 import NextLink from "next/link";
 import clsx from "clsx";
+import { IconHistory } from "@tabler/icons-react";
 
 import LogInOutBtn from "@/components/nav-layout/LogInOutBtn";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import {
   GithubIcon,
-  HeartFilledIcon,
   SearchIcon,
   Logo,
 } from "@/components/icons";
@@ -113,7 +113,7 @@ export const Navbar = () => {
             className="text-sm font-normal text-default-600 bg-default-200"
             href={siteConfig.links.activities}
             isExternal={false}
-            startContent={<HeartFilledIcon className="text-danger" />}
+            startContent={<IconHistory className="text-highlightOrange" />}
             variant="flat"
           >
             My Activities
@@ -160,17 +160,33 @@ export const Navbar = () => {
               </Link>
             </NavbarMenuItem>
           ))}
-          <div className="actions flex flex-col-reverse items-center justify-center mt-12 gap-4">
-            {
-              <LogInOutBtn
-                className="text-lg"
-                labelClassName={"text-sm absolute bottom-12 right-5 text-left"}
-                user={user}
-                onLogIn={handleLogIn}
-                onLogOut={handleLogOut}
-              />
-            }
-          </div>
+          <NavbarItem className="md:hidden md:flex">
+            {user && (
+              <Button
+                as={Link}
+                className="text-lg absolute bottom-12 right-5 font-normal text-default-600 bg-default-200"
+                href={siteConfig.links.activities}
+                isExternal={false}
+                startContent={<IconHistory className="text-highlightOrange" />}
+                variant="flat"
+              >
+                My Activities
+              </Button>
+            )}
+            <div className="actions flex flex-col-reverse items-center justify-center mt-12 gap-4">
+              {
+                <LogInOutBtn
+                  className="text-lg"
+                  labelClassName={
+                    "text-sm absolute bottom-28 right-5 text-left"
+                  }
+                  user={user}
+                  onLogIn={handleLogIn}
+                  onLogOut={handleLogOut}
+                />
+              }
+            </div>
+          </NavbarItem>
         </div>
       </NavbarMenu>
     </NextUINavbar>
