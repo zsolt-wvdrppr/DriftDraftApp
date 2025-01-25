@@ -1,6 +1,1 @@
-[[plugins]]
-  package = "netlify-plugin-chromium"
-  [plugins.inputs]
-    setChromePathInEnv = "true"
-    failBuildOnError = "true"
-    packageManager = "npm"
+
