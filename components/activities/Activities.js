@@ -2,13 +2,7 @@
 
 import { useEffect, useState, useRef, useTransition } from "react";
 import { Reorder, AnimatePresence } from "framer-motion";
-import {
-  Button,
-  Link,
-  useDisclosure,
-  Spinner,
-  Switch,
-} from "@heroui/react";
+import { Button, Link, useDisclosure, Spinner, Switch } from "@heroui/react";
 import {
   IconReorder,
   IconTrash,
@@ -32,7 +26,7 @@ import logger from "@/lib/logger";
 import { useAuth } from "@/lib/AuthContext";
 import { useSessionContext } from "@/lib/SessionProvider";
 import { formatDateToLocalBasic, sanitizeFilename } from "@/lib/utils";
-import { useGeneratePdf } from '@/lib/hooks/useGeneratePdf';
+import { useGeneratePdf } from "@/lib/hooks/useGeneratePdf";
 
 import EditableMarkdownModal from "../websitePlanner/layout/EditableMarkdownModal";
 
@@ -40,10 +34,6 @@ import { initialConfig } from "./lexical_config";
 import { legend } from "./utils";
 import sendSessionToPlanfix from "./sendSessionToPlanfix";
 import ConfirmationModal from "./ConfirmationModal";
-
-
-
-
 
 export default function UserActivities() {
   const {
@@ -85,7 +75,7 @@ export default function UserActivities() {
   const inputRefs = useRef({});
   const { executeRecaptcha } = useReCaptcha(); // Hook to generate token
 
-  const { generatePdf, isLoading : isPdfGenerating } = useGeneratePdf();
+  const { generatePdf, isLoading: isPdfGenerating } = useGeneratePdf();
 
   const [isProcessLoading, setIsProcessLoading] = useState(false);
 
@@ -99,11 +89,9 @@ export default function UserActivities() {
           const sessions = await fetchAllSessionsFromDb(user.id); // Await the data
 
           sortItemsByDate(sessions, true); // Update the state with the fetched sessions
-          
         } catch (error) {
           logger.error("Error fetching sessions from DB:", error.message);
         }
-        
       };
 
       fetchSessions(); // Call the async function
@@ -184,8 +172,6 @@ export default function UserActivities() {
     }
   };
 
-  
-
   const toastRef = useRef(null);
 
   const handleToast = () => {
@@ -198,7 +184,7 @@ export default function UserActivities() {
 
       const newToastId = toast.custom(
         (t) => (
-          <div className="relative flex justify-end bg-yellow-100/60 shadow-md rounded-lg">
+          <div className="relative flex w-fit justify-center bg-yellow-100/60 shadow-md rounded-lg">
             <div className="w-fit relative">
               <Button
                 className="!absolute -top-4 -left-9 p-2"
@@ -226,12 +212,8 @@ export default function UserActivities() {
     });
   };
 
-  
   useEffect(() => {
-    if (isPdfGenerating) {
-      setIsProcessLoading(true);
-      logger.debug("Generating PDF...");
-    } else {
+    if (!isPdfGenerating) {
       setIsProcessLoading(false);
       onDownloadOpenChange(false);
       logger.debug("PDF generation complete.");
@@ -322,17 +304,24 @@ export default function UserActivities() {
     onDownloadOpen();
   };
 
-
   const handleDownload = async (item) => {
     setIsProcessLoading(true);
-    const generatedPlan = await fetchAiGeneratedPlanFromDb(item.session_id); 
+    logger.debug("Generating PDF...");
+    const generatedPlan = await fetchAiGeneratedPlanFromDb(item.session_id);
 
-    if (generatedPlan === null || generatedPlan === "" || generatedPlan?.length < 150) {
-      toast.error("Your planning isn't complete yet, and no website plan is available. Please finish the planning to proceed.", {
-        classNames: { toast: "text-danger" },
-        closeButton: true,
-        duration: 10000,
-      });
+    if (
+      generatedPlan === null ||
+      generatedPlan === "" ||
+      generatedPlan?.length < 150
+    ) {
+      toast.error(
+        "Your planning isn't complete yet, and no website plan is available. Please finish the planning to proceed.",
+        {
+          classNames: { toast: "text-danger" },
+          closeButton: true,
+          duration: 10000,
+        }
+      );
 
       setIsProcessLoading(false);
       onDownloadOpenChange(false);
@@ -341,13 +330,16 @@ export default function UserActivities() {
     }
 
     try {
-      generatePdf(generatedPlan, item.session_title, `${sanitizeFilename(item.session_title)}.pdf`);
+      generatePdf(
+        generatedPlan,
+        item.session_title,
+        `${sanitizeFilename(item.session_title)}.pdf`
+      );
     } catch (error) {
       logger.error("Error generating PDF:", error);
       setIsProcessLoading(false);
       onDownloadOpenChange(false);
     }
-
   };
 
   const confirmGetQuote = (item) => {
@@ -368,17 +360,22 @@ export default function UserActivities() {
     }
 
     try {
-      await sendSessionToPlanfix(user, item.session_id, fetchSessionFromDb, token);
+      await sendSessionToPlanfix(
+        user,
+        item.session_id,
+        fetchSessionFromDb,
+        token
+      );
     } catch (error) {
       logger.error("Error sending session to Planfix:", error);
     }
 
     onQuoteOpenChange(false);
     setIsProcessLoading(false);
-  }
+  };
 
   return (
-    <div className="light dark:dark p-4 max-w-2xl mx-auto overflow-hidden">
+    <div className="light dark:dark p-4  max-w-2xl mx-auto overflow-hidden">
       <div className="w-full flex justify-end my-4 text-primary">
         <Button onPress={() => handleToast()}>
           <IconInfoCircleFilled className="info-icon text-secondary" />
@@ -390,8 +387,12 @@ export default function UserActivities() {
           //endContent={<IconArrowNarrowUp className="text-secondary" />}
           size="md"
           //startContent={<IconArrowNarrowDown />}
-          thumbIcon={({isSelected}) =>
-            <IconArrowNarrowUp className={`${isSelected ? "rotate-180" : ""} transition-all text-primary`} />
+          thumbIcon={
+            ({ isSelected }) => (
+              <IconArrowNarrowUp
+                className={`${isSelected ? "rotate-180" : ""} transition-all text-primary`}
+              />
+            )
             //isSelected ? <IconArrowNarrowUp className={className} /> : <IconArrowNarrowDown className={className} />
           }
           onValueChange={(value) => {
@@ -474,7 +475,10 @@ export default function UserActivities() {
                           className="dark:text-white cursor-pointer"
                           onPress={() => handleReview(item)}
                         >
-                          <IconReorder className="text-violet-500" id="review-icon" />
+                          <IconReorder
+                            className="text-violet-500"
+                            id="review-icon"
+                          />
                         </Link>
                         <Tooltip anchorSelect="#review-icon" place="top">
                           Review Questionnaire & Regenerate Plan
@@ -485,7 +489,10 @@ export default function UserActivities() {
                           className="dark:text-white cursor-pointer"
                           onPress={() => confirmDelete(item)}
                         >
-                          <IconTrash className="text-red-500" id="delete-icon" />
+                          <IconTrash
+                            className="text-red-500"
+                            id="delete-icon"
+                          />
                         </Link>
                         <Tooltip anchorSelect="#delete-icon" place="top">
                           Delete
@@ -495,11 +502,12 @@ export default function UserActivities() {
                         <Link
                           className="dark:text-white cursor-pointer"
                           isDisabled={false}
-                          onPress={() =>
-                            confirmDownload(item)
-                          }
+                          onPress={() => confirmDownload(item)}
                         >
-                          <IconDownload className="text-teal-500" id="download-icon" />
+                          <IconDownload
+                            className="text-teal-500"
+                            id="download-icon"
+                          />
                         </Link>
                         <Tooltip anchorSelect="#download-icon" place="top">
                           Download as PDF
@@ -521,11 +529,12 @@ export default function UserActivities() {
                           alt="Request Quote"
                           className="dark:text-white cursor-pointer"
                           isDisabled={false}
-                          onPress={() =>
-                            confirmGetQuote(item)
-                          }
+                          onPress={() => confirmGetQuote(item)}
                         >
-                          <IconMessageDollar className="text-orange-500" id="quote-icon"/>
+                          <IconMessageDollar
+                            className="text-orange-500"
+                            id="quote-icon"
+                          />
                         </Link>
                         <Tooltip anchorSelect="#quote-icon" place="top">
                           Request a Quote from Wavedropper LTD.
@@ -549,9 +558,9 @@ export default function UserActivities() {
       </Reorder.Group>
 
       {/* Delete Confirmation Modal */}
-      <ConfirmationModal 
-        acceptLabel="Confirm" 
-        body={`Are you sure you want to delete ${selectedItem?.session_title}? This action CANNOT BE UNDONE.`} 
+      <ConfirmationModal
+        acceptLabel="Confirm"
+        body={`Are you sure you want to delete ${selectedItem?.session_title}? This action CANNOT BE UNDONE.`}
         handleAccept={handleDelete}
         isOpen={isDeleteModalOpen}
         rejectLabel="Cancel"
@@ -560,9 +569,9 @@ export default function UserActivities() {
       />
 
       {/* Get Quote Confirmation Modal */}
-      <ConfirmationModal 
-        acceptLabel="Get Quote" 
-        body={`Are you sure you want to request a quote for ${selectedItem?.session_title}?`} 
+      <ConfirmationModal
+        acceptLabel="Get Quote"
+        body={`Are you sure you want to request a quote for ${selectedItem?.session_title}?`}
         handleAccept={() => handleGetQuote(selectedItem)}
         isLoading={isProcessLoading}
         isOpen={isQuoteModalOpen}
@@ -572,9 +581,9 @@ export default function UserActivities() {
       />
 
       {/* Download Confirmation Modal */}
-      <ConfirmationModal 
-        acceptLabel="Download" 
-        body={`Are you sure you want to download ${selectedItem?.session_title}?`} 
+      <ConfirmationModal
+        acceptLabel="Download"
+        body={`Are you sure you want to download ${selectedItem?.session_title}?`}
         handleAccept={() => handleDownload(selectedItem)}
         isLoading={isProcessLoading}
         isOpen={isDownloadModalOpen}
