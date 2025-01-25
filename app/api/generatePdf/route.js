@@ -2,8 +2,10 @@ import fs from "fs";
 import path from "path";
 
 import puppeteer from "puppeteer-core";
-import chromium from '@sparticuz/chromium';
+import chromium from "@sparticuz/chromium";
 import { NextResponse } from "next/server";
+
+import logger from "@/lib/logger";
 
 export async function POST(req) {
   try {
@@ -42,11 +44,17 @@ export async function POST(req) {
       throw new Error("CHROME_PATH environment variable is not set.");
     }*/
 
-      const browser = await puppeteer.launch({
-        executablePath: await chromium.executablePath(),
-        args: chromium.args,
-        headless: chromium.headless,
-      });
+    const isDev = process.env.NODE_ENV === "development";
+    const devPath = process.env.CHROME_PATH;
+
+    logger.debug("Environment:", isDev ? "Development" : "Production");
+    logger.debug("Chromium Path:", devPath);
+
+    const browser = await puppeteer.launch({
+      executablePath: isDev ? devPath : await chromium.executablePath(),
+      args: chromium.args,
+      headless: chromium.headless,
+    });
 
     const page = await browser.newPage();
 
@@ -83,7 +91,10 @@ export async function POST(req) {
     console.error("Error generating PDF:", error);
 
     return new NextResponse(
-      JSON.stringify({ message: "Failed to generate PDF", error: error.message }),
+      JSON.stringify({
+        message: "Failed to generate PDF",
+        error: error.message,
+      }),
       { status: 500 }
     );
   }

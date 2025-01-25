@@ -85,7 +85,7 @@ export default function UserActivities() {
   const inputRefs = useRef({});
   const { executeRecaptcha } = useReCaptcha(); // Hook to generate token
 
-  const { generatePdf } = useGeneratePdf();
+  const { generatePdf, isLoading : isPdfGenerating } = useGeneratePdf();
 
   const [isProcessLoading, setIsProcessLoading] = useState(false);
 
@@ -127,9 +127,7 @@ export default function UserActivities() {
   };
 
   useEffect(() => {
-    if (loading) return; // Wait until loading is complete
-
-    if (!user) {
+    if (!loading && !user) {
       // Redirect if user is not logged in
       const redirectPath = `/login?redirect=/activities`;
 
@@ -137,12 +135,15 @@ export default function UserActivities() {
 
       return;
     }
-    logger.debug("ensureProfileExists:", user);
-    const ensureProfileExists = async () => {
-      await createOrUpdateProfile();
-    };
 
-    ensureProfileExists();
+    if (!loading && user) {
+      logger.debug("ensureProfileExists:", user);
+      const ensureProfileExists = async () => {
+        await createOrUpdateProfile();
+      };
+
+      ensureProfileExists();
+    }
   }, [loading, user, router]);
 
   const confirmDelete = (item) => {
@@ -224,6 +225,18 @@ export default function UserActivities() {
       toastRef.current = newToastId;
     });
   };
+
+  
+  useEffect(() => {
+    if (isPdfGenerating) {
+      setIsProcessLoading(true);
+      logger.debug("Generating PDF...");
+    } else {
+      setIsProcessLoading(false);
+      onDownloadOpenChange(false);
+      logger.debug("PDF generation complete.");
+    }
+  }, [isPdfGenerating]);
 
   useEffect(() => {
     // Check if the toast has been dismissed
@@ -309,6 +322,7 @@ export default function UserActivities() {
     onDownloadOpen();
   };
 
+
   const handleDownload = async (item) => {
     setIsProcessLoading(true);
     const generatedPlan = await fetchAiGeneratedPlanFromDb(item.session_id); 
@@ -330,10 +344,10 @@ export default function UserActivities() {
       generatePdf(generatedPlan, item.session_title, `${sanitizeFilename(item.session_title)}.pdf`);
     } catch (error) {
       logger.error("Error generating PDF:", error);
+      setIsProcessLoading(false);
+      onDownloadOpenChange(false);
     }
 
-    setIsProcessLoading(false);
-    onDownloadOpenChange(false);
   };
 
   const confirmGetQuote = (item) => {
