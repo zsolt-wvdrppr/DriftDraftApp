@@ -6,7 +6,7 @@ import { useSessionContext } from "@/lib/SessionProvider";
 import logger from "@/lib/logger";
 import { cn } from "@/lib/utils";
 
-export const LogInBtn = ({ onPress, className, labelClassName }) => {
+export const LogInBtn = ({ onPress, className }) => {
   return (
     <Button className={className} onPress={onPress}>
       Login
