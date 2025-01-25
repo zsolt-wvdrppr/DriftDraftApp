@@ -3,4 +3,4 @@
   [plugins.inputs]
     setChromePathInEnv = "true"
     failBuildOnError = "true"
-    packageManager = "pnpm"
+    packageManager = "npm"
