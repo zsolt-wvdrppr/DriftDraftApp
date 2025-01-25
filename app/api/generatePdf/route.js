@@ -34,16 +34,16 @@ export async function POST(req) {
       </body>
     </html>`;
 
-    // Use CHROMIUM_PATH from the Netlify Chromium plugin
-    const chromiumPath = process.env.CHROME_PATH;
+    // Use CHROME_PATH from the Netlify Chrome plugin
+    const chromePath = process.env.CHROME_PATH;
 
-    if (!chromiumPath) {
-      throw new Error("CHROMIUM_PATH environment variable is not set.");
+    if (!chromePath) {
+      throw new Error("CHROME_PATH environment variable is not set.");
     }
 
     const browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      executablePath: chromiumPath, // Use the path provided by the plugin
+      executablePath: chromePath, // Use the path provided by the plugin
       headless: true,
     });
 

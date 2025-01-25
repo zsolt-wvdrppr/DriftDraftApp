@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build" # Your build command
+  publish = "out"          # Adjust to your project's publish directory
+
+[[plugins]]
+  package = "netlify-plugin-chromium"
+  inputs = {
+    setChromePathInEnv = true,
+    failBuildOnError = true,
+    packageManager = "npm"
+  }
