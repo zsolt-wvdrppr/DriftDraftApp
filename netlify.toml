@@ -4,8 +4,7 @@
 
 [[plugins]]
   package = "netlify-plugin-chromium"
-  inputs = {
+  [plugins.inputs]
     setChromePathInEnv = true,
     failBuildOnError = true,
-    packageManager = "npm"
-  }
+    packageManager = "pnpm"
