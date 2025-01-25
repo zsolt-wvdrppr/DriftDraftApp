@@ -1,11 +1,11 @@
 import { Link, Button } from '@heroui/react';
 import { IconPower } from "@tabler/icons-react";
-import { useSessionContext } from '@/lib/SessionProvider';
 import { useRouter } from 'next/navigation';
 
+import { useSessionContext } from '@/lib/SessionProvider';
 import logger from '@/lib/logger';
 
-const LogOutBtn = ({user, onPress}) => {
+const LogOutBtn = ({user, onPress, className = ""}) => {
 
     const { logOutUser } = useSessionContext();
     const router = useRouter();
