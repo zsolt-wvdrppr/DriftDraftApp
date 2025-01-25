@@ -35,11 +35,11 @@ export async function POST(req) {
     </html>`;
 
     // Use CHROME_PATH from the Netlify Chrome plugin
-    const chromePath = process.env.CHROME_PATH;
+    //const chromePath = process.env.CHROME_PATH;
 
-    if (!chromePath) {
+    /*if (!chromePath) {
       throw new Error("CHROME_PATH environment variable is not set.");
-    }
+    }*/
 
     const browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
