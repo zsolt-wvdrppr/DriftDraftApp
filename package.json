@@ -39,7 +39,6 @@
 		"path": "^0.12.7",
 		"prop-types": "^15.8.1",
 		"puppeteer": "^24.1.1",
-		"puppeteer-core": "^24.1.1",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
 		"react-markdown": "^9.0.3",

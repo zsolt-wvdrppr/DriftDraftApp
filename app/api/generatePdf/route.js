@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -43,7 +43,7 @@ export async function POST(req) {
 
     const browser = await puppeteer.launch({
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      executablePath: chromePath, // Use the path provided by the plugin
+      //executablePath: chromePath, // Use the path provided by the plugin
       headless: true,
     });
 
