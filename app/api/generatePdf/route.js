@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
 
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from '@sparticuz/chromium';
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -41,15 +42,15 @@ export async function POST(req) {
       throw new Error("CHROME_PATH environment variable is not set.");
     }*/
 
-    const browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
-      //executablePath: chromePath, // Use the path provided by the plugin
-      headless: true,
-    });
+      const browser = await puppeteer.launch({
+        executablePath: await chromium.executablePath(),
+        args: chromium.args,
+        headless: chromium.headless,
+      });
 
     const page = await browser.newPage();
 
-    await page.setContent(htmlContent, { waitUntil: "networkidle2" });
+    await page.setContent(htmlContent, { waitUntil: "networkidle0" });
 
     const pdfBuffer = await page.pdf({
       format: "A4",
