@@ -125,6 +125,7 @@ export default function LogIn() {
         >
           {/*error && <p className="text-red-500">{error}</p>} {/* Show error */}
           <Input
+            autoComplete="email"
             label="Email Address"
             name="email"
             placeholder="Enter your email"
@@ -134,6 +135,7 @@ export default function LogIn() {
             onChange={(e) => setEmail(e.target.value)}
           />
           <Input
+            autoComplete="current-password"
             endContent={
               <Button type="button" onPress={() => setPasswordVisible(!passwordVisible)}>
                 {passwordVisible ? (
