@@ -13,6 +13,7 @@ import {
 import { IconCopy } from "@tabler/icons-react";
 import { Tooltip } from "react-tooltip";
 import { useReCaptcha } from "next-recaptcha-v3";
+import { IconChevronDown } from "@tabler/icons-react";
 
 import { useSessionContext } from "@/lib/SessionProvider";
 import logger from "@/lib/logger";
@@ -20,6 +21,7 @@ import { useAuth } from "@/lib/AuthContext";
 import useGenerateTitle from "@/lib/hooks/useGenerateTitle";
 import usePromptExecutor from "@/lib/hooks/usePromptExecutor";
 import useClipboard from "@/lib/hooks/useClipboard";
+import MyActivitiesBtn from "@/components/nav-layout/MyActivitiesBtn";
 
 const Result = () => {
   const {
@@ -119,7 +121,7 @@ const Result = () => {
       domain &&
       emotions
     ) {
-        const prompts = [
+      const prompts = [
         {
           prompt: `
             Prompt 1: Strategic Foundations
@@ -194,7 +196,7 @@ const Result = () => {
         logger.info("Executing prompts for website plan generation...");
         const results = await executePrompts(prompts, userId);
         const combinedResult = results.join("\n\n");
-        
+
         setAiResult(combinedResult);
 
         await updateAiGeneratedPlanInDb(userId, sessionId, combinedResult);
@@ -280,6 +282,30 @@ const Result = () => {
         </div>
       ) : (
         <>
+          <div className="px-8 pt-8 border rounded-3xl border-accentMint dark:border-zinc-800">
+            <p className="text-xl font-semibold text-left text-primary">
+              {`
+          Congratulations, ${sessionData.formData[9].firstname}, on completing your strategic website plan!
+          `}
+            </p>
+            <p className="text-justify py-4">
+              {`You’ve taken a big step toward building a well-organized site. 🎉 The result is shown below, and you can access this plan anytime under `}
+              <strong>{`"My Activities."`}</strong>
+            </p>
+            <p>{`Here’s what you can do:`}</p>
+            <ul className="list-disc list-inside text-justify py-4">
+              <li>{`Review or edit your plan`}</li>
+              <li>{`Download it as a PDF`}</li>
+              <li>{`Request a quote`}</li>
+            </ul>
+            <p className="text-justify">{`Your plan might include suggestions for missing details. Feel free to use it now or come back later to refine and update it as your vision evolves.`}</p>
+            <div className="flex justify-around items-center py-4 md:pb-4">
+              <MyActivitiesBtn className={"text-xs border"} />
+              <Button as={Link} className="text-xs sm:hidden" href="#result">
+                <IconChevronDown className="animate-bounce -mb-2 text-accentMint"/>Check it out!
+              </Button>
+            </div>
+          </div>
           <div className="prose relative lg:prose-lg prose-slate dark:prose-invert px-4 pt-8 pb-12 md:p-8 my-12 rounded-2xl bg-yellow-100/60 dark:bg-content1 max-w-screen-xl">
             <div className="w-full flex justify-end md:justify-end">
               <Link
@@ -304,7 +330,7 @@ const Result = () => {
                 Copy all to clipboard
               </Tooltip>
             </div>
-            <ReactMarkdown>{aiResultWithTitle}</ReactMarkdown>
+            <ReactMarkdown id="result">{aiResultWithTitle}</ReactMarkdown>
             <div className="w-full flex justify-end pb-4 md:pb-8 md:justify-end">
               <Button
                 aria-label="Copy the generated content to clipboard"
