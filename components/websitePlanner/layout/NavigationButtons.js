@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from '@heroui/react';
 import { useState } from 'react';
-import { IconCaretRight, IconCaretLeft } from '@tabler/icons-react';
+import { IconCaretRight, IconCaretLeft, IconAutomation } from '@tabler/icons-react';
 
 /** Previous Button Component */
 export const PreviousButton = ({ disabled, onPress }) => (
@@ -66,7 +66,8 @@ export const SubmitButton = ({ isPending, onPress }) => (
     variant="shadow"
     onPress={onPress}
   >
-    {isPending ? 'Submitting...' : 'Submit'}
+    {isPending ? 'Processing...' : 'Process'}
+    <IconAutomation className="min-w-6 absolute right-1 opacity-50"/>
   </Button>
 );
 
