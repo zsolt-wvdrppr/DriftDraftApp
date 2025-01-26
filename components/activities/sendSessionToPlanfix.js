@@ -38,9 +38,14 @@ export const sendSessionToPlanfix = async (user, sessionId, fetchSessionFromDb, 
             token,
         };
 
-        logger.debug("Contact details:", contactDetails);
+        if (!aiGeneratedPlan || aiGeneratedPlan === null || aiGeneratedPlan === "" || aiGeneratedPlan?.length < 150) {
+            // log all condition
+            //logger.debug("aiGeneratedPlan", aiGeneratedPlan);
+            logger.debug("aiGeneratedPlan type", typeof aiGeneratedPlan);
+            logger.debug("aiGeneratedPlan length", aiGeneratedPlan?.length);
+            
 
-        if (aiGeneratedPlan || aiGeneratedPlan === null || aiGeneratedPlan === "" || aiGeneratedPlan?.length < 150) {
+
             toast.error("Your planning isn't complete yet, and no website plan is available. Please finish the planning to proceed.", {
                 classNames: { toast: "text-danger" }, closeButton: true,  duration: 10000
             });

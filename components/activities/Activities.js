@@ -423,7 +423,7 @@ export default function UserActivities() {
         {items.length > 0 && (
           <AnimatePresence className="">
             {items.map((item) => {
-              logger.debug("Item:", item);
+              //logger.debug("Item:", item);
 
               return (
                 <Reorder.Item
