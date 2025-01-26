@@ -195,7 +195,7 @@ export const EditableMarkdownModal = ({
                         {/* Footer Stays Fixed */}
                         <ModalFooter className="flex-shrink-0 sticky -bottom-5 z-10 mx-auto justify-between w-full max-w-screen-xl mt-2">
                             <Button color="danger" onPress={onClose}>
-                                <p className="font-semibold">Cancel</p>
+                                <p className="font-semibold">Close</p>
                             </Button>
                             <Button
                                 className="w-40 flex justify-between items-center"
