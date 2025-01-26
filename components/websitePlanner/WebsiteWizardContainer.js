@@ -98,11 +98,12 @@ export default function WebsiteWizardContainer({ }) {
         toast.error(message, { duration: 5000, closeButton: true, classNames: { toast: "text-danger" } });
     }
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (!isInitialised && !sessionData?.sessionId) {
+            logger.debug('[WIZZ] No session data found. Starting new session.');
             startNewSession();
         }
-    }, [isInitialised, sessionData]);
+    }, [isInitialised, sessionData]);*/
 
     // Handle error toast and reset
     useEffect(() => {

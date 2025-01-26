@@ -56,7 +56,7 @@ const StepDomain = ({ ref }) => {
     `Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` ||
     "";
   const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
-  const audience = `${formData[1].audience}. ` || "";
+  const audience = `${formData[1]?.audience}. ` || "";
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
     formData?.[3]?.urls?.toString() !== ""

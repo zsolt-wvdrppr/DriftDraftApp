@@ -30,7 +30,7 @@ import logger from "@/lib/logger";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const redirectAfterLogin = useRedirectAfterLogin();
 
   const handleLogIn = () => {
@@ -43,7 +43,6 @@ export const Navbar = () => {
     logger.debug("isMenuOpen", isMenuOpen);
     setIsMenuOpen(false);
     logger.info("Menu closed");
-    await logout(); // Ensure logout completes before menu closes
   };
 
   const searchInput = (

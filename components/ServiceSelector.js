@@ -9,7 +9,7 @@ const ServiceSelector = () => {
 
     const defaultContent = "This feature is not available yet. Please check back later.";
     const urls = {
-        websitePlanner: "/website-planner",
+        websitePlanner: "/website-planner?step=0",
         landingPageWriter: "/landing-page-writer",
         websiteGenerator: "/website-generator"
     }
