@@ -75,7 +75,7 @@ export default function UserActivities() {
   const inputRefs = useRef({});
   const { executeRecaptcha } = useReCaptcha(); // Hook to generate token
 
-  const { generatePdf, isLoading: isPdfGenerating } = useGeneratePdf();
+  const { generatePdf, isPdfGenerating } = useGeneratePdf();
 
   const [isProcessLoading, setIsProcessLoading] = useState(false);
 
@@ -213,7 +213,7 @@ export default function UserActivities() {
   };
 
   useEffect(() => {
-    if (!isPdfGenerating) {
+    if (!isPdfGenerating && isProcessLoading) {
       setIsProcessLoading(false);
       onDownloadOpenChange(false);
       logger.debug("PDF generation complete.");
@@ -300,6 +300,7 @@ export default function UserActivities() {
   };
 
   const confirmDownload = (item) => {
+    logger.debug("confirmDownload", item);
     setSelectedItem(item);
     onDownloadOpen();
   };
@@ -339,6 +340,14 @@ export default function UserActivities() {
       logger.error("Error generating PDF:", error);
       setIsProcessLoading(false);
       onDownloadOpenChange(false);
+    }
+
+    if (isPdfGenerating) {
+      toast.info("Generating PDF...", {
+        classNames: { toast: "text-primary" },
+        closeButton: true,
+        duration: 10000,
+      });
     }
   };
 
