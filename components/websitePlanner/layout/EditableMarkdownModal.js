@@ -200,6 +200,7 @@ export const EditableMarkdownModal = ({
                             <Button
                                 className="w-40 flex justify-between items-center"
                                 color="secondary"
+                                isDisabled={markdownContent === "No content available."}
                                 onPress={() => setPreviewMode((p) => !p)}
                             >
                                 {previewMode ? (
