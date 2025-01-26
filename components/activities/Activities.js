@@ -384,7 +384,7 @@ export default function UserActivities() {
   };
 
   return (
-    <div className="light dark:dark p-4  max-w-2xl mx-auto overflow-hidden">
+    <div className="light dark:dark p-4  max-w-2xl xl:max-w-6xl 2xl:max-w-screen-2xl mx-auto overflow-hidden">
       <div className="w-full flex justify-end my-4 text-primary">
         <Button onPress={() => handleToast()}>
           <IconInfoCircleFilled className="info-icon text-secondary" />
@@ -416,7 +416,7 @@ export default function UserActivities() {
       </div>
       <Reorder.Group
         axis="y"
-        className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-4"
+        className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-4 xl:grid-cols-3 2xl:grid-cols-4 xl:gap-6"
         values={items}
         onReorder={setItems}
       >
