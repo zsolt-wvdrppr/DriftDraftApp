@@ -10,20 +10,16 @@ import {
   NavbarItem,
   NavbarMenuItem,
 } from "@heroui/react";
-import { Button, Kbd, Link, Input } from "@heroui/react";
+import { Kbd, Link, Input } from "@heroui/react";
 import { link as linkStyles } from "@heroui/react";
 import NextLink from "next/link";
 import clsx from "clsx";
-import { IconHistory } from "@tabler/icons-react";
 
-import LogInOutBtn from "@/components/nav-layout/LogInOutBtn";
+import LogInOutBtn, { LogInBtn } from "@/components/nav-layout/LogInOutBtn";
+import MyActivitiesBtn from "@/components/nav-layout/MyActivitiesBtn";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import {
-  GithubIcon,
-  SearchIcon,
-  Logo,
-} from "@/components/icons";
+import { SearchIcon, Logo } from "@/components/icons";
 import { useAuth } from "@/lib/AuthContext";
 import { useRedirectAfterLogin } from "@/lib/hooks/useRedirectAfterLogin";
 import logger from "@/lib/logger";
@@ -75,7 +71,11 @@ export const Navbar = () => {
     >
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
+          <NextLink
+            className="flex justify-start items-center gap-1"
+            href="/"
+            onClick={() => setIsMenuOpen(false)}
+          >
             <Logo />
             <p className="font-bold text-inherit ml-2">DriftDraft.App</p>
           </NextLink>
@@ -102,44 +102,55 @@ export const Navbar = () => {
         className="hidden sm:flex basis-1/5 sm:basis-full"
         justify="end"
       >
-        <NavbarItem className="hidden sm:flex gap-2">
+        <NavbarItem className="hidden md:flex gap-2">
           <ThemeSwitch />
         </NavbarItem>
-        {/*<NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>*/}
         <NavbarItem className="hidden md:flex">
-          <Button
-            as={Link}
-            className="text-sm font-normal text-default-600 bg-default-200"
-            href={siteConfig.links.activities}
-            isExternal={false}
-            startContent={<IconHistory className="text-highlightOrange" />}
-            variant="flat"
-          >
-            My Activities
-          </Button>
-          <div className="actions flex items-center gap-4">
-            {
-              <LogInOutBtn
-                className="text-lg"
-                user={user}
-                onLogIn={handleLogIn}
-                onLogOut={handleLogOut}
-              />
-            }
-          </div>
+          <MyActivitiesBtn
+            className={"text-sm font-normal text-default-600 bg-default-200"}
+            label={"My Activities"}
+            onPress={() => setIsMenuOpen(false)}
+          />
+        </NavbarItem>
+        <NavbarItem className="hidden md:flex actions items-center gap-4">
+          <LogInOutBtn
+            className="text-lg"
+            user={user}
+            onLogIn={handleLogIn}
+            onLogOut={handleLogOut}
+          />
         </NavbarItem>
       </NavbarContent>
 
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-          <GithubIcon className="text-default-500" />
-        </Link>
-        <ThemeSwitch />
-        <NavbarMenuToggle aria-label="Toggle navigation menu" />
+      <NavbarContent className="md:hidden basis-1 pl-4 flex" justify="end">
+        <div className="flex w-full gap-4 justify-evenly items-center pr-4">
+          <NavbarItem className="flex gap-4 items-center">
+            <ThemeSwitch className="mr-3 h-10 md:hidden" />
+          </NavbarItem>
+          <NavbarItem className="flex gap-4 items-center">
+            {user && (
+              <MyActivitiesBtn
+                className={"text-xs  p-0 min-w-0"}
+                noLabel={true}
+                onPress={() => setIsMenuOpen(false)}
+              />
+            )}
+            {!user && (
+              <LogInBtn
+                className="text-lg p-0 min-w-0"
+                noTitle={true}
+                onPress={handleLogIn}
+              />
+            )}
+          </NavbarItem>
+        </div>
+        <NavbarMenuToggle
+          aria-label="Toggle navigation menu"
+          className="pl-5 pr-8 -m-5"
+        />
       </NavbarContent>
 
       <NavbarMenu>
-        {/*searchInput*/}
         <div className="mx-4 mt-2 flex flex-col gap-2 h-full">
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
@@ -159,25 +170,22 @@ export const Navbar = () => {
               </Link>
             </NavbarMenuItem>
           ))}
-          <NavbarItem className="md:hidden md:flex">
+          <NavbarItem className="md:hidden">
             {user && (
-              <Button
-                as={Link}
-                className="text-lg absolute bottom-12 right-5 font-normal text-default-600 bg-default-200"
-                href={siteConfig.links.activities}
-                isExternal={false}
-                startContent={<IconHistory className="text-highlightOrange" />}
-                variant="flat"
-              >
-                My Activities
-              </Button>
+              <MyActivitiesBtn
+                className={
+                  "text-lg absolute bottom-24 right-5 font-normal text-default-600 bg-default-200"
+                }
+                label={"My Activities"}
+                onPress={() => setIsMenuOpen(false)}
+              />
             )}
             <div className="actions flex flex-col-reverse items-center justify-center mt-12 gap-4">
               {
                 <LogInOutBtn
                   className="text-lg"
                   labelClassName={
-                    "text-sm absolute bottom-28 right-5 text-left"
+                    "text-sm absolute bottom-40 right-5 text-left"
                   }
                   user={user}
                   onLogIn={handleLogIn}

@@ -5,10 +5,10 @@ import { useSessionContext } from "@/lib/SessionProvider";
 import logger from "@/lib/logger";
 import { cn } from "@/lib/utils";
 
-export const LogInBtn = ({ onPress, className }) => {
+export const LogInBtn = ({ onPress, className, noTitle = false }) => {
   return (
     <Button className={className} onPress={onPress}>
-      Login
+      {!noTitle && <span>Login</span>}
       <IconPower className="text-success" />
     </Button>
   );
@@ -19,6 +19,7 @@ export const LogOutBtn = ({
   onPress,
   labelClassName = "",
   className = "",
+  noTitle = false,
 }) => {
   const { logOutUser } = useSessionContext();
 
@@ -40,18 +41,18 @@ export const LogOutBtn = ({
         <span className="">{user.email}</span>
       </p>
       <Button as={Link} className={className} onPress={handleClick}>
-        Logout
+        {!noTitle && <span>Logout</span>}
         <IconPower className="text-danger" />
       </Button>
     </>
   );
 };
 
-export const LogInOutBtn = ({ user, onLogOut, onLogIn, className = "", labelClassName = "" }) => {
+export const LogInOutBtn = ({ user, onLogOut, onLogIn, className = "", labelClassName = "", noTitle = false }) => {
   return user ? (
-    <LogOutBtn className={className} labelClassName={labelClassName} user={user} onPress={onLogOut} />
+    <LogOutBtn className={className} labelClassName={labelClassName} noTitle={noTitle} user={user} onPress={onLogOut} />
   ) : (
-    <LogInBtn className={className} onPress={onLogIn} />
+    <LogInBtn className={className} noTitle={noTitle} onPress={onLogIn} />
   );
 };
 
