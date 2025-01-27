@@ -116,6 +116,18 @@ export const sanitizeFilename = (title:string) => {
     .replace(/[^a-z0-9_\-]/g, ""); // Remove invalid characters
 }
 
+export const sortItemsByDate = (items: any, isAcending = false) => {
+  if (isAcending) {
+    const sortedItems = [...items].sort(
+      (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
 
+    return sortedItems;
+  } else {
+    const sortedItems = [...items].sort(
+      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    );
 
-
+    return sortedItems;
+  }
+};

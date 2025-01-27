@@ -25,7 +25,7 @@ import { createOrUpdateProfile } from "@/lib/supabaseClient";
 import logger from "@/lib/logger";
 import { useAuth } from "@/lib/AuthContext";
 import { useSessionContext } from "@/lib/SessionProvider";
-import { formatDateToLocalBasic, sanitizeFilename } from "@/lib/utils";
+import { formatDateToLocalBasic, sanitizeFilename, sortItemsByDate as handleSortItemsByDate } from "@/lib/utils";
 import { useGeneratePdf } from "@/lib/hooks/useGeneratePdf";
 
 import EditableMarkdownModal from "../websitePlanner/layout/EditableMarkdownModal";
@@ -99,19 +99,7 @@ export default function UserActivities() {
   }, [user]);
 
   const sortItemsByDate = (items, isAcending = false) => {
-    if (isAcending) {
-      const sortedItems = [...items].sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
-      );
-
-      setItems(sortedItems);
-    } else {
-      const sortedItems = [...items].sort(
-        (a, b) => new Date(a.created_at) - new Date(b.created_at)
-      );
-
-      setItems(sortedItems);
-    }
+    setItems(handleSortItemsByDate(items, isAcending));
   };
 
   useEffect(() => {
@@ -393,16 +381,13 @@ export default function UserActivities() {
         <Switch
           defaultSelected
           color="default"
-          //endContent={<IconArrowNarrowUp className="text-secondary" />}
           size="md"
-          //startContent={<IconArrowNarrowDown />}
           thumbIcon={
             ({ isSelected }) => (
               <IconArrowNarrowUp
                 className={`${isSelected ? "rotate-180" : ""} transition-all text-primary`}
               />
             )
-            //isSelected ? <IconArrowNarrowUp className={className} /> : <IconArrowNarrowDown className={className} />
           }
           onValueChange={(value) => {
             sortItemsByDate(items, value);
