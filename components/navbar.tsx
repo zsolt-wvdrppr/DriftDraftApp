@@ -106,11 +106,13 @@ export const Navbar = () => {
           <ThemeSwitch />
         </NavbarItem>
         <NavbarItem className="hidden md:flex">
+          {user && (
           <MyActivitiesBtn
             className={"text-sm font-normal text-default-600 bg-default-200"}
             label={"My Activities"}
             onPress={() => setIsMenuOpen(false)}
           />
+          )}
         </NavbarItem>
         <NavbarItem className="hidden md:flex actions items-center gap-4">
           <LogInOutBtn
