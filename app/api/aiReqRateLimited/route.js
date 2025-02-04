@@ -45,10 +45,14 @@ export async function POST(req) {
   const ip = getClientIp(req); // Retrieve IP address
   const userAgent = req.headers.get('user-agent') || 'unknown'; // Extract User-Agent
   const userId = req.headers.get("x-user-id") || null; // Get userId for authenticated users
+  const jwt = req.headers.get("Authorization")?.split(" ")[1]; // Extract the JWT token
   const type = userId ? "authenticated" : "anonymous";
   const oneHour = 60 * 60 * 1000; // 1-hour window
 
-  logger.debug(`[RATE LIMITER API]: Received request from ${type} user (${userId || ip}).`);
+  if (!jwt) {
+    logger.warn("No JWT token provided. Handling as anonymous.");
+  }
+
   try {
     const body = await req.json();
     const { prompt, clientData, token, pickedModel = null } = body; // Extract prompt and clientData from the request body
@@ -69,13 +73,15 @@ export async function POST(req) {
        );
      }
 
+
     // Check rate limits
-    const { isRateLimited, remainingRequests, limitResetTimeAt } = await rateLimiter({
+    const { isRateLimited, remainingRequests, limitResetTimeAt, remainingMinutes } = await rateLimiter({
       userId,
       ip: hashIp(ip), // Hash the IP securely
       type,
       userAgent,
       clientData,
+      jwt,
       limit: userId ? 60 : 2, // Higher limit for authenticated users
       windowMs: oneHour, // 1-hour window
     });
@@ -89,6 +95,7 @@ export async function POST(req) {
         JSON.stringify({
           message: `Rate limit exceeded, and will reset at ${formatTimeToLocalAMPM(limitResetTimeAt).toUpperCase()}.`,
           remainingRequests,
+          remainingMinutes,
         }),
         { status: 429, headers: { "Content-Type": "application/json" } }
       );
