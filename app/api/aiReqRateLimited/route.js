@@ -47,7 +47,6 @@ export async function POST(req) {
   const userId = req.headers.get("x-user-id") || null; // Get userId for authenticated users
   const jwt = req.headers.get("Authorization")?.split(" ")[1]; // Extract the JWT token
   const type = userId ? "authenticated" : "anonymous";
-  const oneHour = 60 * 60 * 1000; // 1-hour window
 
   if (!jwt) {
     logger.warn("No JWT token provided. Handling as anonymous.");
@@ -75,7 +74,7 @@ export async function POST(req) {
 
 
     // Check rate limits
-    const { isRateLimited, remainingRequests, limitResetTimeAt, remainingMinutes } = await rateLimiter({
+    const { isRateLimited, remainingRequests } = await rateLimiter({
       userId,
       ip: hashIp(ip), // Hash the IP securely
       type,
@@ -83,7 +82,6 @@ export async function POST(req) {
       clientData,
       jwt,
       limit: userId ? 60 : 2, // Higher limit for authenticated users
-      windowMs: oneHour, // 1-hour window
     });
 
     logger.debug(`[RATE LIMITER API]: Remaining requests for ${type} user (${userId || ip}): ${remainingRequests}`);
@@ -93,9 +91,8 @@ export async function POST(req) {
 
       return new Response(
         JSON.stringify({
-          message: `Rate limit exceeded, and will reset at ${formatTimeToLocalAMPM(limitResetTimeAt).toUpperCase()}.`,
+          message: `Credits exhausted.`,
           remainingRequests,
-          remainingMinutes,
         }),
         { status: 429, headers: { "Content-Type": "application/json" } }
       );
