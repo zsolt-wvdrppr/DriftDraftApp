@@ -22,6 +22,7 @@ import useGenerateTitle from "@/lib/hooks/useGenerateTitle";
 import usePromptExecutor from "@/lib/hooks/usePromptExecutor";
 import useClipboard from "@/lib/hooks/useClipboard";
 import MyActivitiesBtn from "@/components/nav-layout/MyActivitiesBtn";
+import getJWT from "@/lib/utils/getJWT";
 
 const Result = () => {
   const {
@@ -49,13 +50,29 @@ const Result = () => {
 
   const { executeRecaptcha } = useReCaptcha();
 
+  const [jwt, setJwt] = useState(null);
+
+  useEffect(() => {
+    const fetchJWT = async () => {
+      const jwt = await getJWT();
+
+      setJwt(jwt);
+    };
+
+    fetchJWT();
+  }, []);
+
   const {
     executePrompts,
     executedPrompts,
     loading: promptLoading,
     error,
     output,
-  } = usePromptExecutor({ executeRecaptcha, pickedModel: "gemini-1.5-pro" });
+  } = usePromptExecutor({
+    executeRecaptcha,
+    pickedModel: "gemini-1.5-pro",
+    jwt,
+  });
 
   const [prompts, setPrompts] = useState([]);
   const { copyToClipboard, isPending } = useClipboard();
@@ -107,7 +124,7 @@ const Result = () => {
   }, [aiResult, generatedTitle, titleLoading]);
 
   useEffect(() => {
-    if (alreadyFetched.current || !userId || !sessionId) return; // Prevent second call
+    if (alreadyFetched.current || !userId || !sessionId || !jwt) return; // Prevent second call
     alreadyFetched.current = true;
 
     if (
@@ -207,7 +224,7 @@ const Result = () => {
       logger.info("resetting hint");
       setAiResult(null);
     }
-  }, [userId, sessionId]);
+  }, [userId, sessionId, jwt]);
 
   useEffect(() => {
     // Remove URL params after setting the step
@@ -293,7 +310,6 @@ const Result = () => {
               <strong>{`"My Activities."`}</strong>
             </p>
             <div className="flex flex-col justify-start items-start py-4 md:pb-4">
-            
               <MyActivitiesBtn className={"text-xs border self-end mb-4"} />
               <p>{`Here’s what you can do:`}</p>
             </div>
@@ -305,8 +321,12 @@ const Result = () => {
             <p className="text-justify">{`Your plan might include suggestions for missing details. Feel free to use it now or come back later to refine and update it as your vision evolves.`}</p>
           </div>
           <div className="w-full flex justify-center md:justify-center">
-            <Button as={Link} className="text-xs flex flex-col h-full pt-12" href="#result">
-            <span className=" sm:hidden">Check it out!</span>
+            <Button
+              as={Link}
+              className="text-xs flex flex-col h-full pt-12"
+              href="#result"
+            >
+              <span className=" sm:hidden">Check it out!</span>
               <IconChevronDown className="animate-bounce text-accentMint" />
             </Button>
           </div>
