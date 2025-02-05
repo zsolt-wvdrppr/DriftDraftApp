@@ -45,8 +45,12 @@ export async function POST(req) {
   const ip = getClientIp(req); // Retrieve IP address
   const userAgent = req.headers.get('user-agent') || 'unknown'; // Extract User-Agent
   const userId = req.headers.get("x-user-id") || null; // Get userId for authenticated users
+  const requiredCredits = req.headers.get("x-required-credits") || 0;
   const jwt = req.headers.get("Authorization")?.split(" ")[1]; // Extract the JWT token
   const type = userId ? "authenticated" : "anonymous";
+
+  // debug required credits
+  logger.debug(`[RATE LIMITER API]: Required credits: ${requiredCredits}`);
 
   if (!jwt) {
     logger.warn("No JWT token provided. Handling as anonymous.");
@@ -82,6 +86,7 @@ export async function POST(req) {
       clientData,
       jwt,
       limit: userId ? 60 : 2, // Higher limit for authenticated users
+      requiredCredits,
     });
 
     logger.debug(`[RATE LIMITER API]: Remaining requests for ${type} user (${userId || ip}): ${remainingRequests}`);

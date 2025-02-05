@@ -14,6 +14,8 @@ import { IconCopy } from "@tabler/icons-react";
 import { Tooltip } from "react-tooltip";
 import { useReCaptcha } from "next-recaptcha-v3";
 import { IconChevronDown } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 import { useSessionContext } from "@/lib/SessionProvider";
 import logger from "@/lib/logger";
@@ -50,6 +52,8 @@ const Result = () => {
 
   const { executeRecaptcha } = useReCaptcha();
 
+  const router = useRouter();
+
   const [jwt, setJwt] = useState(null);
 
   useEffect(() => {
@@ -62,20 +66,21 @@ const Result = () => {
     fetchJWT();
   }, []);
 
+  const [prompts, setPrompts] = useState([]);
+  const { copyToClipboard, isPending } = useClipboard();
+
   const {
     executePrompts,
     executedPrompts,
     loading: promptLoading,
     error,
     output,
+    hasCredits,
   } = usePromptExecutor({
     executeRecaptcha,
     pickedModel: "gemini-1.5-pro",
     jwt,
   });
-
-  const [prompts, setPrompts] = useState([]);
-  const { copyToClipboard, isPending } = useClipboard();
 
   /* Form data */
   const formData = sessionData.formData;
@@ -210,16 +215,37 @@ const Result = () => {
 
       // ✅ Execute prompts and update the session once complete
       const generateWebsitePlan = async () => {
-        logger.info("Executing prompts for website plan generation...");
-        const results = await executePrompts(prompts, userId);
-        const combinedResult = results.join("\n\n");
+        try {
+          logger.info("Executing prompts for website plan generation...");
 
-        setAiResult(combinedResult);
+          // Execute prompts and wait for results
+          const results = await executePrompts(prompts, userId);
+          const combinedResult = results.join("\n\n");
 
-        await updateAiGeneratedPlanInDb(userId, sessionId, combinedResult);
+          logger.debug("Results:", results);
+
+          if (!results || results.length > 0) {
+            // Store the combined result in the state
+            setAiResult(combinedResult);
+
+            // Update the plan in the database
+            await updateAiGeneratedPlanInDb(userId, sessionId, combinedResult);
+            toast.success("Website plan generated and saved successfully.");
+          }
+        } catch (err) {
+          // Catch and handle errors during prompt execution or DB updates
+          logger.error(
+            "An error occurred while generating the website plan:",
+            err
+          );
+
+          setError(err.message); // Store the error message in state if needed
+        }
       };
 
-      generateWebsitePlan();
+      if (hasCredits) {
+        generateWebsitePlan();
+      }
     } else {
       logger.info("resetting hint");
       setAiResult(null);
@@ -270,7 +296,7 @@ const Result = () => {
 
   return (
     <div className=" md:mx-auto">
-      {isLoading ? (
+      {isLoading && hasCredits ? (
         <div className="flex flex-col left-0 top-0 bottom-0 right-0 absolute w-full items-center justify-center py-10">
           <Card
             aria-label="Progress indicator"
@@ -298,89 +324,116 @@ const Result = () => {
           </Card>
         </div>
       ) : (
-        <>
-          <div className="px-8 py-8 shadow-md border rounded-3xl border-accentMint dark:border-zinc-800 max-w-screen-md mx-auto">
-            <p className="text-xl font-semibold text-left text-primary">
-              {`
+        hasCredits && (
+          <>
+            <div className="px-8 py-8 shadow-md border rounded-3xl border-accentMint dark:border-zinc-800 max-w-screen-md mx-auto">
+              <p className="text-xl font-semibold text-left text-primary">
+                {`
           Congratulations, ${sessionData.formData[9].firstname}, on completing your strategic website plan!
           `}
-            </p>
-            <p className="text-justify pt-4">
-              {`You’ve taken a big step toward building a well-organized site. 🎉 The result is shown below, and you can access this plan anytime under `}
-              <strong>{`"My Activities."`}</strong>
-            </p>
-            <div className="flex flex-col justify-start items-start py-4 md:pb-4">
-              <MyActivitiesBtn className={"text-xs border self-end mb-4"} />
-              <p>{`Here’s what you can do:`}</p>
+              </p>
+              <p className="text-justify pt-4">
+                {`You’ve taken a big step toward building a well-organized site. 🎉 The result is shown below, and you can access this plan anytime under `}
+                <strong>{`"My Activities."`}</strong>
+              </p>
+              <div className="flex flex-col justify-start items-start py-4 md:pb-4">
+                <MyActivitiesBtn className={"text-xs border self-end mb-4"} />
+                <p>{`Here’s what you can do:`}</p>
+              </div>
+              <ul className="list-disc list-inside text-justify py-4">
+                <li>{`Review or edit your plan`}</li>
+                <li>{`Download it as a PDF`}</li>
+                <li>{`Request a quote`}</li>
+              </ul>
+              <p className="text-justify">{`Your plan might include suggestions for missing details. Feel free to use it now or come back later to refine and update it as your vision evolves.`}</p>
             </div>
-            <ul className="list-disc list-inside text-justify py-4">
-              <li>{`Review or edit your plan`}</li>
-              <li>{`Download it as a PDF`}</li>
-              <li>{`Request a quote`}</li>
-            </ul>
-            <p className="text-justify">{`Your plan might include suggestions for missing details. Feel free to use it now or come back later to refine and update it as your vision evolves.`}</p>
-          </div>
-          <div className="w-full flex justify-center md:justify-center">
-            <Button
-              as={Link}
-              className="text-xs flex flex-col h-full pt-12"
-              href="#result"
-            >
-              <span className=" sm:hidden">Check it out!</span>
-              <IconChevronDown className="animate-bounce text-accentMint" />
-            </Button>
-          </div>
-          <div className="prose relative lg:prose-lg prose-slate dark:prose-invert px-4 pt-8 pb-12 md:p-8 my-12 rounded-2xl bg-yellow-100/60 dark:bg-content1 max-w-screen-xl">
-            <div className="w-full flex justify-end md:justify-end">
-              <Link
-                alt="Copy all content to clipboard"
-                aria-label="Copy the generated content to clipboard"
-                className="absolute top-2 right-2 text-secondary"
-                id="copy-btn-top"
-                variant="none"
-                onPress={() => {
-                  copyToClipboard(aiResultWithTitle);
-                }}
-              >
-                <IconCopy size={20} />
-              </Link>
-              <Tooltip
-                anchorSelect="#copy-btn-top"
-                className="text-center"
-                delayHide={500}
-                delayShow={200}
-                place="left"
-              >
-                Copy all to clipboard
-              </Tooltip>
-            </div>
-            <ReactMarkdown id="result">{aiResultWithTitle}</ReactMarkdown>
-            <div className="w-full flex justify-end pb-4 md:pb-8 md:justify-end">
+            <div className="w-full flex justify-center md:justify-center">
               <Button
-                aria-label="Copy the generated content to clipboard"
-                className="absolute"
-                color="secondary"
-                id="copy-btn-bottom"
-                variant="bordered"
-                onPress={() => {
-                  copyToClipboard(aiResultWithTitle);
-                }}
+                as={Link}
+                className="text-xs flex flex-col h-full pt-12"
+                href="#result"
               >
-                <IconCopy size={20} />
-                Copy
+                <span className=" sm:hidden">Check it out!</span>
+                <IconChevronDown className="animate-bounce text-accentMint" />
               </Button>
-              <Tooltip
-                anchorSelect="#copy-btn-bottom"
-                className="text-center"
-                delayHide={500}
-                delayShow={200}
-                place="top"
-              >
-                Copy all to clipboard
-              </Tooltip>
             </div>
-          </div>
-        </>
+            <div className="prose relative lg:prose-lg prose-slate dark:prose-invert px-4 pt-8 pb-12 md:p-8 my-12 rounded-2xl bg-yellow-100/60 dark:bg-content1 max-w-screen-xl">
+              <div className="w-full flex justify-end md:justify-end">
+                <Link
+                  alt="Copy all content to clipboard"
+                  aria-label="Copy the generated content to clipboard"
+                  className="absolute top-2 right-2 text-secondary"
+                  id="copy-btn-top"
+                  variant="none"
+                  onPress={() => {
+                    copyToClipboard(aiResultWithTitle);
+                  }}
+                >
+                  <IconCopy size={20} />
+                </Link>
+                <Tooltip
+                  anchorSelect="#copy-btn-top"
+                  className="text-center"
+                  delayHide={500}
+                  delayShow={200}
+                  place="left"
+                >
+                  Copy all to clipboard
+                </Tooltip>
+              </div>
+              <ReactMarkdown id="result">{aiResultWithTitle}</ReactMarkdown>
+              <div className="w-full flex justify-end pb-4 md:pb-8 md:justify-end">
+                <Button
+                  aria-label="Copy the generated content to clipboard"
+                  className="absolute"
+                  color="secondary"
+                  id="copy-btn-bottom"
+                  variant="bordered"
+                  onPress={() => {
+                    copyToClipboard(aiResultWithTitle);
+                  }}
+                >
+                  <IconCopy size={20} />
+                  Copy
+                </Button>
+                <Tooltip
+                  anchorSelect="#copy-btn-bottom"
+                  className="text-center"
+                  delayHide={500}
+                  delayShow={200}
+                  place="top"
+                >
+                  Copy all to clipboard
+                </Tooltip>
+              </div>
+            </div>
+          </>
+        )
+      )}
+
+      {!hasCredits && (
+        <div className="flex flex-col justify-center items-center py-8">
+          <Card
+            aria-label="Rate limit exceeded"
+            className="border-none bg-transparent shadow-none"
+          >
+            <CardBody className="justify-center items-center pb-0">
+              <p className="text-xl font-semibold text-center text-primary">
+                {`Rate limit exceeded`}
+              </p>
+              <p className="text-center">
+                {`You have exhausted your credits. Please `}
+                <Link
+                  className="text-accentMint"
+                  href="/top-up"
+                >
+                  {`top up your credits`}
+                </Link>
+                {` to continue generating content.`}
+              </p>
+            </CardBody>
+          </Card>
+        </div>
       )}
     </div>
   );

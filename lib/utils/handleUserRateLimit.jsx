@@ -1,7 +1,9 @@
 import logger from "@/lib/logger";
 
-export const handleAuthenticatedUserRateLimit = async (userId, supabase) => {
+export const handleAuthenticatedUserRateLimit = async (userId, supabase, requiredCredits) => {
   let profileCredits = 0;
+
+  logger.debug("[HANDLE USER RATE LIMIT] Required credits:", requiredCredits);
 
   // Fetch the user profile with both credits
   const { data: profile, error: profileError } = await supabase
@@ -18,6 +20,12 @@ export const handleAuthenticatedUserRateLimit = async (userId, supabase) => {
   if (!profile) {
     logger.warn(`Profile not found for userId: '${userId}'`);
     return { isRateLimited: true, message: 'User profile not found. Please register or check your credentials.' };
+  }
+
+  const totalCredits = profile.allowance_credits + profile.top_up_credits;
+
+  if (requiredCredits > totalCredits) {
+    return { isRateLimited: true, message: 'Insufficient credits.' };
   }
 
   if (profile.tier === "free" && profile.top_up_credits <= 0) {
