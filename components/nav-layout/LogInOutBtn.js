@@ -3,7 +3,7 @@ import { Link, Button } from "@heroui/react";
 
 import { useSessionContext } from "@/lib/SessionProvider";
 import logger from "@/lib/logger";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 
 export const LogInBtn = ({ onPress, className, noTitle = false }) => {
   return (

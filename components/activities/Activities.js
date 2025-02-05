@@ -25,7 +25,7 @@ import { createOrUpdateProfile } from "@/lib/supabaseClient";
 import logger from "@/lib/logger";
 import { useAuth } from "@/lib/AuthContext";
 import { useSessionContext } from "@/lib/SessionProvider";
-import { formatDateToLocalBasic, sanitizeFilename, sortItemsByDate as handleSortItemsByDate } from "@/lib/utils";
+import { formatDateToLocalBasic, sanitizeFilename, sortItemsByDate as handleSortItemsByDate } from "@/lib/utils/utils";
 import { useGeneratePdf } from "@/lib/hooks/useGeneratePdf";
 
 import EditableMarkdownModal from "../websitePlanner/layout/EditableMarkdownModal";

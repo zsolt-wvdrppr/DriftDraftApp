@@ -2,7 +2,7 @@ import React from "react";
 import { Link, Button } from "@heroui/react";
 import { IconHistory } from "@tabler/icons-react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import { siteConfig } from "@/config/site";
 import logger from "@/lib/logger";
 

@@ -3,7 +3,7 @@ import logger from "@/lib/logger";
 import { Link } from "@heroui/react";
 import { IconClipboard } from "@tabler/icons-react";
 import { Tooltip } from 'react-tooltip';
-import { markdownToPlainText } from "@/lib/utils";
+import { markdownToPlainText } from "@/lib/utils/utils";
 import { marked } from "marked";
 
 // Configure marked to preserve line breaks

@@ -5,7 +5,7 @@ import crypto from "crypto";
 import { rateLimiter } from "@/lib/rateLimiter";
 import { fetchFromGoogleAI } from "@/lib/googleAi";
 import logger from "@/lib/logger";
-import { formatTimeToLocalAMPM } from '@/lib/utils';
+import { formatTimeToLocalAMPM } from '@/lib/utils/utils';
 
 // Helper to hash IP securely
 const hashIp = (ip) => {

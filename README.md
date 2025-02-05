@@ -8,39 +8,34 @@
 
 ---
 
-## Rate-Limiting and Credit System
+## Rate-Limiting and Credit System (Updated)
 
-This system ensures fair usage for both anonymous and authenticated users, offering different tiers and limits depending on the user’s subscription level.
+This system ensures fair usage for both anonymous and authenticated users, with credits and rate limits depending on the user’s subscription plan.
 
-### **Anonymous Users**
-- Anonymous users are given a **permanent free rate limit**.
-- This limit is displayed to the user as **credits**, and these credits **do not reset**.
-- Once the limit is exhausted, anonymous users **cannot generate more AI plans unless they register or subscribe.**
-- The rate limit is tied to the user’s IP/device fingerprint (to differentiate between users).
-
----
-
-### **Free Tier (Authenticated Users)**
-- Free-tier users have access to **a specific amount of credits**.
-- These credits are displayed as **monthly allowances**.
-- Once their credits are exhausted, free-tier users cannot generate new plans until they top up, upgraed to a higher tier or receive promotional credit.
-- Credits **automatically reset** at the start of each term via a **cron job**.
+### **Credit System Overview**
+1. **Monthly Credits:**  
+   - Each subscription tier has a fixed amount of monthly credits, which automatically reset at the start of each term (e.g., monthly) via a cron job.
+2. **Top-Up Credits:**  
+   - Users can purchase additional credits, which are stored separately and used before monthly credits.
+3. **Credit Consumption Order:**  
+   - Top-up credits are consumed first, followed by monthly credits.  
+   - When no credits remain, the user is rate-limited.
 
 ---
 
-### **Paid Tiers (Subscription-Based)**
-- Paid-tier users are also checked by credits, similar to free-tier users.
-- The difference is:
-  - They receive a **higher monthly credit allowance** depending on their subscription plan.
-  - These credits are displayed and tracked exactly like free-tier credits.
-- **Credits automatically reset** at the start of each term (e.g., monthly) via a **cron job**.
-- Users can **purchase top-up credits manually** if they need extra credits before the next term begins.
+### **How It Works**
+
+| User Type            | Credit/Limit System                                                                 |
+|---------------------|------------------------------------------------------------------------------------|
+| **Anonymous Users**   | Permanent free credits based on device/IP tracking, do not reset.                 |
+| **Free-Tier Users**   | Receive monthly credits (reset automatically), with no rollover of unused credits. |
+| **Paid-Tier Users**   | Receive higher monthly credits (reset automatically), with top-up credits available.|
 
 ---
 
 ### **Subscription-Based and Auto-Renewing Credits**
-- For both free and paid tiers, **the cron job handles automatic credit resets and updates the credits directly in the database.**
-- The allowance is calculated based on the user’s `tier` or `plan`.
+- The monthly credit allowance is reset automatically via a **cron job** at the start of each term.
+- Top-up credits are tracked separately and do not expire unless the user unsubscribes.
 
 ---
 

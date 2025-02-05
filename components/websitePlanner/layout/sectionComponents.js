@@ -1,7 +1,7 @@
 import React from 'react';
 import { Textarea, Button } from '@heroui/react';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/utils';
 
 export const StepOuterWrapper = ({ className = '', children }) => {
 
