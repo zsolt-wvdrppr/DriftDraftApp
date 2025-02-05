@@ -2,6 +2,8 @@ import { ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { marked } from 'marked';
 
+import logger from "@/lib/logger";
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -130,4 +132,20 @@ export const sortItemsByDate = (items: any, isAcending = false) => {
 
     return sortedItems;
   }
+};
+
+export const getAuthHeaders = (jwt : string) => {
+  if (!jwt) {
+    logger.warn("JWT is missing or not available.");
+    
+    return {};
+  }
+
+  return {
+    global: {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    },
+  };
 };

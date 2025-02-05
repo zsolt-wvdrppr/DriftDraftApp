@@ -45,7 +45,7 @@ export async function POST(req) {
   const ip = getClientIp(req); // Retrieve IP address
   const userAgent = req.headers.get('user-agent') || 'unknown'; // Extract User-Agent
   const userId = req.headers.get("x-user-id") || null; // Get userId for authenticated users
-  const requiredCredits = req.headers.get("x-required-credits") || 0;
+  const requiredCredits = req.headers.get("x-required-credits") || 1;
   const jwt = req.headers.get("Authorization")?.split(" ")[1]; // Extract the JWT token
   const type = userId ? "authenticated" : "anonymous";
 
