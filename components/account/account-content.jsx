@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { Accordion, AccordionItem } from "@heroui/react";
 import { IconWallet, IconSettings, IconCreditCard } from "@tabler/icons-react";
 import ProfileSettings from "./profile-settings";
+import SubscriptionAndTopup from "./subscription-and-topup";
 import logger from "@/lib/logger";
 import { createOrUpdateProfile } from "@/lib/supabaseClient";
 
@@ -51,7 +52,7 @@ const AccountContent = () => {
         <AccordionItem
           key="profile"
           aria-label="Profile Settings"
-          indicator={<IconSettings className="rotate-45" />}
+          indicator={<IconSettings className="rotate-45 text-primary" />}
           subtitle="Press to expand"
           title={<h2 className="text-xl font-semibold">{"Profile Settings"}</h2>}
         >
@@ -60,7 +61,7 @@ const AccountContent = () => {
         <AccordionItem
           key="credits"
           aria-label="Subscription & Top Up"
-          indicator={<IconWallet className="rotate-45" />}
+          indicator={<IconWallet className="rotate-45 text-primary" />}
           subtitle="Press to expand"
           title={<h2 className="text-xl font-semibold">{"Subscription & Top Up"}</h2>}
         >
@@ -69,7 +70,7 @@ const AccountContent = () => {
         <AccordionItem
           key="payment"
           aria-label="Payment Methods"
-          indicator={<IconCreditCard className="rotate-45" />}
+          indicator={<IconCreditCard className="rotate-45 text-primary" />}
           subtitle="Press to expand"
           title={<h2 className="text-xl font-semibold">{"Payment Methods"}</h2>}
         >

@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 
 export const useUserProfile = (userId: string) => {
   const [fullName, setFullName] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,12 +17,13 @@ export const useUserProfile = (userId: string) => {
       try {
         const { data, error } = await supabase
           .from("profiles")
-          .select("full_name")
+          .select("full_name, email")
           .eq("user_id", userId)
           .single();
 
         if (error) throw error;
         setFullName(data?.full_name || null);
+        setEmail(data?.email || null);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -49,13 +51,13 @@ export const useUserProfile = (userId: string) => {
       });
     } finally {
       setLoading(false);
-      toast.success("Name succesfully updated.", {
+      toast.success("Name successfully updated.", {
         classNames: { toast: "text-success text-lg" },
       });
     }
   };
 
-  return { fullName, loading, error, updateFullName };
+  return { fullName, email, loading, error, updateFullName };
 };
 
 export const useDeleteUser = () => {
