@@ -65,7 +65,7 @@ const AccountContent = () => {
           subtitle="Press to expand"
           title={<h2 className="text-xl font-semibold">{"Subscription & Top Up"}</h2>}
         >
-          {defaultContent}
+          <SubscriptionAndTopup />
         </AccordionItem>
         <AccordionItem
           key="payment"
