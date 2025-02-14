@@ -5,6 +5,8 @@ import { useSessionContext } from "@/lib/SessionProvider";
 import logger from "@/lib/logger";
 import { cn } from "@/lib/utils/utils";
 
+import AccountBtn from "./AccountBtn";
+
 export const LogInBtn = ({ onPress, className, noTitle = false }) => {
   return (
     <Button className={className} onPress={onPress}>
@@ -15,9 +17,7 @@ export const LogInBtn = ({ onPress, className, noTitle = false }) => {
 };
 
 export const LogOutBtn = ({
-  user,
   onPress,
-  labelClassName = "",
   className = "",
   noTitle = false,
 }) => {
@@ -30,16 +30,7 @@ export const LogOutBtn = ({
   };
 
   return (
-    <>
-      <p
-        className={cn(
-          "text-primary dark:text-slate-200 text-xs px-4 flex flex-col",
-          labelClassName
-        )}
-      >
-        <span>Logged in:</span>
-        <span className="">{user.email}</span>
-      </p>
+    <>      
       <Button as={Link} className={className} onPress={handleClick}>
         {!noTitle && <span>Logout</span>}
         <IconPower className="text-danger" />

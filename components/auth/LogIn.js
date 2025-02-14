@@ -170,6 +170,9 @@ export default function LogIn() {
           <Button color="primary" disabled={loading} type="submit">
             {loading ? "Logging in..." : "Log In"}
           </Button>
+          <Link className="text-cente text-primary text-sm m-auto" href="/signup">
+            {"Don't have an account? Sign Up"}
+          </Link>
         </form>
         <div className="flex items-center gap-4 py-2">
           <Divider className="flex-1" />

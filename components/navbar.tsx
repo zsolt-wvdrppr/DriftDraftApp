@@ -17,6 +17,7 @@ import clsx from "clsx";
 
 import LogInOutBtn, { LogInBtn } from "@/components/nav-layout/LogInOutBtn";
 import MyActivitiesBtn from "@/components/nav-layout/MyActivitiesBtn";
+import AccountBtn from "@/components/nav-layout/AccountBtn";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { SearchIcon, Logo } from "@/components/icons";
@@ -99,21 +100,28 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
+        className="hidden sm:flex basis-1/5 sm:basis-full gap-10"
         justify="end"
       >
-        <NavbarItem className="hidden md:flex gap-2">
+        <NavbarItem className="hidden md:flex gap-2 px-4">
           <ThemeSwitch />
         </NavbarItem>
         <NavbarItem className="hidden md:flex">
           {user && (
-          <MyActivitiesBtn
-            className={"text-sm font-normal text-default-600 bg-default-200"}
-            label={"My Activities"}
-            onPress={() => setIsMenuOpen(false)}
-          />
+              <MyActivitiesBtn
+                className={
+                  "text-sm font-normal text-default-600 bg-default-200"
+                }
+                label={"My Activities"}
+                onPress={() => setIsMenuOpen(false)}
+              />
           )}
         </NavbarItem>
+        {user && (
+        <NavbarItem className="hidden md:flex">
+          <AccountBtn user={user} />
+        </NavbarItem>
+        )}
         <NavbarItem className="hidden md:flex actions items-center gap-4">
           <LogInOutBtn
             className="text-lg"
@@ -127,7 +135,10 @@ export const Navbar = () => {
       <NavbarContent className="md:hidden basis-1 pl-4 flex" justify="end">
         <div className="flex w-full gap-4 justify-evenly items-center pr-4">
           <NavbarItem className="flex gap-4 items-center">
-            <ThemeSwitch className="mr-3 h-10 md:hidden" />
+            <ThemeSwitch className="h-10 md:hidden" />
+          </NavbarItem>
+          <NavbarItem className="flex gap-4 items-center">
+            <AccountBtn onPress={() => setIsMenuOpen(false)} />
           </NavbarItem>
           <NavbarItem className="flex gap-4 items-center">
             {user && (
@@ -174,13 +185,21 @@ export const Navbar = () => {
           ))}
           <NavbarItem className="md:hidden">
             {user && (
+              <div className="absolute bottom-32 right-5 flex flex-col gap-4">
               <MyActivitiesBtn
                 className={
-                  "text-lg absolute bottom-24 right-5 font-normal text-default-600 bg-default-200"
+                  "text-lg font-normal text-default-600 bg-default-200"
                 }
                 label={"My Activities"}
                 onPress={() => setIsMenuOpen(false)}
               />
+              <AccountBtn
+                className={"flex justify-between font-normal text-default-600 bg-default-200 py-2 px-4 rounded-xl"}
+                label={"Account"}
+                labelClassName="text-lg"
+                onPress={() => setIsMenuOpen(false)}
+              />
+              </div>
             )}
             <div className="actions flex flex-col-reverse items-center justify-center mt-12 gap-4">
               {
