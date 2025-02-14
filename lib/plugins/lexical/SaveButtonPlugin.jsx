@@ -15,7 +15,7 @@ const SaveButtonPlugin = ({ onSave }) => {
   return (
     <Button
       color="primary"
-      onClick={handleSave}
+      onPress={handleSave}
       className=""
     >
       <p className='font-semibold'>Save</p>

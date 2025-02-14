@@ -19,8 +19,7 @@ import {
     UNDO_COMMAND,
 } from 'lexical';
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-import { IconArrowBackUp, IconArrowForwardUp, IconBold, IconItalic, IconUnderline, IconStrikethrough, IconAlignLeft2, IconAlignRight2, IconAlignCenter, IconAlignJustified, IconDeviceFloppy, IconEye } from '@tabler/icons-react';
+import { IconArrowBackUp, IconArrowForwardUp, IconBold, IconItalic, IconAlignLeft2, IconAlignRight2, IconAlignCenter, IconAlignJustified, IconDeviceFloppy } from '@tabler/icons-react';
 import { Button } from '@heroui/react';
 
 const LowPriority = 1;
@@ -49,6 +48,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
 
     const $updateToolbar = useCallback(() => {
         const selection = $getSelection();
+
         if ($isRangeSelection(selection)) {
             // Update text format
             setIsBold(selection.hasFormat('bold'));
@@ -69,6 +69,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                 SELECTION_CHANGE_COMMAND,
                 (_payload, _newEditor) => {
                     $updateToolbar();
+
                     return false;
                 },
                 LowPriority,
@@ -77,6 +78,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                 CAN_UNDO_COMMAND,
                 (payload) => {
                     setCanUndo(payload);
+
                     return false;
                 },
                 LowPriority,
@@ -85,6 +87,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                 CAN_REDO_COMMAND,
                 (payload) => {
                     setCanRedo(payload);
+
                     return false;
                 },
                 LowPriority,
@@ -93,52 +96,52 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
     }, [editor, $updateToolbar]);
 
     return (
-        <div className="toolbar w-full fixed left-0 top-10 flex" ref={toolbarRef}>
+        <div ref={toolbarRef} className="toolbar w-full fixed left-0 top-10 flex">
             <div className='flex justify-around w-full px-12 flex-wrap md:flex-row gap-3 max-w-2xl mx-auto'>
                 <div className='flex gap-2'>
                     <Button
-                        variant='ghost'
-                        disabled={!canUndo}
-                        onClick={() => {
-                            editor.dispatchCommand(UNDO_COMMAND, undefined);
-                        }}
+                        aria-label="Undo"
                         className="toolbar-item min-w-10 w-10 h-10 px-0 bg-white dark:bg-content1"
-                        aria-label="Undo">
+                        disabled={!canUndo}
+                        variant='ghost'
+                        onPress={() => {
+                            editor.dispatchCommand(UNDO_COMMAND, undefined);
+                        }}>
                         <IconArrowBackUp />
                     </Button>
                     <Button
-                        variant='ghost'
-                        disabled={!canRedo}
-                        onClick={() => {
-                            editor.dispatchCommand(REDO_COMMAND, undefined);
-                        }}
+                        aria-label="Redo"
                         className="toolbar-item min-w-10 w-10 h-10 px-0 bg-white dark:bg-content1"
-                        aria-label="Redo">
+                        disabled={!canRedo}
+                        variant='ghost'
+                        onPress={() => {
+                            editor.dispatchCommand(REDO_COMMAND, undefined);
+                        }}>
                         <IconArrowForwardUp />
                     </Button>
                 </div>
                 <div className='flex gap-2'>
                     <Button
-                        variant='ghost'
-                        onClick={() => {
-                            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
-                        }}
+                        aria-label="Format Bold"
                         className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 bg-white dark:bg-content1' + (isBold ? 'active px-0 text-success' : '')}
-                        aria-label="Format Bold">
+                        variant='ghost'
+                        onPress={() => {
+                            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
+                        }}>
                         <IconBold />
                     </Button>
                     <Button
-                        variant='ghost'
-                        onClick={() => {
-                            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
-                        }}
+                        aria-label="Format Italics"
                         className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 bg-white dark:bg-content1' + (isItalic ? 'active px-0 text-success' : '')}
-                        aria-label="Format Italics">
+                        variant='ghost'
+                        onPress={() => {
+                            editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
+                        }}>
                         <IconItalic />
                     </Button>
                     {/*<Button
                         variant='ghost'
-                        onClick={() => {
+                        onPress={() => {
                         editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
                         }}
                         className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0' + (isUnderline ? 'active' : '')}
@@ -147,7 +150,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                     </Button>
                     <Button
                         variant='ghost'
-                        onClick={() => {
+                        onPress={() => {
                         editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
                         }}
                         className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0' + (isStrikethrough ? 'active' : '')}
@@ -157,50 +160,50 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                 </div>
                 <div className='flex gap-2'>
                     <Button
-                        variant='ghost'
-                        onClick={() => {
-                            editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
-                        }}
+                        aria-label="Left Align"
                         className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white dark:bg-content1'
-                        aria-label="Left Align">
+                        variant='ghost'
+                        onPress={() => {
+                            editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
+                        }}>
                         <IconAlignLeft2 />
                     </Button>
                     <Button
-                        variant='ghost'
-                        onClick={() => {
-                            editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
-                        }}
+                        aria-label="Center Align"
                         className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white dark:bg-content1'
-                        aria-label="Center Align">
+                        variant='ghost'
+                        onPress={() => {
+                            editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
+                        }}>
                         <IconAlignCenter />
                     </Button>
                     <Button
-                        variant='ghost'
-                        onClick={() => {
-                            editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
-                        }}
+                        aria-label="Right Align"
                         className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white dark:bg-content1'
-                        aria-label="Right Align">
+                        variant='ghost'
+                        onPress={() => {
+                            editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
+                        }}>
                         <IconAlignRight2 />
                     </Button>
                     <Button
-                        variant='ghost'
-                        onClick={() => {
-                            editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
-                        }}
+                        aria-label="Justify Align"
                         className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white dark:bg-content1'
-                        aria-label="Justify Align">
+                        variant='ghost'
+                        onPress={() => {
+                            editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
+                        }}>
                         <IconAlignJustified />
                     </Button>{' '}
                 </div>
                 <div>
                     <Button
-                        variant='ghost'
-                        onClick={onSave}
-                        className={`toolbar-item min-w-10 w-10 h-10 px-0 text-white ${isSaved ? 'bg-success' : 'bg-danger'}`}
                         aria-label="Save"
-                        isLoading={isSaveLoading}
+                        className={`toolbar-item min-w-10 w-10 h-10 px-0 text-white ${isSaved ? 'bg-success' : 'bg-danger'}`}
                         isDisabled={isSaveLoading}
+                        isLoading={isSaveLoading}
+                        variant='ghost'
+                        onPress={onSave}
                     >
                         {!isSaveLoading && <IconDeviceFloppy />}
                     </Button>

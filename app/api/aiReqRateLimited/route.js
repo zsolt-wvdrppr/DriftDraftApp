@@ -85,7 +85,7 @@ export async function POST(req) {
       userAgent,
       clientData,
       jwt,
-      limit: userId ? 60 : 2, // Higher limit for authenticated users
+      limit: 2, // Limit for unauthenticated users
       requiredCredits,
     });
 
