@@ -138,7 +138,7 @@ export const Navbar = () => {
             <ThemeSwitch className="h-10 md:hidden" />
           </NavbarItem>
           <NavbarItem className="flex gap-4 items-center">
-            <AccountBtn onPress={() => setIsMenuOpen(false)} />
+            <AccountBtn noLabel={true} user={user} onPress={() => setIsMenuOpen(false)}/>
           </NavbarItem>
           <NavbarItem className="flex gap-4 items-center">
             {user && (
@@ -194,9 +194,10 @@ export const Navbar = () => {
                 onPress={() => setIsMenuOpen(false)}
               />
               <AccountBtn
-                className={"flex justify-between font-normal text-default-600 bg-default-200 py-2 px-4 rounded-xl"}
+                className={"flex justify-between font-normal text-default-600 bg-default-200 py-2 px-4 rounded-xl w-full"}
                 label={"Account"}
                 labelClassName="text-lg"
+                user={user}
                 onPress={() => setIsMenuOpen(false)}
               />
               </div>

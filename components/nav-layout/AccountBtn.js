@@ -2,21 +2,27 @@ import { IconUser } from "@tabler/icons-react";
 import { Link } from "@heroui/react";
 
 import { cn } from "@/lib/utils/utils";
+import { useUserProfile } from "@/lib/hooks/useProfile";
 
-const AccountBtn = ({ user = null, label = "", className = "", labelClassName = "", onPress = ()=>{} }) => {
+const AccountBtn = ({ user = null, label = "", noLabel = false, className = "", labelClassName = "", onPress = ()=>{} }) => {
+
+  const { fullName } = useUserProfile(user?.id);
+
+  // First name
+  const first_name = fullName?.split(" ")[0];
 
   return (
     <div className="flex items-center">
-      <Link className={cn("md:bg-default-200 md:py-2 md:px-4 md:rounded-l-full cursor-pointer", className)} href="/account" onPress={onPress}>
-        <IconUser size={24} />
-        {(user || label) && (
+      <Link className={cn("md:bg-default-200 md:py-2 md:px-4 md:rounded-xl cursor-pointer flex gap-2", className)} href="/account" onPress={onPress}>
+        <IconUser className="text-primary" size={24}/>
+        {!noLabel && (
         <p
           className={cn(
-            "text-primary dark:text-slate-200 text-xs flex flex-col",
+            "flex flex-col",
             labelClassName
           )}
         >
-          <span className="">{label || user.email}</span>
+          <span className="">{label || first_name}</span>
         </p>
         )}
       </Link>

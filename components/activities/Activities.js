@@ -25,7 +25,11 @@ import { createOrUpdateProfile } from "@/lib/supabaseClient";
 import logger from "@/lib/logger";
 import { useAuth } from "@/lib/AuthContext";
 import { useSessionContext } from "@/lib/SessionProvider";
-import { formatDateToLocalBasic, sanitizeFilename, sortItemsByDate as handleSortItemsByDate } from "@/lib/utils/utils";
+import {
+  formatDateToLocalBasic,
+  sanitizeFilename,
+  sortItemsByDate as handleSortItemsByDate,
+} from "@/lib/utils/utils";
 import { useGeneratePdf } from "@/lib/hooks/useGeneratePdf";
 
 import EditableMarkdownModal from "../websitePlanner/layout/EditableMarkdownModal";
@@ -34,6 +38,7 @@ import { initialConfig } from "./lexical_config";
 import { legend } from "./utils";
 import sendSessionToPlanfix from "./sendSessionToPlanfix";
 import ConfirmationModal from "./ConfirmationModal";
+import NewSessionSelectorInner from "./startNewSessionSelectorInner";
 
 export default function UserActivities() {
   const {
@@ -373,6 +378,7 @@ export default function UserActivities() {
 
   return (
     <div className="light dark:dark p-4  max-w-2xl xl:max-w-6xl 2xl:max-w-screen-2xl mx-auto overflow-hidden">
+      <NewSessionSelectorInner />
       <div className="w-full flex justify-end my-4 text-primary">
         <Button onPress={() => handleToast()}>
           <IconInfoCircleFilled className="info-icon text-secondary" />
@@ -382,13 +388,11 @@ export default function UserActivities() {
           defaultSelected
           color="default"
           size="md"
-          thumbIcon={
-            ({ isSelected }) => (
-              <IconArrowNarrowUp
-                className={`${isSelected ? "rotate-180" : ""} transition-all text-primary`}
-              />
-            )
-          }
+          thumbIcon={({ isSelected }) => (
+            <IconArrowNarrowUp
+              className={`${isSelected ? "rotate-180" : ""} transition-all text-primary`}
+            />
+          )}
           onValueChange={(value) => {
             sortItemsByDate(items, value);
           }}
@@ -399,6 +403,13 @@ export default function UserActivities() {
           </span>
         </Switch>
       </div>
+      {items.length === 0 && (
+        <div className="flex items-center justify-center h-96">
+          <p className="text-center text-gray-500">
+            No sessions found. Start a new session to get started.
+          </p>
+        </div>
+      )}
       <Reorder.Group
         axis="y"
         className="flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-4 xl:grid-cols-3 2xl:grid-cols-4 xl:gap-6"
