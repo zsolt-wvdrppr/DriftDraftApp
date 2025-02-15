@@ -1,0 +1,149 @@
+[
+    {
+      "question": "What is the primary purpose you want your landing page to achieve?",
+      "questionAddition1": "If you selected 'Other', please specify.",
+      "questionAddition2": "What do you offer, and how does it benefit your audience?\nWhat challenges or needs does it help address?",
+      "isValid": false,
+      "tabName": "Purpose",
+      "type": "select",
+      "required": true,
+      "options": [
+        "Showcase my services or products",
+        "Generate leads or enquiries",
+        "Sell products or services online",
+        "Share information or news",
+        "Other (please specify)"
+      ],
+      "hint": " We offer [Product/Service A] and [Product/Service B], solving [Problem A] and [Problem B] respectively.  This helps customers by [Benefit A] and [Benefit B], saving them time and/or money.",
+      "why_do_we_ask": "Understanding the purpose of your landing page is essential to ensure it’s designed effectively. If your landing page’s performance impacts business profitability, particularly in sectors like eCommerce or for businesses that acquire customers online, every design detail and feature must support that goal. A well-optimised, purpose-driven landing page not only keeps customers engaged but also guides them through a carefully planned marketing funnel, encouraging actions like making a purchase or getting in touch.\n\nKnowing what you offer and how it helps your customers is key to showcasing your value on the landing page. It allows us to recommend features that highlight your strengths and communicate effectively with your audience.",
+      "placeholder": ["Select your goal","Details about your primary goal","Describe what you offer and how it benefits your audience. For example: 'We provide eco-friendly cleaning products that promote healthier homes and reduce waste.'"]
+    },
+    {
+      "question": "Who is your target audience? Describe your ideal customer or client.",
+      "isValid": false,
+      "tabName": "Audience",
+      "type": "textarea",
+      "required": true,
+      "hint": "**Examples**\n\nEvery English speaker who likes hiking,\nSmall business owners, decision-makers,\nYoung professionals with £25-30k annual income,\nPeople who enjoy Latin dancing in London...",
+      "why_do_we_ask": "**Why do we ask?**\n\nKnowing your audience’s characteristics helps tailor the landing page’s content, design, and features to resonate with them. The more you understand your audience’s habits, preferences, and needs, the more effectively the landing page can engage them, keeping them interested and guiding them naturally towards the actions you want them to take.",
+      "placeholder":"My ideal customer is..."
+    },
+    {
+      "question": "How do you plan to attract people to your landing page?",
+      "isValid": false,
+      "tabName": "Marketing",
+      "type": "textarea",
+      "required": true,
+      "hint": "- Paid advertising (Google Ads, Facebook Ads)\n- Social media campaigns\n- Newsletters\n- Recommendations\n- Offline marketing or PR campaigns",
+      "why_do_we_ask": "**Why do we ask?**\n\nDifferent marketing channels can influence how visitors interact with your landing page. For example, users coming from social media may respond well to bold visuals and quick, clear calls to action, while visitors arriving through ads may expect specific, targeted information. Aligning the landing page with your marketing strategy means it can better support each type of visitor, enabling accurate tracking, optimised user journeys, and effective conversion throughout the marketing funnel.",
+      "placeholder": "e.g., social media, Google Ads, newsletters, referrals"
+    },
+    {
+      "question": "Do you know your competitors? If yes, list a few of their landing pages.",
+      "isValid": false,
+      "tabName": "Competitors",
+      "type": "list",
+      "required": false,
+      "hint": "",
+      "why_do_we_ask": "**Why do we ask?**\n\nReviewing competitor landing pages helps identify gaps in the market and provides ideas for standing out. This information provides context on what’s already available in your industry, guiding design and feature choices to create a unique and compelling experience that attracts and retains your audience.",
+      "placeholder": "e.g., example.com"
+    },
+    {
+      "question": "How will you stand out from the competition? What makes your business unique?",
+      "isValid": false,
+      "tabName": "Unique Selling Points",
+      "type": "textarea",
+      "required": true,
+      "hint": "- Unique product features (e.g., handcrafted, eco-friendly)\n- Business location\n- Expertise level\n- Eco-friendly practices",
+      "why_do_we_ask": "**Why do we ask?**\n\nHighlighting your unique selling points (USPs) helps in crafting a landing page that differentiates your business from competitors. Your USPs can guide design choices, placement of call-to-action elements, and help communicate value to visitors, building credibility and leading them through the marketing funnel towards a conversion.",
+      "placeholder": "e.g., eco-friendly, handmade, expert service"
+    },
+    {
+      "question": "Do you already own a domain? If not, what names are you considering?",
+      "isValid": false,
+      "tabName": "Domain",
+      "type": "text",
+      "required": true,
+      "hint": "- Choose an **SEO-friendly domain** that includes relevant keywords related to your business or industry. For example, a bakery could use `freshbakeshop.com`.\n- Keep the domain **short and easy to remember** (ideally 6–14 characters long).\n- Avoid using **special characters** (e.g., hyphens or numbers), unless absolutely necessary.\n- Ensure it’s **brandable and unique** to your business while still being clear to your target audience.\n- Check for **availability across social media platforms** if you plan to use the same name for branding consistency.\n- Consider purchasing **common misspellings or alternative versions** of your domain to prevent traffic loss (e.g., `freshbakes.com` in addition to `freshbakeshop.com`).",
+      "why_do_we_ask": "**Why do we ask?**\n\nA custom domain and branded email enhance professionalism and help build brand recognition. Proper domain setup also ensures a smooth landing page launch, prevents emails from going to spam, and supports landing page features like contact forms that may rely on email notifications. A well-chosen domain can also improve search engine optimisation, making it easier for customers to find you.",
+      "placeholder": "e.g., mybusiness.com, bestservices.co.uk"
+    },
+    {
+      "question": "Do you currently have brand guidelines (e.g., logo, colours, fonts)?\nIf so, please provide details; if not, what ideas do you have?",
+      "isValid": false,
+      "tabName": "Brand Guidelines",
+      "type": "textarea",
+      "required": true,
+      "hint": "- Think about your logo: Does it represent your brand effectively? Does it have any special meaning?\n- Specify your **preferred colour palette**: Warm tones (e.g., red, orange), cool tones (e.g., blue, green), or neutral tones (e.g., grey, black, white).\n- If unsure, consider whether your brand feels **modern**, **playful**, or **professional**, and choose colours that match that tone.\n- Select fonts that are **easy to read** and align with your brand personality (e.g., classic serif fonts for elegance, clean sans-serif fonts for modernity).\n- Consistent branding helps build trust and recognisability, so provide as much detail as possible.",
+      "why_do_we_ask": "**Why do we ask?**\n\nBrand guidelines are key to creating a cohesive and professional landing page. A consistent logo, colour scheme, and font selection help convey your brand’s identity and build trust with visitors. If you don't have guidelines yet, sharing your ideas will help establish a strong foundation for your online presence.",
+       "placeholder": "e.g., Modern logo, blue and green tones, clean sans-serif font"
+    },
+    {
+      "question": "What feelings or emotions do you want visitors to experience on your landing page?",
+      "isValid": false,
+      "tabName": "Emotions",
+      "type": "textarea",
+      "required": true,
+      "hint": "- Close your eyes and imagine being a visitor on your site. Do you feel excitement, calmness, or inspiration? Does the site convey a sense of professionalism, like working with trusted experts? Or does it feel warm and welcoming, like a place that feels like home? Perhaps it has a friendly and approachable vibe, encouraging connection and making visitors feel ready to engage. Think about the mood or impression you want to leave on your visitors.",
+      "why_do_we_ask": "**Why do we ask?**\n\nThe emotions your landing page evokes play a major role in user experience and engagement. Knowing the desired experience helps shape design elements like colours, animations, or interactive features to guide visitors smoothly through their journey. A fast-loading, visually engaging landing page creates the right atmosphere, keeping users interested and guiding them through each stage of the marketing funnel, from discovery to conversion.",
+       "placeholder": "e.g., Calm and professional, inspiring confidence; fun and vibrant, encouraging action"
+    },
+    {
+      "question": "Are there any specific landing pages you admire or would like to use for inspiration? Please share the links.",
+      "isValid": false,
+      "tabName": "Inspiration",
+      "type": "list",
+      "required": false,
+      "hint": "",
+      "why_do_we_ask": "**Why do we ask?**\n\nIdentifying design elements or features you admire can help incorporate similar concepts into your landing page, tailored to fit your brand. This insight helps create a landing page that reflects your vision and provides an experience that resonates with your target audience."
+    },
+    {
+      "section": "Contact Information",
+      "isValid": false,
+      "tabName": "Contact Details",
+      "fields": [
+        {
+          "question": "First Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "question": "Last Name",
+          "type": "text",
+          "required": true
+        },
+        {
+          "question": "Email Address",
+          "type": "text",
+          "required": true
+        },
+        {
+          "question": "Phone Number",
+          "type": "text",
+          "required": true
+        },
+        {
+          "question": "Organisation’s Name",
+          "type": "text",
+          "required": false
+        },
+        {
+          "question": "landing page (if available)",
+          "type": "text",
+          "required": false
+        },
+        {
+          "question": "Are you a Start-Up?",
+          "type": "select",
+          "required": false,
+          "options": ["Yes", "No"]
+        },
+        {
+          "question": "Number of Employees",
+          "type": "number",
+          "required": false
+        }
+      ]
+    }
+  ]
+  

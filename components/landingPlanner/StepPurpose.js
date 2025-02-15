@@ -4,14 +4,14 @@ import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Button, Input } from '@heroui/react';
 import ReactMarkdown from 'react-markdown';
 
-import questionsData from "@/data/questions-data.json";
+import questionsData from "@/data/landing-questions-data.json";
 import logger from '@/lib/logger';
 //import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from "@/lib/SessionProvider";
 
-import PasteButton from './layout/PasteButton';
-import { StepWrapper, StepQuestion, StepTextarea } from './layout/sectionComponents';
-import { StepGetAiHintBtn } from './layout/StepGetAiHintBtn';
+import PasteButton from '@/components/planner-layout/layout/PasteButton';
+import { StepWrapper, StepQuestion, StepTextarea } from '@/components/planner-layout/layout/sectionComponents';
+import { StepGetAiHintBtn } from '@/components/planner-layout/layout/StepGetAiHintBtn';
 
 const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");
@@ -115,7 +115,7 @@ const StepPurpose = ({ ref }) => {
   const serviceDescription = localServiceDescription ? `Some details about what I offer to my audience: ${localServiceDescription}.` : "";
   const stepQuestion = content.questionAddition2;
 
-  const prompt = `I'm planning a website and need help answering the question: ${stepQuestion}. ${purpose} ${purposeDetails} ${serviceDescription} Please keep the response informative and under 450 characters.`
+  const prompt = `I'm planning a landing page and need help answering the question: ${stepQuestion}. ${purpose} ${purposeDetails} ${serviceDescription} Please keep the response informative and under 450 characters.`
 
 
   return (

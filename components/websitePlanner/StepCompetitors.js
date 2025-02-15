@@ -9,7 +9,7 @@ import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';
 import { useSessionContext } from "@/lib/SessionProvider";
 
-import { StepWrapper, StepQuestion } from './layout/sectionComponents';
+import { StepWrapper, StepQuestion } from '@/components/planner-layout/layout/sectionComponents';
 
 const StepCompetitors = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();

@@ -10,9 +10,9 @@ import {
   StepWrapper,
   StepQuestion,
   StepTextarea,
-} from "./layout/sectionComponents";
-import PasteButton from "./layout/PasteButton";
-import StepGetAiHintBtn from "./layout/StepGetAiHintBtn";
+} from "@/components/planner-layout/layout/sectionComponents";
+import PasteButton from "@/components/planner-layout/layout/PasteButton";
+import StepGetAiHintBtn from "@/components/planner-layout/layout/StepGetAiHintBtn";
 
 const StepEmotions = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();

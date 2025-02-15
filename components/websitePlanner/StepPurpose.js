@@ -9,9 +9,9 @@ import logger from '@/lib/logger';
 //import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from "@/lib/SessionProvider";
 
-import PasteButton from './layout/PasteButton';
-import { StepWrapper, StepQuestion, StepTextarea } from './layout/sectionComponents';
-import { StepGetAiHintBtn } from './layout/StepGetAiHintBtn';
+import PasteButton from '@/components/planner-layout/layout/PasteButton';
+import { StepWrapper, StepQuestion, StepTextarea } from '@/components/planner-layout/layout/sectionComponents';
+import { StepGetAiHintBtn } from '@/components/planner-layout/layout/StepGetAiHintBtn';
 
 const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");

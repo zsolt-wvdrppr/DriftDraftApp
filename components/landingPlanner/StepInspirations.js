@@ -5,11 +5,11 @@ import { Input, Button, Textarea } from '@heroui/react';
 import { IconXboxXFilled, IconRowInsertBottom, IconWorldWww } from '@tabler/icons-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import questionsData from "@/data/questions-data.json";
+import questionsData from "@/data/landing-questions-data.json";
 import logger from '@/lib/logger';
 import { useSessionContext } from '@/lib/SessionProvider';
 
-import { StepWrapper, StepQuestion } from './layout/sectionComponents';
+import { StepWrapper, StepQuestion } from '@/components/planner-layout/layout/sectionComponents';
 
 const StepInspirations = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -155,7 +155,7 @@ const StepInspirations = ({ ref }) => {
                   isRequired={false}
                   label="Notes"
                   minRows={4}
-                  placeholder={"What do you like about this website?"}
+                  placeholder={"What do you like about this landing page?"}
                   value={inspirations?.[index] || ""}
                   onChange={(e) => handleTextareaChange(e.target.value, index)}
                 />

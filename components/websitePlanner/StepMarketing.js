@@ -5,13 +5,13 @@ import React, { useEffect, useState, useRef, useImperativeHandle } from "react";
 import questionsData from "@/data/questions-data.json";
 import { useSessionContext } from "@/lib/SessionProvider";
 
-import PasteButton from "./layout/PasteButton";
+import PasteButton from "@/components/planner-layout/layout/PasteButton";
 import {
   StepWrapper,
   StepQuestion,
   StepTextarea,
-} from "./layout/sectionComponents";
-import { StepGetAiHintBtn } from "./layout/StepGetAiHintBtn";
+} from "@/components/planner-layout/layout/sectionComponents";
+import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
 
 const StepMarketing = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();

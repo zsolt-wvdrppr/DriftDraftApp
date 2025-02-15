@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
 
-import questionsData from "@/data/questions-data.json";
+import questionsData from "@/data/landing-questions-data.json";
 import { useSessionContext } from "@/lib/SessionProvider";
 
-import PasteButton from './layout/PasteButton';
-import { StepWrapper, StepQuestion, StepTextarea } from './layout/sectionComponents';
-import { StepGetAiHintBtn } from './layout/StepGetAiHintBtn';
+import PasteButton from '@/components/planner-layout/layout/PasteButton';
+import { StepWrapper, StepQuestion, StepTextarea } from '@/components/planner-layout/layout/sectionComponents';
+import { StepGetAiHintBtn } from '@/components/planner-layout/layout/StepGetAiHintBtn';
 
 const StepAudience = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -51,7 +51,7 @@ const StepAudience = ({ ref }) => {
   const [userMsg, setUserMsg] = useState(null);
 
   const question = content.question;
-  const purpose = `- The purpose of the website: ${formData[0]?.purpose}\n` || '';
+  const purpose = `- The purpose of the landing page: ${formData[0]?.purpose}\n` || '';
   const purposeDetails = `- Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` || '';
   const serviceDescription = `- What I offer to my audience: ${formData[0]?.serviceDescription}\n` || '';
   const audience = `- Details about the audience or ideal customer/client: ${localValue}\n` || '';
@@ -60,7 +60,7 @@ const StepAudience = ({ ref }) => {
 `;
 
 
-  const prompt = `I'm planning a website and need help describing my target audience. More specifically I need help with the following question: ${question}. Here are some information you must consider: \n${purpose} ${purposeDetails} ${serviceDescription} ${audience} ${promptImprover} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
+  const prompt = `I'm planning a landing page and need help describing my target audience. More specifically I need help with the following question: ${question}. Here are some information you must consider: \n${purpose} ${purposeDetails} ${serviceDescription} ${audience} ${promptImprover} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
 
   return (
     <form ref={formRef}>

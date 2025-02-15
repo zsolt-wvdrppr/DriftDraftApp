@@ -5,11 +5,11 @@ import { Input, Button } from '@heroui/react';
 import { IconXboxXFilled, IconRowInsertBottom, IconWorldWww } from '@tabler/icons-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import questionsData from "@/data/questions-data.json";
+import questionsData from "@/data/landing-questions-data.json";
 import logger from '@/lib/logger';
 import { useSessionContext } from "@/lib/SessionProvider";
 
-import { StepWrapper, StepQuestion } from './layout/sectionComponents';
+import { StepWrapper, StepQuestion } from '@/components/planner-layout/layout/sectionComponents';
 
 const StepCompetitors = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();

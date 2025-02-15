@@ -2,16 +2,16 @@
 
 import React, { useEffect, useState, useRef, useImperativeHandle } from "react";
 
-import questionsData from "@/data/questions-data.json";
+import questionsData from "@/data/landing-questions-data.json";
 import { useSessionContext } from "@/lib/SessionProvider";
 
 import {
   StepWrapper,
   StepQuestion,
   StepTextarea,
-} from "./layout/sectionComponents";
-import PasteButton from "./layout/PasteButton";
-import StepGetAiHintBtn from "./layout/StepGetAiHintBtn";
+} from "@/components/planner-layout/layout/sectionComponents";
+import PasteButton from "@/components/planner-layout/layout/PasteButton";
+import StepGetAiHintBtn from "@/components/planner-layout/layout/StepGetAiHintBtn";
 
 const StepBrandGuidelines = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -80,7 +80,7 @@ const StepBrandGuidelines = ({ ref }) => {
     usps &&
     domains;
 
-  const prompt = `I'm planning a website and need detailed ideas for brand guidelines, including colours, fonts, and logo design. Here are the details:
+  const prompt = `I'm planning a landing page and need detailed ideas for brand guidelines, including colours, fonts, and logo design. Here are the details:
 
 - **Purpose**: ${purpose} ${purposeDetails}
 - **Offering**: ${serviceDescription}
@@ -112,7 +112,7 @@ Please provide thoughtful and creative brand guideline ideas that align with the
    - Suggest ways to keep the branding simple yet memorable.
 
 5. **Application**:
-   - Illustrate how these guidelines can be practically applied to website design, marketing materials, and social media, ensuring consistency and visual appeal.
+   - Illustrate how these guidelines can be practically applied to landing page design, marketing materials, and social media, ensuring consistency and visual appeal.
 
 Ensure all suggestions are innovative, SEO-friendly, descriptive, and catchy. Focus on providing adaptable ideas that explain *why* specific elements are recommended, helping the brand resonate with its audience both emotionally and visually. Keep the response concise and informative, ensuring it's less than 800 characters.`;
 

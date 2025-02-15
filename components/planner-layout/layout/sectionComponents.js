@@ -25,7 +25,7 @@ export const StepInnerWrapper = ({ className = '', children }) => {
   )
 }
 
-import Sidebar from '@/components/websitePlanner/ActionsBar/Sidebar'
+import Sidebar from '@/components/planner-layout/ActionsBar/Sidebar'
 
 export const StepWrapper = ({ whyDoWeAsk, userMsg, hint, className = null, children }) => {
   

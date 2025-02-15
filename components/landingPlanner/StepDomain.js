@@ -3,12 +3,12 @@
 import React, { useRef, useState, useImperativeHandle, useEffect } from 'react';
 import { Input } from '@heroui/react';
 
-import questionsData from "@/data/questions-data.json";
+import questionsData from "@/data/landing-questions-data.json";
 import logger from '@/lib/logger';
 import { useSessionContext } from '@/lib/SessionProvider';
 
-import { StepWrapper, StepQuestion } from './layout/sectionComponents';
-import StepGetAiHintBtn from './layout/StepGetAiHintBtn';
+import { StepWrapper, StepQuestion } from '@/components/planner-layout/layout/sectionComponents';
+import StepGetAiHintBtn from '@/components/planner-layout/layout/StepGetAiHintBtn';
 
 const StepDomain = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -67,7 +67,7 @@ const StepDomain = ({ ref }) => {
 
   const isAIAvailable = question && purpose && serviceDescription && audience && marketing && usps;
 
-  const prompt = `I'm planning a website and need ideas for a domain name. The site has the following details:
+  const prompt = `I'm planning a landing page and need ideas for a domain name. The site has the following details:
   - Purpose: ${purpose} ${purposeDetails}
   - Offering: ${serviceDescription}
   - Target audience: ${audience}

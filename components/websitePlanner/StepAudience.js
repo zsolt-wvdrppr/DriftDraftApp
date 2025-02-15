@@ -5,9 +5,9 @@ import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
 import questionsData from "@/data/questions-data.json";
 import { useSessionContext } from "@/lib/SessionProvider";
 
-import PasteButton from './layout/PasteButton';
-import { StepWrapper, StepQuestion, StepTextarea } from './layout/sectionComponents';
-import { StepGetAiHintBtn } from './layout/StepGetAiHintBtn';
+import PasteButton from '@/components/planner-layout/layout/PasteButton';
+import { StepWrapper, StepQuestion, StepTextarea } from '@/components/planner-layout/layout/sectionComponents';
+import { StepGetAiHintBtn } from '@/components/planner-layout/layout/StepGetAiHintBtn';
 
 const StepAudience = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();

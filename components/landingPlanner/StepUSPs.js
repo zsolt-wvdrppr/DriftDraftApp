@@ -10,9 +10,9 @@ import {
   StepWrapper,
   StepQuestion,
   StepTextarea,
-} from "./layout/sectionComponents";
-import PasteButton from "./layout/PasteButton";
-import { StepGetAiHintBtn } from "./layout/StepGetAiHintBtn";
+} from "@/components/planner-layout/layout/sectionComponents";
+import PasteButton from "@/components/planner-layout/layout/PasteButton";
+import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
 
 const StepUSPs = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -75,8 +75,8 @@ const StepUSPs = ({ ref }) => {
     question && purpose && serviceDescription && audience && marketing;
 
   const prompt = `
-    I'm planning a website and I've been asked to answer the following question: ${question}.
-    Consider that the main purpose of the website is ${purpose} ${purposeDetails}
+    I'm planning a landing page and I've been asked to answer the following question: ${question}.
+    Consider that the main purpose of the landing page is ${purpose} ${purposeDetails}
     and here's a description of what I offer: ${serviceDescription}
     The description of my target audience is as follows: ${audience}
     This is how I plan to attract my audience: ${marketing}

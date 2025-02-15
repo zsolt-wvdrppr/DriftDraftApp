@@ -1,4 +1,4 @@
-import RestartSessionBtn from '@/components/websitePlanner/layout/RestartSessionBtn'
+import RestartSessionBtn from '@/components/planner-layout/layout/RestartSessionBtn'
 
 const newSessionSelectorInner = () => {
   return (

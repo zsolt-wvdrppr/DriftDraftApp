@@ -2,16 +2,16 @@
 
 import React, { useEffect, useState, useRef, useImperativeHandle } from "react";
 
-import questionsData from "@/data/questions-data.json";
+import questionsData from "@/data/landing-questions-data.json";
 import { useSessionContext } from "@/lib/SessionProvider";
 
-import PasteButton from "./layout/PasteButton";
+import PasteButton from "@/components/planner-layout/layout/PasteButton";
 import {
   StepWrapper,
   StepQuestion,
   StepTextarea,
-} from "./layout/sectionComponents";
-import { StepGetAiHintBtn } from "./layout/StepGetAiHintBtn";
+} from "@/components/planner-layout/layout/sectionComponents";
+import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
 
 const StepMarketing = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -77,8 +77,8 @@ const StepMarketing = ({ ref }) => {
     `;
   const isAIAvailable = question && purpose && serviceDescription && audience;
 
-  const prompt = `I'm planning a website and need help answering the question: "${question}"—specifically, how to attract the right audience. 
-    The website's purpose is ${purpose} ${purposeDetails}, and I offer: ${serviceDescription}. 
+  const prompt = `I'm planning a landing page and need help answering the question: "${question}"—specifically, how to attract the right audience. 
+    The landing page's purpose is ${purpose} ${purposeDetails}, and I offer: ${serviceDescription}. 
     ${audience}
     ${marketing}
     ${promptImprover}

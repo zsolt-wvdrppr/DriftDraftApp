@@ -4,7 +4,7 @@ import React, { useState, useImperativeHandle } from 'react';
 import { Input, RadioGroup, Radio } from '@heroui/react';
 import { IconMail, IconWorldWww, IconUsers, IconId, IconPhone } from '@tabler/icons-react';
 
-import questionsData from "@/data/questions-data.json";
+import questionsData from "@/data/landing-questions-data.json";
 import logger from '@/lib/logger';
 import { useSessionContext } from '@/lib/SessionProvider';
 

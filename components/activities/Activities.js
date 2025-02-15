@@ -32,7 +32,7 @@ import {
 } from "@/lib/utils/utils";
 import { useGeneratePdf } from "@/lib/hooks/useGeneratePdf";
 
-import EditableMarkdownModal from "../websitePlanner/layout/EditableMarkdownModal";
+import EditableMarkdownModal from "../planner-layout/layout/EditableMarkdownModal";
 
 import { initialConfig } from "./lexical_config";
 import { legend } from "./utils";

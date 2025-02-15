@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useImperativeHandle } from "react";
 
-import questionsData from "@/data/questions-data.json";
+import questionsData from "@/data/landing-questions-data.json";
 import logger from "@/lib/logger";
 import { useSessionContext } from "@/lib/SessionProvider";
 
@@ -10,9 +10,9 @@ import {
   StepWrapper,
   StepQuestion,
   StepTextarea,
-} from "./layout/sectionComponents";
-import PasteButton from "./layout/PasteButton";
-import StepGetAiHintBtn from "./layout/StepGetAiHintBtn";
+} from "@/components/planner-layout/layout/sectionComponents";
+import PasteButton from "@/components/planner-layout/layout/PasteButton";
+import StepGetAiHintBtn from "@/components/planner-layout/layout/StepGetAiHintBtn";
 
 const StepEmotions = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -83,11 +83,11 @@ const StepEmotions = ({ ref }) => {
     domains &&
     brandGuidelines;
 
-    const prompt = `Help me clarify the emotional experience I want visitors to have on my website. The primary purpose is ${purpose} ${purposeDetails} Here's what the website offers: ${serviceDescription} My target audience is: ${audience} I want to create a strong emotional connection with them. ${competitors} My unique selling points include: ${usps}. ${emotionIdeas} Based on this, ask thought-provoking questions or provide examples to help define the emotional tone of my website. For instance:
+    const prompt = `Help me clarify the emotional experience I want visitors to have on my landing page. The primary purpose is ${purpose} ${purposeDetails} Here's what the landing page offers: ${serviceDescription} My target audience is: ${audience} I want to create a strong emotional connection with them. ${competitors} My unique selling points include: ${usps}. ${emotionIdeas} Based on this, ask thought-provoking questions or provide examples to help define the emotional tone of my landing page. For instance:
     1. What feelings (e.g., excitement, calmness, trust, inspiration) will resonate with my audience and connect them to the brand?
     2. How should visitors describe their experience after using the site (e.g., ‘engaging,’ ‘professional,’ ‘welcoming’)?
     3. What first impression or mood should the homepage evoke?
-    Provide a framework or examples to articulate these emotions clearly, explaining why they are vital for the website’s success. Keep the response conversational, concise, and under 800 characters.`;
+    Provide a framework or examples to articulate these emotions clearly, explaining why they are vital for the landing page’s success. Keep the response conversational, concise, and under 800 characters.`;
 
     
 

@@ -154,7 +154,7 @@ const Result = () => {
               - Audience: "${audience}"
             Task:
               - Generate a concise overview in bullet points.
-              - Highlight the main website goals, services, and target audience.
+              - Highlight the main landing page goals, services, and target audience.
               - If any detail is missing, mention it and why it is important to clarify.
               - Keep it straightforward and short.
           `,
@@ -170,7 +170,7 @@ const Result = () => {
               - Unique Selling Points (USPs): "${usps}"
               - Inspirations: "${inspirations}"
             Task:
-              - Summarise how branding (colours, fonts, overall style) and emotional goals should shape the website.
+              - Summarise how branding (colours, fonts, overall style) and emotional goals should shape the landing page.
               - Briefly discuss any relevant competitor insights.
               - Emphasise the USPs (why they're important for differentiation).
               - If anything is unclear, note it and recommend clarifying.
@@ -214,9 +214,9 @@ const Result = () => {
       setPrompts(prompts);
 
       // ✅ Execute prompts and update the session once complete
-      const generateWebsitePlan = async () => {
+      const generateLandingPlan = async () => {
         try {
-          logger.info("Executing prompts for website plan generation...");
+          logger.info("Executing prompts for landing page plan generation...");
 
           // Execute prompts and wait for results
           const results = await executePrompts(prompts, userId);
@@ -230,12 +230,12 @@ const Result = () => {
 
             // Update the plan in the database
             await updateAiGeneratedPlanInDb(userId, sessionId, combinedResult);
-            toast.success("Website plan generated and saved successfully.");
+            toast.success("landing page plan generated and saved successfully.");
           }
         } catch (err) {
           // Catch and handle errors during prompt execution or DB updates
           logger.error(
-            "An error occurred while generating the website plan:",
+            "An error occurred while generating the landing page plan:",
             err
           );
 
@@ -244,7 +244,7 @@ const Result = () => {
       };
 
       if (hasCredits) {
-        generateWebsitePlan();
+        generateLandingPlan();
       }
     } else {
       logger.info("resetting hint");
@@ -268,7 +268,7 @@ const Result = () => {
   const steps = [
     "Analyzing your inputs...",
     "Formulating a strategy...",
-    "Generating website recommendations...",
+    "Generating landing page recommendations...",
     "Finalizing content...",
   ];
 
@@ -329,7 +329,7 @@ const Result = () => {
             <div className="px-8 py-8 shadow-md border rounded-3xl border-accentMint dark:border-zinc-800 max-w-screen-md mx-auto">
               <p className="text-xl font-semibold text-left text-primary">
                 {`
-          Congratulations, ${sessionData.formData[9].firstname}, on completing your strategic website plan!
+          Congratulations, ${sessionData.formData[9].firstname}, on completing your strategic landing page plan!
           `}
               </p>
               <p className="text-justify pt-4">

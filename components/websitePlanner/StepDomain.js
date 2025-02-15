@@ -7,8 +7,8 @@ import questionsData from "@/data/questions-data.json";
 import logger from '@/lib/logger';
 import { useSessionContext } from '@/lib/SessionProvider';
 
-import { StepWrapper, StepQuestion } from './layout/sectionComponents';
-import StepGetAiHintBtn from './layout/StepGetAiHintBtn';
+import { StepWrapper, StepQuestion } from '@/components/planner-layout/layout/sectionComponents';
+import StepGetAiHintBtn from '@/components/planner-layout/layout/StepGetAiHintBtn';
 
 const StepDomain = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
