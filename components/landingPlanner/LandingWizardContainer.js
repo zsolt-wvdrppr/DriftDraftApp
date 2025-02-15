@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
 import { IconCheck, IconPlant, IconUsersGroup, IconMagnet, IconRocket, IconDiamond, IconWorldWww, IconWriting, IconMoodSmileBeam, IconBulb, IconAddressBook } from '@tabler/icons-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Spinner } from "@heroui/react";
 
 import logger from '@/lib/logger';
@@ -17,11 +17,13 @@ import {
     goToPreviousStep,
     handleSubmit,
     handleSectionPicker
-} from '@/lib/websitePlannerFormNavigation';
+} from '@/lib/plannerFormNavigation';
 import { useProfileUpdater } from '@/lib/hooks/useProfileUpdater';
 import { useRestoreStep } from '@/lib/hooks/useRestoreStep';
 import { useUpdateTabName } from '@/lib/hooks/useUpdateTabName';
 import { useSessionContext } from "@/lib/SessionProvider";
+import RestartSessionBtn from '@/components/planner-layout/layout/RestartSessionBtn';
+import { PreviousButton, NextButton, SubmitButton } from '@/components/planner-layout/layout/NavigationButtons';
 
 import ProgressBar from './ProgressBar';
 import StepPurpose from './StepPurpose';
@@ -35,8 +37,6 @@ import StepEmotions from './StepEmotions';
 import StepInspirations from './StepInspirations';
 import StepContactInfo from './StepContactInfo';
 import Result from './Result';
-import { PreviousButton, NextButton, SubmitButton } from '@/components/planner-layout/layout/NavigationButtons';
-import RestartSessionBtn from '@/components/planner-layout/layout/RestartSessionBtn';
 
 // Step definitions
 const steps = [
@@ -88,9 +88,10 @@ export default function LandingWizardContainer({ }) {
     const formData = sessionData?.formData || {};
 
     const router = useRouter();
+    const pathname = usePathname();
 
     useProfileUpdater(user);
-    useRestoreStep(formData, setCurrentStep, '/website-planner');
+    useRestoreStep(formData, setCurrentStep, '/landingpage-planner');
     useUpdateTabName(currentStep, steps, setTabName);
 
     const errorToast = (message) => {
@@ -186,7 +187,8 @@ export default function LandingWizardContainer({ }) {
             clearLocalStorage,
             setError,
             setIsSubmitted,
-            startTransition
+            startTransition,
+            pathname
         );
         if(user?.id && sessionData){
             const _userId = user.id;
@@ -234,7 +236,7 @@ export default function LandingWizardContainer({ }) {
 
                 <div className="wizard-container relative max-w-screen-xl w-full h-max px-0 md:py-4">
                     <div className="step-1 flex">
-                    <RestartSessionBtn />
+                    <RestartSessionBtn targetPathname={"landingpage-planner"} />
                     <ProgressBar currentStep={currentStep} totalSteps={steps.length} />
                     </div>
                     {/* Dropdown for Navigation */}

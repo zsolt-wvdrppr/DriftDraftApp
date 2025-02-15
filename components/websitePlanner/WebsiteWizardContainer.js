@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@heroui/react";
 import { IconCheck, IconPlant, IconUsersGroup, IconMagnet, IconRocket, IconDiamond, IconWorldWww, IconWriting, IconMoodSmileBeam, IconBulb, IconAddressBook } from '@tabler/icons-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Spinner } from "@heroui/react";
 
 import logger from '@/lib/logger';
@@ -17,7 +17,7 @@ import {
     goToPreviousStep,
     handleSubmit,
     handleSectionPicker
-} from '@/lib/websitePlannerFormNavigation';
+} from '@/lib/plannerFormNavigation';
 import { useProfileUpdater } from '@/lib/hooks/useProfileUpdater';
 import { useRestoreStep } from '@/lib/hooks/useRestoreStep';
 import { useUpdateTabName } from '@/lib/hooks/useUpdateTabName';
@@ -89,6 +89,7 @@ export default function WebsiteWizardContainer({ }) {
     const formData = sessionData?.formData || {};
 
     const router = useRouter();
+    const pathname = usePathname();
 
     useProfileUpdater(user);
     useRestoreStep(formData, setCurrentStep, '/website-planner');
@@ -187,7 +188,8 @@ export default function WebsiteWizardContainer({ }) {
             clearLocalStorage,
             setError,
             setIsSubmitted,
-            startTransition
+            startTransition,
+            pathname
         );
         if(user?.id && sessionData){
             const _userId = user.id;
@@ -235,7 +237,7 @@ export default function WebsiteWizardContainer({ }) {
 
                 <div className="wizard-container relative max-w-screen-xl w-full h-max px-0 md:py-4">
                     <div className="step-1 flex">
-                    <RestartSessionBtn />
+                    <RestartSessionBtn targetPathname={"website-planner"} />
                     <ProgressBar currentStep={currentStep} totalSteps={steps.length} />
                     </div>
                     {/* Dropdown for Navigation */}

@@ -9,7 +9,7 @@ import { Tooltip } from "react-tooltip";
 import logger from "@/lib/logger";
 import { useSessionContext } from "@/lib/SessionProvider";
 
-const RestartSessionBtn = ({ children }) => {
+const RestartSessionBtn = ({ children, targetPathname }) => {
   const { startNewSession } = useSessionContext();
   const router = useRouter();
   const pathname = usePathname();
@@ -20,11 +20,11 @@ const RestartSessionBtn = ({ children }) => {
       logger.info("Starting new session...");
       startNewSession();
 
-      if (pathname !== "/website-planner") {
-        router.push("/website-planner?step=0");
+      if (pathname !== `/${targetPathname}`) {
+        router.push(`/${targetPathname}?step=0`);
       } else {
         // Workaround for updating the URL without reloading the page and force rerender due to Next.JS bullshit bug
-        window.history.pushState({}, "", "/website-planner?step=0");
+        window.history.pushState({}, "", `/${targetPathname}?step=0`);
       }
 
     });
