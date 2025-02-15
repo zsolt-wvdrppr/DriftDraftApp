@@ -12,17 +12,17 @@ const AccountBtn = ({ user = null, label = "", noLabel = false, className = "", 
   const first_name = fullName?.split(" ")[0] || user?.user_metadata?.full_name?.split(" ")[0] || user?.user_metadata?.name?.split(" ")[0];
 
   return (
-    <div className="flex items-center">
-      <Link className={cn("md:bg-default-200 md:py-2 md:px-4 md:rounded-xl cursor-pointer flex gap-2", className)} href="/account" onPress={onPress}>
+    <div className="flex items-end">
+      <Link className={cn("md:bg-default-200 md:py-2 md:px-4 md:rounded-xl items-end cursor-pointer flex gap-2", className)} href="/account" onPress={onPress}>
         <IconUser className="text-primary" size={24}/>
         {!noLabel && (
         <p
           className={cn(
-            "flex flex-col",
+            "",
             labelClassName
           )}
         >
-          <span className="">{label || first_name}</span>
+          <span className="text-default-500 dark:text-default-600 text-sm">{label || first_name}</span>
         </p>
         )}
       </Link>

@@ -79,6 +79,7 @@ export default function UserActivities() {
   const router = useRouter();
   const inputRefs = useRef({});
   const { executeRecaptcha } = useReCaptcha(); // Hook to generate token
+  const [isFetchingInProgress, setIsFetchingInProgress] = useState(true);
 
   const { generatePdf, isPdfGenerating } = useGeneratePdf();
 
@@ -91,8 +92,10 @@ export default function UserActivities() {
       const fetchSessions = async () => {
         try {
           logger.info("Fetching sessions from DB...");
+          setIsFetchingInProgress(true);
           const sessions = await fetchAllSessionsFromDb(user.id); // Await the data
 
+          setIsFetchingInProgress(false);
           sortItemsByDate(sessions, true); // Update the state with the fetched sessions
         } catch (error) {
           logger.error("Error fetching sessions from DB:", error.message);
@@ -225,7 +228,7 @@ export default function UserActivities() {
     return () => clearTimeout(timeout); // Cleanup on unmount
   }, []);
 
-  if (isPending || loading) {
+  if (isPending || loading || isFetchingInProgress) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Spinner color="primary" />
@@ -402,7 +405,7 @@ export default function UserActivities() {
           </span>
         </Switch>
       </div>
-      {items.length === 0 && (
+      {(items.length && !loading && !isFetchingInProgress) === 0 && (
         <div className="flex items-center justify-center h-96">
           <p className="text-center text-gray-500">
             No sessions found. Start a new session to get started.
