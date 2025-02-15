@@ -113,17 +113,16 @@ export default function UserActivities() {
       const redirectPath = `/login?redirect=/activities`;
 
       router.push(redirectPath);
-
+      
       return;
     }
-
+  
     if (!loading && user) {
       logger.debug("ensureProfileExists:", user);
-      const ensureProfileExists = async () => {
+  
+      (async () => {
         await createOrUpdateProfile();
-      };
-
-      ensureProfileExists();
+      })();
     }
   }, [loading, user, router]);
 

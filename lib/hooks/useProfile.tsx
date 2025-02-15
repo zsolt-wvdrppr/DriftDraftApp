@@ -19,11 +19,18 @@ export const useUserProfile = (userId: string) => {
           .from("profiles")
           .select("full_name, email")
           .eq("user_id", userId)
-          .single();
+          .maybeSingle(); // 👈 FIX: Prevents errors if profile doesn't exist yet
 
         if (error) throw error;
-        setFullName(data?.full_name || null);
-        setEmail(data?.email || null);
+
+        if (!data) {
+          // 👇 Profile does not exist, avoid setting state to undefined
+          setFullName(null);
+          setEmail(null);
+        } else {
+          setFullName(data.full_name);
+          setEmail(data.email);
+        }
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -59,6 +66,7 @@ export const useUserProfile = (userId: string) => {
 
   return { fullName, email, loading, error, updateFullName };
 };
+
 
 export const useDeleteUser = () => {
   const [loading, setLoading] = useState(false);

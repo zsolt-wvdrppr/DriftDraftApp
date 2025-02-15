@@ -69,11 +69,15 @@ export default function LogIn() {
         return; // Stop execution after error
       }
 
-      // Ensure profile is created after login
-      await createOrUpdateProfile();
+      // ✅ Ensure profile is created before proceeding
+    const profileCreated = await createOrUpdateProfile();
 
-      // If login is successful
-      await createOrUpdateProfile(); // Ensure the profile is created
+    if (!profileCreated) {
+      setError("Failed to create user profile. Please try again.");
+
+      return;
+    }
+
       const redirectUrl = new URLSearchParams(window.location.search).get("redirect") || "/activities";
 
       router.push(redirectUrl);
