@@ -10,6 +10,7 @@ const ServiceSelector = () => {
     const defaultContent = "This feature is not available yet. Please check back later.";
     const urls = {
         websitePlanner: "/website-planner?step=0",
+        landingPagePlanner: "/landingpage-planner",
         landingPageWriter: "/landing-page-writer",
         websiteGenerator: "/website-generator"
     }
@@ -19,8 +20,8 @@ const ServiceSelector = () => {
             <h2 className="text-2xl font-semibold text-center p-8">Select a tool</h2>
             <Accordion className="w-full px-8" variant="splitted">
                 <AccordionItem
-                    key="anchor"
-                    aria-label="Anchor"
+                    key="website-planner"
+                    aria-label="Website Planner"
                     indicator={<IconPencil />}
                     startContent={<IconRuler className="w-9 h-9 text-accentMint" />}
                     subtitle="Beta version available"
@@ -29,12 +30,12 @@ const ServiceSelector = () => {
                     {"Create a strategic website blueprint. Our AI helps you to define your goals, target audience, content structure and more."}
                     <div className="flex justify-end py-2 pl-4 mt-4">
                         <Button
-                            as={Link}
                             alt="Start planning"
                             aria-label="Start Website Planner"
+                            as={Link}
+                            color="primary"
                             href={urls.websitePlanner}
                             isExternal={false}
-                            color="primary"
                             variant="shadow"
                         >
                             Start Your Website Plan
@@ -42,8 +43,31 @@ const ServiceSelector = () => {
                     </div>
                 </AccordionItem>
                 <AccordionItem
-                    key="moon"
-                    aria-label="Moon"
+                    key="landing-page-planner"
+                    aria-label="Landing Page Planner"
+                    indicator={<IconPencil />}
+                    startContent={<IconRuler className="w-9 h-9 text-accentMint" />}
+                    subtitle="Beta version available"
+                    title={<h3 className="font-semibold">Landing Page Planner</h3>}
+                >
+                    {"Create a strategic landing page blueprint. Our AI helps you define your objectives, pinpoint your target audience, structure your content, and more."}
+                    <div className="flex justify-end py-2 pl-4 mt-4">
+                        <Button
+                            alt="Start planning"
+                            aria-label="Start Landing Page Planner"
+                            as={Link}
+                            color="primary"
+                            href={urls.landingPagePlanner}
+                            isExternal={false}
+                            variant="shadow"
+                        >
+                            Start Your Landing Page
+                        </Button>
+                    </div>
+                </AccordionItem>
+                <AccordionItem
+                    key="landing-page-writer"
+                    aria-label="Landing Page Writer"
                     indicator={<IconPencil />}
                     isDisabled={true}
                     startContent={<IconComet className="w-9 h-9 text-accentMint" />}
@@ -53,8 +77,8 @@ const ServiceSelector = () => {
                     {defaultContent}
                 </AccordionItem>
                 <AccordionItem
-                    key="sun"
-                    aria-label="Sun"
+                    key="website-generator"
+                    aria-label="Website Generator"
                     indicator={<IconPencil />}
                     isDisabled={true}
                     startContent={<IconSettingsBolt className="w-9 h-9 text-accentMint" />}
