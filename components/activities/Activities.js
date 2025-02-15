@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useTransition } from "react";
 import { Reorder, AnimatePresence } from "framer-motion";
-import { Button, Link, useDisclosure, Spinner, Switch } from "@heroui/react";
+import { Button, Link, useDisclosure, Spinner, Switch, Input } from "@heroui/react";
 import {
   IconReorder,
   IconTrash,
@@ -116,13 +116,13 @@ export default function UserActivities() {
       const redirectPath = `/login?redirect=/activities`;
 
       router.push(redirectPath);
-      
+
       return;
     }
-  
+
     if (!loading && user) {
       logger.debug("ensureProfileExists:", user);
-  
+
       (async () => {
         await createOrUpdateProfile();
       })();
@@ -427,18 +427,24 @@ export default function UserActivities() {
                 <Reorder.Item
                   key={item?.session_id}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white dark:bg-content1 shadow-md p-4 rounded-md flex flex-col items-center gap-4 select-none"
+                  className="bg-white dark:bg-content1 shadow-md p-4 rounded-md flex flex-col items-center justify-between gap-4 select-none"
                   drag={false}
                   exit={{ opacity: 0, x: 100 }}
                   initial={{ opacity: 0, y: 20 }}
                   value={item}
                   whileTap={{ scale: 0.95 }}
                 >
+                  <div className="relative w-full">
+                    <div className="absolute bg-primary/60 text-white text-sm rounded-br-lg rounded-tl-md -top-4 -left-4 py-1 px-2">
+                    <p>{item.type}</p>
+                    </div>
+                  </div>
                   <div className="relative w-fit py-4">
                     {item.isEditing ? (
-                      <input
+                      <Input
                         ref={(el) => (inputRefs.current[item.session_id] = el)} // Assign dynamic ref
                         className="border p-2 rounded-md"
+                        maxLength={50}
                         type="text"
                         value={item.session_title}
                         onBlur={() => handleEditTitle(item, item.session_title)} // Stop editing when blurred
@@ -461,7 +467,7 @@ export default function UserActivities() {
                       <div>
                         <h2 className="font-semibold">{item.session_title}</h2>
                         <Link
-                          className="text-primary absolute w-4 h-4 -right-5 top-2"
+                          className="text-primary absolute w-4 h-4 -right-3 top-2"
                           onPress={() => {
                             startEditingTitle(item);
                           }}
