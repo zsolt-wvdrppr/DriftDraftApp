@@ -4,7 +4,7 @@ import logger from "@/lib/logger";
 import { IconCheck, IconSend, IconX } from "@tabler/icons-react";
 import { useAuth } from "@/lib/AuthContext";
 
-export const PromocodeInput = () => {
+export const PromocodeInput = ({ onPromoCodeApplied }) => {
   const [promoCode, setPromoCode] = useState("");
   const [isChanged, setIsChanged] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -12,19 +12,6 @@ export const PromocodeInput = () => {
   const [isCodeValid, setIsCodeValid] = useState(false);
   const [isValidated, setIsValidated] = useState(false);
   const { user } = useAuth();
-
-  // Mock validatPromoCode function
-  const validatePromoCode = async (promoCode) => {
-    logger.info(`Validating promo code: ${promoCode}`);
-    // Mock API call with timout
-    setLoading(true);
-    setIsValidated(false);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsCodeValid(true);
-    setLoading(false);
-    setIsValidated(true);
-    return true;
-  };
 
   const handleUpdate = async () => {
     if (!promoCode.trim()) return;
@@ -50,6 +37,10 @@ export const PromocodeInput = () => {
         logger.info(
           `Promo code valid. Credits awarded: ${data.creditsAwarded}`
         );
+        // Signal to the parent that the promo code has been applied successfully
+        if (typeof onPromoCodeApplied === "function") {
+          onPromoCodeApplied(data);
+        }
       }
     } catch (err) {
       setIsCodeValid(false);

@@ -12,35 +12,44 @@ import {
   Select,
   SelectItem,
 } from "@heroui/react";
-import { IconStack, IconStack2, IconStack3 } from "@tabler/icons-react";
-
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import logger from "@/lib/logger";
 import PromocodeInput from "./promocode_input";
+import usePlanTiers from "@/lib/hooks/usePlanTiers";
+import { IconStack, IconStack2, IconStack3 } from "@tabler/icons-react";
 
-const plans = [
-  {
-    key: "starter",
-    label: "Starter",
-    description: "20 credits per month",
-    price: 3,
-  },
-  { key: "pro", label: "Pro", description: "100 credits per month", price: 10 },
-  {
-    key: "agency",
-    label: "Agency",
-    description: "200 credits per month",
-    price: 20,
-  },
-];
+// AnimatedNumber component to animate numeric changes
+const AnimatedNumber = ({ value }) => {
+  const motionValue = useMotionValue(value);
+  const springValue = useSpring(motionValue, { stiffness: 100, damping: 20 });
+  const [displayValue, setDisplayValue] = useState(value);
+
+  useEffect(() => {
+    // When the value changes, update the motion value
+    motionValue.set(value);
+  }, [value, motionValue]);
+
+  useEffect(() => {
+    // Subscribe to changes on the spring and update the display value (rounded)
+    return springValue.on("change", (latest) => {
+      setDisplayValue(Math.floor(latest));
+    });
+  }, [springValue]);
+
+  return <span>{displayValue}</span>;
+};
 
 const SubscriptionAndTopup = () => {
+  const { planTiers: plans, loading, error } = usePlanTiers();
   const [selectedPlan, setSelectedPlan] = useState(new Set([]));
 
   useEffect(() => {
     logger.debug("selected Plan", selectedPlan);
   }, [selectedPlan]);
 
-  const { topUpCredits, allowanceCredits } = useSessionContext();
+  // Assumes that your session context now includes a refreshCredits function
+  const { topUpCredits, allowanceCredits, refreshCredits } = useSessionContext();
+
   const {
     isOpen: isPlanOpen,
     onOpen: onPlanOpen,
@@ -54,20 +63,31 @@ const SubscriptionAndTopup = () => {
 
   const icons = {
     starter: <IconStack size={24} className="text-highlightOrange" />,
-    pro: <IconStack2 size={24} className="text-highlightBlue" />,
-    agency: <IconStack3 size={24} className="text-highlightPurple" />,
+    advanced: <IconStack2 size={24} className="text-highlightBlue" />,
+    pro: <IconStack3 size={24} className="text-highlightPurple" />,
+  };
+
+  // Callback to handle promo code application
+  const handlePromoApplied = (data) => {
+    logger.info("Promo code applied, refreshing credits", data);
+    // Refresh the credits from the session context so that the new balances are fetched
+    refreshCredits();
   };
 
   return (
-    <div className="pt-4 pb-8 max-w-sm mx-auto flex flex-col gap-4 items-strecth">
+    <div className="pt-4 pb-8 max-w-sm mx-auto flex flex-col gap-4 items-stretch">
       <Card className="p-4 mb-4 grid grid-cols-2 gap-4 items-center">
         <p className="text-lg">Allowance Credits:</p>
-        <p className="text-lg text-right">
-          <strong>{allowanceCredits}</strong>
+        <p className="text-lg text-right text-secondary">
+          <strong>
+            <AnimatedNumber value={allowanceCredits} />
+          </strong>
         </p>
         <p className="text-lg">Top-up Credits:</p>
-        <p className="text-lg text-right">
-          <strong>{topUpCredits}</strong>
+        <p className="text-lg text-right text-primary">
+          <strong>
+            <AnimatedNumber value={topUpCredits} />
+          </strong>
         </p>
       </Card>
 
@@ -86,7 +106,8 @@ const SubscriptionAndTopup = () => {
         </Button>
       </div>
 
-      <PromocodeInput />
+      {/* Pass the promo code applied callback to the PromocodeInput component */}
+      <PromocodeInput onPromoCodeApplied={handlePromoApplied} />
 
       {/* Plan Selection Modal */}
       <Modal isOpen={isPlanOpen} onClose={onPlanClose}>
@@ -123,16 +144,14 @@ const SubscriptionAndTopup = () => {
             >
               {(plan) => (
                 <SelectItem key={plan.key} aria-label={plan.label}>
-                  {
-                    <div className="flex items-center gap-4 border-b-1 pb-3 border-default-200 dark:border-default-200">
-                      {icons[plan.key]}{" "}
-                      <div className="flex flex-col justify-between">
-                        <p className="font-semibold">{plan.label}</p>
-                        <p>{plan.description}</p>
-                        <p>£{plan.price}/month</p>
-                      </div>
+                  <div className="flex items-center gap-4 border-b-1 pb-3 border-default-200 dark:border-default-200">
+                    {icons[plan.key]}{" "}
+                    <div className="flex flex-col justify-between">
+                      <p className="font-semibold">{plan.label}</p>
+                      <p>{plan.description}</p>
+                      <p>£{plan.price}/month</p>
                     </div>
-                  }
+                  </div>
                 </SelectItem>
               )}
             </Select>
@@ -142,12 +161,12 @@ const SubscriptionAndTopup = () => {
               Cancel
             </Button>
             <Button className="bg-blue-500 text-white w-44 font-semibold">
-              {"Upgrade"}
+              Upgrade
               {selectedPlan.size === 0 ? (
                 ""
               ) : (
                 <span className="-ml-1">
-                  {"to "}<span className="capitalize">{selectedPlan.currentKey}</span>
+                  to <span className="capitalize">{selectedPlan.currentKey}</span>
                 </span>
               )}
             </Button>

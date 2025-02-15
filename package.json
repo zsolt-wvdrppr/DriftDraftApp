@@ -23,6 +23,9 @@
 		"@react-aria/ssr": "3.9.7",
 		"@react-aria/visually-hidden": "3.8.19",
 		"@sparticuz/chromium": "^131.0.1",
+		"@stripe/react-stripe-js": "^3.1.1",
+		"@stripe/stripe-js": "^5.6.0",
+		"@supabase/ssr": "^0.5.2",
 		"@supabase/supabase-js": "^2.48.0",
 		"@tabler/icons-react": "^3.28.1",
 		"@tailwindcss/typography": "^0.5.16",
@@ -47,6 +50,7 @@
 		"react-tooltip": "^5.28.0",
 		"request-ip": "^3.3.0",
 		"sonner": "^1.7.2",
+		"stripe": "^17.6.0",
 		"tailwind-merge": "^2.6.0",
 		"use-sound": "^4.0.3",
 		"uuid": "^11.0.5"
