@@ -47,7 +47,7 @@ const ProfileSettings = () => {
   };
 
   return (
-    <div className="p-4 max-w-screen-lg mx-auto flex flex-col gap-10 max-w-screen-sm">
+    <div className="p-4 mx-auto flex flex-col gap-10 max-w-screen-sm">
       <div className="flex items-center gap-4">
         <Input
           className=""

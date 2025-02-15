@@ -15,6 +15,7 @@ import {
 import { IconStack, IconStack2, IconStack3 } from "@tabler/icons-react";
 
 import logger from "@/lib/logger";
+import PromocodeInput from "./promocode_input";
 
 const plans = [
   {
@@ -84,6 +85,8 @@ const SubscriptionAndTopup = () => {
           Top-up Credits
         </Button>
       </div>
+
+      <PromocodeInput />
 
       {/* Plan Selection Modal */}
       <Modal isOpen={isPlanOpen} onClose={onPlanClose}>
