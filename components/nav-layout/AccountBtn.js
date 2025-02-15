@@ -9,7 +9,7 @@ const AccountBtn = ({ user = null, label = "", noLabel = false, className = "", 
   const { fullName } = useUserProfile(user?.id);
 
   // First name
-  const first_name = fullName?.split(" ")[0];
+  const first_name = fullName?.split(" ")[0] || user?.user_metadata?.full_name?.split(" ")[0] || user?.user_metadata?.name?.split(" ")[0];
 
   return (
     <div className="flex items-center">
