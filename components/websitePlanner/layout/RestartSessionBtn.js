@@ -1,45 +1,53 @@
 "use client"; // Required when using useState and useTransition
 
-import { Button } from '@heroui/react';
-import { useRouter } from 'next/navigation';
-import { IconFilePlus } from '@tabler/icons-react';
-import { useTransition } from 'react';
-import { Tooltip } from 'react-tooltip';
+import { Button } from "@heroui/react";
+import { useRouter, usePathname } from "next/navigation";
+import { IconFilePlus } from "@tabler/icons-react";
+import { useTransition } from "react";
+import { Tooltip } from "react-tooltip";
 
-import logger from '@/lib/logger';
-import { useSessionContext } from '@/lib/SessionProvider';
+import logger from "@/lib/logger";
+import { useSessionContext } from "@/lib/SessionProvider";
 
 const RestartSessionBtn = ({ children }) => {
-    const { startNewSession } = useSessionContext();
-    const router = useRouter();
-    const [isPending, startTransition] = useTransition();
+  const { startNewSession } = useSessionContext();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
 
-    const handlePress = () => {
-        startTransition(() => {
-            logger.info("Starting new session...");
-            startNewSession();
-            router.push('/website-planner?step=0');
-        });
-    };
+  const handlePress = () => {
+    startTransition(() => {
+      logger.info("Starting new session...");
+      startNewSession();
 
-    return (
-        <>
-            <Button
-                className='flex flex-col items-center self-end h-16 gap-2'
-                id="restart-session"
-                isDisabled={isPending}
-                onPress={handlePress}
-            >
-                <div className='flex items-center gap-4'>
-                <div>{children}</div>
-                <IconFilePlus className="text-secondary" size={30} />
-                </div>
-            </Button>
-            <Tooltip anchorSelect="#restart-session" place="top">
-                Start a new session
-            </Tooltip>
-        </>
-    );
+      if (pathname !== "/website-planner") {
+        router.push("/website-planner?step=0");
+      } else {
+        // Workaround for updating the URL without reloading the page and force rerender due to Next.JS bullshit bug
+        window.history.pushState({}, "", "/website-planner?step=0");
+      }
+
+    });
+  };
+
+  return (
+    <>
+      <Button
+        className="flex flex-col items-center self-end h-16 gap-2"
+        id="restart-session"
+        isDisabled={isPending}
+        onPress={handlePress}
+      >
+        <div className="flex items-center gap-4">
+          <div>{children}</div>
+          <IconFilePlus className="text-secondary" size={30} />
+        </div>
+      </Button>
+      <Tooltip anchorSelect="#restart-session" place="top">
+        Start a new session
+      </Tooltip>
+    </>
+  );
 };
 
 export default RestartSessionBtn;
