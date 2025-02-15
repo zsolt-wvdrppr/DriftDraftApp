@@ -5,9 +5,9 @@ const RedoTutorialButton = ({ onRedo }) => {
     return (
         <Button
             color="primary"
+            icon={<IconRefresh size={20} />}
             variant="flat"
             onPress={onRedo}
-            icon={<IconRefresh size={20} />}
         >
             Redo Tutorial
         </Button>

@@ -3,9 +3,7 @@
 import React, { useState, useEffect, useRef, useImperativeHandle } from "react";
 
 import questionsData from "@/data/questions-data.json";
-import logger from "@/lib/logger";
 import { useSessionContext } from "@/lib/SessionProvider";
-
 import {
   StepWrapper,
   StepQuestion,

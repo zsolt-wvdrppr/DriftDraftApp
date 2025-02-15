@@ -2,14 +2,14 @@
 
 import React, { useTransition, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 import logger from '@/lib/logger';
+import useClipboard from '@/lib/hooks/useClipboard';
 
 import HintButton from './HintButton';
 import WhyWeAskButton from './WhyWeAskButton';
 import {showHintToast, showWhyWeAskToast} from './showToast';
-import { toast } from 'sonner';
-import useClipboard from '@/lib/hooks/useClipboard';
 
 
 const Sidebar = React.memo(({ hint, whyDoWeAsk, onHintClicked, onWhyClicked, userMsg }) => {

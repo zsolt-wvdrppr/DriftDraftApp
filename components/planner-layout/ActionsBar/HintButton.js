@@ -7,9 +7,9 @@ import { useSearchParams } from 'next/navigation';
 
 import useToastSound from '@/lib/hooks/useToastSound';
 import logger from '@/lib/logger';
+import { useSessionContext } from '@/lib/SessionProvider';
 
 import NewHintNotifierIcon from './NewHintNotifierIcon';
-import { useSessionContext } from '@/lib/SessionProvider';
 
 const HintButton = ({
   hints: hint,
@@ -27,6 +27,7 @@ const HintButton = ({
     logger.debug(`HintButton: hints=${hint}, lastHints=${lastHint}`);
     logger.debug(`HintButton: hintsChanged=${JSON.stringify(hint) !== JSON.stringify(lastHint)}`);
     if (!hint) return false;
+
     return JSON.stringify(hint) !== JSON.stringify(lastHint);
   }, [hint, lastHint]);
   

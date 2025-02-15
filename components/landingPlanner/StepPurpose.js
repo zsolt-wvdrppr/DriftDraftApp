@@ -2,13 +2,11 @@
 
 import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Button, Input } from '@heroui/react';
-import ReactMarkdown from 'react-markdown';
 
 import questionsData from "@/data/landing-questions-data.json";
 import logger from '@/lib/logger';
 //import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from "@/lib/SessionProvider";
-
 import PasteButton from '@/components/planner-layout/layout/PasteButton';
 import { StepWrapper, StepQuestion, StepTextarea } from '@/components/planner-layout/layout/sectionComponents';
 import { StepGetAiHintBtn } from '@/components/planner-layout/layout/StepGetAiHintBtn';

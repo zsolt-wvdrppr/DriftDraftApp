@@ -1,5 +1,5 @@
 import React from 'react';
-import { Textarea, Button } from '@heroui/react';
+import { Textarea } from '@heroui/react';
 
 import { cn } from '@/lib/utils/utils';
 

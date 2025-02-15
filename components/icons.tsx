@@ -1,8 +1,8 @@
 import * as React from "react";
-
-import { IconSvgProps } from "@/types";
 import { Image } from "@heroui/react";
 import { ImageProps } from "@heroui/react";
+
+import { IconSvgProps } from "@/types";
 
 export const WaveDropperLogo: React.FC<IconSvgProps> = ({
   size = 36,
@@ -234,16 +234,16 @@ export const Logo: React.FC<ImageProps> = ({ width = 24, height, radius, ...prop
 
   return (
     <Image
-      src="/favicon.ico"
       alt="Logo"
       aria-hidden="true"
+      className="block"
       focusable="false"
       height={width || height}
-      width={height || width}
-      className="block"
-      role="presentation"
-      viewBox="0 0 24 24"
       radius={radius as "none" | "sm" | "md" | "lg" | "full"}
+      role="presentation"
+      src="/favicon.ico"
+      viewBox="0 0 24 24"
+      width={height || width}
       {...props}
     />
   )

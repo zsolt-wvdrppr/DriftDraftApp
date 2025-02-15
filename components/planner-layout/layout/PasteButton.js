@@ -1,10 +1,11 @@
 import React from "react";
-import logger from "@/lib/logger";
 import { Link } from "@heroui/react";
 import { IconClipboard } from "@tabler/icons-react";
 import { Tooltip } from 'react-tooltip';
-import { markdownToPlainText } from "@/lib/utils/utils";
 import { marked } from "marked";
+
+import { markdownToPlainText } from "@/lib/utils/utils";
+import logger from "@/lib/logger";
 
 // Configure marked to preserve line breaks
 marked.setOptions({
@@ -36,10 +37,10 @@ const PasteButton = ({ value, handleChange, setError, children }) => {
     
     return (
         <div className="relative">
-            <Link variant="none" id="paste-btn" className="paste-btn absolute z-10 right-10 text-secondary dark:text-neutralSnow p-2" onPress={handlePaste}>
+            <Link className="paste-btn absolute z-10 right-10 text-secondary dark:text-neutralSnow p-2" id="paste-btn" variant="none" onPress={handlePaste}>
                 <IconClipboard size={27} />
             </Link>
-            <Tooltip anchorSelect=".paste-btn" place="top" className="text-center" delayHide={500} delayShow={200}>
+            <Tooltip anchorSelect=".paste-btn" className="text-center" delayHide={500} delayShow={200} place="top">
                 Paste from clipboard
             </Tooltip>
             {children}

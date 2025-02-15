@@ -23,6 +23,8 @@ import { useRestoreStep } from '@/lib/hooks/useRestoreStep';
 import { useUpdateTabName } from '@/lib/hooks/useUpdateTabName';
 import { useSessionContext } from "@/lib/SessionProvider";
 import Tutorial from '@/components/tutorialToaster/Tutorial';
+import { PreviousButton, NextButton, SubmitButton } from '@/components/planner-layout/layout/NavigationButtons';
+import RestartSessionBtn from '@/components/planner-layout/layout/RestartSessionBtn';
 
 import ProgressBar from './ProgressBar';
 import StepPurpose from './StepPurpose';
@@ -36,8 +38,6 @@ import StepEmotions from './StepEmotions';
 import StepInspirations from './StepInspirations';
 import StepContactInfo from './StepContactInfo';
 import Result from './Result';
-import { PreviousButton, NextButton, SubmitButton } from '@/components/planner-layout/layout/NavigationButtons';
-import RestartSessionBtn from '@/components/planner-layout/layout/RestartSessionBtn';
 
 // Step definitions
 const steps = [

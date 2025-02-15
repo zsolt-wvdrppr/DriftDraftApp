@@ -1,10 +1,12 @@
 'use client'; // Needed because this component uses client-side hooks like useState and useEffect
 
 import { useState, useEffect, useTransition } from 'react';
-import { showAnchoredToast } from './toastUtils';
+import { toast } from 'sonner';
+
 import logger from '@/lib/logger';
 
-import { toast } from 'sonner';
+import { showAnchoredToast } from './toastUtils';
+
 
 const Tutorial = ({ steps, localStorageKey = 'tutorialCompleted', onRestart }) => {
     const [currentStep, setCurrentStep] = useState(0); // Tracks the current step in the tutorial
@@ -12,6 +14,7 @@ const Tutorial = ({ steps, localStorageKey = 'tutorialCompleted', onRestart }) =
 
     useEffect(() => {
         const tutorialCompleted = localStorage.getItem(localStorageKey);
+
         if (!tutorialCompleted && steps.length > 0) {
             logger.debug(`[TUTORIAL] - Initializing tutorial with steps:`, steps);
             setTimeout(() => startTransition(() => showStep(0)), 300);
@@ -27,6 +30,7 @@ const Tutorial = ({ steps, localStorageKey = 'tutorialCompleted', onRestart }) =
     const showStep = (stepIndex) => {
         if (isStepInProgress) {
             logger.debug(`[TUTORIAL] - Step ${stepIndex + 1} is already in progress.`);
+
             return;
         }
         isStepInProgress = true;
@@ -37,6 +41,7 @@ const Tutorial = ({ steps, localStorageKey = 'tutorialCompleted', onRestart }) =
     
         const checkElement = setInterval(() => {
             const element = document.querySelector(`.${targetClass}`);
+
             if (element) {
                 clearInterval(checkElement);
                 clearTimeout(timeout);
