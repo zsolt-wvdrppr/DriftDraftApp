@@ -18,14 +18,20 @@ const RestartSessionBtn = ({ children, targetPathname }) => {
   const handlePress = () => {
     startTransition(() => {
       logger.info("Starting new session...");
-      startNewSession();
-
+  
       if (pathname !== `/${targetPathname}`) {
         router.push(`/${targetPathname}?step=0`);
       } else {
         // Workaround for updating the URL without reloading the page and force rerender due to Next.JS bullshit bug
         window.history.pushState({}, "", `/${targetPathname}?step=0`);
       }
+
+      // Get planType from targetPathname
+      const planType = targetPathname.split('-')[0];
+
+      logger.info("[RESTART SESSION BUTTON] - planType:", planType);
+
+      startNewSession(planType);
 
     });
   };
