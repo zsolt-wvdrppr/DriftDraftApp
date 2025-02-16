@@ -236,7 +236,7 @@ export const Logo: React.FC<ImageProps> = ({ width = 24, height, radius, ...prop
     <Image
       alt="Logo"
       aria-hidden="true"
-      className="block"
+      className="block min-w-[24px] min-h-[24px]"
       focusable="false"
       height={width || height}
       radius={radius as "none" | "sm" | "md" | "lg" | "full"}

@@ -19,7 +19,7 @@ const MyActivitiesBtn = ({className, label = "", noLabel = false, onPress = () =
   return (
     <Button
       as={Link}
-      className={cn("", className)}
+      className={cn("text-default-foreground hover:scale-105", className)}
       href={siteConfig.links.activities}
       isExternal={false}
       startContent={<IconHistory className="text-highlightOrange" />}

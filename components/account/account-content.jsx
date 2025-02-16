@@ -80,7 +80,7 @@ const AccountContent = () => {
             indicator={<IconCreditCard className="rotate-45 text-primary" />}
             subtitle="Press to expand"
             title={
-              <h2 className="text-xl font-semibold">{"Payment Methods"}</h2>
+              <h2 className="text-xl font-semibold">{"Payment Method"}</h2>
             }
           >
             <PaymentMethod
@@ -99,7 +99,6 @@ export default AccountContent;
 export const PaymentMethodDescription = () => {
   return (
     <div className="py-14">
-      <h3 className="text-lg font-semibold mb-2">Manage Your Payment Method</h3>
       <p className="text-gray-700">
         This section allows you to securely add or update your payment method for future transactions. Your card details 
         are processed by <strong>Stripe</strong>, ensuring safe and encrypted payments.

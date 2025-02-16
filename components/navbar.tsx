@@ -108,23 +108,21 @@ export const Navbar = () => {
         </NavbarItem>
         <NavbarItem className="hidden md:flex">
           {user && (
-              <MyActivitiesBtn
-                className={
-                  "text-sm font-normal text-default-600 bg-default-200"
-                }
-                label={"My Activities"}
-                onPress={() => setIsMenuOpen(false)}
-              />
+            <MyActivitiesBtn
+              className={"rounded-t-none bg-default-200"}
+              label={"My Activities"}
+              onPress={() => setIsMenuOpen(false)}
+            />
           )}
         </NavbarItem>
         {user && (
-        <NavbarItem className="hidden md:flex">
-          <AccountBtn user={user} />
-        </NavbarItem>
+          <NavbarItem className="hidden md:flex">
+            <AccountBtn user={user} />
+          </NavbarItem>
         )}
         <NavbarItem className="hidden md:flex actions items-center gap-4">
           <LogInOutBtn
-            className="text-lg"
+            className="bg-default-200 rounded-t-none hover:scale-105"
             user={user}
             onLogIn={handleLogIn}
             onLogOut={handleLogOut}
@@ -137,13 +135,19 @@ export const Navbar = () => {
           <NavbarItem className="flex gap-4 items-center">
             <ThemeSwitch className="h-10 md:hidden" />
           </NavbarItem>
-          <NavbarItem className="flex gap-4 items-center">
-            <AccountBtn noLabel={true} user={user} onPress={() => setIsMenuOpen(false)}/>
-          </NavbarItem>
+          {user && (
+            <NavbarItem className="flex gap-4 items-center">
+              <AccountBtn
+                noLabel={true}
+                user={user}
+                onPress={() => setIsMenuOpen(false)}
+              />
+            </NavbarItem>
+          )}
           <NavbarItem className="flex gap-4 items-center">
             {user && (
               <MyActivitiesBtn
-                className={"text-xs  p-0 min-w-0"}
+                className={"p-0 min-w-0"}
                 noLabel={true}
                 onPress={() => setIsMenuOpen(false)}
               />
@@ -152,7 +156,7 @@ export const Navbar = () => {
               <LogInBtn
                 className="text-lg p-0 min-w-0"
                 noTitle={true}
-                onPress={handleLogIn}
+                onChange={handleLogIn}
               />
             )}
           </NavbarItem>
@@ -186,26 +190,28 @@ export const Navbar = () => {
           <NavbarItem className="md:hidden">
             {user && (
               <div className="absolute bottom-32 right-5 flex flex-col gap-4">
-              <MyActivitiesBtn
-                className={
-                  "text-lg font-normal text-default-600 bg-default-200"
-                }
-                label={"My Activities"}
-                onPress={() => setIsMenuOpen(false)}
-              />
-              <AccountBtn
-                className={"flex justify-between font-normal text-default-600 bg-default-200 py-2 px-4 rounded-xl w-full"}
-                label={"Account"}
-                labelClassName="text-lg"
-                user={user}
-                onPress={() => setIsMenuOpen(false)}
-              />
+                <MyActivitiesBtn
+                  className={
+                    "bg-default-200"
+                  }
+                  label={"My Activities"}
+                  onPress={() => setIsMenuOpen(false)}
+                />
+                <AccountBtn
+                  className={
+                    "flex justify-between bg-default-200 py-2 px-4 rounded-xl w-full"
+                  }
+                  label={"Account"}
+                  labelClassName=""
+                  user={user}
+                  onPress={() => setIsMenuOpen(false)}
+                />
               </div>
             )}
             <div className="actions flex flex-col-reverse items-center justify-center mt-12 gap-4">
               {
                 <LogInOutBtn
-                  className="text-lg"
+                  className=""
                   labelClassName={
                     "text-sm absolute bottom-40 right-5 text-left"
                   }

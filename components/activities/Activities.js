@@ -467,7 +467,7 @@ export default function UserActivities() {
                       <div>
                         <h2 className="font-semibold">{item.session_title}</h2>
                         <Link
-                          className="text-primary absolute w-4 h-4 -right-3 top-2"
+                          className="text-primary absolute w-4 h-4 -right-4 top-2 hover:scale-125 transition-all"
                           onPress={() => {
                             startEditingTitle(item);
                           }}
@@ -485,7 +485,7 @@ export default function UserActivities() {
                     <div className="flex w-full justify-around">
                       <div>
                         <Link
-                          className="dark:text-white cursor-pointer"
+                          className="dark:text-white cursor-pointer hover:scale-125 transition-all"
                           onPress={() => handleReview(item)}
                         >
                           <IconReorder
@@ -499,7 +499,7 @@ export default function UserActivities() {
                       </div>
                       <div>
                         <Link
-                          className="dark:text-white cursor-pointer"
+                          className="dark:text-white cursor-pointer hover:scale-125 transition-all"
                           onPress={() => confirmDelete(item)}
                         >
                           <IconTrash
@@ -513,7 +513,7 @@ export default function UserActivities() {
                       </div>
                       <div>
                         <Link
-                          className="dark:text-white cursor-pointer"
+                          className="dark:text-white cursor-pointer hover:scale-125 transition-all"
                           isDisabled={false}
                           onPress={() => confirmDownload(item)}
                         >
@@ -528,7 +528,7 @@ export default function UserActivities() {
                       </div>
                       <div>
                         <Link
-                          className="dark:text-white cursor-pointer"
+                          className="dark:text-white cursor-pointer hover:scale-125 transition-all"
                           onPress={() => handleOpenMarkdownModal(item)}
                         >
                           <IconEye className="text-lime-500" id="view-icon" />
@@ -540,7 +540,7 @@ export default function UserActivities() {
                       <div>
                         <Link
                           alt="Request Quote"
-                          className="dark:text-white cursor-pointer"
+                          className="dark:text-white cursor-pointer hover:scale-125 transition-all"
                           isDisabled={false}
                           onPress={() => confirmGetQuote(item)}
                         >

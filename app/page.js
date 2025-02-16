@@ -10,9 +10,9 @@ export default function Home() {
       <ServiceSelector />
 
       <div className="mt-8">
-        <pre className="text-center border-2 border-gray-300 p-4 rounded-lg">
+        <pre className="text-justify md:text-center border-2 border-gray-300 p-4 rounded-lg">
           <span className="whitespace-break-spaces">
-            Features Overview: Briefly outline benefits, such as “Guided Website Planning,” “Industry-Specific Recommendations,” and “Personalised Development Requirements.”
+            {"DriftDraft is a strategic website and landing page planner that helps users outline their site's structure, user journey, and development requirements through guided questions and AI-driven recommendations."}
           </span>
         </pre>
       </div>

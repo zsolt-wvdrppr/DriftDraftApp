@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useUserProfile, useDeleteUser } from "@/lib/hooks/useProfile";
 import { useAuth } from "@/lib/AuthContext";
+import { useSessionContext } from "@/lib/SessionProvider";
 import {
   Button,
   Input,
@@ -14,7 +15,8 @@ import {
 import { IconDeviceFloppy, IconHttpDeleteOff } from "@tabler/icons-react";
 
 const ProfileSettings = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
+  const { logOutUser } = useSessionContext();
   const { fullName, email, loading, error, updateFullName } = useUserProfile(user?.id);
   const { deleteUser, loading: deleting, error: deleteError } = useDeleteUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -41,7 +43,7 @@ const ProfileSettings = () => {
   };
 
   const confirmDelete = async () => {
-    await logout();
+    await logOutUser();
     await deleteUser(user.id);
     onClose();
   };

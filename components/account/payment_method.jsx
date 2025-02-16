@@ -91,8 +91,7 @@ export default function PaymentMethod() {
 
   return (
     <div className="max-w-md mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-4">Manage Payment Method</h1>
-
+      <h3 className="text-lg font-semibold mb-2">Manage Your Payment Method</h3>
       {error && <p className="text-red-500">{error}</p>}
 
       {paymentMethod ? (
