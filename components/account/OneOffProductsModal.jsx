@@ -136,7 +136,7 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess }) => {
   return (
     <div>
       {
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal isOpen={isOpen} onClose={() => {onClose(); setSelectedProduct(null)}}>
           <ModalContent>
             <ModalHeader>Top-up Credits</ModalHeader>
             <ModalBody>
