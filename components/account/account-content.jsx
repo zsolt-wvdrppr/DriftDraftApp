@@ -55,6 +55,7 @@ const AccountContent = () => {
             aria-label="Profile Settings"
             indicator={<IconSettings className="rotate-45 text-primary" />}
             subtitle="Press to expand"
+            className="overflow-hidden"
             title={
               <h2 className="text-xl font-semibold">{"Profile Settings"}</h2>
             }
@@ -66,6 +67,7 @@ const AccountContent = () => {
             aria-label="Subscription & Top Up"
             indicator={<IconWallet className="rotate-45 text-primary" />}
             subtitle="Press to expand"
+            className="overflow-hidden"
             title={
               <h2 className="text-xl font-semibold">
                 {"Subscription & Top Up"}

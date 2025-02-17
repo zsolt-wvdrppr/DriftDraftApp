@@ -11,21 +11,27 @@ import {
   useDisclosure,
   Select,
   SelectItem,
+  Spinner,
 } from "@heroui/react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { useMotionValue, useSpring } from "framer-motion";
 import logger from "@/lib/logger";
 import PromocodeInput from "./promocode_input";
 import usePlanTiers from "@/lib/hooks/usePlanTiers";
 import { IconStack, IconStack2, IconStack3 } from "@tabler/icons-react";
+import OneOffProductsModal from "./OneOffProductsModal";
 
 // AnimatedNumber component to animate numeric changes
 const AnimatedNumber = ({ value }) => {
+  if (typeof value !== "number") return null;
   const motionValue = useMotionValue(value);
   const springValue = useSpring(motionValue, { stiffness: 100, damping: 20 });
   const [displayValue, setDisplayValue] = useState(value);
 
   useEffect(() => {
     // When the value changes, update the motion value
+    // debug log
+    logger.debug("Value changed", value);
+
     motionValue.set(value);
   }, [value, motionValue]);
 
@@ -48,7 +54,8 @@ const SubscriptionAndTopup = () => {
   }, [selectedPlan]);
 
   // Assumes that your session context now includes a refreshCredits function
-  const { topUpCredits, allowanceCredits, refreshCredits } = useSessionContext();
+  const { topUpCredits, allowanceCredits, refreshCredits } =
+    useSessionContext();
 
   const {
     isOpen: isPlanOpen,
@@ -78,17 +85,28 @@ const SubscriptionAndTopup = () => {
     <div className="pt-4 pb-8 max-w-sm mx-auto flex flex-col gap-4 items-stretch">
       <Card className="p-4 mb-4 grid grid-cols-2 gap-4 items-center">
         <p className="text-lg">Allowance Credits:</p>
-        <p className="text-lg text-right text-secondary">
-          <strong>
-            <AnimatedNumber value={allowanceCredits} />
-          </strong>
-        </p>
+
+        {allowanceCredits ? (
+          <p className="text-lg text-right text-secondary">
+            <strong>
+              <AnimatedNumber value={allowanceCredits} />
+            </strong>
+          </p>
+        ) : (
+          <Spinner color="primary" size="sm" className="justify-self-end" />
+        )}
+
         <p className="text-lg">Top-up Credits:</p>
-        <p className="text-lg text-right text-primary">
-          <strong>
-            <AnimatedNumber value={topUpCredits} />
-          </strong>
-        </p>
+
+        {topUpCredits ? (
+          <p className="text-lg text-right text-primary">
+            <strong>
+              <AnimatedNumber value={topUpCredits} />
+            </strong>
+          </p>
+        ) : (
+          <Spinner color="primary" size="sm" className="justify-self-end"/>
+        )}
       </Card>
 
       <div className="flex gap-4 justify-between">
@@ -112,7 +130,7 @@ const SubscriptionAndTopup = () => {
       {/* Plan Selection Modal */}
       <Modal isOpen={isPlanOpen} onClose={onPlanClose}>
         <ModalContent>
-          <ModalHeader>Choose Your Plan</ModalHeader>
+          <ModalHeader>Choose Your Plan - <pre> non funcioning!</pre></ModalHeader>
           <ModalBody>
             <Select
               aria-label="Select a plan"
@@ -166,7 +184,8 @@ const SubscriptionAndTopup = () => {
                 ""
               ) : (
                 <span className="-ml-1">
-                  to <span className="capitalize">{selectedPlan.currentKey}</span>
+                  to{" "}
+                  <span className="capitalize">{selectedPlan.currentKey}</span>
                 </span>
               )}
             </Button>
@@ -175,20 +194,12 @@ const SubscriptionAndTopup = () => {
       </Modal>
 
       {/* Top-up Credits Modal */}
-      <Modal isOpen={isTopupOpen} onClose={onTopupClose}>
-        <ModalContent>
-          <ModalHeader>Top-up Credits</ModalHeader>
-          <ModalBody>
-            <p>Select a top-up amount.</p>
-          </ModalBody>
-          <ModalFooter>
-            <Button onPress={onTopupClose} className="bg-gray-500 text-white">
-              Cancel
-            </Button>
-            <Button className="bg-green-500 text-white">Confirm Top-up</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+
+      <OneOffProductsModal
+        isOpen={isTopupOpen}
+        onClose={onTopupClose}
+        onSuccess={refreshCredits}
+      />
     </div>
   );
 };
