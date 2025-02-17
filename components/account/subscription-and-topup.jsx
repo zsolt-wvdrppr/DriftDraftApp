@@ -86,7 +86,7 @@ const SubscriptionAndTopup = () => {
       <Card className="p-4 mb-4 grid grid-cols-2 gap-4 items-center">
         <p className="text-lg">Allowance Credits:</p>
 
-        {allowanceCredits ? (
+        {allowanceCredits !== null ? (
           <p className="text-lg text-right text-secondary">
             <strong>
               <AnimatedNumber value={allowanceCredits} />
@@ -98,7 +98,7 @@ const SubscriptionAndTopup = () => {
 
         <p className="text-lg">Top-up Credits:</p>
 
-        {topUpCredits ? (
+        {topUpCredits !== null ? (
           <p className="text-lg text-right text-primary">
             <strong>
               <AnimatedNumber value={topUpCredits} />
