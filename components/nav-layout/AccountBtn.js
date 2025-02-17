@@ -1,5 +1,5 @@
 import { IconUser } from "@tabler/icons-react";
-import { Button } from "@heroui/react";
+import { Link, Button } from "@heroui/react";
 
 import { cn } from "@/lib/utils/utils";
 import { useUserProfile } from "@/lib/hooks/useProfile";
@@ -13,7 +13,7 @@ const AccountBtn = ({ user = null, label = "", noLabel = false, className = "", 
 
   return (
     <div className="flex items-center">
-      <Button className={cn("md:bg-default-200 md:py-2 md:px-4 md:rounded-t-none items-center hover:scale-105 cursor-pointer flex gap-2", className)} href="/account" onPress={onPress}>
+      <Button as={Link} className={cn("md:bg-default-200 md:py-2 md:px-4 md:rounded-t-none items-center hover:scale-105 cursor-pointer flex gap-2", className)} href="/account" onPress={onPress}>
         <IconUser className="text-primary" size={24}/>
         {!noLabel && (
         <p
