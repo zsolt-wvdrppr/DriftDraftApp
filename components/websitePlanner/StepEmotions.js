@@ -60,15 +60,15 @@ const StepEmotions = ({ ref }) => {
     `Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` ||
     "";
   const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
-  const audience = `${formData[1].audience}. ` || "";
+  const audience = `${formData[1]?.audience}. ` || "";
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
     formData?.[3]?.urls?.toString().trim() !== ""
-      ? `- Competitors:  ${formData[3].urls.toString()}`
+      ? `- Competitors:  ${formData[3]?.urls?.toString()}`
       : "";
-  const usps = formData[4].usps || "";
-  const domains = formData[5].domain || "";
-  const brandGuidelines = formData[6].brandGuidelines || "";
+  const usps = formData[4]?.usps || "";
+  const domains = formData[5]?.domain || "";
+  const brandGuidelines = formData[6]?.brandGuidelines || "";
   const emotionIdeas = `My thoughts regarding feelings and emotions:  ${localValue}.` || "";
 
   const isAIAvailable =

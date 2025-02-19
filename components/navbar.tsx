@@ -135,7 +135,7 @@ export const Navbar = () => {
           <NavbarItem className="flex gap-4 items-center">
             <ThemeSwitch className="h-10 md:hidden" />
           </NavbarItem>
-          {user && (
+          {/*user && (
             <NavbarItem className="flex gap-4 items-center">
               <AccountBtn
                 noLabel={true}
@@ -143,7 +143,7 @@ export const Navbar = () => {
                 onPress={() => setIsMenuOpen(false)}
               />
             </NavbarItem>
-          )}
+          )*/}
           <NavbarItem className="flex gap-4 items-center">
             {user && (
               <MyActivitiesBtn

@@ -1,4 +1,4 @@
-import { useOneOffProducts } from "@/lib/hooks/useOneOffProducts";
+import { useRecurringProducts } from "@/lib/hooks/useRecurringProducts";
 import { useState, useEffect } from "react";
 import {
   Select,
@@ -13,20 +13,17 @@ import {
 import { toast } from "sonner";
 
 import { useAuth } from "@/lib/AuthContext";
-import { useStripe } from "@stripe/react-stripe-js";
 import logger from "@/lib/logger";
-import { IconCoins } from "@tabler/icons-react";
-import { abortOnSynchronousPlatformIOAccess } from "next/dist/server/app-render/dynamic-rendering";
+import { IconStack, IconStack2, IconStack3 } from "@tabler/icons-react";
 
 // Utility function to creat key from a name
 const createKey = (name) => name.toLowerCase().replace(/ /g, "_");
 
-const OneOffProductsModal = ({ isOpen, onClose, onSuccess }) => {
-  const { products, loading } = useOneOffProducts();
+const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
+  const { products, loading } = useRecurringProducts();
   const [selectedProduct, setSelectedProduct] = useState();
   const { user } = useAuth();
   const userId = user?.id;
-  const stripe = useStripe();
   const [error, setError] = useState(null);
   const [loadingPayment, setLoadingPayment] = useState(false);
 
@@ -45,94 +42,77 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess }) => {
     setError(null);
 
     try {
-      logger.debug(`[ONE OFF PRODUCTS] - User ID: ${userId}`);
-      logger.debug(`[ONE OFF PRODUCTS] - Selected Product:`, selectedProduct);
+      logger.debug(`[RECURRING PRODUCTS] - User ID: ${userId}`);
+      logger.debug(`[RECURRING PRODUCTS] - Selected Product:`, selectedProduct);
 
-      // Step 1: Request PaymentIntent from API
-      const response = await fetch("/api/stripe/purchase-one-off", {
+      // Step 1: Request Subscription from API
+      const response = await fetch("/api/stripe/subscribe-recurring", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, priceId: selectedProduct.priceId }),
       });
 
-      const { success, clientSecret, error } = await response.json();
+      const { success, message, subscriptionId, error } = await response.json();
 
-      if (!success || !clientSecret) {
-        setError(error || "Failed to create payment intent");
-        setLoadingPayment(false);
-        return;
-      }
-
-      // ✅ Ensure Stripe is ready
-      if (!stripe) {
-        setError("Stripe.js has not loaded yet.");
+      if (!success) {
+        setError(error || "Failed to create subscription");
         setLoadingPayment(false);
         onClose();
         return;
       }
 
-      logger.debug(
-        `[ONE OFF PRODUCTS] - Confirming Payment with Stripe using saved method`
-      );
+      // ✅ Subscription successful or change scheduled
+      setSelectedProduct(null);
 
-      // Step 2: Confirm Payment with the saved payment method
-      const { paymentIntent, error: stripeError } =
-        await stripe.confirmCardPayment(clientSecret);
-
-      if (stripeError) {
-        logger.error(`[ONE OFF PRODUCTS] - Stripe Error:`, stripeError);
-        setError(stripeError.message);
-        setLoadingPayment(false);
-        onClose()
-        return;
+      // ✅ Notify parent component about successful purchase
+      if (onSuccess) {
+        setTimeout(() => {
+          onSuccess();
+        }, 2000);
       }
 
-      // Step 3: Check if payment was successful
-      if (paymentIntent.status === "succeeded") {
-        setSelectedProduct(null);
+      // Close the modal in 2 seconds
+      onClose();
 
-        // ✅ Notify parent component about successful purchase
-        if (onSuccess) {
-          setTimeout(() => {
-            onSuccess();
-          }, 2000);
-        }
-        // Close the modal in 2 seconds
-        onClose();
-        toast.success("Payment successful! Credits will be added shortly.", {
+      // ✅ Show different messages for new vs. updated subscriptions
+      toast.success(
+        message || "Subscription successful! Credits will be added on renewal.",
+        {
           position: "bottom-right",
           closeButton: true,
           duration: 5000,
           classNames: {
             toast: "text-green-800",
           },
-        });
-      } else {
-        setError("Payment not completed. Please try again.");
-        onClose();
-        toast.error("Payment not completed. Please try again.", {
-          position: "bottom-right",
-          closeButton: true,
-          duration: 5000,
-          classNames: {
-            toast: "text-danger",
-          },
-        });
-      }
+        }
+      );
     } catch (err) {
-      logger.error(`[ONE OFF PRODUCTS] - Unexpected Error:`, err);
-      onClose();
+      logger.error(`[RECURRING PRODUCTS] - Unexpected Error:`, err);
       setError("An unexpected error occurred.");
+      onClose();
     } finally {
       setLoadingPayment(false);
     }
   };
 
   const colorVariants = [
-    "text-highlightOrange",
     "text-highlightBlue",
     "text-highlightPurple",
+    "text-highlightOrange",
   ];
+
+  /*const icons = [
+    <IconStack2 size={24} className="text-highlightBlue" />,
+    <IconStack3 size={24} className="text-highlightPurple" />,
+    <IconStack size={24} className="text-highlightOrange" />,
+  ];*/
+
+  const icons = {
+    Pro: <IconStack2 size={24} className="text-highlightPurple" />,
+    Advanced: <IconStack3 size={24} className="text-highlightOrange" />,
+    Starter: <IconStack size={24} className="text-highlightBlue" />,
+  }
+
 
   if (!products || !products.length) {
     return null;
@@ -141,20 +121,22 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess }) => {
   return (
     <div>
       {
-        <Modal isOpen={isOpen} onClose={() => {onClose(); setSelectedProduct(null)}}>
+        <Modal
+          isOpen={isOpen}
+          onClose={() => {
+            onClose();
+            setSelectedProduct(null);
+          }}
+        >
           <ModalContent>
-            <ModalHeader>Top-up Credits</ModalHeader>
+            <ModalHeader>Manage Your Subscription</ModalHeader>
             <ModalBody>
               <Select
                 aria-label="Select a product"
                 variant="underlined"
                 items={products}
                 isMultiline={true}
-                placeholder={
-                  <p className="text-lg">
-                    Select a top-up amount
-                  </p>
-                }
+                placeholder={<p className="text-lg">Select a plan</p>}
                 classNames={{
                   trigger: "min-h-24",
                 }}
@@ -193,14 +175,7 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess }) => {
                     }}
                   >
                     <div className="flex items-center gap-4 border-b-1 pb-3 border-default-200 dark:border-default-200">
-                      <IconCoins
-                        size={24}
-                        className={
-                          colorVariants[
-                            products.indexOf(product) % colorVariants.length
-                          ]
-                        }
-                      />
+                      {icons[product.name]}
                       <div className="flex flex-col justify-between">
                         <p className="font-semibold">{product.name}</p>
                         <p>{product.description}</p>
@@ -225,7 +200,7 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess }) => {
                 isLoading={loadingPayment}
                 isDisabled={!selectedProduct}
               >
-                Confirm Top-up
+                Confirm Plan
               </Button>
             </ModalFooter>
           </ModalContent>
@@ -236,4 +211,4 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess }) => {
   );
 };
 
-export default OneOffProductsModal;
+export default RecurringProductsModal;

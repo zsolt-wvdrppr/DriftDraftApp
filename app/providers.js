@@ -10,7 +10,6 @@ import { AuthProvider } from "@/lib/AuthContext";
 import { SessionProvider } from "@/lib/SessionProvider";
 
 export function Providers({ children, themeProps }) {
-
   const reCaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
 
   const router = useRouter();
@@ -20,9 +19,7 @@ export function Providers({ children, themeProps }) {
       <AuthProvider>
         <NextUIProvider navigate={router.push}>
           <NextThemesProvider {...themeProps}>
-            <SessionProvider>
-              {children}
-            </SessionProvider>
+            <SessionProvider>{children}</SessionProvider>
           </NextThemesProvider>
         </NextUIProvider>
       </AuthProvider>

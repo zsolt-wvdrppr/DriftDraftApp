@@ -1,24 +1,21 @@
 import { useState, useEffect } from "react";
 import { useSessionContext } from "@/lib/SessionProvider";
-import {
-  Button,
-  Card,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  Select,
-  SelectItem,
-  Spinner,
-} from "@heroui/react";
+import { Button, Card, useDisclosure, Spinner, Link } from "@heroui/react";
+import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { useMotionValue, useSpring } from "framer-motion";
+
 import logger from "@/lib/logger";
 import PromocodeInput from "./promocode_input";
-import usePlanTiers from "@/lib/hooks/usePlanTiers";
-import { IconStack, IconStack2, IconStack3 } from "@tabler/icons-react";
 import OneOffProductsModal from "./OneOffProductsModal";
+import RecurringProductsModal from "./RecurringProductsModal";
+import CancelSubscriptionModal from "./CancelSubscriptionModal";
+import { formatDateToLocal } from "@/lib/utils/utils";
+import useCancelSubscription from "@/lib/hooks/useCancelSubscription";
+import { useAuth } from "@/lib/AuthContext";
+import { IconReload } from "@tabler/icons-react";
+import { Tooltip } from "react-tooltip";
+import { usePaymentMethod } from "@/lib/hooks/usePaymentMethod";
+import { useInvoices } from "@/lib/hooks/useInvoices";
 
 // AnimatedNumber component to animate numeric changes
 const AnimatedNumber = ({ value }) => {
@@ -46,16 +43,18 @@ const AnimatedNumber = ({ value }) => {
 };
 
 const SubscriptionAndTopup = () => {
-  const { planTiers: plans, loading, error } = usePlanTiers();
-  const [selectedPlan, setSelectedPlan] = useState(new Set([]));
-
-  useEffect(() => {
-    logger.debug("selected Plan", selectedPlan);
-  }, [selectedPlan]);
-
-  // Assumes that your session context now includes a refreshCredits function
-  const { topUpCredits, allowanceCredits, refreshCredits } =
+  // Assumes that your session context now includes a refreshPaidServicesData function
+  const { refreshPaidServicesData, paidServicesData: services } =
     useSessionContext();
+  const stripe = useStripe();
+  const elements = useElements();
+  const { user } = useAuth();
+  const userId = user?.id;
+  const { paymentMethod, loading: paymentMethodLoading } = usePaymentMethod(
+    userId,
+    stripe,
+    elements
+  );
 
   const {
     isOpen: isPlanOpen,
@@ -67,138 +66,222 @@ const SubscriptionAndTopup = () => {
     onOpen: onTopupOpen,
     onClose: onTopupClose,
   } = useDisclosure();
-
-  const icons = {
-    starter: <IconStack size={24} className="text-highlightOrange" />,
-    advanced: <IconStack2 size={24} className="text-highlightBlue" />,
-    pro: <IconStack3 size={24} className="text-highlightPurple" />,
-  };
+  const {
+    isOpen: isCancelOpen,
+    onOpen: onCancelOpen,
+    onClose: onCancelClose,
+  } = useDisclosure();
 
   // Callback to handle promo code application
   const handlePromoApplied = (data) => {
     logger.info("Promo code applied, refreshing credits", data);
     // Refresh the credits from the session context so that the new balances are fetched
-    refreshCredits();
+    refreshPaidServicesData();
+  };
+
+  const {
+    cancelSubscription,
+    loading: cancellationLoading,
+    error: cancellationError,
+  } = useCancelSubscription(userId);
+
+  const now = new Date().getTime() / 1000;
+  const expiryDate = new Date(services?.planExpiresAt).getTime() / 1000;
+
+  const tierColor = {
+    Pro: "bg-highlightPurple",
+    Advanced: "bg-highlightOrange",
+    Starter: "bg-highlightBlue",
+  };
+
+  const handleCancellation = async () => {
+    try {
+      await cancelSubscription();
+      refreshPaidServicesData();
+      onCancelClose();
+    } catch (error) {
+      logger.error("Failed to cancel subscription", error);
+    }
   };
 
   return (
-    <div className="pt-4 pb-8 max-w-sm mx-auto flex flex-col gap-4 items-stretch">
-      <Card className="p-4 mb-4 grid grid-cols-2 gap-4 items-center">
-        <p className="text-lg">Allowance Credits:</p>
+    <div className="pt-4 pb-8 mx-auto flex flex-col w-full gap-y-4 items-center overflow-hidden">
+      {/* paymentMethodLoading spinner*/}
+      {paymentMethodLoading && (
+        <Spinner color="primary" size="sm" className="justify-self-center" />
+      )}
+      {(!paymentMethodLoading && !paymentMethod) && (
+        <p className="text-danger text-center mb-4">
+          {`Add a payment method first to subscribe to a plan or top-up credits.`}
+        </p>
+      )}
+      <div className="flex flex-wrap gap-4 items-stretch mx-auto">
+        <div className="w-full md:w-auto md:min-w-64">
+          <Card className="p-4 mb-4 flex-col gap-4 relative h-full justify-between">
+            <h3 className="text-lg font-semibold text-primary">
+              Subscription Details
+            </h3>
+            {/* refreshPaidServicesData button*/}
+            <Button
+              onPress={() => refreshPaidServicesData()}
+              className="absolute top-0 right-0 min-w-max"
+              isDisabled={services?.loading || !paymentMethod}
+            >
+              <IconReload size={24} className="text-accent" />
+            </Button>
+            {services?.hasActiveSubscription ? (
+              <>
+                <p className="flex items-end justify-between w-full text-primary">
+                  <span>Active plan:</span>
+                  <span
+                    className={`${tierColor[services.tier]} py-1 px-2 rounded-md text-white font-bold shadow-sm drop-shadow-md`}
+                  >
+                    {services.tier}
+                  </span>
+                </p>
+                <p className="flex items-center justify-between w-full text-primary gap-10">
+                  <span className="">
+                    {services?.planExpiresAt && expiryDate > now
+                      ? "Cancels:"
+                      : "Renewal:"}
+                  </span>
+                  <span className="text-sm text-right font-semibold text-default-500 drop-shadow-sm">
+                    {formatDateToLocal(
+                      services?.planRenewsAt || services?.planExpiresAt
+                    )}
+                  </span>
+                </p>
+                <p className="flex items-center justify-between w-full text-primary gap-10">
+                  <span>Started:</span>
+                  <span className="text-sm text-right font-semibold text-default-500 drop-shadow-sm">
+                    {formatDateToLocal(services?.planStartsAt)}
+                  </span>
+                </p>
+              </>
+            ) : (
+              <p className="text-lg text-center">No active subscription</p>
+            )}
+            <div id="manage-button" className="">
+              <Button
+                onPress={onPlanOpen}
+                className="bg-primary text-white font-semibold w-full"
+                isDisabled={
+                  (services?.planExpiresAt && expiryDate > now) || !paymentMethod || paymentMethodLoading
+                }
+              >
+                {services?.hasActiveSubscription
+                  ? "Change Subscription"
+                  : "Select Plan"}
+              </Button>
+            </div>
+            {services?.planExpiresAt && expiryDate > now && (
+              <Tooltip
+                anchorSelect="#manage-button"
+                place="top"
+                className="break-words max-w-60 text-justify"
+              >
+                {`You can only change your subscription after the current billing
+                cycle ends, because you've cancelled it.`}
+              </Tooltip>
+            )}
+            {!paymentMethod && !paymentMethodLoading && (
+              <Tooltip
+                anchorSelect="#manage-button"
+                place="top"
+                className="break-words max-w-60 text-justify"
+              >
+                {`Add a payment method first to subscribe to a plan.`}
+              </Tooltip>
+            )}
+            {services?.hasActiveSubscription && !services.planExpiresAt && (
+              <Button
+                onPress={onCancelOpen}
+                className="text-danger font-semibold min-w-max w-fit h-fit self-center p-0 m-0"
+              >
+                Cancel Plan
+              </Button>
+            )}
+          </Card>
 
-        {allowanceCredits !== null ? (
-          <p className="text-lg text-right text-secondary">
-            <strong>
-              <AnimatedNumber value={allowanceCredits} />
-            </strong>
-          </p>
-        ) : (
-          <Spinner color="primary" size="sm" className="justify-self-end" />
-        )}
+          {/* cancelSubscription errors*/}
+          {cancellationError && (
+            <p className="text-red-500">{cancellationError}</p>
+          )}
+        </div>
+        <div className="flex flex-col gap-y-4 items-stretch justify-between">
+          <Card className="p-4 flex flex-col gap-4 items-center">
+            <p className="text-lg flex gap-x-10">
+              <span>Allowance Credits:</span>
+              {services?.allowanceCredits !== null ? (
+                <span className="font-bold text-highlightPurple">
+                  <AnimatedNumber value={services?.allowanceCredits} />
+                </span>
+              ) : (
+                <Spinner
+                  color="primary"
+                  size="sm"
+                  className="justify-self-end"
+                />
+              )}
+            </p>
 
-        <p className="text-lg">Top-up Credits:</p>
+            <p className="text-lg flex gap-x-10">
+              <span>Top-up Credits:</span>
+              {services?.topUpCredits !== null ? (
+                <span className="font-bold text-primary">
+                  <AnimatedNumber value={services?.topUpCredits} />
+                </span>
+              ) : (
+                <Spinner
+                  color="primary"
+                  size="sm"
+                  className="justify-self-end"
+                />
+              )}
+            </p>
 
-        {topUpCredits !== null ? (
-          <p className="text-lg text-right text-primary">
-            <strong>
-              <AnimatedNumber value={topUpCredits} />
-            </strong>
-          </p>
-        ) : (
-          <Spinner color="primary" size="sm" className="justify-self-end"/>
-        )}
-      </Card>
+            <div id="topup-button" className="w-full flex">
+              <Button
+                onPress={onTopupOpen}
+                className="bg-highlightOrange text-white w-full font-semibold mx-auto"
+                isDisabled={!paymentMethod || paymentMethodLoading}
+              >
+                Top-Up Now
+              </Button>
+              {!paymentMethod && !paymentMethodLoading && (
+                <Tooltip
+                  anchorSelect="#topup-button"
+                  place="top"
+                  className="break-words max-w-60 text-justify"
+                >
+                  {`Add a payment method first to top-up credits.`}
+                </Tooltip>
+              )}
+            </div>
+          </Card>
 
-      <div className="flex gap-4 justify-between">
-        <Button
-          onPress={onPlanOpen}
-          className="bg-blue-500 text-white w-36 font-semibold"
-        >
-          Change Plan
-        </Button>
-        <Button
-          onPress={onTopupOpen}
-          className="bg-green-500 text-white w-36 font-semibold"
-        >
-          Top-up Credits
-        </Button>
+          {/* Pass the promo code applied callback to the PromocodeInput component */}
+          <PromocodeInput onPromoCodeApplied={handlePromoApplied} />
+        </div>
       </div>
 
-      {/* Pass the promo code applied callback to the PromocodeInput component */}
-      <PromocodeInput onPromoCodeApplied={handlePromoApplied} />
-
-      {/* Plan Selection Modal */}
-      <Modal isOpen={isPlanOpen} onClose={onPlanClose}>
-        <ModalContent>
-          <ModalHeader>Choose Your Plan - <pre> non funcioning!</pre></ModalHeader>
-          <ModalBody>
-            <Select
-              aria-label="Select a plan"
-              variant="underlined"
-              items={plans}
-              isMultiline={true}
-              placeholder="Select a plan"
-              classNames={{
-                trigger: "min-h-24",
-              }}
-              onSelectionChange={setSelectedPlan}
-              renderValue={(items) => {
-                // Map the selected keys back to the full plan objects
-                const selectedPlans = items.map((item) =>
-                  plans.find((plan) => plan.key === item.key)
-                );
-
-                return selectedPlans.map((plan) => (
-                  <div key={plan.key} className="flex items-center gap-4">
-                    {icons[plan.key]}{" "}
-                    <div className="flex flex-col justify-between">
-                      <p className="font-semibold">{plan.label}</p>
-                      <p>{plan.description}</p>
-                      <p>£{plan.price}/month</p>
-                    </div>
-                  </div>
-                ));
-              }}
-            >
-              {(plan) => (
-                <SelectItem key={plan.key} aria-label={plan.label}>
-                  <div className="flex items-center gap-4 border-b-1 pb-3 border-default-200 dark:border-default-200">
-                    {icons[plan.key]}{" "}
-                    <div className="flex flex-col justify-between">
-                      <p className="font-semibold">{plan.label}</p>
-                      <p>{plan.description}</p>
-                      <p>£{plan.price}/month</p>
-                    </div>
-                  </div>
-                </SelectItem>
-              )}
-            </Select>
-          </ModalBody>
-          <ModalFooter>
-            <Button onPress={onPlanClose} className="bg-gray-500 text-white">
-              Cancel
-            </Button>
-            <Button className="bg-blue-500 text-white w-44 font-semibold">
-              Upgrade
-              {selectedPlan.size === 0 ? (
-                ""
-              ) : (
-                <span className="-ml-1">
-                  to{" "}
-                  <span className="capitalize">{selectedPlan.currentKey}</span>
-                </span>
-              )}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-      {/* Top-up Credits Modal */}
+      <RecurringProductsModal
+        isOpen={isPlanOpen}
+        onClose={onPlanClose}
+        onSuccess={refreshPaidServicesData}
+      />
 
       <OneOffProductsModal
         isOpen={isTopupOpen}
         onClose={onTopupClose}
-        onSuccess={refreshCredits}
+        onSuccess={refreshPaidServicesData}
+      />
+
+      <CancelSubscriptionModal
+        isOpen={isCancelOpen}
+        onClose={onCancelClose}
+        onConfirm={handleCancellation}
+        loading={cancellationLoading}
       />
     </div>
   );
