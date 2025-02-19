@@ -117,7 +117,7 @@ const SubscriptionAndTopup = () => {
       )}
       <div className="flex flex-wrap gap-4 items-stretch mx-auto">
         <div className="w-full md:w-auto md:min-w-64">
-          <Card className="p-4 mb-4 flex-col gap-4 relative h-full justify-between">
+          <Card className="p-4 mb-4 flex-col gap-4 relative h-full justify-between border">
             <h3 className="text-lg font-semibold text-primary">
               Subscription Details
             </h3>
@@ -208,8 +208,9 @@ const SubscriptionAndTopup = () => {
             <p className="text-red-500">{cancellationError}</p>
           )}
         </div>
-        <div className="flex flex-col gap-y-4 items-stretch justify-between">
-          <Card className="p-4 flex flex-col gap-4 items-center">
+        <div className="flex flex-col gap-y-4 items-stretch justify-between w-full md:w-auto">
+          <Card className="p-4 flex flex-col gap-y-4 items-center h-full justify-between border">
+          <div className="flex flex-col gap-4 items-center h-full">
             <p className="text-lg flex gap-x-10">
               <span>Allowance Credits:</span>
               {services?.allowanceCredits !== null ? (
@@ -224,7 +225,7 @@ const SubscriptionAndTopup = () => {
                 />
               )}
             </p>
-
+              
             <p className="text-lg flex gap-x-10">
               <span>Top-up Credits:</span>
               {services?.topUpCredits !== null ? (
@@ -239,7 +240,7 @@ const SubscriptionAndTopup = () => {
                 />
               )}
             </p>
-
+          </div>
             <div id="topup-button" className="w-full flex">
               <Button
                 onPress={onTopupOpen}
