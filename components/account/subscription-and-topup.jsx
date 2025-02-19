@@ -243,7 +243,7 @@ const SubscriptionAndTopup = () => {
             <div id="topup-button" className="w-full flex">
               <Button
                 onPress={onTopupOpen}
-                className="bg-highlightOrange text-white w-full font-semibold mx-auto"
+                className="bg-lime-500 text-white w-full font-semibold mx-auto"
                 isDisabled={!paymentMethod || paymentMethodLoading}
               >
                 Top-Up Now
