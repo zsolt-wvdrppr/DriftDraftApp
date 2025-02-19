@@ -153,8 +153,7 @@ export default function WebsiteWizardContainer({ }) {
             formData,
             handleFormDataUpdate,
             setCurrentStep,
-            updateUrlParams,
-            router
+            updateUrlParams
         );
         if(user?.id && sessionData){
             logger.debug('[WIZZ] updating session data')
@@ -171,7 +170,7 @@ export default function WebsiteWizardContainer({ }) {
 
     // Navigate to the previous step
     const handlePrevious = () => {
-        goToPreviousStep(currentStep, setCurrentStep, updateUrlParams, router);
+        goToPreviousStep(currentStep, setCurrentStep, updateUrlParams);
     };
 
 
@@ -212,8 +211,7 @@ export default function WebsiteWizardContainer({ }) {
             formData,
             setCurrentStep,
             updateUrlParams,
-            setError,
-            router
+            setError
         );
     };
 
