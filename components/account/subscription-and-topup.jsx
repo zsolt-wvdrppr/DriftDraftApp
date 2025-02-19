@@ -110,7 +110,7 @@ const SubscriptionAndTopup = () => {
       {paymentMethodLoading && (
         <Spinner color="primary" size="sm" className="justify-self-center" />
       )}
-      {(!paymentMethodLoading && !paymentMethod) && (
+      {!paymentMethodLoading && !paymentMethod && (
         <p className="text-danger text-center mb-4">
           {`Add a payment method first to subscribe to a plan or top-up credits.`}
         </p>
@@ -134,7 +134,7 @@ const SubscriptionAndTopup = () => {
                 <p className="flex items-end justify-between w-full text-primary">
                   <span>Active plan:</span>
                   <span
-                    className={`${tierColor[services.tier]} py-1 px-2 rounded-md text-white font-bold shadow-sm drop-shadow-md`}
+                    className={`${tierColor[services.tier]} pt-1 pb-0.5 px-2 rounded-md text-white font-bold shadow-sm drop-shadow-md`}
                   >
                     {services.tier}
                   </span>
@@ -166,7 +166,9 @@ const SubscriptionAndTopup = () => {
                 onPress={onPlanOpen}
                 className="bg-primary text-white font-semibold w-full"
                 isDisabled={
-                  (services?.planExpiresAt && expiryDate > now) || !paymentMethod || paymentMethodLoading
+                  (services?.planExpiresAt && expiryDate > now) ||
+                  !paymentMethod ||
+                  paymentMethodLoading
                 }
               >
                 {services?.hasActiveSubscription
@@ -210,37 +212,37 @@ const SubscriptionAndTopup = () => {
         </div>
         <div className="flex flex-col gap-y-4 items-stretch justify-between w-full md:w-auto">
           <Card className="p-4 flex flex-col gap-y-4 items-center h-full justify-between border">
-          <div className="flex flex-col gap-4 items-center h-full">
-            <p className="text-lg flex gap-x-10">
-              <span>Allowance Credits:</span>
-              {services?.allowanceCredits !== null ? (
-                <span className="font-bold text-highlightPurple">
-                  <AnimatedNumber value={services?.allowanceCredits} />
-                </span>
-              ) : (
-                <Spinner
-                  color="primary"
-                  size="sm"
-                  className="justify-self-end"
-                />
-              )}
-            </p>
-              
-            <p className="text-lg flex gap-x-10">
-              <span>Top-up Credits:</span>
-              {services?.topUpCredits !== null ? (
-                <span className="font-bold text-primary">
-                  <AnimatedNumber value={services?.topUpCredits} />
-                </span>
-              ) : (
-                <Spinner
-                  color="primary"
-                  size="sm"
-                  className="justify-self-end"
-                />
-              )}
-            </p>
-          </div>
+            <div className="flex flex-col gap-4 items-center h-full">
+              <p className="text-lg flex gap-x-10">
+                <span>Allowance Credits:</span>
+                {services?.allowanceCredits !== null ? (
+                  <span className="font-bold text-highlightPurple">
+                    <AnimatedNumber value={services?.allowanceCredits} />
+                  </span>
+                ) : (
+                  <Spinner
+                    color="primary"
+                    size="sm"
+                    className="justify-self-end"
+                  />
+                )}
+              </p>
+
+              <p className="text-lg flex gap-x-10">
+                <span>Top-up Credits:</span>
+                {services?.topUpCredits !== null ? (
+                  <span className="font-bold text-primary">
+                    <AnimatedNumber value={services?.topUpCredits} />
+                  </span>
+                ) : (
+                  <Spinner
+                    color="primary"
+                    size="sm"
+                    className="justify-self-end"
+                  />
+                )}
+              </p>
+            </div>
             <div id="topup-button" className="w-full flex">
               <Button
                 onPress={onTopupOpen}
