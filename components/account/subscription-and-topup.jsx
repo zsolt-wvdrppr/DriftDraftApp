@@ -5,7 +5,7 @@ import { useStripe, useElements } from "@stripe/react-stripe-js";
 import { useMotionValue, useSpring } from "framer-motion";
 
 import logger from "@/lib/logger";
-import PromocodeInput from "./promocode_input";
+import PromocodeInput from "./PromocodeInput";
 import OneOffProductsModal from "./OneOffProductsModal";
 import RecurringProductsModal from "./RecurringProductsModal";
 import CancelSubscriptionModal from "./CancelSubscriptionModal";
@@ -15,7 +15,7 @@ import { useAuth } from "@/lib/AuthContext";
 import { IconReload } from "@tabler/icons-react";
 import { Tooltip } from "react-tooltip";
 import { usePaymentMethod } from "@/lib/hooks/usePaymentMethod";
-import { useInvoices } from "@/lib/hooks/useInvoices";
+import InvoiceList from "./InvoiceList";
 
 // AnimatedNumber component to animate numeric changes
 const AnimatedNumber = ({ value }) => {
@@ -115,8 +115,8 @@ const SubscriptionAndTopup = () => {
           {`Add a payment method first to subscribe to a plan or top-up credits.`}
         </p>
       )}
-      <div className="flex flex-wrap gap-4 items-stretch mx-auto">
-        <div className="w-full md:w-auto md:min-w-64">
+      <div className="flex flex-wrap gap-4 justify-stretch mx-auto max-w-screen-md">
+        <div className="w-full md:w-auto flex-grow md:min-w-64">
           <Card className="p-4 mb-4 flex-col gap-4 relative h-full justify-between border">
             <h3 className="text-lg font-semibold text-primary">
               Subscription Details
@@ -203,44 +203,43 @@ const SubscriptionAndTopup = () => {
                 Cancel Plan
               </Button>
             )}
+            {/* cancelSubscription errors*/}
+            {cancellationError && (
+              <p className="text-red-500">{cancellationError}</p>
+            )}
           </Card>
-
-          {/* cancelSubscription errors*/}
-          {cancellationError && (
-            <p className="text-red-500">{cancellationError}</p>
-          )}
         </div>
-        <div className="flex flex-col gap-y-4 items-stretch justify-between w-full md:w-auto">
+        <div className="flex flex-col gap-y-4 flex-grow items-stretch justify-between w-full md:w-auto">
           <Card className="p-4 flex flex-col gap-y-4 items-center h-full justify-between border">
-            <div className="flex flex-col gap-4 items-center h-full">
-              <p className="text-lg flex gap-x-10">
+            <div className="flex flex-col gap-4 items-center h-full w-full">
+              <p className="text-lg flex gap-x-10 w-full justify-between">
                 <span>Allowance Credits:</span>
-                {services?.allowanceCredits !== null ? (
-                  <span className="font-bold text-highlightPurple">
+                <span className="font-bold text-highlightPurple">
+                  {services?.allowanceCredits !== null ? (
                     <AnimatedNumber value={services?.allowanceCredits} />
-                  </span>
-                ) : (
-                  <Spinner
-                    color="primary"
-                    size="sm"
-                    className="justify-self-end"
-                  />
-                )}
+                  ) : (
+                    <Spinner
+                      color="primary"
+                      size="sm"
+                      className="justify-self-end"
+                    />
+                  )}
+                </span>
               </p>
 
-              <p className="text-lg flex gap-x-10">
+              <p className="text-lg flex gap-x-10 w-full justify-between">
                 <span>Top-up Credits:</span>
-                {services?.topUpCredits !== null ? (
-                  <span className="font-bold text-primary">
+                <span className="font-bold text-primary">
+                  {services?.topUpCredits !== null ? (
                     <AnimatedNumber value={services?.topUpCredits} />
-                  </span>
-                ) : (
-                  <Spinner
-                    color="primary"
-                    size="sm"
-                    className="justify-self-end"
-                  />
-                )}
+                  ) : (
+                    <Spinner
+                      color="primary"
+                      size="sm"
+                      className="justify-self-end"
+                    />
+                  )}
+                </span>
               </p>
             </div>
             <div id="topup-button" className="w-full flex">
@@ -268,6 +267,9 @@ const SubscriptionAndTopup = () => {
             <PromocodeInput onPromoCodeApplied={handlePromoApplied} />
           </Card>
         </div>
+        <Card className="p-4 border flex w-full">
+          <InvoiceList userId={userId} />
+        </Card>
       </div>
 
       <RecurringProductsModal
