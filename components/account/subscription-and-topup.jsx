@@ -16,6 +16,7 @@ import { IconReload } from "@tabler/icons-react";
 import { Tooltip } from "react-tooltip";
 import { usePaymentMethod } from "@/lib/hooks/usePaymentMethod";
 import InvoiceList from "./InvoiceList";
+import { IconHelp } from "@tabler/icons-react";
 
 // AnimatedNumber component to animate numeric changes
 const AnimatedNumber = ({ value }) => {
@@ -118,9 +119,16 @@ const SubscriptionAndTopup = () => {
       <div className="flex flex-wrap gap-4 justify-stretch mx-auto max-w-screen-md">
         <div className="w-full md:w-auto flex-grow md:min-w-64">
           <Card className="p-4 mb-4 flex-col gap-4 relative h-full justify-between border">
-            <h3 className="text-lg font-semibold text-primary">
-              Subscription Details
-            </h3>
+            <div className="relative w-fit">
+              <h3 className="text-lg font-semibold text-primary">
+                Subscription Details
+              </h3>
+              <IconHelp
+                id="subscription-title"
+                size={16}
+                className="text-primary absolute -top-1 -right-5"
+              />
+            </div>
             {/* refreshPaidServicesData button*/}
             <Button
               onPress={() => refreshPaidServicesData()}
@@ -213,7 +221,14 @@ const SubscriptionAndTopup = () => {
           <Card className="p-4 flex flex-col gap-y-4 items-center h-full justify-between border">
             <div className="flex flex-col gap-4 items-center h-full w-full">
               <p className="text-lg flex gap-x-10 w-full justify-between">
-                <span>Allowance Credits:</span>
+                <span className="relative text-primary">
+                  Allowance Credits:
+                  <IconHelp
+                    id="allowance-credits"
+                    size={16}
+                    className="absolute -top-1 -right-5"
+                  />
+                </span>
                 <span className="font-bold text-highlightPurple">
                   {services?.allowanceCredits !== null ? (
                     <AnimatedNumber value={services?.allowanceCredits} />
@@ -228,7 +243,14 @@ const SubscriptionAndTopup = () => {
               </p>
 
               <p className="text-lg flex gap-x-10 w-full justify-between">
-                <span>Top-up Credits:</span>
+                <span className="relative text-primary">
+                  Top-up Credits:
+                  <IconHelp
+                    id="topup-credits"
+                    size={16}
+                    className="absolute -top-1 -right-5"
+                  />
+                </span>
                 <span className="font-bold text-primary">
                   {services?.topUpCredits !== null ? (
                     <AnimatedNumber value={services?.topUpCredits} />
@@ -290,6 +312,28 @@ const SubscriptionAndTopup = () => {
         onConfirm={handleCancellation}
         loading={cancellationLoading}
       />
+
+      <Tooltip
+        anchorSelect="#subscription-title"
+        place="top"
+        className="break-words max-w-60 text-justify"
+      >
+        {`Subscribing to a plan means you'll receive a set amount of allowance credits each month upon renewal, but unused credits do not carry over to the next month.`}
+      </Tooltip>
+      <Tooltip
+        anchorSelect="#allowance-credits"
+        place="top"
+        className="break-words max-w-60 text-justify"
+      >
+        {`Allowance credits are the monthly credits you receive as part of your subscription plan. These credits can be used throughout the billing cycle but do not roll over to the next month if unused.`}
+      </Tooltip>
+      <Tooltip
+        anchorSelect="#topup-credits"
+        place="top"
+        className="break-words max-w-60 text-justify"
+      >
+        {`Top-up credits are additional credits you can purchase separately from your subscription. Unlike allowance credits, they remain in your balance until used and do not expire at the end of the billing cycle.`}
+      </Tooltip>
     </div>
   );
 };

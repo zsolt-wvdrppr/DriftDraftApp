@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/lib/AuthContext";
 import logger from "@/lib/logger";
 import { IconStack, IconStack2, IconStack3 } from "@tabler/icons-react";
+import { Tooltip } from "react-tooltip";
 
 // Utility function to creat key from a name
 const createKey = (name) => name.toLowerCase().replace(/ /g, "_");
