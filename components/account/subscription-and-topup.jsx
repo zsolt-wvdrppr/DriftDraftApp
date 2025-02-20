@@ -192,7 +192,7 @@ const SubscriptionAndTopup = () => {
                 place="top"
                 className="break-words max-w-60 text-justify"
               >
-                {`Add a payment method first to subscribe to a plan.`}
+                {`Add or update your payment method to subscribe to a plan.`}
               </Tooltip>
             )}
             {services?.hasActiveSubscription && !services.planExpiresAt && (
@@ -257,14 +257,16 @@ const SubscriptionAndTopup = () => {
                   place="top"
                   className="break-words max-w-60 text-justify"
                 >
-                  {`Add a payment method first to top-up credits.`}
+                  {`Add or update your payment method to top-up credits.`}
                 </Tooltip>
               )}
             </div>
           </Card>
 
           {/* Pass the promo code applied callback to the PromocodeInput component */}
-          <PromocodeInput onPromoCodeApplied={handlePromoApplied} />
+          <Card className="p-2 border min-h-fit">
+            <PromocodeInput onPromoCodeApplied={handlePromoApplied} />
+          </Card>
         </div>
       </div>
 

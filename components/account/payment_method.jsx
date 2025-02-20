@@ -33,7 +33,7 @@ export default function PaymentMethod() {
           {paymentMethod ? (
             <>
               <p className="self-center">
-                Saved Card: {paymentMethod.brand} **** {paymentMethod.last4}
+                <code>Saved Card: {paymentMethod.brand} **** {paymentMethod.last4}</code>
               </p>
             </>
           ) : (
@@ -41,7 +41,7 @@ export default function PaymentMethod() {
           )}
           </div>
           <div className="w-full flex">
-            <CardElement className="p-2 border rounded-md w-full" />
+            <CardElement className="p-2 border rounded-md w-full bg-primary/10" />
           </div>
 
           <Button
