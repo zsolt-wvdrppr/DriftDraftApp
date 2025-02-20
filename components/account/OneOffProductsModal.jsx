@@ -16,7 +16,6 @@ import { useAuth } from "@/lib/AuthContext";
 import { useStripe } from "@stripe/react-stripe-js";
 import logger from "@/lib/logger";
 import { IconCoins } from "@tabler/icons-react";
-import { abortOnSynchronousPlatformIOAccess } from "next/dist/server/app-render/dynamic-rendering";
 
 // Utility function to creat key from a name
 const createKey = (name) => name.toLowerCase().replace(/ /g, "_");
@@ -150,6 +149,7 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess }) => {
                 variant="underlined"
                 items={products}
                 isMultiline={true}
+                selectionMode="single"
                 placeholder={
                   <p className="text-lg">
                     Select a top-up amount

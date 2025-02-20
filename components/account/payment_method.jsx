@@ -29,7 +29,7 @@ export default function PaymentMethod() {
           className="min-h-48 flex flex-col justify-between w-full"
         >
           <div className="flex gap-x-4 items-center justify-between">
-          <IconCreditCard size={24} className="" />
+          <IconCreditCard size={24} className="" aria-label="Card number input" />
           {paymentMethod ? (
             <>
               <p className="self-center">
