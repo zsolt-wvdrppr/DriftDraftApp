@@ -2,9 +2,9 @@ import AccountContent from "@/components/account/account-content"
 
 const AccountPage = () => {
   return (
-    <div>
+    <section className="">
         <AccountContent />
-    </div>
+    </section>
   )
 }
 
