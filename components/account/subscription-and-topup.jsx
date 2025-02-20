@@ -122,12 +122,13 @@ const SubscriptionAndTopup = () => {
             <div className="relative w-fit">
               <h3 className="text-lg font-semibold text-primary">
                 Subscription Details
-              </h3>
-              <IconHelp
+                <IconHelp
                 id="subscription-title"
                 size={16}
-                className="text-primary absolute -top-1 -right-5"
+                className="absolute -top-1 -right-5"
               />
+              </h3>
+              
             </div>
             {/* refreshPaidServicesData button*/}
             <Button
@@ -220,8 +221,8 @@ const SubscriptionAndTopup = () => {
         <div className="flex flex-col gap-y-4 flex-grow items-stretch justify-between w-full md:w-auto">
           <Card className="p-4 flex flex-col gap-y-4 items-center h-full justify-between border">
             <div className="flex flex-col gap-4 items-center h-full w-full">
-              <p className="text-lg flex gap-x-10 w-full justify-between">
-                <span className="relative text-primary">
+              <p className="text-lg flex gap-x-10 w-full justify-between text-primary">
+                <span className="relative">
                   Allowance Credits:
                   <IconHelp
                     id="allowance-credits"
@@ -242,8 +243,8 @@ const SubscriptionAndTopup = () => {
                 </span>
               </p>
 
-              <p className="text-lg flex gap-x-10 w-full justify-between">
-                <span className="relative text-primary">
+              <p className="text-lg flex gap-x-10 w-full justify-between text-primary">
+                <span className="relative">
                   Top-up Credits:
                   <IconHelp
                     id="topup-credits"
