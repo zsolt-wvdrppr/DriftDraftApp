@@ -5,7 +5,7 @@ import Stripe from "stripe";
 // Initialize Supabase
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY, // Use Service Role Key for admin operations
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
   { auth: { persistSession: false } }
 );
 
@@ -16,7 +16,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 export async function POST(req) {
   try {
-    const { userId } = await req.json(); // Get user ID from request body
+    const { userId } = await req.json();
 
     if (!userId) {
       return NextResponse.json({ error: "User ID is required" }, { status: 400 });
@@ -33,7 +33,7 @@ export async function POST(req) {
       return NextResponse.json({ error: "No payment method found" }, { status: 404 });
     }
 
-    // Fetch the default payment method from Stripe
+    // Fetch the default payment method and customer details from Stripe
     const customer = await stripe.customers.retrieve(data.stripe_customer_id);
     const paymentMethodId = customer.invoice_settings.default_payment_method;
 
@@ -52,6 +52,9 @@ export async function POST(req) {
         exp_month: paymentMethod.card.exp_month,
         exp_year: paymentMethod.card.exp_year,
       },
+      businessName: customer.name || "",
+      vatNumber: customer.tax_id_data?.[0]?.value || "",
+      billingAddress: customer.address?.line1 || "",
     });
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

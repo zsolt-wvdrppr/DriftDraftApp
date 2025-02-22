@@ -11,13 +11,16 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  Link,
 } from "@heroui/react";
 import { IconDeviceFloppy, IconHttpDeleteOff } from "@tabler/icons-react";
 
 const ProfileSettings = () => {
   const { user } = useAuth();
   const { logOutUser } = useSessionContext();
-  const { fullName, email, loading, error, updateFullName } = useUserProfile(user?.id);
+  const { fullName, email, loading, error, updateFullName } = useUserProfile(
+    user?.id
+  );
   const { deleteUser, loading: deleting, error: deleteError } = useDeleteUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -94,8 +97,23 @@ const ProfileSettings = () => {
             inputWrapper: `dark:bg-content1 border focus-within:!bg-content1`,
           }}
         />
-        <p className="text-primary text-sm text-justify">If you need to change the email address you use to log in, please contact our support team.</p>
       </div>
+        {/* External link to billing portal to add billing address*/}
+        <Button
+          as={Link}
+          aria-label="Edit billing details"
+          variant="bordered"
+          href="https://billing.stripe.com/p/login/test_eVa6s8cut9Zu32o288"
+          isExternal
+          className="text-secondary text-sm self-start shadow-sm"
+          target="_blank"
+        >
+          Add or update billing details
+        </Button>
+        <p className="text-primary text-sm text-justify">
+          If you need to change the email address you use to log in, please
+          contact our support team.
+        </p>
       <Button
         onPress={onOpen}
         className="mt-4 px-4 py-2 text-red-600 rounded-md w-fit hover:bg-default-200 self-end"
@@ -120,10 +138,10 @@ const ProfileSettings = () => {
                 onChange={(e) => setDeleteInput(e.target.value)}
                 className="w-full"
                 classNames={{
-                    label: "!text-primary dark:!text-accentMint",
-                    input: "dark:!text-white",
-                    inputWrapper: `dark:bg-content1 border focus-within:!bg-content1`,
-                  }}
+                  label: "!text-primary dark:!text-accentMint",
+                  input: "dark:!text-white",
+                  inputWrapper: `dark:bg-content1 border focus-within:!bg-content1`,
+                }}
               />
             </div>
           </ModalBody>

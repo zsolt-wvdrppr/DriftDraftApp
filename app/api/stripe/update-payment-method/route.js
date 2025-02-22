@@ -16,7 +16,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 export async function POST(req) {
   try {
-    const { userId, newPaymentMethodId } = await req.json();
+    const { userId, newPaymentMethodId, businessName, vatNumber, billingAddress } = await req.json();
 
     if (!userId || !newPaymentMethodId) {
       return NextResponse.json({ error: "User ID and payment method are required" }, { status: 400 });
@@ -61,6 +61,9 @@ export async function POST(req) {
     // 🔹 Set as default payment method
     await stripe.customers.update(stripeCustomerId, {
       invoice_settings: { default_payment_method: newPaymentMethodId },
+      name: businessName || undefined,
+      tax_id_data: vatNumber ? [{ type: "eu_vat", value: vatNumber }] : undefined,
+      address: billingAddress ? { line1: billingAddress } : undefined,
     });
 
     return NextResponse.json({ success: true, stripeCustomerId });
