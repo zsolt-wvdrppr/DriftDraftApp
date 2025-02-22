@@ -98,7 +98,7 @@ const ProfileSettings = () => {
           }}
         />
       </div>
-        {/* External link to billing portal to add billing address*/}
+        {/* External link to billing portal to add billing address
         <Button
           as={Link}
           aria-label="Edit billing details"
@@ -109,7 +109,7 @@ const ProfileSettings = () => {
           target="_blank"
         >
           Add or update billing details
-        </Button>
+        </Button>*/}
         <p className="text-primary text-sm text-justify">
           If you need to change the email address you use to log in, please
           contact our support team.
