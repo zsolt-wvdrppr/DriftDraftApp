@@ -65,9 +65,9 @@ export const PromocodeInput = ({ onPromoCodeApplied }) => {
           type="text"
           value={promoCode}
           classNames={{
-            label: "!text-primary dark:!text-accentMint",
-            input: "dark:!text-white",
-            inputWrapper: "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
+            label: "text-primary dark:text-accentMint",
+            input: "dark:text-white",
+            inputWrapper: "bg-primary/10 dark:bg-default-200/50 border dark:border-default-200 focus-within:!bg-content1",
           }}
           onChange={(e) => {
             setPromoCode(e.target.value);
