@@ -12,12 +12,14 @@ import {
   IconMapPin,
   IconAlertTriangleFilled,
 } from "@tabler/icons-react";
+import useDarkMode from "@/lib/hooks/useDarkMode";
 
 export default function PaymentMethod() {
   const stripe = useStripe();
   const elements = useElements();
   const { user } = useAuth();
   const userId = user?.id;
+  const isDarkMode = useDarkMode(); 
 
   const {
     paymentMethod,
@@ -113,7 +115,7 @@ export default function PaymentMethod() {
           </div>
 
           <div className="w-full flex">
-            <CardElement className="p-2 border rounded-md w-full bg-primary/10" />
+            <CardElement className="p-2 border rounded-md w-full bg-primary/10 dark:bg-content1 dark" options={{style:{base: {color: `${isDarkMode ? "#fff" : ""}`}}}} />
           </div>
 
           <Button
