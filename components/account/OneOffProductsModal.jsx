@@ -39,93 +39,56 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess }) => {
 
   const handlePurchase = async () => {
     if (!selectedProduct || !userId) return;
-
+  
     setLoadingPayment(true);
     setError(null);
-
+  
     try {
       logger.debug(`[ONE OFF PRODUCTS] - User ID: ${userId}`);
       logger.debug(`[ONE OFF PRODUCTS] - Selected Product:`, selectedProduct);
-
-      // Step 1: Request PaymentIntent from API
+  
+      // ✅ Step 1: Request Payment from API
       const response = await fetch("/api/stripe/purchase-one-off", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, priceId: selectedProduct.priceId }),
       });
-
-      const { success, clientSecret, error } = await response.json();
-
-      if (!success || !clientSecret) {
-        setError(error || "Failed to create payment intent");
+  
+      const { success, error } = await response.json();
+  
+      if (!success) {
+        setError(error || "Payment failed.");
         setLoadingPayment(false);
         return;
       }
-
-      // ✅ Ensure Stripe is ready
-      if (!stripe) {
-        setError("Stripe.js has not loaded yet.");
-        setLoadingPayment(false);
-        onClose();
-        return;
+  
+      // ✅ Payment succeeded, refresh credits and close modal
+      if (onSuccess) {
+        setTimeout(() => {
+          onSuccess(); // This should trigger `refreshCredits`
+        }, 2000);
       }
-
-      logger.debug(
-        `[ONE OFF PRODUCTS] - Confirming Payment with Stripe using saved method`
-      );
-
-      // Step 2: Confirm Payment with the saved payment method
-      const { paymentIntent, error: stripeError } =
-        await stripe.confirmCardPayment(clientSecret);
-
-      if (stripeError) {
-        logger.error(`[ONE OFF PRODUCTS] - Stripe Error:`, stripeError);
-        setError(stripeError.message);
-        setLoadingPayment(false);
-        onClose()
-        return;
-      }
-
-      // Step 3: Check if payment was successful
-      if (paymentIntent.status === "succeeded") {
-        setSelectedProduct(null);
-
-        // ✅ Notify parent component about successful purchase
-        if (onSuccess) {
-          setTimeout(() => {
-            onSuccess();
-          }, 2000);
-        }
-        // Close the modal in 2 seconds
-        onClose();
-        toast.success("Payment successful! Credits will be added shortly.", {
-          position: "bottom-right",
-          closeButton: true,
-          duration: 5000,
-          classNames: {
-            toast: "text-green-800",
-          },
-        });
-      } else {
-        setError("Payment not completed. Please try again.");
-        onClose();
-        toast.error("Payment not completed. Please try again.", {
-          position: "bottom-right",
-          closeButton: true,
-          duration: 5000,
-          classNames: {
-            toast: "text-danger",
-          },
-        });
-      }
+  
+      setSelectedProduct(null);
+      onClose();
+  
+      toast.success("Payment successful! Credits have been added.", {
+        position: "bottom-right",
+        closeButton: true,
+        duration: 5000,
+        classNames: {
+          toast: "text-green-800",
+        },
+      });
+  
     } catch (err) {
       logger.error(`[ONE OFF PRODUCTS] - Unexpected Error:`, err);
-      onClose();
       setError("An unexpected error occurred.");
     } finally {
       setLoadingPayment(false);
     }
   };
+ 
 
   const colorVariants = [
     "text-highlightOrange",
