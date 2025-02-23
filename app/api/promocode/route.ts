@@ -93,8 +93,8 @@ export async function POST(request: NextRequest) {
     // Determine the credits awarded from the coupon.
     const creditsAwarded = coupon.credits_awarded || 0;
 
-    // Increment the user's top_up_credits via an RPC call.
-    const { error: rpcError } = await supabase.rpc("increment_profile_top_up_credits", {
+    // Increment the user's promo_credits via an RPC call.
+    const { error: rpcError } = await supabase.rpc("increment_profile_promo_credits", {
       p_user_id: userId,
       p_amount: creditsAwarded,
     });

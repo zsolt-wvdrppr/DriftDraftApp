@@ -16,7 +16,7 @@ import { IconReload } from "@tabler/icons-react";
 import { Tooltip } from "react-tooltip";
 import { usePaymentMethod } from "@/lib/hooks/usePaymentMethod";
 import InvoiceList from "./InvoiceList";
-import { IconHelp } from "@tabler/icons-react";
+import { IconHelp, IconListDetails } from "@tabler/icons-react";
 
 // AnimatedNumber component to animate numeric changes
 const AnimatedNumber = ({ value }) => {
@@ -105,6 +105,11 @@ const SubscriptionAndTopup = () => {
     }
   };
 
+  const totalCredits =
+    services?.allowanceCredits +
+    services?.topUpCredits +
+    services?.promoCredits;
+
   return (
     <div className="pt-4 pb-8 mx-auto flex flex-col w-full gap-y-4 items-center overflow-hidden">
       {/* paymentMethodLoading spinner*/}
@@ -123,12 +128,11 @@ const SubscriptionAndTopup = () => {
               <h3 className="text-lg font-semibold text-primary">
                 Subscription Details
                 <IconHelp
-                id="subscription-title"
-                size={16}
-                className="absolute -top-1 -right-5"
-              />
+                  id="subscription-title"
+                  size={16}
+                  className="absolute -top-1 -right-5"
+                />
               </h3>
-              
             </div>
             {/* refreshPaidServicesData button*/}
             <Button
@@ -220,41 +224,25 @@ const SubscriptionAndTopup = () => {
         </div>
         <div className="flex flex-col gap-y-4 flex-grow items-stretch justify-between w-full md:w-auto">
           <Card className="p-4 flex flex-col gap-y-4 items-center h-full justify-between border">
-            <div className="flex flex-col gap-4 items-center h-full w-full">
-              <p className="text-lg flex gap-x-10 w-full justify-between text-primary">
-                <span className="relative">
-                  Allowance Credits:
-                  <IconHelp
-                    id="allowance-credits"
-                    size={16}
-                    className="absolute -top-1 -right-5"
-                  />
+            <div className="flex flex-col gap-4 items-center justify-center h-full w-full">
+              <p className="text-lg flex gap-x-10 w-full justify-evenly text-primary">
+                <span className="relative font-semibold">Credits:
+                <IconHelp
+                  id="total-credits"
+                  size={16}
+                  className="absolute -top-1 -right-5"
+                />
                 </span>
-                <span className="font-bold text-highlightPurple">
+                <span className="font-bold text-highlightPurple relative">
                   {services?.allowanceCredits !== null ? (
-                    <AnimatedNumber value={services?.allowanceCredits} />
-                  ) : (
-                    <Spinner
-                      color="primary"
-                      size="sm"
-                      className="justify-self-end"
-                    />
-                  )}
-                </span>
-              </p>
-
-              <p className="text-lg flex gap-x-10 w-full justify-between text-primary">
-                <span className="relative">
-                  Top-up Credits:
-                  <IconHelp
-                    id="topup-credits"
-                    size={16}
-                    className="absolute -top-1 -right-5"
-                  />
-                </span>
-                <span className="font-bold text-primary">
-                  {services?.topUpCredits !== null ? (
-                    <AnimatedNumber value={services?.topUpCredits} />
+                    <>
+                      <AnimatedNumber value={totalCredits} />
+                      <IconListDetails
+                        id="credit-breakdown"
+                        size={16}
+                        className="absolute -top-1 -right-5"
+                      />
+                    </>
                   ) : (
                     <Spinner
                       color="primary"
@@ -315,11 +303,37 @@ const SubscriptionAndTopup = () => {
       />
 
       <Tooltip
+        anchorSelect="#credit-breakdown"
+        place="top"
+        className="break-words max-w-60 flex flex-col gap-2"
+      >
+        {`Breakdown of your total credits:`}
+        <div className="flex gap-2 justify-between">
+          <span>Allowance credits:</span>
+          <span>{services.allowanceCredits}</span>
+        </div>
+        <div className="flex gap-2 justify-between">
+          <span>Top-up credits:</span>
+          <span>{services.topUpCredits}</span>
+        </div>
+        <div className="flex gap-2 justify-between">
+          <span>Promo credits:</span>
+          <span>{services.promoCredits}</span>
+        </div>
+      </Tooltip>
+      <Tooltip
         anchorSelect="#subscription-title"
         place="top"
         className="break-words max-w-60 text-justify"
       >
         {`Subscribing to a plan means you'll receive a set amount of allowance credits each month upon renewal, but unused credits do not carry over to the next month.`}
+      </Tooltip>
+      <Tooltip
+        anchorSelect="#total-credits"
+        place="top"
+        className="break-words max-w-60"
+      >
+        {`Total credits are the sum of your non-transferable allowance credits,`}<br /><br />{`top-up credits which are purchased separately,`}<br /><br />{`and promo credits which are non-transferable.`}
       </Tooltip>
       <Tooltip
         anchorSelect="#allowance-credits"
