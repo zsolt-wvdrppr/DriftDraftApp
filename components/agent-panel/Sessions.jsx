@@ -211,7 +211,7 @@ const Sessions = ({ userId }) => {
                 <Reorder.Item
                   key={item?.session_id}
                   animate={{ opacity: 1, y: 0 }}
-                  className="bg-white dark:bg-content1 shadow-md p-4 rounded-md flex flex-col items-center justify-between gap-4 select-none"
+                  className="dark:bg-default-200 border dark:border-default-400 shadow-md p-4 rounded-md flex flex-col items-center justify-between gap-4 select-none"
                   drag={false}
                   exit={{ opacity: 0, x: 100 }}
                   initial={{ opacity: 0, y: 20 }}
@@ -260,10 +260,10 @@ const Sessions = ({ userId }) => {
                     </div>
                   </div>
                   <div className="flex justify-around w-full">
-                    <p className="text-sm text-gray-500 max-w-28">
+                    <p className="text-sm text-primary max-w-28">
                       <b>Created</b> {formatDateToLocalBasic(item.created_at)}
                     </p>
-                    <p className="text-sm text-right text-gray-500 max-w-28">
+                    <p className="text-sm text-right text-primary max-w-28">
                       <b>Last edit</b> {formatDateToLocalBasic(item.updated_at)}
                     </p>
                   </div>

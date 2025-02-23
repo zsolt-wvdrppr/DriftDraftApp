@@ -106,7 +106,7 @@ export async function POST(req) {
     // ✅ Fetch user by subscription ID
     const { data: user, error: userError } = await supabase
       .from("profiles")
-      .select("user_id, allowance_credits")
+      .select("user_id, allowance_credits, pending_credits")
       .eq("subscription_id", subscriptionId)
       .single();
 
@@ -138,14 +138,20 @@ export async function POST(req) {
       );
     }
 
+    // ✅ Deduct pending credits before resetting allowance credits
+    const newAllowance = Math.max(creditsToAdd - user.pending_credits, 0);
+
     logger.info(
-      `✅ [ADDING CREDITS] ${creditsToAdd} credits for user: ${user.user_id}`
+      `✅ [CREDIT RESET] ${creditsToAdd} new credits, ${user.pending_credits} pending credits deducted. Final balance: ${newAllowance}`
     );
 
-    // ✅ Overwrite credits (no carry-over)
+    // ✅ Update user credits
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({ allowance_credits: creditsToAdd }) // Ensure correct column name
+      .update({
+        allowance_credits: newAllowance, // Ensures pending_credits is deducted
+        pending_credits: 0, // Reset pending_credits after applying deduction
+      })
       .eq("user_id", user.user_id);
 
     if (updateError) {
@@ -158,7 +164,7 @@ export async function POST(req) {
     }
 
     logger.info(
-      `✅ [CREDITS UPDATED] Successfully added ${creditsToAdd} credits for user: ${user.user_id}`
+      `✅ [CREDITS UPDATED] Successfully set ${newAllowance} credits for user: ${user.user_id}`
     );
 
     return NextResponse.json({ success: true });
@@ -170,7 +176,9 @@ export async function POST(req) {
     const subscriptionId = subscription.id;
     const status = subscription.status;
 
-    logger.debug(`🔹 Subscription ${subscriptionId} updated, status: ${status}`);
+    logger.debug(
+      `🔹 Subscription ${subscriptionId} updated, status: ${status}`
+    );
 
     // ✅ Fetch user by subscription ID
     const { data: user, error: userError } = await supabase
@@ -181,13 +189,18 @@ export async function POST(req) {
 
     if (userError || !user) {
       logger.error(`❌ User not found for subscription: ${subscriptionId}`);
-      
-      return NextResponse.json({ error: "User not found for this subscription." }, { status: 404 });
+
+      return NextResponse.json(
+        { error: "User not found for this subscription." },
+        { status: 404 }
+      );
     }
 
     // ✅ Handle scheduled cancellation (cancel at period end)
     if (subscription.cancel_at_period_end) {
-      const planExpiresAt = new Date(subscription.current_period_end * 1000).toISOString();
+      const planExpiresAt = new Date(
+        subscription.current_period_end * 1000
+      ).toISOString();
 
       logger.debug(`✅ Subscription scheduled to cancel at: ${planExpiresAt}`);
 
@@ -200,9 +213,15 @@ export async function POST(req) {
         .eq("user_id", user.user_id);
 
       if (updateError) {
-        logger.error("❌ Failed to update subscription cancellation:", updateError);
+        logger.error(
+          "❌ Failed to update subscription cancellation:",
+          updateError
+        );
 
-        return NextResponse.json({ error: "Failed to update subscription cancellation." }, { status: 500 });
+        return NextResponse.json(
+          { error: "Failed to update subscription cancellation." },
+          { status: 500 }
+        );
       }
     }
 
@@ -220,9 +239,15 @@ export async function POST(req) {
         .eq("user_id", user.user_id);
 
       if (updateError) {
-        logger.error("❌ Failed to update immediate subscription cancellation:", updateError);
+        logger.error(
+          "❌ Failed to update immediate subscription cancellation:",
+          updateError
+        );
 
-        return NextResponse.json({ error: "Failed to update subscription cancellation." }, { status: 500 });
+        return NextResponse.json(
+          { error: "Failed to update subscription cancellation." },
+          { status: 500 }
+        );
       }
     }
 
@@ -246,7 +271,10 @@ export async function POST(req) {
     if (userError || !user) {
       logger.error(`❌ User not found for subscription: ${subscriptionId}`);
 
-      return NextResponse.json({ error: "User not found for this subscription." }, { status: 404 });
+      return NextResponse.json(
+        { error: "User not found for this subscription." },
+        { status: 404 }
+      );
     }
 
     // ✅ Clear subscription details from user profile
@@ -257,14 +285,17 @@ export async function POST(req) {
         plan_renews_at: null,
         plan_expires_at: null,
         plan_starts_at: null,
-        tier: "Free"
+        tier: "Free",
       })
       .eq("user_id", user.user_id);
 
     if (updateError) {
       logger.error("❌ Failed to clear subscription details:", updateError);
 
-      return NextResponse.json({ error: "Failed to clear subscription details." }, { status: 500 });
+      return NextResponse.json(
+        { error: "Failed to clear subscription details." },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ success: true });
