@@ -31,7 +31,7 @@ export default function AgentPanel() {
         {isAgentMode ? "Hide Agent Dashboard" : "Show Agent Dashboard"}
       </Button>
       <AnimatePresence>
-        {true && (
+        {isAgentMode && (
           <motion.div
             key="agent-dashboard"
             initial={{ opacity: 0, y: -10 }}
