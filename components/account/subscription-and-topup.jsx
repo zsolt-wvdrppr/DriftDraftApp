@@ -225,7 +225,7 @@ const SubscriptionAndTopup = () => {
         <div className="flex flex-col gap-y-4 flex-grow items-stretch justify-between w-full md:w-auto">
           <Card className="p-4 flex flex-col gap-y-4 items-center h-full justify-between border">
             <div className="flex flex-col gap-4 items-center justify-center h-full w-full">
-              <p className="text-lg flex gap-x-10 w-full justify-evenly text-primary">
+              <div className="text-lg flex gap-x-10 w-full justify-evenly text-primary">
                 <span className="relative font-semibold">Credits:
                 <IconHelp
                   id="total-credits"
@@ -234,7 +234,7 @@ const SubscriptionAndTopup = () => {
                 />
                 </span>
                 <span className="font-bold text-highlightPurple relative">
-                  {services?.allowanceCredits !== null ? (
+                  {totalCredits !== null ? (
                     <>
                       <AnimatedNumber value={totalCredits} />
                       <IconListDetails
@@ -251,7 +251,7 @@ const SubscriptionAndTopup = () => {
                     />
                   )}
                 </span>
-              </p>
+              </div>
             </div>
             <div id="topup-button" className="w-full flex">
               <Button
@@ -308,18 +308,18 @@ const SubscriptionAndTopup = () => {
         className="break-words max-w-60 flex flex-col gap-2"
       >
         {`Breakdown of your total credits:`}
-        <div className="flex gap-2 justify-between">
+        <span className="flex gap-2 justify-between">
           <span>Allowance credits:</span>
           <span>{services.allowanceCredits}</span>
-        </div>
-        <div className="flex gap-2 justify-between">
+        </span>
+        <span className="flex gap-2 justify-between">
           <span>Top-up credits:</span>
           <span>{services.topUpCredits}</span>
-        </div>
-        <div className="flex gap-2 justify-between">
+        </span>
+        <span className="flex gap-2 justify-between">
           <span>Promo credits:</span>
           <span>{services.promoCredits}</span>
-        </div>
+        </span>
       </Tooltip>
       <Tooltip
         anchorSelect="#subscription-title"
@@ -334,20 +334,6 @@ const SubscriptionAndTopup = () => {
         className="break-words max-w-60"
       >
         {`Total credits are the sum of your non-transferable allowance credits,`}<br /><br />{`top-up credits which are purchased separately,`}<br /><br />{`and promo credits which are non-transferable.`}
-      </Tooltip>
-      <Tooltip
-        anchorSelect="#allowance-credits"
-        place="top"
-        className="break-words max-w-60 text-justify"
-      >
-        {`Allowance credits are the monthly credits you receive as part of your subscription plan. These credits can be used throughout the billing cycle but do not roll over to the next month if unused.`}
-      </Tooltip>
-      <Tooltip
-        anchorSelect="#topup-credits"
-        place="top"
-        className="break-words max-w-60 text-justify"
-      >
-        {`Top-up credits are additional credits you can purchase separately from your subscription. Unlike allowance credits, they remain in your balance until used and do not expire at the end of the billing cycle.`}
       </Tooltip>
     </div>
   );
