@@ -13,7 +13,7 @@ import {
   Divider,
 } from "@heroui/react";
 
-import RefereeSessionsTab from "./RefereeSessions";
+import RefereeSessionsTab from "./Clients";
 import AddRefereeTab from "./AddReferee";
 
 export default function AgentPanel() {

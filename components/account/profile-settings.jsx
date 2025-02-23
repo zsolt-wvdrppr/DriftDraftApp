@@ -14,6 +14,7 @@ import {
   Link,
 } from "@heroui/react";
 import { IconDeviceFloppy, IconHttpDeleteOff } from "@tabler/icons-react";
+import RefereeSettings from "./referee-settings";
 
 const ProfileSettings = () => {
   const { user } = useAuth();
@@ -114,6 +115,7 @@ const ProfileSettings = () => {
           If you need to change the email address you use to log in, please
           contact our support team.
         </p>
+      <RefereeSettings />
       <Button
         onPress={onOpen}
         className="mt-4 px-4 py-2 text-red-600 rounded-md w-fit hover:bg-default-200 self-end"
