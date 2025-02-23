@@ -1,91 +1,102 @@
-import { Button, Input, Form } from "@heroui/react";
+import { Button, Input, Form, Textarea, Divider } from "@heroui/react";
 import { useState } from "react";
 import { useAddReferee } from "@/lib/hooks/useAddReferee";
 import { useAuth } from "@/lib/AuthContext";
+import { IconCopy, IconSend } from "@tabler/icons-react";
+import logger from "@/lib/logger";
+import { toast } from "sonner";
 
 const AddReferee = () => {
   const { user } = useAuth();
   const userId = user?.id;
   const { addReferee, loading } = useAddReferee(userId);
   const [email, setEmail] = useState("");
-  const [credits, setCredits] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleAllocate = (e) => {
+  // Mock up email invitation
+  const handleInvite = async (e) => {
     e.preventDefault();
-
-    addReferee(email, credits);
+    logger.info("Inviting", email);
+    const invite = await addReferee(email, message);
+    logger.info("Invite sent", invite);
     setEmail("");
-    setCredits("");
+  };
+
+  const handleCopy = (agentId = 1234) => {
+    navigator.clipboard.writeText(`https://app.com/referral/${agentId}`);
+    toast.success("Referral link copied to clipboard", {classNames: { toast: "text-green-800"}});
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex space-x-2">
-        <Input
-          type="text"
-          placeholder="Referral link"
-          value="https://app.com/referral/agent123"
-          readOnly
-          classNames={{
-            label: "!text-primary dark:!text-accentMint",
-            input: "dark:!text-white",
-            inputWrapper:
-              "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
-          }}
-        />
-        <Button variant="solid" color="secondary">
-          Copy
-        </Button>
-      </div>
-      <Form
-        className="flex flex-row space-x-2"
-        onSubmit={handleAllocate}
-        validationBehavior="native"
-      >
-        <Input
-          type="number"
-          isRequired
-          placeholder="Credits to allocate"
-          min={5}
-          value={credits}
-          onChange={(e) => setCredits(parseInt(e.target.value, 10) || "")}
-          onInvalid={(e) =>
-            e.target.setCustomValidity("Minimum 5 credits required")
-          }
-          onInput={(e) => e.target.setCustomValidity("")} // Clear error on input
-          classNames={{
-            label: "!text-primary dark:!text-accentMint",
-            input: "dark:!text-white",
-            inputWrapper:
-              "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
-          }}
-        />
-        <Input
-          type="email"
-          isRequired
-          placeholder="Referee's email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onInvalid={(e) =>
-            e.target.setCustomValidity("Please enter a valid email")
-          }
-          onInput={(e) => e.target.setCustomValidity("")} // Clear error on input
-          classNames={{
-            label: "!text-primary dark:!text-accentMint",
-            input: "dark:!text-white",
-            inputWrapper:
-              "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
-          }}
-        />
-        <Button
-          type="submit"
-          variant="solid"
-          color="primary"
-          isLoading={loading}
+    <div className="space-y-4 flex flex-col justify-center items-center w-full">
+      <div className="space-y-4 md:w-1/2">
+        <div className="flex flex-row">
+          <Input
+            type="text"
+            placeholder="Referral link"
+            value="https://app.com/referral/agent123"
+            readOnly
+            endContent={
+              <Button className="min-w-0" color="secondary" onPress={handleCopy}>
+                <IconCopy size={24} />
+              </Button>
+            }
+            classNames={{
+              label: "!text-primary dark:!text-accentMint",
+              input: "dark:!text-white",
+              inputWrapper:
+                "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1 pr-0",
+            }}
+          />
+        </div>
+        <Divider/>
+        <h3 className="text-primary">Invite via email</h3>
+        <Form
+          className="flex"
+          onSubmit={handleInvite}
+          validationBehavior="native"
         >
-          {loading ? "" : "Allocate"}
-        </Button>
-      </Form>
+          <Textarea
+            placeholder="Personal message (optional)"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            classNames={{
+              label: "!text-primary dark:!text-accentMint",
+              input: "dark:!text-white",
+              inputWrapper:
+                "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
+            }}
+          />
+          <Input
+            type="email"
+            isRequired
+            placeholder="Referee's email"
+            endContent={
+              <Button
+                type="submit"
+                variant="solid"
+                className="min-w-0"
+                color="primary"
+                isLoading={loading}
+              >
+                {loading ? "" : <IconSend size={24} />}
+              </Button>
+            }
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onInvalid={(e) =>
+              e.target.setCustomValidity("Please enter a valid email")
+            }
+            onInput={(e) => e.target.setCustomValidity("")} // Clear error on input
+            classNames={{
+              label: "!text-primary dark:!text-accentMint",
+              input: "dark:!text-white",
+              inputWrapper:
+                "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1 pr-0",
+            }}
+          />
+        </Form>
+      </div>
     </div>
   );
 };

@@ -41,14 +41,14 @@ export default function AgentPanel() {
           >
             <Card shadow="md" radius="lg" fullWidth>
               <CardHeader>
-                <h2 className="text-lg font-semibold">Agent Dashboard</h2>
+                <h2 className="text-lg font-semibold">Manage your clients</h2>
               </CardHeader>
               <CardBody className="space-y-4">
                 <Tabs radius="lg" color={"primary"} variant={"bordered"}>
-                  <Tab title="Referrals">
+                  <Tab title="Invite">
                     <AddRefereeTab />
                   </Tab>
-                  <Tab title="Referee Sessions">
+                  <Tab title="Client Sessions">
                     <RefereeSessionsTab />
                   </Tab>
                 </Tabs>
