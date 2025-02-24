@@ -66,7 +66,7 @@ const RefereeSessionsTab = () => {
   return (
     <div className="space-y-4 min-h-[200px]">
       <div className="flex space-x-2 justify-between md:justify-center">
-        <Button id="refresh" className="min-w-0" onPress={handleReloadReferees}>
+        <Button aria-label="Reload referees" id="refresh" className="min-w-0" onPress={handleReloadReferees}>
           <IconReload className="text-accentMint" />
         </Button>
         <Button
