@@ -106,9 +106,9 @@ const SubscriptionAndTopup = () => {
   };
 
   const totalCredits =
-    services?.allowanceCredits +
-    services?.topUpCredits +
-    services?.promoCredits;
+    (services?.allowanceCredits ?? 0) +
+    (services?.topUpCredits ?? 0) +
+    (services?.promoCredits ?? 0);
 
   return (
     <div className="pt-4 pb-8 mx-auto flex flex-col w-full gap-y-4 items-center overflow-hidden">
@@ -226,12 +226,13 @@ const SubscriptionAndTopup = () => {
           <Card className="p-4 flex flex-col gap-y-4 items-center h-full justify-between border">
             <div className="flex flex-col gap-4 items-center justify-center h-full w-full">
               <div className="text-lg flex gap-x-10 w-full justify-evenly text-primary">
-                <span className="relative font-semibold">Credits:
-                <IconHelp
-                  id="total-credits"
-                  size={16}
-                  className="absolute -top-1 -right-5"
-                />
+                <span className="relative font-semibold">
+                  Credits:
+                  <IconHelp
+                    id="total-credits"
+                    size={16}
+                    className="absolute -top-1 -right-5"
+                  />
                 </span>
                 <span className="font-bold text-highlightPurple relative">
                   {totalCredits !== null ? (
@@ -333,7 +334,13 @@ const SubscriptionAndTopup = () => {
         place="top"
         className="break-words max-w-60"
       >
-        {`Total credits are the sum of your non-transferable allowance credits,`}<br /><br />{`top-up credits which are purchased separately,`}<br /><br />{`and promo credits which are non-transferable.`}
+        {`Total credits are the sum of your non-transferable allowance credits,`}
+        <br />
+        <br />
+        {`top-up credits which are purchased separately,`}
+        <br />
+        <br />
+        {`and promo credits which are non-transferable.`}
       </Tooltip>
     </div>
   );
