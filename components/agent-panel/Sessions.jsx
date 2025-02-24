@@ -47,14 +47,14 @@ const Sessions = ({ userId }) => {
   const [isProcessLoading, setIsProcessLoading] = useState(false);
   const inputRefs = useRef({});
 
-  useEffect(() => {
+  /*useEffect(() => {
     logger.debug(`[SESSIONS] - Sessions changed:`, items);
   }, [items]);
 
   // log userId
   useEffect(() => {
     logger.debug(`[USER ID] - User ID:`, userId);
-  }, [userId]);
+  }, [userId]);*/
 
   const {
     isOpen: isDownloadModalOpen,
