@@ -73,6 +73,7 @@ export const Navbar = () => {
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink
+            aria-label="Home"
             className="flex justify-start items-center gap-1"
             href="/"
             onClick={() => setIsMenuOpen(false)}
@@ -85,6 +86,7 @@ export const Navbar = () => {
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
+                aria-label={item.label}
                 className={clsx(
                   linkStyles({ color: "foreground" }),
                   "data-[active=true]:text-primary data-[active=true]:font-medium"
@@ -109,6 +111,7 @@ export const Navbar = () => {
         <NavbarItem className="hidden md:flex">
           {user && (
             <MyActivitiesBtn
+              aria-label="My Activities"
               className={"rounded-t-none bg-default-200"}
               label={"My Activities"}
               onPress={() => setIsMenuOpen(false)}
@@ -117,11 +120,12 @@ export const Navbar = () => {
         </NavbarItem>
         {user && (
           <NavbarItem className="hidden md:flex">
-            <AccountBtn user={user} />
+            <AccountBtn aria-label="Account settings" user={user} />
           </NavbarItem>
         )}
         <NavbarItem className="hidden md:flex actions items-center gap-4">
           <LogInOutBtn
+            aria-label="Log in or out"
             className="bg-default-200 rounded-t-none hover:scale-105"
             user={user}
             onLogIn={handleLogIn}
@@ -133,7 +137,7 @@ export const Navbar = () => {
       <NavbarContent className="md:hidden basis-1 pl-4 flex" justify="end">
         <div className="flex w-full gap-4 justify-evenly items-center pr-4">
           <NavbarItem className="flex gap-4 items-center">
-            <ThemeSwitch className="h-10 md:hidden" />
+            <ThemeSwitch aria-label="Theme Switch" className="h-10 md:hidden" />
           </NavbarItem>
           {/*user && (
             <NavbarItem className="flex gap-4 items-center">
@@ -147,6 +151,7 @@ export const Navbar = () => {
           <NavbarItem className="flex gap-4 items-center">
             {user && (
               <MyActivitiesBtn
+                aria-label="My Activities"
                 className={"p-0 min-w-0"}
                 noLabel={true}
                 onPress={() => setIsMenuOpen(false)}
@@ -154,6 +159,7 @@ export const Navbar = () => {
             )}
             {!user && (
               <LogInBtn
+                aria-label="Log in"
                 className="text-lg p-0 min-w-0"
                 noTitle={true}
                 onChange={handleLogIn}
@@ -172,6 +178,7 @@ export const Navbar = () => {
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
               <Link
+                aria-label="Menu item"
                 color={
                   index === 2
                     ? "primary"
@@ -191,6 +198,7 @@ export const Navbar = () => {
             {user && (
               <div className="absolute bottom-32 right-5 flex flex-col gap-4">
                 <MyActivitiesBtn
+                  aria-label="My Activities"
                   className={
                     "bg-default-200"
                   }
@@ -198,6 +206,7 @@ export const Navbar = () => {
                   onPress={() => setIsMenuOpen(false)}
                 />
                 <AccountBtn
+                  aria-label="Account settings"
                   className={
                     "flex justify-between bg-default-200 py-2 px-4 rounded-xl w-full"
                   }
@@ -211,7 +220,7 @@ export const Navbar = () => {
             <div className="actions flex flex-col-reverse items-center justify-center mt-12 gap-4">
               {
                 <LogInOutBtn
-                  className=""
+                  aria-label="Log in or out"
                   labelClassName={
                     "text-sm absolute bottom-40 right-5 text-left"
                   }
