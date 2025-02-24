@@ -22,55 +22,51 @@ const RefereeSessionsTab = () => {
     refereesList,
     loading,
     error,
-    refreshReferees,
+    fetchReferees,
     revokeReferee,
-    processReferee,
-  } = useRefereesList(userId);
+  } = useRefereesList();
   const [selectedReferee, setSelectedReferee] = useState(new Set([]));
   const [refereeUserId, setRefereeUserId] = useState(null);
 
-  // ✅ Log selected referee & process refereeUserId
-  useEffect(() => {
-    if (!selectedReferee?.email) return;
-
-    logger.info(`Selected referee: ${JSON.stringify(selectedReferee)}`);
-
-    // ✅ Process referee & update state with the result
-    const handleProcessReferee = async () => {
-      const result = await processReferee(userId, selectedReferee.email);
-      if (result.success) {
-        setRefereeUserId(result.refereeUserId); // ✅ Store the referee's userId
-      }
-    };
-
-    handleProcessReferee();
-  }, [selectedReferee]);
-
-  // ✅ Keep selectedReferee in sync with refereesList
-  useEffect(() => {
+  const handleSelectedRefereeUpdate = () => {
     if (selectedReferee?.key) {
       const updatedReferee = refereesList.find(
         (ref) => ref.key === selectedReferee.key
       );
       if (updatedReferee) {
         setSelectedReferee(updatedReferee);
+        setRefereeUserId(updatedReferee?.user_id);
+      } else {
+        setSelectedReferee(new Set([]));
+        setRefereeUserId(null);
       }
     }
-  }, [selectedReferee]);
-  
-  
+  };
 
+   // ✅ Keep selectedReferee in sync with refereesList
+   useEffect(() => {
+    handleSelectedRefereeUpdate();
+   }, [selectedReferee]); 
+
+   const handleReloadReferees = async () => {
+    await fetchReferees();
+    handleSelectedRefereeUpdate();
+  };
+  
   const handleRevokeReferee = async (email) => {
-    // log email
+    if (!email) return;
+  
     logger.info(`Revoking referee: ${email}`);
-    revokeReferee(email);
-    setSelectedReferee(new Set([]));
+  
+    await revokeReferee(email); // ✅ Call the API to revoke the referee
+    await fetchReferees(); // ✅ Immediately refresh referees list
+    setSelectedReferee(new Set([])); // ✅ Clear selection after revoking
   };
 
   return (
     <div className="space-y-4 min-h-[200px]">
       <div className="flex space-x-2 justify-between md:justify-center">
-        <Button id="refresh" className="min-w-0" onPress={refreshReferees}>
+        <Button id="refresh" className="min-w-0" onPress={handleReloadReferees}>
           <IconReload className="text-accentMint" />
         </Button>
         <Button
