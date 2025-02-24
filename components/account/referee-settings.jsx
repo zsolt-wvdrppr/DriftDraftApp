@@ -101,8 +101,8 @@ const RefereeSettings = () => {
 
         {/* ✅ Display Assigned Agent */}
         {referralEmail && (
-          <div className="flex gap-4 items-center">
-            <p className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2">
+         
               <Input
                 type="text"
                 label="Assigned agent"
@@ -129,7 +129,7 @@ const RefereeSettings = () => {
                   <IconPlugConnectedX size={26}/>
                 </Button>}
               />
-            </p>
+
           </div>
         )}
       </div>

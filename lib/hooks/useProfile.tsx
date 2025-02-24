@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner"; // Using Sonner for toast notifications
 
+import { getJWT } from "@/lib/utils/getJWT";
 import { supabase } from "@/lib/supabaseClient";
+import logger from "@/lib/logger";
+import { useSessionContext } from "@/lib/SessionProvider"; 
 
 export const useUserProfile = (userId: string) => {
   const [fullName, setFullName] = useState<string | null>(null);
@@ -71,22 +74,34 @@ export const useUserProfile = (userId: string) => {
 export const useDeleteUser = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { logOutUser } = useSessionContext();
 
-  const deleteUser = async (userId: string) => {
+  const deleteUser = async () => {
     try {
       setLoading(true);
 
+      const token = await getJWT();
+
+      logger.debug("Token: ", token);
+
+      if (!token) {
+        throw new Error("Unauthorized - No valid token.");
+      }
+
       const response = await fetch("/api/deleteUser", {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // ✅ Send JWT token for authentication
+        },
       });
+      await logOutUser();
 
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.error || "Failed to delete user");
 
-      // Show success notification
+      // ✅ Show success notification
       toast.success("Your account has been deleted successfully.");
       
     } catch (err: any) {

@@ -47,8 +47,8 @@ const ProfileSettings = () => {
   };
 
   const confirmDelete = async () => {
-    await logOutUser();
-    await deleteUser(user.id);
+    //await logOutUser();
+    await deleteUser();
     onClose();
   };
 
@@ -119,10 +119,9 @@ const ProfileSettings = () => {
       <Button
         onPress={onOpen}
         className="mt-4 px-4 py-2 text-red-600 rounded-md w-fit hover:bg-default-200 self-end"
-        disabled={deleting}
         isLoading={deleting}
       >
-        <IconHttpDeleteOff size={24} />
+        {!deleting ? <IconHttpDeleteOff size={24} /> : ""}
         {deleting ? "Deleting..." : "Delete Account"}
       </Button>
       {deleteError && <p className="text-red-500 mt-2">{deleteError}</p>}
