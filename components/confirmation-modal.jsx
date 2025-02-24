@@ -1,8 +1,8 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure } from "@heroui/react";
 
-const ConfirmationModal = ({ isOpen, onClose, title, message, onConfirm }) => {
+const ConfirmationModal = ({ isOpen, onClose, title, message, onConfirm, ...props }) => {
   return (
-    <Modal isOpen={isOpen} onOpenChange={onClose}>
+    <Modal isOpen={isOpen} onOpenChange={onClose} {...props}>
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
         <ModalBody>

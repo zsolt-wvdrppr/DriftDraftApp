@@ -21,7 +21,6 @@ import Cookies from "js-cookie";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { useReCaptcha } from "next-recaptcha-v3";
 
-import { createOrUpdateProfile } from "@/lib/supabaseClient";
 import logger from "@/lib/logger";
 import { useAuth } from "@/lib/AuthContext";
 import { useSessionContext } from "@/lib/SessionProvider";
@@ -120,13 +119,6 @@ export default function UserActivities() {
       return;
     }
 
-    if (!loading && user) {
-      logger.debug("ensureProfileExists:", user);
-
-      (async () => {
-        await createOrUpdateProfile();
-      })();
-    }
   }, [loading, user, router]);
 
   const confirmDelete = (item) => {

@@ -9,7 +9,6 @@ import ProfileSettings from "./profile-settings";
 import SubscriptionAndTopup from "./subscription-and-topup";
 import PaymentMethod from "./payment_method";
 import logger from "@/lib/logger";
-import { createOrUpdateProfile } from "@/lib/supabaseClient";
 import StripeProvider from "@/lib/hooks/StripeProvider";
 
 const defaultContent = (
@@ -36,14 +35,6 @@ const AccountContent = () => {
       return;
     }
 
-    if (!loading && user) {
-      logger.debug("ensureProfileExists:", user);
-      const ensureProfileExists = async () => {
-        await createOrUpdateProfile();
-      };
-
-      ensureProfileExists();
-    }
   }, [loading, user, router]);
 
   return (

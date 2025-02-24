@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Button, Input, Checkbox, Link } from "@heroui/react";
+import { Button, Input, Checkbox, Link, Divider } from "@heroui/react";
 import { Icon } from "@iconify-icon/react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-
-import { supabase } from "@/lib/supabaseClient";
+import { supabase, createOrUpdateProfile } from "@/lib/supabaseClient";
 import logger from "@/lib/logger";
 import { useAuth } from "@/lib/AuthContext";
 import { useToastSound } from "@/lib/hooks/useToastSound";
@@ -36,22 +35,64 @@ export default function SignUp() {
   useEffect(() => {
     // Display error and message in toast
     if (error) {
-      toast.error(error, { duration: 20000, position: "top-center", closeButton: true, classNames: { toast: 'text-danger', title: 'text-md font-semibold' }, onOpen: play() });
+      toast.error(error, {
+        duration: 20000,
+        position: "top-center",
+        closeButton: true,
+        classNames: { toast: "text-danger", title: "text-md font-semibold" },
+        onOpen: play(),
+      });
     }
     if (message) {
-      toast.success(message, { duration: 20000, position: "top-center", closeButton: true, classNames: { toast: 'text-green-700', title: 'text-md font-semibold' }, onOpen: play() });
+      toast.success(message, {
+        duration: 20000,
+        position: "top-center",
+        closeButton: true,
+        classNames: { toast: "text-green-700", title: "text-md font-semibold" },
+        onOpen: play(),
+      });
     }
   }, [error, message]);
 
-  const handleSignUp = async () => {
+  const handleSocialLogin = async (provider) => {
     setLoading(true);
     setError(null);
 
     try {
-      const redirectPath = new URLSearchParams(window.location.search).get("redirect") || "/activities";
+      const redirectPath =
+        new URLSearchParams(window.location.search).get("redirect") ||
+        "/profile";
 
-      logger.info(`${window.location.origin}${redirectPath}`);
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}${redirectPath}`,
+        },
+      });
 
+      if (error) throw error;
+
+      logger.info("Google login initiated");
+    } catch (err) {
+      logger.error("Error during social login:", err.message);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignUp = async () => {
+    setLoading(true);
+    setError(null);
+  
+    try {
+      const redirectPath =
+        searchParams.get("redirect") || "/activities";
+  
+      const referralName = searchParams.get("data"); // ✅ Extract referral name from URL
+  
+      logger.info(`Signup redirect: ${window.location.origin}${redirectPath}`);
+  
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -59,18 +100,18 @@ export default function SignUp() {
           emailRedirectTo: `${window.location.origin}${redirectPath}`,
           data: {
             full_name: name,
+            referral_name: referralName || null, // ✅ Store referral name if exists
           },
         },
       });
-
-      // Show confirmation message and clear form
+  
+      if (error) throw error;
+  
       setMessage("Check your email to confirm your account.");
       setEmail("");
       setPassword("");
       setName("");
-
-      if (error) throw error;
-
+  
       logger.info("Email signup initiated");
     } catch (err) {
       logger.error("Error during email signup:", err.message);
@@ -79,7 +120,7 @@ export default function SignUp() {
       setLoading(false);
     }
   };
-
+  
 
   return (
     <div className="flex h-full w-full items-center justify-center">
@@ -87,7 +128,10 @@ export default function SignUp() {
         <p className="pb-4 text-left text-3xl font-semibold flex justify-between">
           Sign Up
           <span aria-label="emoji" className="ml-2" role="img">
-            <Icon className="pointer-events-none text-2xl text-default-400" icon="noto:chess-pawn" />
+            <Icon
+              className="pointer-events-none text-2xl text-default-400"
+              icon="noto:chess-pawn"
+            />
           </span>
         </p>
         <form
@@ -154,15 +198,35 @@ export default function SignUp() {
               Privacy Policy
             </Link>
           </Checkbox>
-          <Button color="primary" disabled={loading} isLoading={loading} type="submit">
+          <Button
+            color="primary"
+            disabled={loading}
+            isLoading={loading}
+            type="submit"
+          >
             {loading ? "Signing up..." : "Sign Up"}
           </Button>
+          <p className="text-center text-small">
+            <Link href="/login" size="sm">
+              Already have an account? Log In
+            </Link>
+          </p>
+          <div className="flex items-center gap-4 py-2">
+            <Divider className="flex-1" />
+            <p className="shrink-0 text-tiny text-default-500">OR</p>
+            <Divider className="flex-1" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Button
+              disabled={loading}
+              startContent={<Icon icon="flat-color-icons:google" width={24} />}
+              variant="bordered"
+              onPress={() => handleSocialLogin("google")}
+            >
+              Continue with Google
+            </Button>
+          </div>
         </form>
-        <p className="text-center text-small">
-          <Link href="/login" size="sm">
-            Already have an account? Log In
-          </Link>
-        </p>
       </div>
     </div>
   );

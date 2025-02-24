@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -24,11 +24,15 @@ import { SearchIcon, Logo } from "@/components/icons";
 import { useAuth } from "@/lib/AuthContext";
 import { useRedirectAfterLogin } from "@/lib/hooks/useRedirectAfterLogin";
 import logger from "@/lib/logger";
+import { useReferral } from "@/lib/hooks/useReferral";
+import ConfirmationModal from "@/components/confirmation-modal";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user } = useAuth();
   const redirectAfterLogin = useRedirectAfterLogin();
+
+  const { isReferralModalOpen, setReferralUser, removeReferralParam, referralName } = useReferral();
 
   const handleLogIn = () => {
     setIsMenuOpen(false);
@@ -233,6 +237,30 @@ export const Navbar = () => {
           </NavbarItem>
         </div>
       </NavbarMenu>
+      {isReferralModalOpen && (
+        <ConfirmationModal
+          isOpen={isReferralModalOpen}
+          message={modalMessage(referralName?.toString() || "")}
+          placement="center"
+          title="Confirm Referral"
+          onClose={() => {
+            removeReferralParam(); // ✅ Remove referral param if user cancels
+          }}
+          onConfirm={() => {
+            setReferralUser(); // ✅ Proceed with setting the referral
+          }}
+        />
+      )}
     </NextUINavbar>
   );
 };
+
+const modalMessage = (referralName : string) => {
+  return (
+
+      <span>
+        {`Do you want to set `}<strong>{referralName}</strong>{` as your referral agent? If they exist in our database, we will attempt to assign them. They will be able to view your AI-generated plans but won’t be able to edit them. Only confirm if you intend to proceed and have direct contact with `}<strong>{referralName}</strong>.
+      </span>
+
+  );
+}

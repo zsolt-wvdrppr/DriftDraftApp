@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 import logger from "@/lib/logger";
 import { supabase, createOrUpdateProfile } from "@/lib/supabaseClient";
-import { useAuth } from '@/lib/AuthContext';
+import { useAuth } from "@/lib/AuthContext";
 import { useToastSound } from "@/lib/hooks/useToastSound";
 
 export default function LogIn() {
@@ -18,13 +18,15 @@ export default function LogIn() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [redirect, setRedirect] = useState("/activities"); 
+  const [redirect, setRedirect] = useState("/activities");
   const play = useToastSound();
   const { user } = useAuth(); // Access user state
 
   useEffect(() => {
     // Update redirect from URL query parameters
-    const urlRedirect = new URLSearchParams(window.location.search).get("redirect");
+    const urlRedirect = new URLSearchParams(window.location.search).get(
+      "redirect"
+    );
 
     if (urlRedirect) {
       setRedirect(urlRedirect); // Update redirect state
@@ -41,7 +43,13 @@ export default function LogIn() {
   useEffect(() => {
     // Display error in toast
     if (error) {
-      toast.error(error, { duration: 10000, position: "top-center", closeButton: true, classNames: { toast: 'text-danger', title: 'text-md font-semibold' }, onOpen: play() });
+      toast.error(error, {
+        duration: 10000,
+        position: "top-center",
+        closeButton: true,
+        classNames: { toast: "text-danger", title: "text-md font-semibold" },
+        onOpen: play(),
+      });
     }
   }, [error]);
 
@@ -70,15 +78,17 @@ export default function LogIn() {
       }
 
       // ✅ Ensure profile is created before proceeding
-    const profileCreated = await createOrUpdateProfile();
+      const profileCreated = await createOrUpdateProfile();
 
-    if (!profileCreated) {
-      setError("Failed to create user profile. Please try again.");
+      if (!profileCreated) {
+        setError("Failed to create user profile. Please try again.");
 
-      return;
-    }
+        return;
+      }
 
-      const redirectUrl = new URLSearchParams(window.location.search).get("redirect") || "/activities";
+      const redirectUrl =
+        new URLSearchParams(window.location.search).get("redirect") ||
+        "/activities";
 
       router.push(redirectUrl);
     } catch (err) {
@@ -89,14 +99,13 @@ export default function LogIn() {
     }
   };
 
-
-
-
   const handleSocialLogin = async (provider) => {
     setLoading(true);
     setError(null);
     try {
-      const redirectPath = new URLSearchParams(window.location.search).get("redirect") || "/activities";
+      const redirectPath =
+        new URLSearchParams(window.location.search).get("redirect") ||
+        "/activities";
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
@@ -141,7 +150,10 @@ export default function LogIn() {
           <Input
             autoComplete="current-password"
             endContent={
-              <Button type="button" onPress={() => setPasswordVisible(!passwordVisible)}>
+              <Button
+                type="button"
+                onPress={() => setPasswordVisible(!passwordVisible)}
+              >
                 {passwordVisible ? (
                   <Icon
                     className="pointer-events-none text-2xl text-default-400"
@@ -174,8 +186,10 @@ export default function LogIn() {
           <Button color="primary" disabled={loading} type="submit">
             {loading ? "Logging in..." : "Log In"}
           </Button>
-          <Link className="text-cente text-primary text-sm m-auto" href="/signup">
-            {"Don't have an account? Sign Up"}
+          <Link href={`/signup?redirect=${encodeURIComponent(redirect)}`}>
+            <span className="text-center text-sm m-auto">
+              {"Don't have an account? Sign Up"}
+            </span>
           </Link>
         </form>
         <div className="flex items-center gap-4 py-2">
@@ -193,13 +207,6 @@ export default function LogIn() {
             Continue with Google
           </Button>
         </div>
-          <Link
-            href={`/signup?redirect=${encodeURIComponent(
-              redirect
-            )}`}
-          >
-            <span className="text-center text-neutralSnow text-sm m-auto">{"Don't have an account? Sign Up"}</span>
-          </Link>
       </div>
     </div>
   );
