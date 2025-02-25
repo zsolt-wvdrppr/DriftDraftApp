@@ -9,6 +9,10 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY; // Role Key for secure DB queries
 
 export async function POST(req) {
+
+    let top_up_credits = 0;
+    let full_name = "";
+
   try {
     const authHeader = req.headers.get("authorization");
     const jwt = authHeader?.replace("Bearer ", "").trim() || null;
@@ -33,7 +37,7 @@ export async function POST(req) {
     // Step 1: Fetch sender details
     const { data: senderProfile, error: fetchError } = await supabaseAuth
       .from("profiles")
-      .select("pending_credits, transfer_recipient_email, top_up_credits")
+      .select("pending_credits, transfer_recipient_email, top_up_credits, full_name")
       .eq("user_id", userId)
       .maybeSingle();
 
@@ -51,6 +55,9 @@ export async function POST(req) {
     }
 
     const { pending_credits, transfer_recipient_email } = senderProfile;
+
+    top_up_credits = senderProfile.top_up_credits;
+    full_name = senderProfile.full_name;
 
     logger.debug("Sender details fetched:", senderProfile);
 
@@ -93,11 +100,44 @@ export async function POST(req) {
     }
 
     // Step 4: Log the transaction
-    await supabaseAuth.rpc("log_credit_transfer", {
+    const result = await adminSupabase.rpc("log_credit_transfer", {
       p_user_id: userId,
       p_recipient_email: transfer_recipient_email,
       p_transfer_amount: pending_credits,
+      p_balance_before_transfer: top_up_credits + pending_credits,
+      p_balance_after_transfer: top_up_credits,
+      p_completed: true,
     });
+
+    // log the result
+    logger.debug("Credit transfer completed successfully:", result);
+
+    // Step 5: Notify the recipient via email
+    const emailPayload = {
+        email: transfer_recipient_email,
+        content: {
+          name: "DriftDraft",
+          subject: "You've received credits!",
+          text: `Hi there, ${full_name} just transferred ${pending_credits} credits to you.`,
+          html: `<p>Hi there,</p><p><strong>${full_name}</strong> just transferred <strong>${pending_credits} credits</strong> to you.</p>`,
+        },
+      };
+  
+      const emailResponse = await fetch(`${process.env.URL}/api/send-rich-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(emailPayload),
+      });
+  
+      const emailData = await emailResponse.json();
+  
+      if (!emailResponse.ok) {
+        logger.error("Failed to send notification email:", emailData.error);
+      } else {
+        logger.info("Email sent successfully:", emailData.message);
+      }
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

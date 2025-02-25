@@ -48,7 +48,8 @@ export async function POST(req) {
     }
 
     const currentReferralId = userData?.referral_user_id;
-    const userEmail = userData?.email;
+    const userEmail = userData?.email;    
+
 
     if (currentReferralId) {
       logger.info(`ℹ️ User ${userId} already has referral_user_id set (${currentReferralId}). Skipping update.`);
@@ -75,6 +76,13 @@ export async function POST(req) {
 
     const referralUserId = referrerData.user_id;
     let agentReferees = referrerData?.referees || {};
+
+    // Check if referral user id and user id is the same
+    if (referralUserId === userId) {
+      logger.error("❌ Referral user id and user id cannot be the same.");
+
+      return NextResponse.json({ error: "Referral user id and user id cannot be the same." }, { status: 400 });
+    }
 
     // ✅ Check if the user is already listed in the `referees` JSONB
     let userKey = null;
