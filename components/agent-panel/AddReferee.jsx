@@ -5,10 +5,12 @@ import { useAuth } from "@/lib/AuthContext";
 import { IconCopy, IconSend } from "@tabler/icons-react";
 import logger from "@/lib/logger";
 import { toast } from "sonner";
+import { useReferralName } from "@/lib/hooks/useReferralName";
 
 const AddReferee = () => {
   const { user } = useAuth();
   const userId = user?.id;
+  const { referralName } = useReferralName(userId);
   const { addReferee, loading } = useAddReferee(userId);
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -22,8 +24,11 @@ const AddReferee = () => {
     setEmail("");
   };
 
+  // get url from env var
+  const url = process.env.URL;
+
   const handleCopy = (agentId = 1234) => {
-    navigator.clipboard.writeText(`https://app.com/referral/${agentId}`);
+    navigator.clipboard.writeText(`https://driftdraft.app/signup?redirect=?referral/${referralName}`);
     toast.success("Referral link copied to clipboard", {classNames: { toast: "text-green-800"}});
   };
 
@@ -34,7 +39,7 @@ const AddReferee = () => {
           <Input
             type="text"
             placeholder="Referral link"
-            value="https://app.com/referral/agent123"
+            value={`https://driftdraft.app/signup?redirect=?referral/${referralName}`}
             readOnly
             endContent={
               <Button className="min-w-0" color="secondary" onPress={handleCopy}>

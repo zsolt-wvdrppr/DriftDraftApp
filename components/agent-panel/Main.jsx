@@ -19,19 +19,6 @@ import AddRefereeTab from "./AddReferee";
 export default function AgentPanel() {
   const [isAgentMode, setIsAgentMode] = useState(false);
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="p-6 space-y-6"
-    >
-      <Divider />
-      <h1 className="text-2xl font-semibold">Agent Panel</h1>
-      <Button color={"primary"} onPress={() => setIsAgentMode(!isAgentMode)}>
-        {isAgentMode ? "Hide Agent Dashboard" : "Show Agent Dashboard"}
-      </Button>
-      <AnimatePresence>
-        {isAgentMode && (
           <motion.div
             key="agent-dashboard"
             initial={{ opacity: 0, y: -10 }}
@@ -60,8 +47,5 @@ export default function AgentPanel() {
               </CardFooter>
             </Card>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
   );
 }

@@ -1,29 +1,25 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext";
 import { Accordion, AccordionItem } from "@heroui/react";
-import { IconWallet, IconSettings, IconCreditCard } from "@tabler/icons-react";
+import { IconWallet, IconSettings, IconCreditCard, IconEyeglassFilled } from "@tabler/icons-react";
 import ProfileSettings from "./profile-settings";
 import SubscriptionAndTopup from "./subscription-and-topup";
 import PaymentMethod from "./payment_method";
 import logger from "@/lib/logger";
 import StripeProvider from "@/lib/hooks/StripeProvider";
+import { useReferralName } from "../../lib/hooks/useReferralName";
+import AgentPanel from "../agent-panel/Main";
 
-const defaultContent = (
-  <div className="p-4">
-    <p className="text-sm">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec est ut
-      dolor fermentum facilisis. Nulla facilisi. Nulla nec est ut dolor
-      fermentum facilisis. Nulla facilisi.
-    </p>
-  </div>
-);
 
 const AccountContent = () => {
   const { user, loading } = useAuth();
+  const userId = user?.id;
   const router = useRouter();
+  const { referralName } = useReferralName(userId);
+  const [newReferralName, setNewReferralName] = useState(referralName);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -36,6 +32,8 @@ const AccountContent = () => {
     }
 
   }, [loading, user, router]);
+
+
 
   return (
     <StripeProvider>
@@ -81,6 +79,19 @@ const AccountContent = () => {
             />
             <PaymentMethodDescription />
           </AccordionItem>
+          {referralName && (
+          <AccordionItem
+            key="agent-panel"
+            aria-label="Agent panel"
+            indicator={<IconEyeglassFilled className="rotate-45 text-primary" />}
+            subtitle="Press to expand"
+            title={
+              <h2 className="text-xl font-semibold">{"Agent Panel"}</h2>
+            }
+          >
+            <AgentPanel />
+          </AccordionItem>
+          )}
         </Accordion>
       </div>
     </StripeProvider>

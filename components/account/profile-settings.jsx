@@ -15,6 +15,7 @@ import {
 } from "@heroui/react";
 import { IconDeviceFloppy, IconHttpDeleteOff } from "@tabler/icons-react";
 import RefereeSettings from "./referee-settings";
+import BecomeAgent from "./become-agent";
 
 const ProfileSettings = () => {
   const { user } = useAuth();
@@ -115,6 +116,7 @@ const ProfileSettings = () => {
           If you need to change the email address you use to log in, please
           contact our support team.
         </p>
+      <BecomeAgent />
       <RefereeSettings />
       <Button
         onPress={onOpen}
