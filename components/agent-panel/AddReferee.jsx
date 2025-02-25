@@ -19,13 +19,15 @@ const AddReferee = () => {
   const handleInvite = async (e) => {
     e.preventDefault();
     logger.info("Inviting", email);
-    const invite = await addReferee(email, message);
-    logger.info("Invite sent", invite);
+    await addReferee(email, message, refLink);
     setEmail("");
+    setMessage("");
   };
 
-  const handleCopy = (agentId = 1234) => {
-    navigator.clipboard.writeText(`https://driftdraft.app/signup?redirect=?referral/${referralName}`);
+  const refLink = `https://driftdraft.app/?ref=${referralName}`;
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(refLink);
     toast.success("Referral link copied to clipboard", {classNames: { toast: "text-green-800"}});
   };
 
@@ -36,7 +38,7 @@ const AddReferee = () => {
           <Input
             type="text"
             placeholder="Referral link"
-            value={`https://driftdraft.app/signup?redirect=?referral/${referralName}`}
+            value={refLink}
             readOnly
             endContent={
               <Button className="min-w-0" color="secondary" onPress={handleCopy}>
