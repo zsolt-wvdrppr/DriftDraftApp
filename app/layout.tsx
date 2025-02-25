@@ -1,8 +1,9 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
-import { Toaster } from 'sonner';
+import { Toaster } from "sonner";
 import { Poppins } from "next/font/google";
+import { Suspense } from "react";
 
 import { siteConfig } from "@/config/site";
 import { Navbar } from "@/components/navbar";
@@ -10,7 +11,10 @@ import WavedropperSignature from "@/components/WavedropperSignature";
 
 import { Providers } from "./providers";
 
-const poppins = Poppins({ weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'], subsets: ['latin'] });
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: {
@@ -35,19 +39,20 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   return (
     <html suppressHydrationWarning lang="en">
       <head />
       <body
         className={clsx(
           "min-h-screen bg-background antialiased",
-          poppins.className,
+          poppins.className
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "system" }}>
           <div className="relative flex flex-col h-screen">
-            <Navbar />
+            <Suspense fallback={<div>Loading navbar...</div>}>
+              <Navbar />
+            </Suspense>
             <main className="container mx-auto max-w-7xl md:pt-16 md:px-6 flex-grow">
               {children}
               <Toaster />
