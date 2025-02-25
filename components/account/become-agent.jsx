@@ -26,6 +26,7 @@ export const BecomeAgentInput = () => {
   const [newReferralName, setNewReferralName] = useState(referralName);
   const [isChanged, setIsChanged] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [isAgentMode, setIsAgentMode] = useState(false);
 
   useEffect(() => {
     setNewReferralName(referralName || "");
@@ -44,56 +45,75 @@ export const BecomeAgentInput = () => {
   };
 
   return (
-    <div>
-      <div className="flex gap-4 flex-col">
-        <h3 className="text-lg">Become an agent</h3>
-        <Input
-          label="Your Agent Name"
-          type="text"
-          value={newReferralName}
-          classNames={{
-            label: "text-primary dark:text-accentMint",
-            input: "dark:text-white",
-            inputWrapper:
-              "bg-primary/10 dark:bg-default-200/50 border dark:border-default-200 focus-within:!bg-content1",
-          }}
-          onChange={(e) => {
-            setNewReferralName(e.target.value);
-            setIsChanged(true); // ✅ Mark that the user changed the input
-          }}
-          onBlur={handleBlur}
-          disabled={loading}
-          endContent={
-            <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.2 }}
-              className="flex items-center h-full pt-0.5"
-            >
-              {isChanged && newReferralName.length >= 5 && (
-                <Button
-                  onPress={() => {
-                    if (referralName && referralName !== newReferralName) {
-                      setShowConfirmation(true);
-                    } else {
-                      updateReferralName(newReferralName);
-                    }
-                  }}
-                  className={`${loading ? "bg-lime-600" : isAvailable ? "bg-success" : "bg-warning"} text-white rounded-md min-w-0 self-center px-2`}
-                  isLoading={loading}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="space-y-6"
+    >
+      <Button color={"primary"} className="min-w-32" onPress={() => setIsAgentMode(!isAgentMode)}>
+        {isAgentMode ? "Hide" : "Agent Mode"}
+      </Button>
+      <AnimatePresence>
+        {isAgentMode && (
+          <motion.div
+            className="flex gap-4 flex-col"
+            key="agent-dashboard"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.5 }}
+          >
+            <h3 className="text-lg">Become an agent</h3>
+            <p className="text-justify">{`Set a unique agent name to get started. As an agent, you can invite users to connect with you and view their AI-generated plans in the agent panel below. Your agent name must be unique and will be used for referrals.`}</p>
+            <Input
+              label="Your Agent Name"
+              type="text"
+              value={newReferralName}
+              classNames={{
+                label: "text-primary dark:text-accentMint",
+                input: "dark:text-white",
+                inputWrapper:
+                  "bg-primary/10 dark:bg-default-200/50 border dark:border-default-200 focus-within:!bg-content1",
+              }}
+              onChange={(e) => {
+                setNewReferralName(e.target.value);
+                setIsChanged(true); // ✅ Mark that the user changed the input
+              }}
+              onBlur={handleBlur}
+              disabled={loading}
+              endContent={
+                <motion.div
+                  initial={{ scale: 0.9 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex items-center h-full pt-0.5"
                 >
-                  {!loading && isAvailable ? (
-                    <IconCheck size={32} />
-                  ) : (
-                    <IconSend size={32} />
+                  {isChanged && newReferralName.length >= 5 && (
+                    <Button
+                      onPress={() => {
+                        if (referralName && referralName !== newReferralName) {
+                          setShowConfirmation(true);
+                        } else {
+                          updateReferralName(newReferralName);
+                        }
+                      }}
+                      className={`${loading ? "bg-lime-600" : isAvailable ? "bg-success" : "bg-warning"} text-white rounded-md min-w-0 self-center px-2`}
+                      isLoading={loading}
+                    >
+                      {!loading && isAvailable ? (
+                        <IconCheck size={32} />
+                      ) : (
+                        <IconSend size={32} />
+                      )}
+                    </Button>
                   )}
-                </Button>
-              )}
-            </motion.div>
-          }
-        />
-      </div>
-
+                </motion.div>
+              }
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <AnimatePresence>
         {error && (
           <motion.p
@@ -144,7 +164,7 @@ export const BecomeAgentInput = () => {
         message="Changing your agent name will update it for all referrals. Are you sure?"
         onConfirm={handleConfirmChange}
       />
-    </div>
+    </motion.div>
   );
 };
 

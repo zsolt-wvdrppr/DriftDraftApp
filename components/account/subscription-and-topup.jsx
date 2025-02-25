@@ -17,6 +17,7 @@ import { Tooltip } from "react-tooltip";
 import { usePaymentMethod } from "@/lib/hooks/usePaymentMethod";
 import InvoiceList from "./InvoiceList";
 import { IconHelp, IconListDetails } from "@tabler/icons-react";
+import TransferCredit from "./transfer-credit";
 
 // AnimatedNumber component to animate numeric changes
 const AnimatedNumber = ({ value }) => {
@@ -189,25 +190,6 @@ const SubscriptionAndTopup = () => {
                   : "Select Plan"}
               </Button>
             </div>
-            {services?.planExpiresAt && expiryDate > now && (
-              <Tooltip
-                anchorSelect="#manage-button"
-                place="top"
-                className="break-words max-w-60 text-justify"
-              >
-                {`You can only change your subscription after the current billing
-                cycle ends, because you've cancelled it.`}
-              </Tooltip>
-            )}
-            {!paymentMethod && !paymentMethodLoading && (
-              <Tooltip
-                anchorSelect="#manage-button"
-                place="top"
-                className="break-words max-w-60 text-justify"
-              >
-                {`Add or update your payment method to subscribe to a plan.`}
-              </Tooltip>
-            )}
             {services?.hasActiveSubscription && !services.planExpiresAt && (
               <Button
                 onPress={onCancelOpen}
@@ -262,15 +244,6 @@ const SubscriptionAndTopup = () => {
               >
                 Top-Up Now
               </Button>
-              {!paymentMethod && !paymentMethodLoading && (
-                <Tooltip
-                  anchorSelect="#topup-button"
-                  place="top"
-                  className="break-words max-w-60 text-justify"
-                >
-                  {`Add or update your payment method to top-up credits.`}
-                </Tooltip>
-              )}
             </div>
           </Card>
 
@@ -341,6 +314,32 @@ const SubscriptionAndTopup = () => {
         <br />
         <br />
         {`and promo credits which are non-transferable.`}
+      </Tooltip>
+
+      <Tooltip
+        anchorSelect="#manage-button"
+        place="top"
+        className="break-words max-w-60"
+      >
+        {services?.planExpiresAt && expiryDate > now && (
+          <span>
+            {`You can only change your subscription after the current billing
+                cycle ends, because you've cancelled it.`}
+          </span>
+        )}
+        {!paymentMethod && !paymentMethodLoading && (
+          <span>
+            {`Add or update your payment method to subscribe to a plan.`}
+          </span>
+        )}
+      </Tooltip>
+
+      <Tooltip
+        anchorSelect="#topup-button"
+        place="top"
+        className="break-words max-w-60 text-justify"
+      >
+        {`Add or update your payment method to top-up credits.`}
       </Tooltip>
     </div>
   );
