@@ -149,9 +149,13 @@ export default function LogIn() {
           />
           <Input
             autoComplete="current-password"
+            classNames = {{
+              inputWrapper: "pr-0"
+            }}
             endContent={
               <Button
                 type="button"
+                className="min-w-0"
                 onPress={() => setPasswordVisible(!passwordVisible)}
               >
                 {passwordVisible ? (

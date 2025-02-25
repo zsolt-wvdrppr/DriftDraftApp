@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { Button, Input, Checkbox, Link, Divider } from "@heroui/react";
-import { Icon } from "@iconify-icon/react";
+import { IconLock } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Icon } from "@iconify-icon/react";
 
-import { supabase, createOrUpdateProfile } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabaseClient";
 import logger from "@/lib/logger";
 import { useAuth } from "@/lib/AuthContext";
 import { useToastSound } from "@/lib/hooks/useToastSound";
@@ -84,14 +85,11 @@ export default function SignUp() {
   const handleSignUp = async () => {
     setLoading(true);
     setError(null);
-  
+
     try {
-      const redirectPath =
-        searchParams.get("redirect") || "/activities";
-  
-      const referralName = searchParams.get("data"); // ✅ Extract referral name from URL
-  
-      logger.info(`Signup redirect: ${window.location.origin}${redirectPath}`);
+      const redirectPath = new URLSearchParams(window.location.search).get("redirect") || "/activities";
+
+      logger.info(`${window.location.origin}${redirectPath}`);
   
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -128,10 +126,7 @@ export default function SignUp() {
         <p className="pb-4 text-left text-3xl font-semibold flex justify-between">
           Sign Up
           <span aria-label="emoji" className="ml-2" role="img">
-            <Icon
-              className="pointer-events-none text-2xl text-default-400"
-              icon="noto:chess-pawn"
-            />
+            <IconLock size={24} />
           </span>
         </p>
         <form
@@ -165,8 +160,11 @@ export default function SignUp() {
           />
           <Input
             isRequired
+            classNames = {{
+              inputWrapper: "pr-0"
+            }}
             endContent={
-              <Button type="button" onPress={toggleVisibility}>
+              <Button type="button" className="min-w-0" onPress={toggleVisibility}>
                 {isVisible ? (
                   <Icon
                     className="pointer-events-none text-2xl text-default-400"
