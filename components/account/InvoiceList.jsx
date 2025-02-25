@@ -19,7 +19,7 @@ const InvoiceList = () => {
 
   return (
     <div className="">
-      <Button onPress={handleToggleInvoices} className="bg-primary text-white">
+      <Button onPress={handleToggleInvoices} className="bg-primary text-white font-semibold">
         {showInvoices ? "Hide Invoices" : "View Invoices"}
       </Button>
 

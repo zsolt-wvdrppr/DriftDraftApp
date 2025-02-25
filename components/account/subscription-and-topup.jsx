@@ -253,6 +253,16 @@ const SubscriptionAndTopup = () => {
           </Card>
         </div>
         <Card className="p-4 border flex w-full">
+          <TransferCredit
+            onSuccess={refreshPaidServicesData}
+            isDisabled={
+              (!paymentMethodLoading &&
+              !paymentMethod &&
+              services?.topUpCredits < 0)
+            }
+          />
+        </Card>
+        <Card className="p-4 border flex w-full">
           <InvoiceList userId={userId} />
         </Card>
       </div>
@@ -327,10 +337,12 @@ const SubscriptionAndTopup = () => {
                 cycle ends, because you've cancelled it.`}
           </span>
         )}
-        {!paymentMethod && !paymentMethodLoading && (
+        {!paymentMethod && !paymentMethodLoading ? (
           <span>
             {`Add or update your payment method to subscribe to a plan.`}
           </span>
+        ) : (
+          <span>{`Select a plan or change your current subscription.`}</span>
         )}
       </Tooltip>
 
