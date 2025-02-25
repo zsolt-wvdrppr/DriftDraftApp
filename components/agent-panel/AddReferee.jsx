@@ -24,9 +24,6 @@ const AddReferee = () => {
     setEmail("");
   };
 
-  // get url from env var
-  const url = process.env.URL;
-
   const handleCopy = (agentId = 1234) => {
     navigator.clipboard.writeText(`https://driftdraft.app/signup?redirect=?referral/${referralName}`);
     toast.success("Referral link copied to clipboard", {classNames: { toast: "text-green-800"}});
