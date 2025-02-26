@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Input, Checkbox, Link, Divider } from "@heroui/react";
 import { Icon } from "@iconify-icon/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 import logger from "@/lib/logger";
@@ -18,33 +18,30 @@ export default function LogIn() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [redirect, setRedirect] = useState(new URLSearchParams(window.location.search).get("redirect"));
+  const searchParams = useSearchParams();
+  const [redirect, setRedirect] = useState(null);
   const play = useToastSound();
   const { user } = useAuth(); // Access user state
-  const [referral, setReferral] = useState( new URLSearchParams(window.location.search).get("referral") );
+  const [referral, setReferral] = useState(null);
 
   useEffect(() => {
-    // Update redirect from URL query parameters
+    if (typeof window !== "undefined") {
 
-    const params = new URLSearchParams(window.location.search);
-    const urlRedirect = params.get("redirect");
-    const urlReferral = params.get("referral");
+      const urlRedirect = searchParams.get("redirect");
+      const urlReferral = searchParams.get("referral");
 
-    if (urlReferral) {
-      setReferral(urlReferral);
-    }
-
-    if (urlRedirect) {
-      setRedirect(urlRedirect); // Update redirect state
+      if (urlRedirect) setRedirect(urlRedirect);
+      setReferral(urlReferral); // ✅ Now `referral` is `null` if missing, ensuring reactivity
     }
   }, []);
 
   useEffect(() => {
- 
-    if (user) {
-      router.replace(`/activities${referral ? `?referral=${referral}` : ""}`);
+    if (user && referral !== undefined) { // ✅ Ensure referral has been resolved
+      const targetUrl = `${redirect}${referral ? `?referral=${referral}` : ""}`;
+
+      router.replace(targetUrl);
     }
-  }, [user, referral]);
+  }, [user, referral, redirect]);
 
   useEffect(() => {
     // Display error in toast
@@ -155,8 +152,8 @@ export default function LogIn() {
           />
           <Input
             autoComplete="current-password"
-            classNames = {{
-              inputWrapper: "pr-0"
+            classNames={{
+              inputWrapper: "pr-0",
             }}
             endContent={
               <Button
