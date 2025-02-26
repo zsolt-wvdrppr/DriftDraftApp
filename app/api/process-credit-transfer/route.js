@@ -115,11 +115,11 @@ export async function POST(req) {
     // Step 5: Notify the recipient via email
     const emailPayload = {
         email: transfer_recipient_email,
+        senderName: `${full_name} via DriftDraft.App`,
         content: {
-          name: "DriftDraft",
-          subject: "You've received credits!",
-          text: `Hi there, ${full_name} just transferred ${pending_credits} credits to you.`,
-          html: `<p>Hi there,</p><p><strong>${full_name}</strong> just transferred <strong>${pending_credits} credits</strong> to you.</p>`,
+          TemplateId: "39182849",
+          full_name: full_name,
+          pending_credits: `${pending_credits > 1 ? `${pending_credits} credits` : `${pending_credits} credit`}`,
         },
       };
   
