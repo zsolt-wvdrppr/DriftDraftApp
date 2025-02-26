@@ -97,6 +97,7 @@ export async function POST(req) {
     if (userKey) {
       // ✅ If already listed, set `accepted: true`
       agentReferees[userKey].accepted = true;
+      agentReferees[userKey].user_id = userId;
       logger.info(`✅ Referee ${userEmail} found in agent's referees list. Marking as accepted.`);
     } else {
       // ✅ Generate a new referee key dynamically
@@ -110,6 +111,7 @@ export async function POST(req) {
       // ✅ Add the new referee entry
       agentReferees[newUserKey] = {
         email: userEmail,
+        user_id: userId,
         accepted: true,
         rejected: false,
         timestamp: new Date().toISOString(), // ✅ Store current timestamp

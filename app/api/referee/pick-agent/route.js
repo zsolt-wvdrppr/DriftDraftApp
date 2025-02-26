@@ -91,6 +91,7 @@ export async function POST(req) {
     for (const key in agentReferees) {
       if (agentReferees[key].email === userEmail) {
         agentReferees[key].accepted = true;
+        agentReferees[key].user_id = userId;
       }
     }
 
