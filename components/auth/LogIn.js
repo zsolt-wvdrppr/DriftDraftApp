@@ -19,10 +19,10 @@ export default function LogIn() {
   const [error, setError] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const searchParams = useSearchParams();
-  const [redirect, setRedirect] = useState(null);
   const play = useToastSound();
   const { user } = useAuth(); // Access user state
   const [referral, setReferral] = useState(null);
+  const [redirect, setRedirect] = useState(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -157,8 +157,8 @@ export default function LogIn() {
             }}
             endContent={
               <Button
-                type="button"
                 className="min-w-0"
+                type="button"
                 onPress={() => setPasswordVisible(!passwordVisible)}
               >
                 {passwordVisible ? (

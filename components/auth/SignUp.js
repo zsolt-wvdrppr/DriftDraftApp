@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Input, Checkbox, Link, Divider } from "@heroui/react";
 import { IconLock } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { Icon } from "@iconify-icon/react";
 
@@ -22,16 +22,31 @@ export default function SignUp() {
   const [message, setMessage] = useState(null);
   const { user } = useAuth(); // Access user state
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [referral, setReferral] = useState(null);
+  const [redirect, setRedirect] = useState(null);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const play = useToastSound();
 
   useEffect(() => {
-     // Redirect to activities page if user is already logged in
-     if (user) {
-       router.replace("/activities");
-     }
-   }, [user]);
+    if (typeof window !== "undefined") {
+      const urlRedirect = searchParams.get("redirect");
+      const urlReferral = searchParams.get("referral");
+
+      if (urlRedirect) setRedirect(urlRedirect);
+      setReferral(urlReferral); // ✅ Now `referral` is `null` if missing, ensuring reactivity
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user && referral !== undefined) {
+      // ✅ Ensure referral has been resolved
+      const targetUrl = `${redirect}${referral ? `?referral=${referral}` : ""}`;
+
+      router.replace(targetUrl);
+    }
+  }, [user, referral, redirect]);
 
   useEffect(() => {
     // Display error and message in toast
@@ -87,10 +102,12 @@ export default function SignUp() {
     setError(null);
 
     try {
-      const redirectPath = new URLSearchParams(window.location.search).get("redirect") || "/activities";
+      const redirectPath =
+        new URLSearchParams(window.location.search).get("redirect") ||
+        "/activities";
 
       logger.info(`${window.location.origin}${redirectPath}`);
-  
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -102,14 +119,14 @@ export default function SignUp() {
           },
         },
       });
-  
+
       if (error) throw error;
-  
+
       setMessage("Check your email to confirm your account.");
       setEmail("");
       setPassword("");
       setName("");
-  
+
       logger.info("Email signup initiated");
     } catch (err) {
       logger.error("Error during email signup:", err.message);
@@ -118,7 +135,6 @@ export default function SignUp() {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="flex h-full w-full items-center justify-center">
@@ -160,11 +176,15 @@ export default function SignUp() {
           />
           <Input
             isRequired
-            classNames = {{
-              inputWrapper: "pr-0"
+            classNames={{
+              inputWrapper: "pr-0",
             }}
             endContent={
-              <Button type="button" className="min-w-0" onPress={toggleVisibility}>
+              <Button
+                type="button"
+                className="min-w-0"
+                onPress={toggleVisibility}
+              >
                 {isVisible ? (
                   <Icon
                     className="pointer-events-none text-2xl text-default-400"
@@ -205,7 +225,7 @@ export default function SignUp() {
             {loading ? "Signing up..." : "Sign Up"}
           </Button>
           <p className="text-center text-small">
-            <Link href="/login" size="sm">
+            <Link href={`/login?redirect=${encodeURIComponent(redirect)}`} size="sm">
               Already have an account? Log In
             </Link>
           </p>
