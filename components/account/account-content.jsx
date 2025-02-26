@@ -52,14 +52,15 @@ const AccountContent = () => {
             <ProfileSettings />
           </AccordionItem>
           <AccordionItem
+            id="credits"
             key="credits"
-            aria-label="Subscription & Top Up"
+            aria-label="Subscription & Credits"
             indicator={<IconWallet className="rotate-45 text-primary" />}
             subtitle="Press to expand"
             className="overflow-hidden"
             title={
               <h2 className="text-xl font-semibold">
-                {"Subscription & Top Up"}
+                {"Subscription & Credits"}
               </h2>
             }
           >
