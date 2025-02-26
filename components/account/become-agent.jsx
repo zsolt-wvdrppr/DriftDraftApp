@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { Input, Button, Spinner } from "@heroui/react";
 import logger from "@/lib/logger";
-import { IconCheck, IconSend, IconX, IconDeviceFloppy } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconSend,
+  IconX,
+  IconDeviceFloppy,
+} from "@tabler/icons-react";
 import { useAuth } from "@/lib/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useReferralName } from "@/lib/hooks/useReferralName";
@@ -49,7 +54,6 @@ export const BecomeAgentInput = () => {
 
   const handleNameUpdate = () => {
     setShowConfirmation(true);
-  
   };
 
   const handleNameAvailabilityCheck = async () => {
@@ -75,10 +79,12 @@ export const BecomeAgentInput = () => {
   }, [isAgentMode]);
 
   const handleAgentNameChange = async (e) => {
-    // debug
-    logger.debug("Agent name changed:", e.target.value);
-
-    const value = e.target.value.replace(/\s/g, "_").trim().toLowerCase();
+    const value = e.target.value
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/[^a-z0-9-]/g, "") // Remove non-alphanumeric and non-hyphen characters
+      .replace(/^-+|-+$/g, ""); // Trim leading/trailing hyphens
 
     setNewReferralName(value);
     if (e.target.value.length >= 5) {
@@ -171,24 +177,27 @@ export const BecomeAgentInput = () => {
                   className="flex items-center h-full pt-0.5"
                 >
                   {}
-                  {readyToCheckAvilability && isChanged && !isNameUpdated && !isNameAvailable && (
-                    <Button
-                      isDisabled={!readyToCheckAvilability}
-                      isLoading={loading}
-                      onPress={handleNameAvailabilityCheck}
-                      className="bg-warning text-white rounded-md min-w-0 self-center px-2"
-                    >
-                      <IconCheck size={32} />
-                    </Button>
-                  )}
+                  {readyToCheckAvilability &&
+                    isChanged &&
+                    !isNameUpdated &&
+                    !isNameAvailable && (
+                      <Button
+                        isDisabled={!readyToCheckAvilability}
+                        isLoading={loading}
+                        onPress={handleNameAvailabilityCheck}
+                        className="bg-warning text-white rounded-md min-w-0 self-center px-2"
+                      >
+                        <IconCheck size={32} />
+                      </Button>
+                    )}
                   {!isNameUpdated && isNameAvailable && (
-                       <Button
-                       isLoading={loading}
-                       onPress={handleNameUpdate}
-                       className="bg-success text-white rounded-md min-w-0 self-center px-2"
-                     >
-                       <IconDeviceFloppy size={32} />
-                     </Button>
+                    <Button
+                      isLoading={loading}
+                      onPress={handleNameUpdate}
+                      className="bg-success text-white rounded-md min-w-0 self-center px-2"
+                    >
+                      <IconDeviceFloppy size={32} />
+                    </Button>
                   )}
                 </motion.div>
               }
@@ -224,7 +233,8 @@ export const BecomeAgentInput = () => {
             ✅ Your agent name has been successfully updated!
           </motion.p>
         ) : (
-          !isNameUpdated && isNameAvailable && (
+          !isNameUpdated &&
+          isNameAvailable && (
             <motion.p
               key="success-message"
               initial={{ opacity: 0, y: -5 }}
