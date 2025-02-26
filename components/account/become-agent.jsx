@@ -77,7 +77,10 @@ export const BecomeAgentInput = () => {
   const handleAgentNameChange = async (e) => {
     // debug
     logger.debug("Agent name changed:", e.target.value);
-    setNewReferralName(e.target.value);
+
+    const value = e.target.value.replace(/\s/g, "_").trim().toLowerCase();
+
+    setNewReferralName(value);
     if (e.target.value.length >= 5) {
       setReadyToCheckAvilability(true);
     }
