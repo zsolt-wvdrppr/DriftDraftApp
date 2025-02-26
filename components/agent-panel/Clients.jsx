@@ -18,13 +18,8 @@ import { formatDateToLocalBasic } from "@/lib/utils/utils";
 const RefereeSessionsTab = () => {
   const { user } = useAuth();
   const userId = user?.id;
-  const {
-    refereesList,
-    loading,
-    error,
-    fetchReferees,
-    revokeReferee,
-  } = useRefereesList();
+  const { refereesList, loading, error, fetchReferees, revokeReferee } =
+    useRefereesList();
   const [selectedReferee, setSelectedReferee] = useState(new Set([]));
   const [refereeUserId, setRefereeUserId] = useState(null);
 
@@ -43,30 +38,36 @@ const RefereeSessionsTab = () => {
     }
   };
 
-   // ✅ Keep selectedReferee in sync with refereesList
-   useEffect(() => {
+  // ✅ Keep selectedReferee in sync with refereesList
+  useEffect(() => {
     handleSelectedRefereeUpdate();
-   }, [selectedReferee]); 
+  }, [selectedReferee]);
 
-   const handleReloadReferees = async () => {
+  const handleReloadReferees = async () => {
     await fetchReferees();
     handleSelectedRefereeUpdate();
   };
-  
+
   const handleRevokeReferee = async (email) => {
     if (!email) return;
-  
+
     logger.info(`Revoking referee: ${email}`);
-  
+
     await revokeReferee(email); // ✅ Call the API to revoke the referee
     await fetchReferees(); // ✅ Immediately refresh referees list
-    setSelectedReferee(new Set([])); // ✅ Clear selection after revoking
+    setSelectedReferee(null); // ✅ Ensure selectedReferee is completely reset
+    setRefereeUserId(null);
   };
 
   return (
     <div className="space-y-4 min-h-[200px]">
       <div className="flex space-x-2 justify-between md:justify-center">
-        <Button aria-label="Reload referees" id="refresh" className="min-w-0" onPress={handleReloadReferees}>
+        <Button
+          aria-label="Reload referees"
+          id="refresh"
+          className="min-w-0"
+          onPress={handleReloadReferees}
+        >
           <IconReload className="text-accentMint" />
         </Button>
         <Button
@@ -107,21 +108,30 @@ const RefereeSessionsTab = () => {
               exit={{ opacity: 0 }}
             >
               <Select
+                aria-label="Select a Referee"
                 label="Select a Referee"
                 variant="underlined"
                 placeholder="Choose..."
                 items={refereesList}
                 selectionMode="single"
+                selectedKeys={
+                  selectedReferee ? new Set([selectedReferee.key]) : new Set()
+                }
                 onSelectionChange={(keys) => {
-                  const key = Array.from(keys)[0]; // Extract the selected key
-                  const selectedRef = refereesList.find(
-                    (ref) => ref.key === key
-                  ); // Find full object
-                  setSelectedReferee(selectedRef || {}); // Store full referee object in state
+                  const key = Array.from(keys)[0];
+                  const selectedRef =
+                    refereesList.find((ref) => ref.key === key) || null;
+                  setSelectedReferee(selectedRef);
+                  setRefereeUserId(selectedRef ? selectedRef.user_id : null);
                 }}
               >
                 {(referee) => (
-                  <SelectItem key={referee?.key}>{referee?.email}</SelectItem>
+                  <SelectItem
+                    aria-label={`${referee?.email}`}
+                    key={referee?.key}
+                  >
+                    {referee?.email}
+                  </SelectItem>
                 )}
               </Select>
               <div>
