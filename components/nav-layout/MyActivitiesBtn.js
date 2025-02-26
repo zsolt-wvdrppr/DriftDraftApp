@@ -1,32 +1,37 @@
 import React from "react";
-import { Link, Button } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { IconHistory } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 import { cn } from "@/lib/utils/utils";
 import { siteConfig } from "@/config/site";
 import logger from "@/lib/logger";
 
-const MyActivitiesBtn = ({className, label = "", noLabel = false, onPress = () => {}}) => {
+const MyActivitiesBtn = ({
+  className,
+  label = "",
+  noLabel = false,
+  onPress = () => {},
+}) => {
+  const router = useRouter();
 
-    const handlePress = () => {
-        if (onPress && typeof onPress === "function") {
-            logger.debug("MyActivitiesBtn: onPress");
-            onPress();
-        }
+  const handlePress = async () => {
+    router.push(siteConfig.links.activities);
+    if (onPress && typeof onPress === "function") {
+      logger.debug("MyActivitiesBtn: onPress");
+      onPress();
     }
-
+  };
 
   return (
     <Button
-      as={Link}
       className={cn("text-default-foreground hover:scale-105", className)}
-      href={siteConfig.links.activities}
       isExternal={false}
       startContent={<IconHistory className="text-highlightOrange" />}
       variant="flat"
       onPress={handlePress}
     >
-        {noLabel ? "" : label || "My Activities"}
+      {noLabel ? "" : label || "My Activities"}
     </Button>
   );
 };
