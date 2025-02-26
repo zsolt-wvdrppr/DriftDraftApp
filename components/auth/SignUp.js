@@ -29,7 +29,9 @@ export default function SignUp() {
   useEffect(() => {
     // Redirect to activities page if user is already logged in
     if (user) {
-      router.push("/activities");
+      const redirectPath = new URLSearchParams(window.location.search).get("redirect") || "/activities";
+
+      router.push(redirectPath);
     }
   }, [user]);
 
