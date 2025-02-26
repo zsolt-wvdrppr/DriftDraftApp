@@ -18,15 +18,21 @@ export default function LogIn() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [redirect, setRedirect] = useState("/activities");
+  const [redirect, setRedirect] = useState(new URLSearchParams(window.location.search).get("redirect"));
   const play = useToastSound();
   const { user } = useAuth(); // Access user state
+  const [referral, setReferral] = useState( new URLSearchParams(window.location.search).get("referral") );
 
   useEffect(() => {
     // Update redirect from URL query parameters
-    const urlRedirect = new URLSearchParams(window.location.search).get(
-      "redirect"
-    );
+
+    const params = new URLSearchParams(window.location.search);
+    const urlRedirect = params.get("redirect");
+    const urlReferral = params.get("referral");
+
+    if (urlReferral) {
+      setReferral(urlReferral);
+    }
 
     if (urlRedirect) {
       setRedirect(urlRedirect); // Update redirect state
@@ -34,11 +40,11 @@ export default function LogIn() {
   }, []);
 
   useEffect(() => {
-    // Redirect to activities page if user is already logged in
+ 
     if (user) {
-      router.push("/activities");
+      router.replace(`/activities${referral ? `?referral=${referral}` : ""}`);
     }
-  }, [user]);
+  }, [user, referral]);
 
   useEffect(() => {
     // Display error in toast

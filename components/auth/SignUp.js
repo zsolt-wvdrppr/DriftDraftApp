@@ -29,7 +29,7 @@ export default function SignUp() {
   useEffect(() => {
      // Redirect to activities page if user is already logged in
      if (user) {
-       router.push("/activities");
+       router.replace("/activities");
      }
    }, [user]);
 
