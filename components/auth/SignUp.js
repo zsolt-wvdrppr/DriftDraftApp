@@ -27,13 +27,11 @@ export default function SignUp() {
   const play = useToastSound();
 
   useEffect(() => {
-    // Redirect to activities page if user is already logged in
-    if (user) {
-      const redirectPath = new URLSearchParams(window.location.search).get("redirect") || "/activities";
-
-      router.push(redirectPath);
-    }
-  }, [user]);
+     // Redirect to activities page if user is already logged in
+     if (user) {
+       router.push("/activities");
+     }
+   }, [user]);
 
   useEffect(() => {
     // Display error and message in toast
