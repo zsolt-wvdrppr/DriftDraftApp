@@ -10,7 +10,7 @@ import { useSessionContext } from '@/lib/SessionProvider';
 
 const StepContactInfo = ({ ref }) => {
     const { sessionData, updateFormData, setError } = useSessionContext();
-    const stepNumber = 9;
+    const stepNumber = 8;
     const content = questionsData[stepNumber];
     const formData = sessionData.formData;
 

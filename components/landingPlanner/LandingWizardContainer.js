@@ -45,11 +45,10 @@ const steps = [
     { id: 2, label: "Marketing", icon: <IconMagnet />, component: StepMarketing },
     { id: 3, label: "Competitors", icon: <IconRocket />, component: StepCompetitors },
     { id: 4, label: "Unique Selling Points", icon: <IconDiamond />, component: StepUSPs },
-    { id: 5, label: "Domain", icon: <IconWorldWww />, component: StepDomain },
-    { id: 6, label: "Brand Guidelines", icon: <IconWriting />, component: StepBrandGuidelines },
-    { id: 7, label: "Emotions", icon: <IconMoodSmileBeam />, component: StepEmotions },
-    { id: 8, label: "Inspirations", icon: <IconBulb />, component: StepInspirations },
-    { id: 9, label: "Contact Details", icon: <IconAddressBook />, component: StepContactInfo }
+    { id: 5, label: "Brand Guidelines", icon: <IconWriting />, component: StepBrandGuidelines },
+    { id: 6, label: "Emotions", icon: <IconMoodSmileBeam />, component: StepEmotions },
+    { id: 7, label: "Inspirations", icon: <IconBulb />, component: StepInspirations },
+    { id: 8, label: "Contact Details", icon: <IconAddressBook />, component: StepContactInfo }
 ];
 
 const tutorialSteps = [

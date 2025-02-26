@@ -14,7 +14,7 @@ import StepGetAiHintBtn from "@/components/planner-layout/layout/StepGetAiHintBt
 
 const StepBrandGuidelines = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
-  const stepNumber = 6;
+  const stepNumber = 5;
   const content = questionsData[stepNumber];
   const formRef = useRef();
   const [isInputInvalid, setIsInputInvalid] = useState(false);
@@ -66,8 +66,7 @@ const StepBrandGuidelines = ({ ref }) => {
     formData?.[3]?.urls?.toString() !== ""
       ? `- **Competitors**:  ${formData[3].urls.toString()}.`
       : "";
-  const usps = formData[4].usps || "";
-  const domains = formData[5].domain || "";
+  const usps = formData[4]?.usps || "";
   const brandIdeas = `- **My ideas regarding the brand guidelines**: ${localValue}` || "";
 
   const isAIAvailable =
@@ -76,8 +75,7 @@ const StepBrandGuidelines = ({ ref }) => {
     serviceDescription &&
     audience &&
     marketing &&
-    usps &&
-    domains;
+    usps;
 
   const prompt = `I'm planning a landing page and need detailed ideas for brand guidelines, including colours, fonts, and logo design. Here are the details:
 
@@ -87,7 +85,6 @@ const StepBrandGuidelines = ({ ref }) => {
 - **Marketing Strategy**: ${marketing}
 ${competitors}
 - **Unique Selling Points**: ${usps}
-- **About domain**: ${domains}
 ${brandIdeas}
 
 Please provide thoughtful and creative brand guideline ideas that align with the following considerations:

@@ -12,7 +12,7 @@ import { StepWrapper, StepQuestion } from '@/components/planner-layout/layout/se
 
 const StepInspirations = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
-  const stepNumber = 8;
+  const stepNumber = 7;
   const content = questionsData[stepNumber];
   const formRef = useRef();
   const formData = sessionData.formData;

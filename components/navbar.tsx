@@ -214,7 +214,7 @@ export const Navbar = () => {
                   className={
                     "flex justify-between bg-default-200 py-2 px-4 rounded-xl w-full"
                   }
-                  label={"Accounf"}
+                  label={"Account"}
                   labelClassName=""
                   user={user}
                   onPress={() => setIsMenuOpen(false)}

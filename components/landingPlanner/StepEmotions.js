@@ -14,7 +14,7 @@ import StepGetAiHintBtn from "@/components/planner-layout/layout/StepGetAiHintBt
 
 const StepEmotions = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
-  const stepNumber = 7;
+  const stepNumber = 6;
   const content = questionsData[stepNumber];
   const formRef = useRef();
   const [isInputInvalid, setIsInputInvalid] = useState(false);
@@ -67,8 +67,7 @@ const StepEmotions = ({ ref }) => {
       ? `- Competitors:  ${formData[3].urls.toString()}`
       : "";
   const usps = formData[4].usps || "";
-  const domains = formData[5].domain || "";
-  const brandGuidelines = formData[6].brandGuidelines || "";
+  const brandGuidelines = formData[5].brandGuidelines || "";
   const emotionIdeas = `My thoughts regarding feelings and emotions:  ${localValue}.` || "";
 
   const isAIAvailable =
@@ -78,7 +77,6 @@ const StepEmotions = ({ ref }) => {
     audience &&
     marketing &&
     usps &&
-    domains &&
     brandGuidelines;
 
     const prompt = `Help me clarify the emotional experience I want visitors to have on my landing page. The primary purpose is ${purpose} ${purposeDetails} Here's what the landing page offers: ${serviceDescription} My target audience is: ${audience} I want to create a strong emotional connection with them. ${competitors} My unique selling points include: ${usps}. ${emotionIdeas} Based on this, ask thought-provoking questions or provide examples to help define the emotional tone of my landing page. For instance:

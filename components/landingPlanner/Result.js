@@ -94,10 +94,9 @@ const Result = () => {
       ? `I have identified the following competitors: ${formData[3].urls.toString()}.`
       : ""; // optional
   const usps = formData[4].usps || "";
-  const domain = formData[5].domain || "";
-  const brandGuidelines = formData[6].brandGuidelines || "";
-  const emotions = formData[7].emotions || "";
-  const inspirations = formData[8]?.inspirations?.toString() || ""; // optional
+  const brandGuidelines = formData[5].brandGuidelines || "";
+  const emotions = formData[6].emotions || "";
+  const inspirations = formData[7]?.inspirations?.toString() || ""; // optional
   /* End of form data */
 
   useEffect(() => {
@@ -109,8 +108,6 @@ const Result = () => {
       updateAiGeneratedPlanInDb(userId, sessionId, aiResultRef.current);
       setContentForTitleGeneration(
         serviceDescription +
-          " " +
-          domain +
           " " +
           brandGuidelines +
           " " +
@@ -140,7 +137,6 @@ const Result = () => {
       marketing &&
       usps &&
       brandGuidelines &&
-      domain &&
       emotions
     ) {
       const prompts = [
@@ -183,11 +179,10 @@ const Result = () => {
             Prompt 3: Marketing Strategy & Technical Requirements
             Combine these user inputs:
               - Marketing Strategy: "${marketing}"
-              - Domain Preferences: "${domain}"
             Task (two parts):
               1) Outline a concise marketing approach (SEO, content marketing, paid ads, etc.) based on the provided details.
                  - If no strategy is given, propose 2–3 simple ideas.
-              2) Explain the essential developer requirements for building a site that is:
+              2) Explain the essential developer requirements for building a one pager landing page that is:
                  - Technically sound (fast loading, secure, SEO-ready).
                  - Capable of converting visitors effectively.
                  - Clear about any important integrations or frameworks.
@@ -333,7 +328,7 @@ const Result = () => {
           `}
               </p>
               <p className="text-justify pt-4">
-                {`You’ve taken a big step toward building a well-organized site. 🎉 The result is shown below, and you can access this plan anytime under `}
+                {`You’ve taken a big step toward building a well-organized single landing page. 🎉 The result is shown below, and you can access this plan anytime under `}
                 <strong>{`"My Activities."`}</strong>
               </p>
               <div className="flex flex-col justify-start items-start py-4 md:pb-4">
