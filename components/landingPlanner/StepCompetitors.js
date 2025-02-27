@@ -121,7 +121,7 @@ const StepCompetitors = ({ ref }) => {
     : "";
 
   const isAIAvailable =
-    question && purpose && serviceDescription && audience && marketing;
+    purpose && serviceDescription && audience;
 
   const prompt = `[SEARCH-MODE] Find me potential competitors on the market. Consider the following:
   My target is to ${purpose} ${purposeDetails}
