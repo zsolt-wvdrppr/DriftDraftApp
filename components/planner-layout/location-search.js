@@ -24,13 +24,6 @@ const LocationSearch = ({ onSelect }) => {
       // Extract necessary details, replacing utc_offset with utc_offset_minutes
       const locationData = {
         address: place.formatted_address,
-        coordinates: {
-          lat: place.geometry?.location?.lat(),
-          lng: place.geometry?.location?.lng(),
-        },
-        timezoneOffset: place.utc_offset_minutes, // ✅ Correct field
-        name: place.name,
-        placeId: place.place_id,
       };
   
       onSelect?.(locationData);

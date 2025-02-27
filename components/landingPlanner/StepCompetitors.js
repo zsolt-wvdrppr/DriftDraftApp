@@ -123,16 +123,15 @@ const StepCompetitors = ({ ref }) => {
   const isAIAvailable =
     question && purpose && serviceDescription && audience && marketing;
 
-  const prompt = `[SEARCH-MODE]Find me potential competitors on the market. Consider the following:
-  My target is to ${purpose} ${purposeDetails}  
-  ${serviceDescription}  
-  ${audience}  
-  ${businessArea}  
-  Your response MUST:  
-    1. List only possible competitor names and their website URLs.
-    2. Include one short sentence for each competitor describing their main offering.
-    3. No extra text (no greetings, no conclusions, no disclaimers).
-    4. Keep it purely factual and concise.
+  const prompt = `[SEARCH-MODE] Find me potential competitors on the market. Consider the following:
+  My target is to ${purpose} ${purposeDetails}
+  ${serviceDescription}
+  ${audience}
+  ${businessArea}
+    - List only possible competitor names and their website URLs.
+    - Include one short sentence for each competitor describing their main offering.
+    - No extra text (no greetings, no conclusions, no disclaimers).
+    - Keep it purely factual and concise.
   `;
 
   return (
