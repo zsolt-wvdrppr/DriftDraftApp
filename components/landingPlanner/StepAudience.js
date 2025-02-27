@@ -50,16 +50,16 @@ const StepAudience = ({ ref }) => {
   const [userMsg, setUserMsg] = useState(null);
 
   const question = content.question;
-  const purpose = `- The purpose of the landing page: ${formData[0]?.purpose}\n` || '';
-  const purposeDetails = `- Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` || '';
+  const purpose = `- The purpose purpuse of this project: ${formData[0]?.purpose}\n` || '';
+  const purposeDetails = formData[0]?.purposeDetails ? `- Additional details about the purpose: ${formData[0]?.purposeDetails}\n` : '';
   const serviceDescription = `- What I offer to my audience: ${formData[0]?.serviceDescription}\n` || '';
-  const audience = `- Details about the audience or ideal customer/client: ${localValue}\n` || '';
+  const audience = localValue ? `- Details about the audience or ideal customer/client: ${localValue}\n` : '';
   const isAIAvailable = question && purpose && serviceDescription;
   const promptImprover = `A target audience is the group that most needs your product or service. Consider their demographics (age, location), beliefs, lifestyle and subcultures. Focus on what motivates them, their challenges and how you can address these needs, ensuring an authentic, relevant brand voice.
 `;
 
 
-  const prompt = `I'm planning a landing page and need help describing my target audience. More specifically I need help with the following question: ${question}. Here are some information you must consider: \n${purpose} ${purposeDetails} ${serviceDescription} ${audience} ${promptImprover} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
+  const prompt = `Help describ who my target audience and who my ideal customer or client is. Consider the following information: \n${purpose} ${purposeDetails} ${serviceDescription} ${audience} ${promptImprover} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
 
   return (
     <form ref={formRef}>

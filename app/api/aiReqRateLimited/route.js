@@ -121,6 +121,16 @@ export async function POST(req) {
 
     logger.debug(`[RATE LIMITER API]: Successfully processed request for ${type} user (${userId || ip}).`);
 
+    // error if reponse is empty
+    if (!aiResponse) {
+      return new Response(
+        JSON.stringify({
+          message: "AI response is empty. Please try again later.",
+        }),
+        { status: 502, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
     return new Response(
       JSON.stringify({
         content: aiResponse,

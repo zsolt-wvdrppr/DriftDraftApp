@@ -57,14 +57,14 @@ const StepMarketing = ({ ref }) => {
   const question = content.question;
   const purpose =
     `${formData[0]?.purpose}.` || "";
-  const purposeDetails =
-    `Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` || "";
+  const purposeDetails = formData[0]?.purposeDetails ?
+    `Additional details about the purpose: ${formData[0]?.purposeDetails}\n` : "";
   const serviceDescription =
-    `${formData[0]?.serviceDescription}\n` || "";
+    `What I offer to my audience: ${formData[0]?.serviceDescription}.\n` || "";
   const audience =
-    `Details about the audience or ideal customer/client: ${formData[1]?.audience}. ` || "";
-  const marketing =
-    `Some details about the marketing strategy: ${localValue}. ` || "";
+    `Consider the following regarding my ideal prospects: ${formData[1]?.audience}. ` || "";
+  const marketing = localValue ?
+    `Details about the marketing strategy: ${localValue}. ` : "";
   const promptImprover = `
     Use common marketing tactics to attract visitors: 
     - Search engine optimisation (SEO) 
@@ -72,16 +72,17 @@ const StepMarketing = ({ ref }) => {
     - Email campaigns 
     - Paid advertising 
     - Relevant partnerships (e.g., influencers, affiliates).
-    Focus on aligning these tactics with the audience’s interests and the site’s goals.
+    Focus on aligning these tactics with the audience’s interests and the project's goals.
     `;
   const isAIAvailable = question && purpose && serviceDescription && audience;
 
-  const prompt = `I'm planning a landing page and need help answering the question: "${question}"—specifically, how to attract the right audience. 
-    The landing page's purpose is ${purpose} ${purposeDetails}, and I offer: ${serviceDescription}. 
+  const prompt = `Make concise suggestions how I could attract people to my landing page, more specifically, how to attract the right audience.
+My target is to Generate leads or enquiries. Additional details about the purpose: ${purpose} ${purposeDetails}.
+    ${serviceDescription}
     ${audience}
     ${marketing}
     ${promptImprover}
-    Suggest concise, effective traffic sources and be sure to keep it under 600 characters.
+    Suggest concise, effective traffic sources.
     `;
 
   return (

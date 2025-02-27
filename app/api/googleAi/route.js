@@ -1,3 +1,4 @@
+/** ⚠️ WARNING! This API route bypasses request limiter */
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
