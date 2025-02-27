@@ -122,12 +122,13 @@ export async function POST(req) {
     logger.debug(`[RATE LIMITER API]: Successfully processed request for ${type} user (${userId || ip}).`);
 
     // error if reponse is empty
-    if (!aiResponse) {
+    if (!aiResponse || aiResponse.trim() === "") {
       return new Response(
         JSON.stringify({
-          message: "AI response is empty. Please try again later.",
+          content: "Policy violation detected by Generative AI. Please rephrase your answer.",
+          remainingRequests,
         }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } }
       );
     }
 

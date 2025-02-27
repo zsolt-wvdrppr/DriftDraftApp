@@ -102,7 +102,6 @@ const StepCompetitors = ({ ref }) => {
     sessionData?.formData?.[stepNumber]?.aiHint || null
   );
   const [userMsg, setUserMsg] = useState(null);
-  const question = content.question;
   const [location, setLocation] = useState(null);
   const purpose = `${formData[0]?.purpose}.` || "";
   const purposeDetails = formData[0]?.purposeDetails
@@ -116,22 +115,20 @@ const StepCompetitors = ({ ref }) => {
   const marketing =
     `Details about the marketing strategy: ${formData?.[2]?.marketing}` || "";
 
-  const businessArea = location
-    ? `My business area is ${location.address}. If this location is too specific, try the my city, region or country.`
+  const businessArea = location  ? `My customers are near ${location.address}.`
     : "";
 
-  const isAIAvailable =
-    purpose && serviceDescription && audience;
+  const isAIAvailable = purpose && serviceDescription && audience;
 
-  const prompt = `[SEARCH-MODE] Find me potential competitors on the market. Consider the following:
-  My target is to ${purpose} ${purposeDetails}
+  //const prompt = `[SEARCH-MODE]Do you have access to google search?`;
+
+  const prompt = `[SEARCH-MODE] Identify competitors${businessArea} Details about my business:
   ${serviceDescription}
   ${audience}
   ${businessArea}
-    - List only possible competitor names and their website URLs.
+    - List business names and their website URLs.
     - Include one short sentence for each competitor describing their main offering.
     - No extra text (no greetings, no conclusions, no disclaimers).
-    - Keep it purely factual and concise.
   `;
 
   return (
