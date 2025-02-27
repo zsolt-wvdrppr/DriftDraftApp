@@ -26,12 +26,12 @@ export const showHintToast = (
       return;
     }
     // Copy hint to clipboard
-    toast.dismiss(); // Close all active toasts
     navigator.clipboard.writeText(hints);
     // Show success toast
     toast.success("Hints copied to clipboard", {
       duration: 2000,
       classNames: { toast: "text-green-600" },
+      position: "left",
     });
   };
 
@@ -47,6 +47,7 @@ export const showHintToast = (
             variant="bordered"
             onPress={() => {
               handleCopyClick();
+              toast.dismiss(newToastId);
               onCopySuccess?.(); // Call optional onCopySuccess callback
             }}
           >
@@ -89,12 +90,13 @@ export const showWhyWeAskToast = (reason, whyToastRef, onDismiss) => {
 
   const newToastId = toast.custom(
     () => (
-      <div className="p-4 shadow-lg rounded-lg bg-white/90 dark:bg-zinc-900 dark:md:bg-zinc-900 ">
+      <div className="p-4 shadow-lg rounded-lg bg-neutralSnow dark:bg-zinc-900 md:bg-neutralSnow/95 dark:md:bg-zinc-900 max-h-[90vh] overflow-y-auto select-text">
         <ReactMarkdown className="prose">
           {reason}
         </ReactMarkdown>
         <div className="flex justify-end">
           <Button
+            className="mt-4"
             color="danger"
             variant="bordered"
             onPress={() => {
