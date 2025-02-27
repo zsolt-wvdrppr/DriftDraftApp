@@ -33,7 +33,13 @@ const LocationSearch = ({ onSelect }) => {
 
   return (
     <div className="relative w-full max-w-md my-4">
-      <Autocomplete onLoad={handleLoad} onPlaceChanged={handlePlaceChanged}>
+      <Autocomplete
+      options={{
+        types: ['(regions)'],
+      }}
+      onLoad={handleLoad}
+      onPlaceChanged={handlePlaceChanged}
+      >
         <Input
         aria-label= "Business area"
         classNames={{

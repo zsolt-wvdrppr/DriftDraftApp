@@ -228,12 +228,14 @@ export default function UserActivities() {
     );
   }
 
+
   const handleReview = (item) => {
+    logger.debug("Reviewing item:", item);
     startTransition(async () => {
       try {
         logger.info(`Edit item with ID: ${item.session_id}`);
         await initSessionFromDb(user.id, item.session_id); // Wait for the session initialization
-        router.push(`/website-planner?step=0`); // Redirect after completion
+        router.push(`/${item.type.replace(/\s/g, "")}-planner?step=0`); // Redirect after completion
       } catch (error) {
         logger.error("Error during session initialisation:", error);
       }

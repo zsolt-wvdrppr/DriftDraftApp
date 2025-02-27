@@ -153,7 +153,7 @@ export const getAuthHeaders = (jwt: string) => {
 
 export function getPlannerTypeFromPath(pathname: string) {
   if (pathname === "/landingpage-planner") {
-    return "landingpage";
+    return "landing page";
   } else if (pathname === "/website-planner") {
     return "website";
   }
