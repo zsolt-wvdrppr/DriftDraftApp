@@ -1,10 +1,18 @@
 "use client";
 
+import React from "react";
 import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import { Button } from "@heroui/react";
 import { IconCopy, IconSquareRoundedX } from "@tabler/icons-react";
-import { Icon } from "@iconify-icon/react/dist/iconify.js";
+
+import withColorCode from "lib/utils/with-color-dots";
+
+const CodeWithColor = withColorCode("code");
+const LiWithColor = withColorCode("li");
+const PWithColor = withColorCode("p");
+const EMWithColor = withColorCode("em");
+const StrongWithColor = withColorCode("strong");
 
 export const showHintToast = (
   hints,
@@ -53,13 +61,21 @@ export const showHintToast = (
           components={{
             a: ({ node, ...props }) => (
               <span className="relative flex flex-wrap">
-              <a {...props} rel="noopener noreferrer" target="_blank">
-                {props.children}
-                
-              </a>
-              <IconCopy size={16} className="text-primary mx-1 cursor-copy" onClick={() => handleSelectedCopy(props.href)} />
+                <a {...props} rel="noopener noreferrer" target="_blank">
+                  {props.children}
+                </a>
+                <IconCopy
+                  className="text-primary dark:text-accent mx-1 cursor-copy"
+                  size={16}
+                  onClick={() => handleSelectedCopy(props.href)}
+                />
               </span>
             ),
+            code: CodeWithColor, // Apply color dots inside <code> blocks
+            li: LiWithColor, // Apply color dots inside list items
+            p: PWithColor, // Apply color dots inside paragraphs
+            em: EMWithColor, // Apply color dots inside <em> tags
+            strong: StrongWithColor, // Apply color dots inside <strong> tags
           }}
         >
           {`${hints}`}

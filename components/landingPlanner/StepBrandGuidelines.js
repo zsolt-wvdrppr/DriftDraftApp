@@ -56,15 +56,15 @@ const StepBrandGuidelines = ({ ref }) => {
 
   const question = content.question;
   const purpose = `${formData[0]?.purpose}.` || "";
-  const purposeDetails =
-    `Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` ||
+  const purposeDetails = formData[0]?.purposeDetails ?
+    ` ${formData[0]?.purposeDetails}\n` :
     "";
   const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
   const audience = `${formData[1].audience}. ` || "";
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
     formData?.[3]?.urls?.toString() !== ""
-      ? `- **Competitors**:  ${formData[3].urls.toString()}.`
+      ? `${formData[3].urls.toString()}.`
       : "";
   const usps = formData[4]?.usps || "";
   const brandIdeas = `- **My ideas regarding the brand guidelines**: ${localValue}` || "";
@@ -77,14 +77,13 @@ const StepBrandGuidelines = ({ ref }) => {
     marketing &&
     usps;
 
-  const prompt = `I'm planning a landing page and need detailed ideas for brand guidelines, including colours, fonts, and logo design. Here are the details:
+  const prompt = `Suggest ideas for brand guidelines that I can apply on my landing page for a campaign. Include colours, fonts, and logo design. Here are the details:
 
-- **Purpose**: ${purpose} ${purposeDetails}
-- **Offering**: ${serviceDescription}
-- **Target Audience**: ${audience}
-- **Marketing Strategy**: ${marketing}
+- The main purpose of the landing page is to: ${purpose} ${purposeDetails}
+- We offer: ${serviceDescription}
+- It's for the following type people: ${audience}
 ${competitors}
-- **Unique Selling Points**: ${usps}
+- My unique selling points as follows: ${usps}
 ${brandIdeas}
 
 Please provide thoughtful and creative brand guideline ideas that align with the following considerations:
