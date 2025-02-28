@@ -1,20 +1,25 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Button } from '@heroui/react';
-import { useState } from 'react';
-import { IconCaretRight, IconCaretLeft, IconAutomation } from '@tabler/icons-react';
+import React from "react";
+import PropTypes from "prop-types";
+import { Button } from "@heroui/react";
+import { useState } from "react";
+import {
+  IconArrowBigRight,
+  IconCaretLeft,
+  IconAutomation,
+} from "@tabler/icons-react";
+import { Icon } from "@iconify-icon/react/dist/iconify.js";
 
 /** Previous Button Component */
 export const PreviousButton = ({ disabled, onPress }) => (
   <Button
-    className="relative w-32 border border-secondaryTeal text-md font-bold tracking-wider flex justify-center disabled:bg-gray-300 disabled:border-none"
+    className="relative w-32 border border-secondaryTeal text-md text-white/80 font-bold tracking-wider flex justify-center disabled:bg-gray-300 disabled:border-none rounded-r-sm"
     color="secondary"
     disabled={disabled}
+    title="Previous Section"
     variant="shadow"
     onPress={onPress}
   >
-    <IconCaretLeft className="min-w-4  scale-y-125 absolute left-0 opacity-50" />
-    <span>Previous</span>
+    <IconArrowBigRight className="rotate-180 scale-x-150" size={34}/>
   </Button>
 );
 
@@ -40,14 +45,14 @@ export const NextButton = ({ isPending, onPress, debounceDelay = 500 }) => {
 
   return (
     <Button
-      className="w-32 border border-secondaryTeal text-md font-bold tracking-wider flex justify-center items-center"
+      className="w-32 border text-white/80 border-secondaryTeal text-md font-bold tracking-wider flex justify-center items-center rounded-l-sm"
       color="secondary"
       disabled={isPending || isDebouncing} // Disable button during debounce
+      title="Next Section"
       variant="shadow"
       onPress={handleClick}
     >
-      {isPending ? 'Loading...' : 'Next'}
-      <IconCaretRight className="min-w-6 scale-y-125 absolute right-0 opacity-50"/>
+      {isPending ? "" : <IconArrowBigRight className="scale-x-150" size={34}/>}
     </Button>
   );
 };
@@ -60,14 +65,15 @@ NextButton.propTypes = {
 /** Submit Button Component */
 export const SubmitButton = ({ isPending, onPress }) => (
   <Button
-    className="w-32 border border-secondaryTeal font-bold tracking-wider"
+    className="w-32 border border-secondaryTeal text-md font-bold tracking-wider flex justify-center items-center rounded-l-sm"
     color="secondary"
     disabled={isPending}
+    isLoading={isPending}
+    title="Genearte a plan"
     variant="shadow"
     onPress={onPress}
   >
-    {isPending ? 'Processing...' : 'Process'}
-    <IconAutomation className="min-w-6 absolute right-1 opacity-50"/>
+    {isPending ? "" : "Process"}
   </Button>
 );
 
