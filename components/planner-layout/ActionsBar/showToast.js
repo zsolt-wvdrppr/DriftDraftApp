@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 import { toast } from "sonner";
 import { Button } from "@heroui/react";
 import { IconCopy, IconSquareRoundedX } from "@tabler/icons-react";
+import { Icon } from "@iconify-icon/react/dist/iconify.js";
 
 export const showHintToast = (
   hints,
@@ -22,7 +23,7 @@ export const showHintToast = (
   const handleCopyClick = () => {
     if (copyToClipboard) {
       copyToClipboard(hints);
-      
+
       return;
     }
     // Copy hint to clipboard
@@ -31,7 +32,15 @@ export const showHintToast = (
     toast.success("Hints copied to clipboard", {
       duration: 2000,
       classNames: { toast: "text-green-600" },
-      position: "left",
+    });
+  };
+
+  const handleSelectedCopy = (content) => {
+    navigator.clipboard.writeText(content);
+    toast.dismiss(newToastId);
+    toast.success("Copied to clipboard", {
+      duration: 2000,
+      classNames: { toast: "text-green-600" },
     });
   };
 
@@ -39,7 +48,22 @@ export const showHintToast = (
     () => (
       <div className="p-4 shadow-lg rounded-lg bg-neutralSnow dark:bg-zinc-900 md:bg-neutralSnow/95 dark:md:bg-zinc-900 max-h-[90vh] overflow-y-auto select-text">
         <h4 className="font-bold dark:text-neutralSnow">Hint</h4>
-        <ReactMarkdown className="prose py-6 dark:text-slate-200">{`${hints}`}</ReactMarkdown>
+        <ReactMarkdown
+          className="prose py-6 dark:text-slate-200"
+          components={{
+            a: ({ node, ...props }) => (
+              <span className="relative flex flex-wrap">
+              <a {...props} rel="noopener noreferrer" target="_blank">
+                {props.children}
+                
+              </a>
+              <IconCopy size={16} className="text-primary mx-1 cursor-copy" onClick={() => handleSelectedCopy(props.href)} />
+              </span>
+            ),
+          }}
+        >
+          {`${hints}`}
+        </ReactMarkdown>
         {userMsg && <p className="text-sm pb-6 text-right">{userMsg}</p>}
         <div className="flex justify-between">
           <Button
@@ -91,9 +115,7 @@ export const showWhyWeAskToast = (reason, whyToastRef, onDismiss) => {
   const newToastId = toast.custom(
     () => (
       <div className="p-4 shadow-lg rounded-lg bg-neutralSnow dark:bg-zinc-900 md:bg-neutralSnow/95 dark:md:bg-zinc-900 max-h-[90vh] overflow-y-auto select-text">
-        <ReactMarkdown className="prose">
-          {reason}
-        </ReactMarkdown>
+        <ReactMarkdown className="prose">{reason}</ReactMarkdown>
         <div className="flex justify-end">
           <Button
             className="mt-4"

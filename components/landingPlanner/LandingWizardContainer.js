@@ -66,6 +66,8 @@ export default function LandingWizardContainer({ }) {
         initSession,
         error,
         setError,
+        success,
+        setSuccess,
         clearLocalStorage,
         currentStep,
         setCurrentStep,
@@ -110,6 +112,12 @@ export default function LandingWizardContainer({ }) {
             errorToast(error);
             handleFormDataUpdate("isValid", false);
             const timeout = setTimeout(() => setError(null), 5000);
+
+            return () => clearTimeout(timeout);
+        }
+        if (success) {
+            handleFormDataUpdate("isValid", true);
+            const timeout = setTimeout(() => setSuccess(null), 5000);
 
             return () => clearTimeout(timeout);
         }

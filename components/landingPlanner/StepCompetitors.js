@@ -6,6 +6,7 @@ import {
   IconXboxXFilled,
   IconRowInsertBottom,
   IconWorldWww,
+  IconClipboard,
 } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -54,7 +55,7 @@ const StepCompetitors = ({ ref }) => {
 
   const validateURL = (url) => {
     // Remove protocol if present for domain validation
-    const domainPart = url.replace(/^https?:\/\//, "");
+    const domainPart = url.replace(/^https?:\/\//, "").replace(/\/+$/, "");
     const parts = domainPart.split(".");
 
     // If starts with www, need 3 parts, else need 2 parts
@@ -105,30 +106,25 @@ const StepCompetitors = ({ ref }) => {
   const [location, setLocation] = useState(null);
   const purpose = `${formData[0]?.purpose}.` || "";
   const purposeDetails = formData[0]?.purposeDetails
-    ? `Additional details about the purpose: ${formData[0]?.purposeDetails}\n`
+    ? ` and to ${formData[0]?.purposeDetails}\n`
     : "";
   const serviceDescription =
-    `What I offer to my audience: ${formData[0]?.serviceDescription}.\n` || "";
+    `${formData[0]?.serviceDescription}.\n` || "";
   const audience =
-    `Consider the following regarding my ideal prospects: ${formData[1]?.audience}. ` ||
+    ` targetning ${formData[1]?.audience}. ` ||
     "";
   const marketing =
     `Details about the marketing strategy: ${formData?.[2]?.marketing}` || "";
 
-  const businessArea = location  ? `My customers are near ${location.address}.`
+    const businessArea = location
+    ? ` in ${location.address}.`
     : "";
 
   const isAIAvailable = purpose && serviceDescription && audience;
 
-  //const prompt = `[SEARCH-MODE]Do you have access to google search?`;
+  //const prompt = `[SEARCH-GROUNDING]What is the population of Budapest in 2022 according to the latest estimates?`;
 
-  const prompt = `[SEARCH-MODE] Identify competitors${businessArea} Details about my business:
-  ${serviceDescription}
-  ${audience}
-  ${businessArea}
-    - List business names and their website URLs.
-    - Include one short sentence for each competitor describing their main offering.
-    - No extra text (no greetings, no conclusions, no disclaimers).
+  const prompt = `[SEARCH-GROUNDING]"Using possible search queries that my audience would use, identify possible competitors offering ${serviceDescription}${businessArea}? Grouped by search query Provide a list of competitor names, along with clickable website URLs, and a concise description of their core offering in one sentence. The aim is to ${purpose}${purposeDetails}. Present the results in a clear and easy-to-read format. If cannot find any, ask to narrow location. No extra text (no greetings, no conclusions, no disclaimers) only the final result. No duplicated results.
   `;
 
   return (
@@ -175,6 +171,18 @@ const StepCompetitors = ({ ref }) => {
                   inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${!validateURL(url) && url ? "border-danger" : ""}`,
                 }}
                 //isRequired={true}
+                endContent={
+                  <IconClipboard
+                    className="text-primary dark:text-accentMint opacity-70 mr-[-3px] cursor-pointer mb-[2px]"
+                    size={30}
+                    onClick={() => {
+                      // Paste URL from clipboard
+                      navigator.clipboard.readText().then((text) => {
+                        handleChangeUrl(text, index);
+                      });
+                    }}
+                  />
+                }
                 label={`Competitor URL ${index + 1}`}
                 placeholder={content.placeholder}
                 startContent={
