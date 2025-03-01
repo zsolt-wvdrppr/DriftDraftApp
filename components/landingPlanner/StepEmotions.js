@@ -68,7 +68,7 @@ const StepEmotions = ({ ref }) => {
       : "";
   const usps = formData[4].usps || "";
   const brandGuidelines = formData[5].brandGuidelines || "";
-  const emotionIdeas = `My thoughts regarding feelings and emotions:  ${localValue}.` || "";
+  const emotionIdeas =  localValue ? `My thoughts regarding feelings and emotions:  ${localValue}.` : "";
 
   const isAIAvailable =
     question &&
@@ -83,7 +83,7 @@ const StepEmotions = ({ ref }) => {
     1. What feelings (e.g., excitement, calmness, trust, inspiration) will resonate with my audience and connect them to the brand?
     2. How should visitors describe their experience after using the site (e.g., ‘engaging,’ ‘professional,’ ‘welcoming’)?
     3. What first impression or mood should the homepage evoke?
-    Provide a framework or examples to articulate these emotions clearly, explaining why they are vital for the landing page’s success. Keep the response conversational, concise, and under 800 characters.`;
+    Provide a framework or examples to articulate these emotions clearly, explaining why they are vital for the landing page’s success. Keep the response conversational, concise, and under 800 characters. Keep the response concise and be creative, use emojis too to express the feelings we want to make the landingpage reader to feel, make sure they are relevant.`;
 
     
 

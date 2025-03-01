@@ -115,8 +115,6 @@ const StepPurpose = ({ ref }) => {
 
   const prompt = `Consider that the business goal is to ${purpose}. ${purposeDetails} The user offers: ${serviceDescription}. Refine what the user offers with a neutral description explaining, how it benefits the audience, and what challenges it solves. Keep the response informative and under 450 characters. Avoid direct marketing language or calls to action.`;
 
-  /*const prompt = `I'm planning a landing page and need help answering the question: ${stepQuestion}. ${purpose} ${purposeDetails} ${serviceDescription} Please keep the response informative and under 450 characters.`*/
-
 
   return (
     <form ref={formRef}>

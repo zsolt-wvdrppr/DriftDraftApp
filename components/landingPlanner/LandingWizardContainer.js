@@ -31,7 +31,6 @@ import StepAudience from './StepAudience';
 import StepMarketing from './StepMarketing';
 import StepCompetitors from './StepCompetitors';
 import StepUSPs from './StepUSPs';
-import StepDomain from './StepDomain';
 import StepBrandGuidelines from './StepBrandGuidelines';
 import StepEmotions from './StepEmotions';
 import StepInspirations from './StepInspirations';

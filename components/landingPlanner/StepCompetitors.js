@@ -20,6 +20,10 @@ import {
 import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
 import LocationSearch from "@/components/planner-layout/location-search";
 
+import { Tooltip } from "react-tooltip";
+import { IconAlertTriangleFilled } from "@tabler/icons-react";
+import { Icon } from "@iconify-icon/react/dist/iconify.js";
+
 const StepCompetitors = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 3;
@@ -108,23 +112,18 @@ const StepCompetitors = ({ ref }) => {
   const purposeDetails = formData[0]?.purposeDetails
     ? ` and to ${formData[0]?.purposeDetails}\n`
     : "";
-  const serviceDescription =
-    `${formData[0]?.serviceDescription}.\n` || "";
-  const audience =
-    ` targetning ${formData[1]?.audience}. ` ||
-    "";
+  const serviceDescription = `${formData[0]?.serviceDescription}.\n` || "";
+  const audience = ` targetning ${formData[1]?.audience}. ` || "";
   const marketing =
     `Details about the marketing strategy: ${formData?.[2]?.marketing}` || "";
 
-    const businessArea = location
-    ? ` in ${location.address}.`
-    : "";
+  const businessArea = location ? ` in ${location.address}.` : "";
 
   const isAIAvailable = purpose && serviceDescription && audience;
 
   //const prompt = `[SEARCH-GROUNDING]What is the population of Budapest in 2022 according to the latest estimates?`;
 
-  const prompt = `[SEARCH-GROUNDING]"Using possible search queries that my audience would use, identify possible competitors offering ${serviceDescription}${businessArea}? Grouped by search query Provide a list of competitor names, along with clickable website URLs, and a concise description of their core offering in one sentence. The aim is to ${purpose}${purposeDetails}. Present the results in a clear and easy-to-read format. If cannot find any, ask to narrow location. No extra text (no greetings, no conclusions, no disclaimers) only the final result. No duplicated results.
+  const prompt = `[SEARCH-GROUNDING]"Using possible search queries that my audience would use, identify possible competitors offering ${serviceDescription}${businessArea}? Grouped by search query Provide a list of competitor names, along with clickable website URLs, and a concise description of their core offering in one sentence. The aim is to ${purpose}${purposeDetails}. Present the results in a clear and easy-to-read format. If cannot find any, then broadn the search query or try in local language. Do not ask to user to change or broaden search query. No extra text (no greetings, no conclusions, no disclaimers) only the final result. Do not include the steps you took to get the result. Present the results in a clear and easy-to-read format using markdown! Do not return code!
   `;
 
   return (
@@ -147,12 +146,22 @@ const StepCompetitors = ({ ref }) => {
           updateFormData={updateFormData}
         />
         {/* Input field to business location or service area */}
-        <LocationSearch
-          onSelect={(place) => {
-            setLocation(place);
-            logger.debug("Location selected:", place);
-          }}
-        />
+        <div className="relative flex flex-row">
+          <LocationSearch
+            onSelect={(place) => {
+              setLocation(place);
+              logger.debug("Location selected:", place);
+            }}
+          />
+          <IconAlertTriangleFilled id="disclaimer" size={24} className="text-amber-600 drop-shadow-xl mt-8 ml-2 animate-pulse" />
+        </div>
+        <Tooltip
+          anchorSelect="#disclaimer"
+          className="max-w-60 md:max-w-sm relative z-50"
+          >
+            <span className="font-semibold text-lg">Experimental feature</span><br /><br />
+            {`At this step, the AI attempts to identify possible competitors using Google Search. This feature is in experimental mode, so results may be inaccurate or incomplete. Issues may arise in non-English regions or when searching within a narrow location. If no results are found, consider broadening the business area for better accuracy.`}
+          </Tooltip>
         <Divider />
         <AnimatePresence initial={false}>
           {urls.map((url, index) => (
@@ -173,8 +182,10 @@ const StepCompetitors = ({ ref }) => {
                 //isRequired={true}
                 endContent={
                   <IconClipboard
+                    aria-label="Paste URL from clipboard"
                     className="text-primary dark:text-accentMint opacity-70 mr-[-3px] cursor-pointer mb-[2px]"
                     size={30}
+                    title="Paste URL from clipboard"
                     onClick={() => {
                       // Paste URL from clipboard
                       navigator.clipboard.readText().then((text) => {
@@ -199,7 +210,9 @@ const StepCompetitors = ({ ref }) => {
               />
               {urls.length > 1 && (
                 <IconXboxXFilled
+                  aria-label="Remove URL"
                   className="text-danger cursor-pointer drop-shadow-lg opacity-70 hover:opacity-100 hover:scale-110 transition-all"
+                  title="Remove URL"
                   onClick={() => handleRemoveUrl(index)}
                 />
               )}
@@ -207,7 +220,9 @@ const StepCompetitors = ({ ref }) => {
           ))}
         </AnimatePresence>
         <Button
+          aria-label="Add Another URL"
           className="mt-4 border hover:scale-105 transition-all focus-within:shadow-none"
+          title="Add Another URL to the list"
           type="button"
           variant="shadow"
           onPress={() => handleAddUrl(urls.length - 1)}
