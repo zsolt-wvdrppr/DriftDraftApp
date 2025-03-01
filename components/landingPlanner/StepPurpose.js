@@ -113,7 +113,7 @@ const StepPurpose = ({ ref }) => {
   const serviceDescription = localServiceDescription ? `Some details about what I offer to my audience: ${localServiceDescription}.` : "";
   const stepQuestion = content.questionAddition2;
 
-  const prompt = `Consider that the business goal is to ${purpose}. ${purposeDetails} The user offers: ${serviceDescription}. Refine what the user offers with a neutral description explaining, how it benefits the audience, and what challenges it solves. Keep the response informative and under 450 characters. Avoid direct marketing language or calls to action.`;
+  const prompt = `Consider that the business goal is to ${purpose}. ${purposeDetails} The user offers: ${serviceDescription}. Refine what the user offers with a neutral description explaining, how it benefits the audience, and what challenges it solves. Keep the response informative and under 450 characters. Avoid direct marketing language or calls to action. Present the results in a clear and easy-to-read format using markdown! Do not return code!`;
 
 
   return (
