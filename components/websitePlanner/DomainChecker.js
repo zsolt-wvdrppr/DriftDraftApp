@@ -2,12 +2,9 @@ import { useState, useEffect } from "react";
 import { Input, Button } from "@heroui/react";
 import { toast } from "sonner";
 import {
-  IconSquareRoundedX,
-  IconWorldQuestion,
   IconCircleDashedCheck,
   IconProgressHelp,
-  IconWorldCheck,
-  IconCopy
+  IconCopy,
 } from "@tabler/icons-react";
 
 const validateDomain = (domain) => {
@@ -25,6 +22,15 @@ const DomainChecker = () => {
   const [isAvailable, setIsAvailable] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [error, setError] = useState(null);
+
+  const handleSelectedCopy = (content) => {
+    navigator.clipboard.writeText(content);
+    toast.dismiss();
+    toast.success("Copied to clipboard", {
+      duration: 2000,
+      classNames: { toast: "text-green-600" },
+    });
+  };
 
   const handleCheckDomain = () => {
     const validatedDomain = validateDomain(domain);
@@ -75,9 +81,12 @@ const DomainChecker = () => {
         setSuggestions(data.suggestions || []);
       } catch (err) {
         setError(err.message);
-        toast.error(`Error checking ${checkedDomain}: Invalid domain or network issue.`, {
-          duration: 3000,
-        });
+        toast.error(
+          `Error checking ${checkedDomain}: Invalid domain or network issue.`,
+          {
+            duration: 3000,
+          }
+        );
       } finally {
         setIsChecking(false);
         toast.dismiss("checking");
@@ -104,7 +113,7 @@ const DomainChecker = () => {
         setTimeout(() => {
           toast.custom(
             () => (
-                <div className="flex flex-col p-4 bg-white shadow-lg rounded-md border">
+              <div className="flex flex-col p-4 bg-white shadow-lg rounded-md border">
                 <p className="text-md font-semibold">
                   We found similar domains that are available:
                 </p>
@@ -121,7 +130,10 @@ const DomainChecker = () => {
                           size={16}
                         />
                         {s.domain}
-                        <IconCircleDashedCheck size={16} title="Available domain" />
+                        <IconCircleDashedCheck
+                          size={16}
+                          title="Available domain"
+                        />
                       </Button>
                     </li>
                   ))}
@@ -151,10 +163,15 @@ const DomainChecker = () => {
         inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border pr-0`,
       }}
       endContent={
-        <Button type="button" onPress={handleCheckDomain} className="min-w-0 py-2 -mb-2 pr-2 h-13 text-warning rounded-md" title="Click to check domain availability">
+        <Button
+          className="min-w-0 py-2 -mb-2 pr-2 h-13 text-warning rounded-md"
+          title="Click to check domain availability"
+          type="button"
+          onPress={handleCheckDomain}
+        >
           {" "}
           {/* ✅ Prevents form submission */}
-          <IconProgressHelp size={34}/>
+          <IconProgressHelp size={34} />
         </Button>
       }
       label="Check domain availability"
