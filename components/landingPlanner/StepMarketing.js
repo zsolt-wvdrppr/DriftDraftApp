@@ -83,6 +83,8 @@ My target is to Generate leads or enquiries. Additional details about the purpos
     ${marketing}
     ${promptImprover}
     Suggest concise, effective traffic sources.
+    Keep it less than 300 words.
+    Present the results in a detailed, clear and easy-to-read format using markdown! Do not return code!
     `;
 
   return (
