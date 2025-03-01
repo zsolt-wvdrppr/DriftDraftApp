@@ -9,6 +9,8 @@ import {
   IconClipboard,
 } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Tooltip } from "react-tooltip";
+import { IconAlertTriangleFilled } from "@tabler/icons-react";
 
 import questionsData from "@/data/landing-questions-data.json";
 import logger from "@/lib/logger";
@@ -20,9 +22,6 @@ import {
 import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
 import LocationSearch from "@/components/planner-layout/location-search";
 
-import { Tooltip } from "react-tooltip";
-import { IconAlertTriangleFilled } from "@tabler/icons-react";
-import { Icon } from "@iconify-icon/react/dist/iconify.js";
 
 const StepCompetitors = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -153,7 +152,7 @@ const StepCompetitors = ({ ref }) => {
               logger.debug("Location selected:", place);
             }}
           />
-          <IconAlertTriangleFilled id="disclaimer" size={24} className="text-amber-600 drop-shadow-xl mt-8 ml-2 animate-pulse" />
+          <IconAlertTriangleFilled className="text-amber-600 drop-shadow-xl mt-8 ml-2 animate-pulse" id="disclaimer" size={24} />
         </div>
         <Tooltip
           anchorSelect="#disclaimer"
