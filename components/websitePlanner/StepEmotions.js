@@ -60,16 +60,16 @@ const StepEmotions = ({ ref }) => {
     `Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` ||
     "";
   const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
-  const audience = `${formData[1]?.audience}. ` || "";
+  const audience = `${formData[1].audience}. ` || "";
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
     formData?.[3]?.urls?.toString().trim() !== ""
-      ? `- Competitors:  ${formData[3]?.urls?.toString()}`
+      ? `- Competitors:  ${formData[3].urls.toString()}`
       : "";
-  const usps = formData[4]?.usps || "";
+  const usps = formData[4].usps || "";
   const domains = formData[5]?.domain || "";
   const brandGuidelines = formData[6]?.brandGuidelines || "";
-  const emotionIdeas = `My thoughts regarding feelings and emotions:  ${localValue}.` || "";
+  const emotionIdeas =  localValue ? `My thoughts regarding feelings and emotions:  ${localValue}.` : "";
 
   const isAIAvailable =
     question &&
@@ -81,11 +81,11 @@ const StepEmotions = ({ ref }) => {
     domains &&
     brandGuidelines;
 
-    const prompt = `Help me clarify the emotional experience I want visitors to have on my website. The primary purpose is ${purpose} ${purposeDetails} Here's what the website offers: ${serviceDescription} My target audience is: ${audience} I want to create a strong emotional connection with them. ${competitors} My unique selling points include: ${usps}. ${emotionIdeas} Based on this, ask thought-provoking questions or provide examples to help define the emotional tone of my website. For instance:
+    const prompt = `Help me clarify the emotional experience I want visitors to have on website. The primary purpose is ${purpose} ${purposeDetails} Here's what the website offers: ${serviceDescription} My target audience is: ${audience}. The domain I might use: ${domains}. I want to create a strong emotional connection with them. ${competitors} My unique selling points include: ${usps}. ${emotionIdeas} Based on this, ask thought-provoking questions or provide examples to help define the emotional tone of my website. For instance:
     1. What feelings (e.g., excitement, calmness, trust, inspiration) will resonate with my audience and connect them to the brand?
     2. How should visitors describe their experience after using the site (e.g., ‘engaging,’ ‘professional,’ ‘welcoming’)?
     3. What first impression or mood should the homepage evoke?
-    Provide a framework or examples to articulate these emotions clearly, explaining why they are vital for the website’s success. Keep the response conversational, concise, and under 800 characters.`;
+    Provide a framework or examples to articulate these emotions clearly, explaining why they are vital for the website’s success. Keep the response conversational, concise, and under 800 characters. Keep the response concise and be creative, use emojis too to express the feelings we want to make the website reader to feel, make sure they are relevant.`;
 
     
 
