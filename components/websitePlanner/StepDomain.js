@@ -50,8 +50,8 @@ const StepDomain = ({ ref }) => {
   
   const question = content.question;
   const purpose = `${formData[0]?.purpose}.` || "";
-  const purposeDetails =
-    `Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` ||
+  const purposeDetails = formData[0]?.purposeDetails ?
+    ` ${formData[0]?.purposeDetails} \n` :
     "";
   const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
   const audience = `${formData[1]?.audience}. ` || "";
@@ -61,7 +61,7 @@ const StepDomain = ({ ref }) => {
       ? `- Competitors: ${formData[3].urls.toString()}.`
       : "";
   const usps = formData[4].usps || '';
-  const domainIdeas = `- My ideas regarding the domain: ${localValue}` || '';
+  const domainIdeas = localValue ? `- My ideas regarding the domain: ${localValue}` : '';
 
   const isAIAvailable = question && purpose && serviceDescription && audience && marketing && usps;
 
@@ -69,17 +69,16 @@ const StepDomain = ({ ref }) => {
   - Purpose: ${purpose} ${purposeDetails}
   - Offering: ${serviceDescription}
   - Target audience: ${audience}
-  - Marketing strategy: ${marketing}
   ${competitors}
   - Unique selling points: ${usps}
   ${domainIdeas}
-  Please suggest SEO-friendly, descriptive, and catchy domain names that are SHORT and CONCISE (no more than 15 characters). Ensure your response is concise, to the point, and less than 450 characters, and outline briefly how SEO best practices are applied in each suggestion: ${content.hint}.`;
+  Make suggestions of SEO-friendly, descriptive, and catchy domain names that are SHORT and CONCISE (no more than 15 characters). Ensure your response is concise, to the point, and less than 450 characters, and outline briefly how SEO best practices are applied in each suggestion: ${content.hint}. The domains you suggest must be clickable links.`;
   
 
 
   return (
     <form ref={formRef}>
-      <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
+      <StepWrapper checkDomain={true} hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
         <StepQuestion content={content} />
         <StepGetAiHintBtn
           content={content}

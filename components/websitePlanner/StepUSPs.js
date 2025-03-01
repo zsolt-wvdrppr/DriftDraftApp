@@ -56,9 +56,9 @@ const StepUSPs = ({ ref }) => {
 
   const question = content.question;
   const purpose = `${formData[0]?.purpose}.` || "";
-  const purposeDetails =
-    `Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` ||
-    "";
+  const purposeDetails = formData[0]?.purposeDetails
+    ? ` ${formData[0]?.purposeDetails} \n`
+    : "";
   const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
   const audience = `${formData[1].audience}. ` || "";
   const marketing = formData?.[2]?.marketing || "";
@@ -66,22 +66,22 @@ const StepUSPs = ({ ref }) => {
     formData?.[3]?.urls?.toString() !== ""
       ? `I have identified the following competitors: ${formData[3].urls.toString()}.`
       : "";
-  const usps =
-    `Some details about my Unique Selling Points: ${localValue}\n` || "";
+  const usps = localValue
+    ? `My Unique Selling Points that I gathered: ${localValue}\n`
+    : "";
 
   const isAIAvailable =
     question && purpose && serviceDescription && audience && marketing;
 
   const prompt = `
-    I'm planning a website and I've been asked to answer the following question: ${question}.
-    Consider that the main purpose of the website is ${purpose} ${purposeDetails}
+    I'm working on a website. Identify my project's Unique Selling Points, how can I stand out from the competition and what makes my project unique.
+    Consider that the main purpose of the website is ${purpose}${purposeDetails}
     and here's a description of what I offer: ${serviceDescription}
     The description of my target audience is as follows: ${audience}
-    This is how I plan to attract my audience: ${marketing}
+
     ${competitors}
     ${usps}
-    Help me answer the question while considering the above details.
-    Keep the response concise and informative, ensuring it's less than 800 characters.
+    Keep the response concise and informative. No extra text (no greetings, no conclusions, no disclaimers) only the final result.
     `;
 
   return (

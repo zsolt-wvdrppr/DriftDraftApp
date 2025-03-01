@@ -31,7 +31,7 @@ const LocationSearch = ({ onSelect }) => {
   };
 
   return (
-    <div className="relative w-full max-w-md my-4">
+    <div className="relative w-full max-w-md">
       <Autocomplete
         options={{
           types: ["(regions)"],
