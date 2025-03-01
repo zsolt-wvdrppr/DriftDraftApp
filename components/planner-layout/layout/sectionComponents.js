@@ -27,14 +27,14 @@ export const StepInnerWrapper = ({ className = '', children }) => {
 
 import Sidebar from '@/components/planner-layout/ActionsBar/Sidebar'
 
-export const StepWrapper = ({ whyDoWeAsk, userMsg, hint, className = null, children }) => {
+export const StepWrapper = ({ whyDoWeAsk, userMsg, hint, className = null, children, checkDomain }) => {
   
   return (
     <StepOuterWrapper className={className}>
       <StepInnerWrapper>
         {children}
       </StepInnerWrapper>
-      <Sidebar hint={hint} userMsg={userMsg} whyDoWeAsk={whyDoWeAsk} />
+      <Sidebar checkDomain={checkDomain} hint={hint} userMsg={userMsg} whyDoWeAsk={whyDoWeAsk}/>
     </StepOuterWrapper>
   )
 }

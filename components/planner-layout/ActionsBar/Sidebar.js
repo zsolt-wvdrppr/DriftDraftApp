@@ -9,14 +9,12 @@ import useClipboard from '@/lib/hooks/useClipboard';
 
 import HintButton from './HintButton';
 import WhyWeAskButton from './WhyWeAskButton';
-import {showHintToast, showWhyWeAskToast} from './showToast';
+import { useHintToast } from '@/lib/hooks/useShowHint';
 
-
-const Sidebar = React.memo(({ hint, whyDoWeAsk, onHintClicked, onWhyClicked, userMsg }) => {
+const Sidebar = React.memo(({ hint, whyDoWeAsk, onHintClicked, onWhyClicked, userMsg, checkDomain = false }) => {
   const [isPending, startTransition] = useTransition();
+  const { showHintToast, showWhyWeAskToast } = useHintToast();
   const { copyToClipboard } = useClipboard();
-  const hintToastRef = useRef(null);
-  const whyToastRef = useRef(null);
 
   // Track changes to `hints` and show the indicator
   const handleToast = (type) => {
@@ -26,26 +24,27 @@ const Sidebar = React.memo(({ hint, whyDoWeAsk, onHintClicked, onWhyClicked, use
         logger.debug('userMsg', userMsg);
         showHintToast(
           hint,
-          hintToastRef,
-          () => logger.info("Hint copied to clipboard!"), // Optional success callback
+          () => {
+            logger.info("Hint copied to clipboard!");
+            onHintClicked?.(); // Call optional handler
+          },
           () => logger.info("Hint toast dismissed!"), // Optional dismiss callback
           userMsg,
-          copyToClipboard // Optional copy handler
+          copyToClipboard,
+          checkDomain
         );
-        //setNewHintAvailable(false); // Reset the indicator
-        onHintClicked?.(); // Call optional handler
       } else if (type === 'why' && whyDoWeAsk) {
         showWhyWeAskToast(
           whyDoWeAsk,
-          whyToastRef,
-          () => logger.info("Why toast dismissed!") // Optional dismiss callback
+          () => {
+            logger.info("Why toast dismissed!");
+            onWhyClicked?.(); // Call optional handler
+          }
         );
-        onWhyClicked?.(); // Call optional handler
       }
     });
   };
   
-
   return (
     <motion.div
       animate={{ opacity: 1 }}
@@ -62,7 +61,6 @@ const Sidebar = React.memo(({ hint, whyDoWeAsk, onHintClicked, onWhyClicked, use
         handleToast={() => handleToast('why')}
         whyDoWeAsk={whyDoWeAsk}
       />
-
     </motion.div>
   );
 });
