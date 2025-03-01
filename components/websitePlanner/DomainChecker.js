@@ -99,7 +99,7 @@ const DomainChecker = () => {
   useEffect(() => {
     if (isAvailable === true) {
       toast.success(`Good news! ${checkedDomain} is available!`, {
-        duration: 1000,
+        duration: 10000,
         closeButton: true,
         classNames: { toast: "text-green-600" },
       });
