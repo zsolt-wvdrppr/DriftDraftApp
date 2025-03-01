@@ -145,14 +145,14 @@ const StepCompetitors = ({ ref }) => {
           updateFormData={updateFormData}
         />
         {/* Input field to business location or service area */}
-        <div className="relative flex flex-row">
+        <div className="relative flex flex-row pt-4">
           <LocationSearch
             onSelect={(place) => {
               setLocation(place);
               logger.debug("Location selected:", place);
             }}
           />
-          <IconAlertTriangleFilled className="text-amber-600 drop-shadow-xl mt-8 ml-2 animate-pulse" id="disclaimer" size={24} />
+          <IconAlertTriangleFilled className="text-amber-600 drop-shadow-xl mt-4 ml-2 animate-pulse" id="disclaimer" size={24} />
         </div>
         <Tooltip
           anchorSelect="#disclaimer"
@@ -161,7 +161,7 @@ const StepCompetitors = ({ ref }) => {
             <span className="font-semibold text-lg">Experimental feature</span><br /><br />
             {`At this step, the AI attempts to identify possible competitors using Google Search. This feature is in experimental mode, so results may be inaccurate or incomplete. Issues may arise in non-English regions or when searching within a narrow location. If no results are found, consider broadening the business area for better accuracy.`}
           </Tooltip>
-        <Divider />
+        <Divider className="my-4" />
         <AnimatePresence initial={false}>
           {urls.map((url, index) => (
             <motion.div
