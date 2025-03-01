@@ -59,7 +59,7 @@ const StepAudience = ({ ref }) => {
 `;
 
 
-  const prompt = `Help describ who my target audience and who my ideal customer or client is. Consider the following information: \n${purpose} ${purposeDetails} ${serviceDescription} ${audience} ${promptImprover} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
+  const prompt = `Help describe who my target audience and who my ideal customer or client is. Consider the following information: \n${purpose} ${purposeDetails} ${serviceDescription} ${audience} ${promptImprover} Keep it concise and to the point. Keep the response concise and informative, ensuring it's less than 450 characters.`;
 
   return (
     <form ref={formRef}>
