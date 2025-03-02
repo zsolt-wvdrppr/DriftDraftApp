@@ -32,3 +32,8 @@ input:-webkit-autofill {
   .dark .markdown p, .dar .markdown h4, .dark .markdown strong, .dark .markdown span, .dark .markdown ul, .dark .markdown li, .dark .markdown code {
     @apply text-neutralDark;
   }
+
+  .prose pre {
+    @apply whitespace-pre-wrap break-words gap-0;
+    word-wrap: break-word;
+  }

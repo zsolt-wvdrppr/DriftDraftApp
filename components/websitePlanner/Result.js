@@ -25,6 +25,14 @@ import usePromptExecutor from "@/lib/hooks/usePromptExecutor";
 import useClipboard from "@/lib/hooks/useClipboard";
 import MyActivitiesBtn from "@/components/nav-layout/MyActivitiesBtn";
 import getJWT from "@/lib/utils/getJWT";
+import withColorCode from "@/lib/utils/with-color-dots";
+import { useUserProfile } from "@/lib/hooks/useProfile";
+
+const CodeWithColor = withColorCode("code");
+const LiWithColor = withColorCode("li");
+const PWithColor = withColorCode("p");
+const EMWithColor = withColorCode("em");
+const StrongWithColor = withColorCode("strong");
 
 const Result = () => {
   const {
@@ -39,6 +47,7 @@ const Result = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
   const userId = user?.id;
+  const { fullName } = useUserProfile(user?.id);
   const sessionId = sessionData?.sessionId;
   const [contentForTitleGeneration, setContentForTitleGeneration] =
     useState(null);
@@ -48,6 +57,7 @@ const Result = () => {
     userId,
     sessionId
   );
+
   const alreadyFetched = useRef(false);
 
   const { executeRecaptcha } = useReCaptcha();
@@ -108,13 +118,7 @@ const Result = () => {
       updateSessionData("aiGeneratedPlan", aiResultRef.current);
       updateAiGeneratedPlanInDb(userId, sessionId, aiResultRef.current);
       setContentForTitleGeneration(
-        serviceDescription +
-          " " +
-          domain +
-          " " +
-          brandGuidelines +
-          " " +
-          emotions
+        serviceDescription + " " + brandGuidelines + " " + emotions
       );
       //logger.debug("Updating aiGeneratedPlan in DB:", aiResultRef.current);
     }
@@ -140,81 +144,175 @@ const Result = () => {
       marketing &&
       usps &&
       brandGuidelines &&
-      domain &&
       emotions
     ) {
       const prompts = [
         {
-          prompt: `
-            Prompt 1: Strategic Foundations
-            Combine these user inputs:
-              - Purpose: "${purpose}"
-              - Purpose Details: "${purposeDetails}"
-              - Services: "${serviceDescription}"
-              - Audience: "${audience}"
-            Task:
-              - Generate a concise overview in bullet points.
-              - Highlight the main website goals, services, and target audience.
-              - If any detail is missing, mention it and why it is important to clarify.
-              - Keep it straightforward and short.
-          `,
+          prompt: `Prompt 1: Core Website Strategy
+          
+          **Objective:** Define purpose and target audience with headings.
+          
+          **User Inputs:**
+          - **Purpose:** "${purpose}" (Main goal?)
+          - **Purpose Details:** "${purposeDetails}" (Specific action?)
+          - **Services/Products:** "${serviceDescription}" (Offering?)
+          - **Target Audience:** "${audience}" (Who? Be specific.)
+          - **Unique Selling Points (USPs):** "${usps}" (No need to include the USPs themselves.)
+          - **Brand Guidelines:** "${brandGuidelines}" (No need to include the guidelines themselves.)
+          - **Marketing Strategy:** "${marketing}" (No need to include the strategy itself.)
+          
+          **Task:**
+          - **Analyze inputs and output a structured strategy overview using headings and bullet points.**
+          - **Use Markdown headings (h2 and h3) and bullet points to clearly define:**
+          
+          ## Website Goal (h2)
+          -  [Bullet point defining the primary conversion goal]
+          
+          ## Key Services/Products (h2)
+          -  [Bullet point describing core offerings]
+          
+          ## Primary Target Audience (h2)
+          -  [Bullet point outlining the target audience profile]
+          
+          ## Missing Information & Why It's Important (h2)
+          -  [Bullet point listing missing details regarding only the and explaining their importance for website success]
+          
+          - **Output MUST be structured with the above Markdown headings and bullet points only. No introductory text.**`,
           generateNewPrompts: false,
         },
         {
-          prompt: `
-            Prompt 2: Branding, Competition, and USP
-            Combine these user inputs:
-              - Brand Guidelines: "${brandGuidelines}"
-              - Emotions (Emotional Impact): "${emotions}"
-              - Competitors: "${competitors}"
-              - Unique Selling Points (USPs): "${usps}"
-              - Inspirations: "${inspirations}"
-            Task:
-              - Summarise how branding (colours, fonts, overall style) and emotional goals should shape the website.
-              - Briefly discuss any relevant competitor insights.
-              - Emphasise the USPs (why they're important for differentiation).
-              - If anything is unclear, note it and recommend clarifying.
-              - Provide short bullet points, focusing on design direction and overall impact.
-          `,
+          prompt: `Prompt 2: Branding & Differentiation for Website Design
+            
+            **Objective:** Establish design direction and competitive context with headings.
+            
+            **User Inputs:**
+            - **Brand Guidelines:** "${brandGuidelines}" (Include colors, fonts, style. Doc if available.)
+            - **Desired Emotional Impact:** "${emotions}" (Visitor feelings? e.g., Trust, excitement.)
+            - **Competitors:** "${competitors}" (Competitors & websites.)
+            - **Unique Selling Points (USPs):** "${usps}" (Your unique advantage?)
+            - **Inspirations (Optional):** "${inspirations}" (Website style examples. Links.)
+            - **Services/Products:** "${serviceDescription}" (Offering? No need to include details.)
+            
+            **Task:**
+            - **Analyze inputs and output design direction with headings and bullet points.**
+            - **Use Markdown headings (h2) and bullet points to structure the output:**
+            
+            ## Branding & Emotional Design Direction (h2)
+            -  [Bullet points summarizing how brand guidelines and emotions influence website design (visuals, tone, messaging)]
+            
+            ## Competitor Design & Messaging Insights (h2)
+            -  [Bullet points identifying key design/messaging takeaways from competitor analysis]
+            
+            ## Unique Selling Points (USPs) for Differentiation (h2)
+            -  [Bullet points articulating USPs and explaining how they will be emphasized visually/verbally]
+            
+            ## Points Needing Clarification for Design (h2)
+            -  [Bullet points noting unclear/missing inputs and recommending specific clarification questions]
+            
+            - **Output MUST be structured with the above Markdown headings and bullet points only. No introductory text.**`,
           generateNewPrompts: false,
         },
         {
-          prompt: `
-            Prompt 3: Marketing Strategy & Technical Requirements
-            Combine these user inputs:
-              - Marketing Strategy: "${marketing}"
-              - Domain Preferences: "${domain}"
-            Task (two parts):
-              1) Outline a concise marketing approach (SEO, content marketing, paid ads, etc.) based on the provided details.
-                 - If no strategy is given, propose 2–3 simple ideas.
-              2) Explain the essential developer requirements for building a site that is:
-                 - Technically sound (fast loading, secure, SEO-ready).
-                 - Capable of converting visitors effectively.
-                 - Clear about any important integrations or frameworks.
-              - Keep both parts brief and in bullet points.
-          `,
+          prompt: `Prompt 3: Marketing & Technical Foundation for Launch
+          
+          **Objective:** Define marketing approach and *recommend* technical foundations for a modern websites.
+          
+          **User Inputs:**
+          - **Marketing Strategy:** "${marketing}" (Marketing activities for this website? e.g., SEO, ads.)
+          - **Domain preferences:** "${domain}"
+          
+          **Task (Two Parts - Headings & Bullet Points Only):**
+          
+          **Part 1: Marketing Approach (Headings & Bullet Points)**
+          - **Structure marketing output with headings and bullet points:**
+          
+          ## Marketing Strategy Approach (h2)
+          -  [Bullet points outlining the marketing approach based on inputs (SEO, content, ads, etc.)]
+          
+          ## Proposed Marketing Ideas (If No Strategy Provided) (h2)
+          -  [Bullet points suggesting 2-3 simple marketing ideas if no strategy input]
+          
+          **Part 2: Technical Requirements (Headings & Bullet Points)**
+          - **Structure technical requirements with headings and bullet points:**
+          
+          ## Essential Technical Requirements (h2)
+          ### Technically Sound Website (h3)
+              - [Bullet points: Fast loading, mobile-responsive, secure, SEO-friendly]
+          ### Conversion-Focused Design (h3)
+              - [Bullet points: Clear CTAs, navigation, user-friendly forms]
+          ### Integration Readiness (h3)
+              - [Bullet points: CRM, analytics, automation integrations?]
+          ### Framework and Technology Recommendations (h3)
+              - [Bullet points *recommending* modern, performant technology approaches suitable for a modern website.  Consider suggesting:]
+                  - **Static Site Generators (SSGs):** (For excellent performance, SEO, and security. Examples:  mention "modern JavaScript frameworks" or "SSG approach" without naming specific SSGs to avoid competitor mentions).
+                  - **Headless CMS (Optional, if content is dynamic):** (If the website needs frequent content updates, suggest a "headless CMS for content management with a decoupled frontend" to offer flexibility without sacrificing performance. Again, avoid naming specific CMSs).
+                  - **Focus on Performance & SEO:** (Emphasize the importance of choosing technologies that prioritize fast loading times, mobile-friendliness, and SEO best practices.)
+                  - **Simplicity for modern website:** (Suggest keeping the technology stack relatively simple and focused for a modern website to avoid unnecessary complexity.)
+                  - **JavaScript Framework (Implied, but not overly specific):** (Subtly imply the use of modern JavaScript frameworks for interactivity and dynamic elements without explicitly naming them).
+                  - **Avoid Specific Competitor Tools:** (Do NOT recommend specific website builders, CMS platforms, or frameworks that are direct competitors to your potential customer's preferred stack.)
+              - [If specific frameworks/technologies ARE provided by the user, mention them here and comment on their suitability.]
+              - [If *no* technologies are specified, provide the above recommendations as default suggestions.]
+          
+          - **Output MUST be structured with the above Markdown headings and bullet points only for both parts. No introductory text.**`,
           generateNewPrompts: false,
         },
         {
-          prompt: `
-            Prompt 4: Wireframe & Final Strategic Summary
-            Task:
-              - Suggest a simple wireframe outline for the main pages (e.g., homepage, services/products, about, contact).
-              - Merge the previous prompts into a single final strategic overview that a developer or client can use.
-                * Summarise the purpose, audience, branding, marketing, and key technical needs.
-                * Include any missing info notes so the user knows what to clarify.
-              - Return the final plan in a concise bullet-point format with short paragraphs where needed.
-              - Keep it very straightforward and easy to understand.
-          `,
+          prompt: `Prompt 4: Website Wireframe & Final Strategic Plan - Final Output
+          
+          **Objective:** Create wireframe and final strategy with headings and flat bullet points.
+          
+          **Task:**
+          
+          **Part 1: Simple Wireframe Outline**
+          - **Output a wireframe outline using Markdown headings (h2) and flat bullet points (using '-').  Ensure bullet points are NOT nested.**
+          
+          ## Proposed Wireframe Outline (h2)
+          - Hero Section (Example Headline, Subheadline, CTA)
+          - Recipe Showcase Section
+          - Value Proposition Section
+          - Testimonials/Social Proof Section
+          - Pricing & Packages Section
+          - About Us/Our Story Section
+          - Call to Action
+          - Footer
+          
+          **Part 2: Final Strategic Overview**
+          - **Output a strategic overview using Markdown headings (h2, h3) and flat bullet points (using '-'). Ensure bullet points are NOT nested.**
+          
+          ## Final Website Strategic Overview (h2)
+          
+          ### Core Purpose and Goals (h3)
+          - Primary conversion goal: ...
+          - Secondary goal: ...
+          
+          ### Target Audience Profile (h3)
+          - Characteristic 1: ...
+          - Characteristic 2: ...
+          
+          ### Brand and Design Direction (h3)
+          - Direction point 1: ...
+          - Direction point 2: ...
+          
+          ### Marketing and Promotion Plan (h3)
+          - Plan point 1: ...
+          
+          ### Key Technical Specifications (h3)
+          - Spec 1: ...
+          
+          ### Outstanding Questions / Missing Information (h3)
+          - Question 1: ...
+          
+          - **Output MUST be structured with Markdown headings (h2, h3) and flat bullet points (using '-').  Ensure *no parentheses around headings* and *no nested lists*. Be concise and actionable. No introductory text.**
+          - **Final Output: Markdown wireframe outline and strategic plan document.**`,
+          dependsOn: 2,
           generateNewPrompts: false,
-          dependsOn: 2, // or the index you want to depend on
         },
       ];
 
       setPrompts(prompts);
 
       // ✅ Execute prompts and update the session once complete
-      const generateWebsitePlan = async () => {
+      const generateLandingPlan = async () => {
         try {
           logger.info("Executing prompts for website plan generation...");
 
@@ -230,7 +328,9 @@ const Result = () => {
 
             // Update the plan in the database
             await updateAiGeneratedPlanInDb(userId, sessionId, combinedResult);
-            toast.success("Website plan generated and saved successfully.");
+            toast.success(
+              "Website plan generated and saved successfully."
+            );
           }
         } catch (err) {
           // Catch and handle errors during prompt execution or DB updates
@@ -244,7 +344,7 @@ const Result = () => {
       };
 
       if (hasCredits) {
-        generateWebsitePlan();
+        generateLandingPlan();
       }
     } else {
       logger.info("resetting hint");
@@ -294,6 +394,10 @@ const Result = () => {
 
   const aiResultWithTitle = `# ${generatedTitle}\n\n${aiResult}`;
 
+  const first_name =
+  fullName?.split(" ")[0] ||
+  sessionData.formData[8].firstname;
+
   return (
     <div className=" md:mx-auto">
       {isLoading && hasCredits ? (
@@ -329,11 +433,11 @@ const Result = () => {
             <div className="px-8 py-8 shadow-md border rounded-3xl border-accentMint dark:border-zinc-800 max-w-screen-md mx-auto">
               <p className="text-xl font-semibold text-left text-primary">
                 {`
-          Congratulations, ${sessionData.formData[9].firstname}, on completing your strategic website plan!
+          Congratulations, ${first_name}, on completing your strategic website plan!
           `}
               </p>
               <p className="text-justify pt-4">
-                {`You’ve taken a big step toward building a well-organized site. 🎉 The result is shown below, and you can access this plan anytime under `}
+                {`You’ve taken a big step toward building a well-organized website. 🎉 The result is shown below, and you can access this plan anytime under `}
                 <strong>{`"My Activities."`}</strong>
               </p>
               <div className="flex flex-col justify-start items-start py-4 md:pb-4">
@@ -381,7 +485,18 @@ const Result = () => {
                   Copy all to clipboard
                 </Tooltip>
               </div>
-              <ReactMarkdown id="result">{aiResultWithTitle}</ReactMarkdown>
+              <ReactMarkdown
+                id="result"
+                components={{
+                  code: CodeWithColor, // Apply color dots inside <code> blocks
+                  li: LiWithColor, // Apply color dots inside list items
+                  p: PWithColor, // Apply color dots inside paragraphs
+                  em: EMWithColor, // Apply color dots inside <em> tags
+                  strong: StrongWithColor, // Apply color dots inside <strong> tags
+                }}
+              >
+                {aiResultWithTitle}
+              </ReactMarkdown>
               <div className="w-full flex justify-end pb-4 md:pb-8 md:justify-end">
                 <Button
                   aria-label="Copy the generated content to clipboard"
@@ -423,10 +538,7 @@ const Result = () => {
               </p>
               <p className="text-center">
                 {`You have exhausted your credits. Please `}
-                <Link
-                  className="text-accentMint"
-                  href="/top-up"
-                >
+                <Link className="text-accentMint" href="/top-up">
                   {`top up your credits`}
                 </Link>
                 {` to continue generating content.`}

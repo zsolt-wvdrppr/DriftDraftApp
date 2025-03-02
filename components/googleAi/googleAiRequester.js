@@ -25,6 +25,8 @@ const GoogleAiRequester = ({ prompt = "Say hi, and a joke" }) => {
 
       const data = await response.json();
 
+      logger.debug("Content generated:", data.content);
+
       setOutput(data.content || "No content generated.");
     } catch (error) {
       logger.error("Error fetching content:", error);

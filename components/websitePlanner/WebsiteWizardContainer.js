@@ -230,7 +230,7 @@ export default function WebsiteWizardContainer({ }) {
     return (
         <div className="wizard-container w-full">
             <div className="step-0 sicky w-full -z-50"/>
-            <Tutorial localStorageKey="websitePlannerTutorialCompleted" steps={tutorialSteps}/>
+            {/*<Tutorial localStorageKey="websitePlannerTutorialCompleted" steps={tutorialSteps}/>*/}
             {isSubmitted && <Result formData={formData} />}
 
             {(!isSubmitted) &&
