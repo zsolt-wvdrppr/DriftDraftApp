@@ -126,7 +126,7 @@ const StepCompetitors = ({ ref }) => {
 
   //const prompt = `[SEARCH-GROUNDING]What is the population of Budapest in 2022 according to the latest estimates?`;
 
-  const prompt = `[SEARCH-GROUNDING]"Using possible search queries that my audience would use, identify possible competitors offering ${serviceDescription}${businessArea}? Grouped by search query Provide a list of competitor names, along with clickable website URLs, and a concise description of their core offering in one sentence. The aim is to ${purpose}${purposeDetails}. Present the results in a clear and easy-to-read format. If cannot find any, then broadn the search query or try in local language. Do not ask to user to change or broaden search query. No extra text (no greetings, no conclusions, no disclaimers) only the final result. Do not include the steps you took to get the result. Present the results in a clear and easy-to-read format using markdown! Do not return code!
+  const prompt = `[SEARCH-GROUNDING]Using possible search queries that my audience would use, identify possible competitors offering ${serviceDescription}${businessArea}? Grouped by search query Provide a list of competitor names, along with clickable website URLs, and a concise description of their core offering in one sentence. The aim is to ${purpose}${purposeDetails}. Present the results in a clear and easy-to-read format. If cannot find any, then broadn the search query or try in local language. Do not ask to user to change or broaden search query. No extra text (no greetings, no conclusions, no disclaimers) only the final result. Do not include the steps you took to get the result. Present the results in a clear and easy-to-read format using markdown! Do not return code!
   `;
 
   return (
