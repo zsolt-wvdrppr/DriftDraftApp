@@ -52,17 +52,24 @@ const StepInspirations = ({ ref }) => {
   }));
 
   const validateURL = (url) => {
-    // Remove protocol if present for domain validation
-    const domainPart = url.replace(/^https?:\/\//, '');
-    const parts = domainPart.split('.');
-
-    // If starts with www, need 3 parts, else need 2 parts
-    if ((parts[0] === 'www' && parts.length < 3) ||
-      (parts[0] !== 'www' && parts.length < 2)) return false;
-
-    const domainPartPattern = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
-
-    return parts.every(part => domainPartPattern.test(part));
+    try {
+      // Add protocol if missing to allow parsing with URL constructor
+      const urlString = url.includes('://') ? url : `https://${url}`;
+      
+      // Use the URL constructor to validate the structure
+      const urlObj = new URL(urlString);
+      
+      // Extract the hostname for validation
+      const hostname = urlObj.hostname;
+      
+      // Basic domain validation
+      const domainRegex = /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])?$/i;
+      
+      return domainRegex.test(hostname);
+    } catch (error) {
+      // If URL constructor throws an error, the URL is invalid
+      return false;
+    }
   };
 
   const handleAddUrl = (index) => {

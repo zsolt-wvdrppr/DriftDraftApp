@@ -1,14 +1,21 @@
-'use client';
+"use client";
 
-import React, { useRef, useState, useImperativeHandle, useEffect } from 'react';
-import { Input, Button, Textarea } from '@heroui/react';
-import { IconXboxXFilled, IconRowInsertBottom, IconWorldWww } from '@tabler/icons-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useRef, useState, useImperativeHandle, useEffect } from "react";
+import { Input, Button, Textarea } from "@heroui/react";
+import {
+  IconXboxXFilled,
+  IconRowInsertBottom,
+  IconWorldWww,
+} from "@tabler/icons-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import questionsData from "@/data/landing-questions-data.json";
-import logger from '@/lib/logger';
-import { useSessionContext } from '@/lib/SessionProvider';
-import { StepWrapper, StepQuestion } from '@/components/planner-layout/layout/sectionComponents';
+import logger from "@/lib/logger";
+import { useSessionContext } from "@/lib/SessionProvider";
+import {
+  StepWrapper,
+  StepQuestion,
+} from "@/components/planner-layout/layout/sectionComponents";
 
 const StepInspirations = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -19,23 +26,21 @@ const StepInspirations = ({ ref }) => {
 
   useEffect(() => {
     if (!formData[stepNumber]?.urls) {
-
-      updateFormData("urls", ['']);
-
+      updateFormData("urls", [""]);
     }
   }, [formData, stepNumber]);
 
-  const [urls, setUrls] = useState(['']);
-  const [inspirations, setInspirations] = useState(['']);
+  const [urls, setUrls] = useState([""]);
+  const [inspirations, setInspirations] = useState([""]);
 
-  useEffect(()=>{
-    setUrls(formData[stepNumber]?.urls || ['']);
-    setInspirations(formData[stepNumber]?.inspirations || ['']);
-  },[])
+  useEffect(() => {
+    setUrls(formData[stepNumber]?.urls || [""]);
+    setInspirations(formData[stepNumber]?.inspirations || [""]);
+  }, []);
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
-      if (urls.some((url) => !validateURL(url) && url !== '')) {
+      if (urls.some((url) => !validateURL(url) && url !== "")) {
         setError("All URLs must be valid.");
         logger.info("urls", urls);
 
@@ -52,32 +57,39 @@ const StepInspirations = ({ ref }) => {
   }));
 
   const validateURL = (url) => {
-    // Remove protocol if present for domain validation
-    const domainPart = url.replace(/^https?:\/\//, '');
-    const parts = domainPart.split('.');
-
-    // If starts with www, need 3 parts, else need 2 parts
-    if ((parts[0] === 'www' && parts.length < 3) ||
-      (parts[0] !== 'www' && parts.length < 2)) return false;
-
-    const domainPartPattern = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
-
-    return parts.every(part => domainPartPattern.test(part));
+    try {
+      // Add protocol if missing to allow parsing with URL constructor
+      const urlString = url.includes('://') ? url : `https://${url}`;
+      
+      // Use the URL constructor to validate the structure
+      const urlObj = new URL(urlString);
+      
+      // Extract the hostname for validation
+      const hostname = urlObj.hostname;
+      
+      // Basic domain validation
+      const domainRegex = /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])?$/i;
+      
+      return domainRegex.test(hostname);
+    } catch (error) {
+      // If URL constructor throws an error, the URL is invalid
+      return false;
+    }
   };
 
   const handleAddUrl = (index) => {
     if (!validateURL(urls[index])) {
-      setError('Invalid URL. Please correct it before adding a new one.');
+      setError("Invalid URL. Please correct it before adding a new one.");
 
       return;
     }
     setError(null);
-    const newUrls = [...urls, ''];
-    const newInspirations = [...inspirations, ''];
+    const newUrls = [...urls, ""];
+    const newInspirations = [...inspirations, ""];
 
     setUrls(newUrls);
     setInspirations(newInspirations);
-    updateFormData('')
+    updateFormData("");
     updateFormData("urls", newUrls);
     updateFormData("inspirations", newInspirations);
   };
@@ -85,14 +97,19 @@ const StepInspirations = ({ ref }) => {
   const handleRemoveUrl = (index) => {
     const updatedUrls = urls.filter((_, i) => i !== index);
 
-    setUrls(updatedUrls.length > 0 ? updatedUrls : ['']);
+    setUrls(updatedUrls.length > 0 ? updatedUrls : [""]);
 
     const updatedInspirations = inspirations.filter((_, i) => i !== index);
 
-    setInspirations(updatedInspirations.length > 0 ? updatedInspirations : ['']);
+    setInspirations(
+      updatedInspirations.length > 0 ? updatedInspirations : [""]
+    );
 
     updateFormData("urls", updatedUrls);
-    updateFormData("inspirations", updatedInspirations.length > 0 ? updatedInspirations : ['']);
+    updateFormData(
+      "inspirations",
+      updatedInspirations.length > 0 ? updatedInspirations : [""]
+    );
   };
 
   const handleChangeUrl = (value, index) => {
@@ -103,7 +120,9 @@ const StepInspirations = ({ ref }) => {
   };
 
   const handleTextareaChange = (value, index) => {
-    const updatedInspirations = inspirations.map((inspiration, i) => (i === index ? value : inspiration));
+    const updatedInspirations = inspirations.map((inspiration, i) =>
+      i === index ? value : inspiration
+    );
 
     setInspirations(updatedInspirations);
     updateFormData("inspirations", updatedInspirations);
@@ -111,66 +130,75 @@ const StepInspirations = ({ ref }) => {
 
   return (
     <form ref={formRef}>
-      <StepWrapper hint={content.hint} userMsg={content.user_msg} whyDoWeAsk={content.why_do_we_ask}>
+      <StepWrapper
+        hint={content.hint}
+        userMsg={content.user_msg}
+        whyDoWeAsk={content.why_do_we_ask}
+      >
         <StepQuestion content={content} />
-          <AnimatePresence initial={false}>
-            {urls.map((url, index) => (
-              <motion.div
-                key={index}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="relative flex flex-col md:flex-row md:items-start items-center gap-2 pb-4"
-                exit={{ opacity: 0, height: 0 }}
-                initial={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Input
-                  classNames={{
-                    label: "!text-primary dark:!text-accentMint",
-                    input: ``,
-                    inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${!validateURL(url) && url ? "border-danger" : ""}`,
-                  }}
-                  label={`URL ${index + 1}`}
-                  placeholder={content.placeholder}
-                  startContent={<IconWorldWww className='h-5 text-primary dark:text-accentMint opacity-70 ml-[-3px]' />}
-                  value={url}
-                  //isRequired={true}
-                  onChange={(e) => handleChangeUrl(e.target.value, index)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault(); // Prevent form submission
-                      handleAddUrl(index); // Call the function to add a new URL
-                    }
-                  }}
+        <AnimatePresence initial={false}>
+          {urls.map((url, index) => (
+            <motion.div
+              key={index}
+              animate={{ opacity: 1, height: "auto" }}
+              className="relative flex flex-col md:flex-row md:items-start items-center gap-2 pb-4"
+              exit={{ opacity: 0, height: 0 }}
+              initial={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Input
+                classNames={{
+                  label: "!text-primary dark:!text-accentMint",
+                  input: ``,
+                  inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${!validateURL(url) && url ? "border-danger" : ""}`,
+                }}
+                label={`URL ${index + 1}`}
+                placeholder={content.placeholder}
+                startContent={
+                  <IconWorldWww className="h-5 text-primary dark:text-accentMint opacity-70 ml-[-3px]" />
+                }
+                value={url}
+                //isRequired={true}
+                onChange={(e) => handleChangeUrl(e.target.value, index)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault(); // Prevent form submission
+                    handleAddUrl(index); // Call the function to add a new URL
+                  }
+                }}
+              />
+              {urls.length > 1 && (
+                <IconXboxXFilled
+                  className="absolute -right-3 -top-3 md:left-1/4 md:top-14 opacity-70 text-danger cursor-pointer drop-shadow-lg hover:scale-110 hover:opacity-100 transition-all"
+                  onClick={() => handleRemoveUrl(index)}
                 />
-                 {urls.length > 1 && (
-                  <IconXboxXFilled className='absolute -right-3 -top-3 md:left-1/4 md:top-14 opacity-70 text-danger cursor-pointer drop-shadow-lg hover:scale-110 hover:opacity-100 transition-all' onClick={() => handleRemoveUrl(index)} />
-                )}
-                <Textarea
-                  classNames={{
-                    label: "!text-primary dark:!text-accentMint",
-                    input: "",
-                    inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border`,
-                  }}
-                  isRequired={false}
-                  label="Notes"
-                  minRows={4}
-                  placeholder={"What do you like about this landing page?"}
-                  value={inspirations?.[index] || ""}
-                  onChange={(e) => handleTextareaChange(e.target.value, index)}
-                />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-          <Button
-            className="mt-4 border hover:scale-105 transition-all focus-within:shadow-none"
-            type="button"
-            variant='shadow'
-            onPress={() => handleAddUrl(urls.length - 1)}
-          >
-            <IconRowInsertBottom className='text-secondaryPersianGreen' />
-            Add Another URL
-          </Button>
-        </StepWrapper>
+              )}
+              <Textarea
+                classNames={{
+                  label: "!text-primary dark:!text-accentMint",
+                  input: "",
+                  inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border`,
+                }}
+                isRequired={false}
+                label="Notes"
+                minRows={4}
+                placeholder={"What do you like about this landing page?"}
+                value={inspirations?.[index] || ""}
+                onChange={(e) => handleTextareaChange(e.target.value, index)}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+        <Button
+          className="mt-4 border hover:scale-105 transition-all focus-within:shadow-none"
+          type="button"
+          variant="shadow"
+          onPress={() => handleAddUrl(urls.length - 1)}
+        >
+          <IconRowInsertBottom className="text-secondaryPersianGreen" />
+          Add Another URL
+        </Button>
+      </StepWrapper>
     </form>
   );
 };
