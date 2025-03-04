@@ -61,7 +61,7 @@ const HintButton = ({
         className={`check-hint-btn select-none md:w-32 md:h-24 break-words md:relative bottom-0 -right-4 z-10 md:bg-transparent md:shadow-md dark:md:border-1 dark:md:border-content1 md:right-auto flex md:border-3 md:border-transparent
           ${!hint ? 'cursor-not-allowed border-3 border-transparent opacity-40' : ''}`}
         disabled={!hint}
-        title={hint ? 'Check hint' : 'No hint available'}
+        title={hint ? 'Check hint' : 'Not Available'}
         variant="none"
         onPress={handleClick}
       >
@@ -69,7 +69,7 @@ const HintButton = ({
           <span
             className={`hidden md:block absolute bottom-0 dark:md:bottom-1 ${newHintAvailable ? 'animate-pulse font-bold' : ''}`}
           >
-            {hint ? "Check Hint" : "N/A"}
+            {hint ? "Check Hint" : "Not Available"}
           </span>
    
         <NewHintNotifierIcon trigger={newHintAvailable} />
