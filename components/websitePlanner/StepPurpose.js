@@ -147,63 +147,74 @@ const StepPurpose = ({ ref }) => {
 
   const [startTutorial, setStartTutorial] = useState(false);
 
-  const tutorialSteps = [
-    {
-      target: ".new-session-btn",
-      content:
-        "⚠️ Be careful!\n\nStarting a new session will reset the planner, and if your current session isn't saved, you will lose all progress. \n\nOnly click this if you're sure you want to start over!",
-    },
-    {
-      target: ".progress-bar",
-      content:
-        "📊 Track Your Progress!\n\nThis progress bar helps you see how far you've come. The more sections you complete, the closer you are to a fully planned website. Keep going! 🚀",
-    },
-    {
-      target: ".section-selector-dropdown",
-      content:
-        "📂 Navigate Through Sections!\n\nUse this dropdown to move between different sections of the planner. \n\n✅ Completed sections will be marked with a green tick so you can easily track progress.\n\n⚠️ If you try to move ahead without finishing a required section, an error message will appear at the bottom to explain what’s missing.",
-    },
-    {
-      target: ".select-goal",
-      content:
-        "🎯 Define Your Goal!\n\nChoose the goal that best describes your website’s purpose. \n\nPicking the right goal ensures your plan aligns with your business objectives!",
-    },
-    {
-      target: ".additiona-details",
-      content:
-        "📝 Add More Details!\n\nProvide additional details about your website’s purpose. \n\nFor example:\n👉 'I want to get subscribers' \n👉 'I aim to sell digital products' \n\nTry writing your main goal here!",
-    },
-    {
-      target: ".service-description",
-      content:
-        "💼 Describe Your Services!\n\nExplain what you offer to your audience. \n\nFor example:\n👉 'I offer a subscription to my newsletter' \n👉 'I provide online coaching sessions' \n\nGive it a go! ✍️",
-    },
-    {
-      target: ".get-ai-hint-btn",
-      content:
-        "💡 Stuck? Get a Hint!\n\nClick here to get an AI-generated suggestion for this section. \n\n⚠️ If this button is disabled, make sure you've filled in the required fields first.",
-    },
-    {
-      target: ".why-we-ask-btn",
-      content:
-        "❓ Why This Question?\n\nCurious why we ask this? Click here to learn how your answers help shape your website’s strategy and make it more effective.",
-    },
-    {
-      target: ".check-hint-btn",
-      content:
-        "🧐 Review & Copy AI Hints!\n\nIf you've received an AI-generated hint, click here to review it before using it.\n\n📋 Found it useful? You can also copy it directly from this panel and paste it into your answer field for easy editing!",
-    },
-    {
-      target: ".paste-btn",
-      content:
-        "📌 Paste Your Hint!\n\nUse this button to paste the copied hint into your answer field. \n\n📌 It will be added below any existing text, so you can refine your response with ease.",
-    },
-    {
-      target: ".next-btn",
-      content:
-        "➡️ Move Forward!\n\nClick this button to go to the next section. \n\n🛠️ If you're logged in, your session will be saved automatically and can be continued later under 'My Activities'.\n\n🏁 This tutorial ends here! If you want to redo it, just click on the red flag with the question mark above. 🎉",
-    },
-  ];
+ const tutorialSteps = [
+     {
+       target: ".new-session-btn",
+       title: "Welcome to the\n\n Website Planner Tutorial! 🚀",
+       content:
+         "⚠️ Be careful!\n\nStarting a new session will reset the planner, and if your current session isn't saved, you will lose all progress. \n\nOnly click this if you're sure you want to start over!",
+     },
+     {
+       target: ".progress-bar",
+       title: "📊 Track Your Progress!",
+       content:
+         "This progress bar helps you see how far you've come. The more sections you complete, the closer you are to a fully planned website. Keep going! 🚀",
+     },
+     {
+       target: ".section-selector-dropdown",
+       title: "👆 Click It!",
+       content:
+         "📂 Navigate Through Sections!\n\nUse this dropdown to move between different sections of the planner. \n\n✅ Completed sections will be marked with a green tick so you can easily track progress.\n\n⚠️ If you try to move ahead without finishing a required section, an error message will appear at the bottom to explain what’s missing. Give it a try.",
+     },
+     {
+       target: ".select-goal",
+       title: "🎯 Select Your Goal!",
+       content:
+         "Choose the goal that best describes your website’s purpose. \n\nPicking the right goal ensures your plan aligns with your business objectives!",
+     },
+     {
+       target: ".additional-details",
+       title: "📝 Add More Details!",
+       content:
+         "Provide additional details about your website’s purpose. \n\nFor example:\n👉 'I want to get subscribers' \n👉 'I aim to sell digital products' \n\nTry writing your main goal here!",
+     },
+     {
+       target: ".service-description",
+       title: "💼 Describe Your Services!",
+       content:
+         "Explain what you offer to your audience. \n\nFor example:\n👉 'I offer a subscription to my newsletter' \n👉 'I provide online coaching sessions' \n\nGive it a go! ✍️",
+     },
+     {
+       target: ".get-ai-hint-btn",
+       title: "💡 Try This!",
+       content:
+         "Click this button to get an AI-generated hint for this section! \n\n🚀 Even if you're unsure what to write, just type in a few words and give it a try! \n\n⚠️ If this button is disabled, make sure you've filled in the required fields first.",
+     },    
+     {
+       target: ".why-we-ask-btn",
+       title: "👆 Click It!",
+       content:
+         "❓ Why This Question?\n\nCurious why we ask this? Click here to learn how your answers help shape your website’s strategy and make it more effective.",
+     },
+     {
+       target: ".check-hint-btn",
+       title: "🧐 Review & Copy AI Hints!",
+       content:
+         "If you've received an AI-generated hint, click here to review it before using it.\n\n📋 Found it useful? You can also copy it directly from this panel and paste it into your answer field for easy editing!",
+     },
+     {
+       target: ".paste-btn",
+       title: "📌 Paste Your Hint!",
+       content:
+         "Use this button to paste the copied hint into your answer field. \n\n📌 It will be added below any existing text, so you can refine your response with ease.",
+     },
+     {
+       target: ".next-btn",
+       title: "➡️ Move Forward!",
+       content:
+         "Click this button to go to the next section. \n\n🛠️ If you're logged in, your session will be saved automatically and can be continued later under 'My Activities'.\n\n🏁 This tutorial ends here! If you want to redo it, just click on the red flag with the question mark above. 🎉",
+     },
+   ];
   
 
   return (
@@ -256,7 +267,7 @@ const StepPurpose = ({ ref }) => {
             </DropdownMenu>
           </Dropdown>
           <Input
-            className="additiona-details"
+            className="additional-details"
             classNames={{
               label: "!text-primary dark:!text-accentMint",
               input: "dark:!text-white",

@@ -35,7 +35,6 @@ export default function Tutorial({
 
     if (index === tutorialSteps.length - 1 && lifecycle === "complete") {
       // LAST STEP LOGGING
-
       logger.debug("Tutorial Completed!");
       localStorage.setItem(localStorageId, "completed");
       setRun(false);
@@ -76,7 +75,15 @@ export default function Tutorial({
       showProgress={true}
       showSkipButton={true}
       continuous={true}
-      disableOverlayClose={true} // Prevent accidental closing
+      scrollOffset={200}
+      disableOverlayClose={true} // Prevent accidental 
+      locale={{
+        back: "Back",
+        close: "Close",
+        last: "Finish",
+        next: "Next",
+        skip: "Skip",
+      }}
       styles={{
         options: {
           arrowColor: "#FF006E",
