@@ -7,7 +7,7 @@ import { Suspense } from "react";
 
 import { siteConfig } from "@/config/site";
 import { Navbar } from "@/components/navbar";
-import WavedropperSignature from "@/components/WavedropperSignature";
+import Footer from "@/components/footer";
 
 import { Providers } from "./providers";
 
@@ -57,9 +57,7 @@ export default function RootLayout({
               {children}
               <Toaster />
             </main>
-            <footer className="w-full flex items-center justify-center py-3">
-              <WavedropperSignature />
-            </footer>
+            <Footer />
           </div>
         </Providers>
       </body>

@@ -41,3 +41,7 @@ input:-webkit-autofill {
   .__floater__body {
     @apply whitespace-pre-wrap;
   }
+
+  .grecaptcha-badge {
+    @apply !hidden;
+  }

@@ -18,7 +18,7 @@ export function Providers({ children, themeProps }) {
   const libraries = ["places"];
 
   return (
-    <ReCaptchaProvider reCaptchaKey={reCaptchaKey}>
+    <ReCaptchaProvider reCaptchaKey={reCaptchaKey} useRecaptchaNet={true}>
       <AuthProvider>
         <NextUIProvider navigate={router.push}>
           <NextThemesProvider {...themeProps}>
