@@ -7,8 +7,8 @@ import logger from "@/lib/logger";
 
 export default function Tutorial({
   tutorialSteps,
-  startTrigger = false,
   localStorageId,
+  startTrigger = false,
 }) {
   const [run, setRun] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
@@ -28,15 +28,27 @@ export default function Tutorial({
   }, [startTrigger]);
 
   const handleJoyrideCallback = (data) => {
-    const { action, status, type, index } = data;
+    const { action, status, type, index, lifecycle } = data;
 
-    if (["finished", "skipped"].includes(status)) {
+    logger.debug("Joyride Callback Data:", data); // Log the entire data object
+    logger.debug("Status:", status); // Log the status specifically
+
+    if (index === tutorialSteps.length - 1 && lifecycle === "complete") {
+      // LAST STEP LOGGING
+
+      logger.debug("Tutorial Completed!");
       localStorage.setItem(localStorageId, "completed");
       setRun(false);
       setStepIndex(0);
     }
 
-    // Log more detailed information for debugging
+    if (["finished", "skipped"].includes(status)) {
+      logger.debug("Tutorial Finished or Skipped! Status:", status); // Confirmation log
+      localStorage.setItem(localStorageId, "completed");
+      setRun(false);
+      setStepIndex(0);
+    }
+
     logger.debug("Joyride Callback Data:", {
       action,
       status,
@@ -45,7 +57,6 @@ export default function Tutorial({
       totalSteps: tutorialSteps.length,
     });
 
-    // Ensure step progression works correctly
     if (type === "step:after") {
       if (action === "next" && index < tutorialSteps.length - 1) {
         setStepIndex(index + 1);
@@ -56,26 +67,26 @@ export default function Tutorial({
   };
 
   return (
-      <Joyride
-        steps={tutorialSteps}
-        run={run}
-        stepIndex={stepIndex} // Controlled mode
-        callback={handleJoyrideCallback}
-        spotlightClicks={true} // Allow interactions inside spotlight
-        showProgress={true}
-        showSkipButton={true}
-        continuous={true}
-        disableOverlayClose={true} // Prevent accidental closing
-        styles={{
+    <Joyride
+      steps={tutorialSteps}
+      run={run}
+      stepIndex={stepIndex} // Controlled mode
+      callback={handleJoyrideCallback}
+      spotlightClicks={true} // Allow interactions inside spotlight
+      showProgress={true}
+      showSkipButton={true}
+      continuous={true}
+      disableOverlayClose={true} // Prevent accidental closing
+      styles={{
         options: {
-          arrowColor: '#FF006E',
-          backgroundColor: '#FFFCFF',
-          overlayColor: 'rgba(0, 0, 0, 0.4)',
-          primaryColor: '#FF006E',
-          textColor: '#05668D',
+          arrowColor: "#FF006E",
+          backgroundColor: "#FFFCFF",
+          overlayColor: "rgba(0, 0, 0, 0.4)",
+          primaryColor: "#FF006E",
+          textColor: "#05668D",
         },
       }}
-      />
+    />
   );
 }
 

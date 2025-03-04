@@ -55,9 +55,9 @@ export const StepGetAiHintBtn = ({
     const [isClicked, setIsClicked] = useState(false);
 
     return (
-        <div className="get-ai-hint-btn flex relative justify-end mb-4 mt-0">
+        <div className="flex relative justify-end mb-4 mt-0">
             <Button
-                className={`${!isAIAvailable ? "hidden" : "flex"} items-center gap-2`}
+                className={`${!isAIAvailable ? "hidden" : "flex get-ai-hint-btn"} items-center gap-2`}
                 color="primary"
                 isLoading={isPending}
                 onPress={handleFetchHint}
@@ -66,7 +66,7 @@ export const StepGetAiHintBtn = ({
                 Get AI Hint
             </Button>
             <Button
-                className={`${isAIAvailable ? "hidden" : "flex"} items-center gap-2 opacity-50 hover:!opacity-50`}
+                className={`${isAIAvailable ? "hidden" : "flex get-ai-hint-btn"} items-center gap-2 opacity-50 hover:!opacity-50`}
                 color="primary"
                 isLoading={isPending}
                 onPress={() => setError('Please fill in all required fields before getting an AI hint.')}
