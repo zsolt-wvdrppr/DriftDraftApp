@@ -8,7 +8,7 @@ export default function ProgressBar({ currentStep, totalSteps }) {
 
     return (
         <Progress
-            className="my-4 pr-6 md:pr-0"
+            className="progress-bar my-4 pr-6 md:pr-0"
             color="primary"
             label={`${currentStep + 1} of ${totalSteps}`}
             max={100}

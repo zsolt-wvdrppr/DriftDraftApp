@@ -45,7 +45,7 @@ export const NextButton = ({ isPending, onPress, debounceDelay = 500 }) => {
 
   return (
     <Button
-      className="w-32 border text-white/80 border-secondaryTeal text-md font-bold tracking-wider flex justify-center items-center rounded-l-sm"
+      className="next-btn w-32 border text-white/80 border-secondaryTeal text-md font-bold tracking-wider flex justify-center items-center rounded-l-sm"
       color="secondary"
       disabled={isPending || isDebouncing} // Disable button during debounce
       title="Next Section"

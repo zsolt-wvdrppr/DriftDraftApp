@@ -39,7 +39,7 @@ const RestartSessionBtn = ({ children, targetPathname }) => {
   return (
     <>
       <Button
-        className="flex flex-col items-center self-end h-16 gap-2"
+        className="new-session-btn flex flex-col items-center self-end h-16 gap-2"
         id="restart-session"
         isDisabled={isPending}
         onPress={handlePress}

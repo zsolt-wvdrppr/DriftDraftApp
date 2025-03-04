@@ -55,6 +55,7 @@ export const StepQuestion = ({ content, question, className = '' }) => {
 export const StepTextarea = ({ content, label, localValue, handleTextareaChange, isRequired, isInputInvalid, placeholder }) => {
   return (
     <Textarea
+      className="service-description"
       classNames={{
         label: "!text-primary dark:!text-accentMint",
         input: "resize-none pt-2",

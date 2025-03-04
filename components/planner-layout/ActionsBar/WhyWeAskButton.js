@@ -8,7 +8,7 @@ const WhyWeAskButton = ({ whyDoWeAsk, handleToast }) => {
     <Button
       auto
       aria-label="Why do we ask?"
-      className={`select-none bottom-0 -left-4 z-10 md:bg-transparent md:shadow-md md:relative md:left-auto md:w-32 md:h-24 flex border-3 border-transparent dark:md:border-1 dark:md:border-content1 
+      className={`why-we-ask-btn select-none bottom-0 -left-4 z-10 md:bg-transparent md:shadow-md md:relative md:left-auto md:w-32 md:h-24 flex border-3 border-transparent dark:md:border-1 dark:md:border-content1 
         ${!whyDoWeAsk ? 'cursor-not-allowed border border-gray-200 opacity-0' : ''}`}
       disabled={!whyDoWeAsk}
       variant="none"

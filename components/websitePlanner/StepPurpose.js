@@ -1,43 +1,61 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Button, Input } from '@heroui/react';
+import React, { useEffect, useState, useRef, useImperativeHandle } from "react";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Button,
+  Input,
+} from "@heroui/react";
 
 import questionsData from "@/data/questions-data.json";
-import logger from '@/lib/logger';
+import logger from "@/lib/logger";
 //import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from "@/lib/SessionProvider";
-import PasteButton from '@/components/planner-layout/layout/PasteButton';
-import { StepWrapper, StepQuestion, StepTextarea } from '@/components/planner-layout/layout/sectionComponents';
-import { StepGetAiHintBtn } from '@/components/planner-layout/layout/StepGetAiHintBtn';
+import PasteButton from "@/components/planner-layout/layout/PasteButton";
+import {
+  StepWrapper,
+  StepQuestion,
+  StepTextarea,
+} from "@/components/planner-layout/layout/sectionComponents";
+import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
+import Tutorial from "@/components/tutorial-joyride/tutorial";
+import StartTutorialButton from "@/components/tutorial-joyride/start-tutorial-button";
 
 const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");
   const [localServiceDescription, setLocalServiceDescription] = useState("");
   const { sessionData, updateFormData, setError } = useSessionContext();
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const [isOtherSelected, setIsOtherSelected] = useState(false); 
+  const [isOtherSelected, setIsOtherSelected] = useState(false);
   const stepNumber = 0;
   const content = questionsData[stepNumber];
   const formRef = useRef();
-  const [purposeIsInvalid, setPurposeIsInvalid] = useState(sessionData?.formData?.[stepNumber]?.purpose ? false : true);
+  const [purposeIsInvalid, setPurposeIsInvalid] = useState(
+    sessionData?.formData?.[stepNumber]?.purpose ? false : true
+  );
   const [detailsIsInvalid, setDetailsIsInvalid] = useState(false);
   const [serviceDescIsInvalid, setServiceDescIsInvalid] = useState(false);
   const formData = sessionData?.formData || {};
 
   useEffect(() => {
     setLocalPurposeDetails(formData?.[stepNumber]?.purposeDetails || "");
-    setLocalServiceDescription(formData?.[stepNumber]?.serviceDescription || "");
+    setLocalServiceDescription(
+      formData?.[stepNumber]?.serviceDescription || ""
+    );
     if (formData?.[stepNumber]?.purpose) {
       setSelectedKeys(new Set([formData[stepNumber].purpose]));
-      setIsOtherSelected(formData[stepNumber].purpose === "Other (please specify)");
+      setIsOtherSelected(
+        formData[stepNumber].purpose === "Other (please specify)"
+      );
     }
     if (!formData?.[stepNumber]?.purpose) {
       setSelectedKeys(new Set([]));
     }
-    logger.info('Child component received formData:', formData);
+    logger.info("Child component received formData:", formData);
   }, [formData, stepNumber]);
-
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -49,14 +67,19 @@ const StepPurpose = ({ ref }) => {
 
         return false;
       }
-      if (isOtherSelected && (!localPurposeDetails || localPurposeDetails.length < 10)) {
+      if (
+        isOtherSelected &&
+        (!localPurposeDetails || localPurposeDetails.length < 10)
+      ) {
         setError("Additional details are required. (10 characters minimum)");
         setDetailsIsInvalid(true);
 
         return false;
       }
       if (!localServiceDescription || localServiceDescription.length < 50) {
-        setError("Please provide a more detailed service description. (50 characters minimum)");
+        setError(
+          "Please provide a more detailed service description. (50 characters minimum)"
+        );
         setServiceDescIsInvalid(true);
 
         return false;
@@ -88,15 +111,17 @@ const StepPurpose = ({ ref }) => {
   const handleServiceDescriptionChange = (e) => {
     const value = e.target.value;
 
-    logger.debug('value', value);
-    logger.debug('condition:', value.length > 15 && !purposeIsInvalid);
+    logger.debug("value", value);
+    logger.debug("condition:", value.length > 15 && !purposeIsInvalid);
 
     setLocalServiceDescription(value);
     updateFormData("serviceDescription", value);
     setServiceDescIsInvalid(value.length < 50);
   };
 
-  const [aiHint, setAiHint] = useState(sessionData?.formData?.[stepNumber]?.aiHint || null);
+  const [aiHint, setAiHint] = useState(
+    sessionData?.formData?.[stepNumber]?.aiHint || null
+  );
   const [userMsg, setUserMsg] = useState(null);
   const [isAIAvailable, setIsAIAvailable] = useState(true);
 
@@ -108,22 +133,111 @@ const StepPurpose = ({ ref }) => {
     }
   }, [localServiceDescription, purposeIsInvalid]);
 
-  const purpose = selectedKeys ? `${selectedKeys.values().next().value}.` : 'unknown.';
-  const purposeDetails = localPurposeDetails ? `Additional details about the service’s purpose: ${localPurposeDetails}.` : "";
-  const serviceDescription = localServiceDescription ? `Some details about what I offer to my audience: ${localServiceDescription}.` : "";
+  const purpose = selectedKeys
+    ? `${selectedKeys.values().next().value}.`
+    : "unknown.";
+  const purposeDetails = localPurposeDetails
+    ? `Additional details about the service’s purpose: ${localPurposeDetails}.`
+    : "";
+  const serviceDescription = localServiceDescription
+    ? `Some details about what I offer to my audience: ${localServiceDescription}.`
+    : "";
 
   const prompt = `Consider that the business goal is to ${purpose}. ${purposeDetails} The user offers: ${serviceDescription}. Refine what the user offers with a neutral description explaining, how it benefits the audience, and what challenges it solves. Keep the response informative and under 450 characters. Avoid direct marketing language or calls to action.Present the results in a clear and easy-to-read format using markdown! Do not return code!`;
 
+  const [startTutorial, setStartTutorial] = useState(false);
+
+  const tutorialSteps = [
+    {
+      target: ".new-session-btn",
+      content:
+        "⚠️ Be careful!\n\nStarting a new session will reset the planner, and if your current session isn't saved, you will lose all progress. \n\nOnly click this if you're sure you want to start over!",
+    },
+    {
+      target: ".progress-bar",
+      content:
+        "📊 Track Your Progress!\n\nThis progress bar helps you see how far you've come. The more sections you complete, the closer you are to a fully planned website. Keep going! 🚀",
+    },
+    {
+      target: ".section-selector-dropdown",
+      content:
+        "📂 Navigate Through Sections!\n\nUse this dropdown to move between different sections of the planner. \n\n✅ Completed sections will be marked with a green tick so you can easily track progress.\n\n⚠️ If you try to move ahead without finishing a required section, an error message will appear at the bottom to explain what’s missing.",
+    },
+    {
+      target: ".select-goal",
+      content:
+        "🎯 Define Your Goal!\n\nChoose the goal that best describes your website’s purpose. \n\nPicking the right goal ensures your plan aligns with your business objectives!",
+    },
+    {
+      target: ".additiona-details",
+      content:
+        "📝 Add More Details!\n\nProvide additional details about your website’s purpose. \n\nFor example:\n👉 'I want to get subscribers' \n👉 'I aim to sell digital products' \n\nTry writing your main goal here!",
+    },
+    {
+      target: ".service-description",
+      content:
+        "💼 Describe Your Services!\n\nExplain what you offer to your audience. \n\nFor example:\n👉 'I offer a subscription to my newsletter' \n👉 'I provide online coaching sessions' \n\nGive it a go! ✍️",
+    },
+    {
+      target: ".get-ai-hint-btn",
+      content:
+        "💡 Stuck? Get a Hint!\n\nClick here to get an AI-generated suggestion for this section. \n\n⚠️ If this button is disabled, make sure you've filled in the required fields first.",
+    },
+    {
+      target: ".why-we-ask-btn",
+      content:
+        "❓ Why This Question?\n\nCurious why we ask this? Click here to learn how your answers help shape your website’s strategy and make it more effective.",
+    },
+    {
+      target: ".check-hint-btn",
+      content:
+        "🧐 Review & Copy AI Hints!\n\nIf you've received an AI-generated hint, click here to review it before using it.\n\n📋 Found it useful? You can also copy it directly from this panel and paste it into your answer field for easy editing!",
+    },
+    {
+      target: ".paste-btn",
+      content:
+        "📌 Paste Your Hint!\n\nUse this button to paste the copied hint into your answer field. \n\n📌 It will be added below any existing text, so you can refine your response with ease.",
+    },
+    {
+      target: ".next-btn",
+      content:
+        "➡️ Move Forward!\n\nClick this button to go to the next section. \n\n🛠️ If you're logged in, your session will be saved automatically and can be continued later under 'My Activities'.\n\n🏁 This tutorial ends here! If you want to redo it, just click on the red flag with the question mark above. 🎉",
+    },
+  ];
+  
 
   return (
     <form ref={formRef}>
-      <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
+      <StartTutorialButton
+        className={
+          "flex justify-end md:fixed md:top-100 md:right-0 animate-bounce"
+        }
+        setStartTutorial={setStartTutorial}
+      />
+      <Tutorial
+        localStorageId="website-purpose"
+        startTrigger={startTutorial}
+        tutorialSteps={tutorialSteps}
+      />
+      <StepWrapper
+        hint={aiHint}
+        userMsg={userMsg}
+        whyDoWeAsk={content.why_do_we_ask}
+      >
         <StepQuestion content={content} />
-        <div className='flex flex-col md:flex-row gap-4'>
+        <div className="flex flex-col md:flex-row gap-4 my-first-step">
           <Dropdown>
             <DropdownTrigger>
-              <Button className="capitalize w-full" color={purposeIsInvalid ? "danger" : "default"} variant="bordered">
-                {Array.from(selectedKeys).join(", ").replaceAll("_", " ") || content.placeholder[0]}{content.required && <span className="text-red-500 ml-[-6px]">*</span>}
+              <Button
+                className="select-goal capitalize w-full"
+                color={purposeIsInvalid ? "danger" : "default"}
+                variant="bordered"
+              >
+                {Array.from(selectedKeys).join(", ").replaceAll("_", " ") ||
+                  content.placeholder[0]}
+                {content.required && (
+                  <span className="text-red-500 ml-[-6px]">*</span>
+                )}
               </Button>
             </DropdownTrigger>
             <DropdownMenu
@@ -142,6 +256,7 @@ const StepPurpose = ({ ref }) => {
             </DropdownMenu>
           </Dropdown>
           <Input
+            className="additiona-details"
             classNames={{
               label: "!text-primary dark:!text-accentMint",
               input: "dark:!text-white",
@@ -150,13 +265,16 @@ const StepPurpose = ({ ref }) => {
             isRequired={isOtherSelected}
             label="Additional Details"
             placeholder={`(${isOtherSelected ? "required" : "optional"}) ${content.placeholder[1]}`}
-            validationBehavior='aria'
+            validationBehavior="aria"
             value={localPurposeDetails}
             onChange={handleAdditionalDetailsChange}
           />
         </div>
-        <div className="col-span-4 flex-1 pt-8">
-        <StepQuestion content={content} question={content.questionAddition2} />
+        <div className="col-span-4 flex-1 pt-8 my-other-step">
+          <StepQuestion
+            content={content}
+            question={content.questionAddition2}
+          />
         </div>
         <StepGetAiHintBtn
           content={content}
@@ -170,7 +288,11 @@ const StepPurpose = ({ ref }) => {
           updateFormData={updateFormData}
         />
 
-        <PasteButton handleChange={handleServiceDescriptionChange} setError={setError} value={localServiceDescription} >
+        <PasteButton
+          handleChange={handleServiceDescriptionChange}
+          setError={setError}
+          value={localServiceDescription}
+        >
           <StepTextarea
             content={content}
             handleTextareaChange={handleServiceDescriptionChange}
@@ -186,6 +308,6 @@ const StepPurpose = ({ ref }) => {
   );
 };
 
-StepPurpose.displayName = 'StepPurpose';
+StepPurpose.displayName = "StepPurpose";
 
 export default StepPurpose;

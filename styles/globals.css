@@ -37,3 +37,7 @@ input:-webkit-autofill {
     @apply whitespace-pre-wrap break-words gap-0;
     word-wrap: break-word;
   }
+
+  .__floater__body {
+    @apply whitespace-pre-wrap;
+  }

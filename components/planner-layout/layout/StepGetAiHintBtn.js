@@ -55,7 +55,7 @@ export const StepGetAiHintBtn = ({
     const [isClicked, setIsClicked] = useState(false);
 
     return (
-        <div className="flex relative justify-end mb-4 mt-0">
+        <div className="get-ai-hint-btn flex relative justify-end mb-4 mt-0">
             <Button
                 className={`${!isAIAvailable ? "hidden" : "flex"} items-center gap-2`}
                 color="primary"
