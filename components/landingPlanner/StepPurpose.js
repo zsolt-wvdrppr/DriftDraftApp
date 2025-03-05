@@ -185,7 +185,7 @@ const StepPurpose = ({ ref }) => {
       target: ".next-btn",
       title: "➡️ Move Forward!",
       content:
-        "Click this button to go to the next section. \n\n🛠️ If you're logged in, your session will be saved automatically and can be continued later under 'My Activities'.\n\n🏁 This tutorial ends here! If you want to redo it, just click on the red flag with the question mark above. 🎉",
+        "Click this button to go to the next section. \n\n🛠️ If you're logged in, your session will be saved automatically and can be continued later under 'My Activities'.\n\n🏁 This tutorial ends here! If you want to redo it, just click on the 🛟 lifebuoy icon on the right. 🎉",
     },
   ];
 
@@ -193,9 +193,6 @@ const StepPurpose = ({ ref }) => {
   return (
     <form ref={formRef}>
       <StartTutorialButton
-              className={
-                "flex justify-end md:fixed md:top-100 md:right-0 animate-bounce"
-              }
               setStartTutorial={setStartTutorial}
             />
             <Tutorial

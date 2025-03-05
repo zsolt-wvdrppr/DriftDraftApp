@@ -1,342 +1,474 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef, use } from "react";
+import { Button } from "@heroui/react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Tutorial({
   tutorialSteps,
   localStorageId,
-  startTrigger = true,
+  startTrigger = false,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
-  const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
-  const [tooltipArrowPosition, setTooltipArrowPosition] = useState("bottom");
+  const [position, setPosition] = useState({ x: 0, y: 0, placement: "bottom" });
   const tooltipRef = useRef(null);
   const overlayRef = useRef(null);
+  const targetRef = useRef(null);
 
-  const calculatePosition = useCallback((targetElement) => {
-    if (!targetElement || !tooltipRef.current) return;
+  // Check if tutorial has been completed
+  useEffect(() => {
+    const tutorialCompleted = localStorage.getItem(localStorageId) === "completed";
+    if (!tutorialCompleted || startTrigger) {
+      const timer = setTimeout(() => setIsOpen(true), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [localStorageId, startTrigger]);
 
-    const targetRect = targetElement.getBoundingClientRect();
+  // Create spotlight overlay
+  function createOverlay(target) {
+    // Remove existing overlay
+    if (overlayRef.current && document.body.contains(overlayRef.current)) {
+      document.body.removeChild(overlayRef.current);
+    }
+
+    // Create new overlay
+    const overlay = document.createElement("div");
+    overlay.classList.add("tour-overlay");
+    
+    const rect = target.getBoundingClientRect();
+    Object.assign(overlay.style, {
+      position: "fixed",
+      top: `${rect.top}px`,
+      left: `${rect.left}px`,
+      width: `${rect.width}px`,
+      height: `${rect.height}px`,
+      border: "3px solid #3b82f6",
+      boxShadow: "0 0 0 9999px rgba(0, 0, 0, 0.5)",
+      zIndex: 9998,
+      borderRadius: "4px",
+      pointerEvents: "none",
+      transition: "all 0.15s ease",
+    });
+    
+    document.body.appendChild(overlay);
+    overlayRef.current = overlay;
+  }
+
+  // Position tooltip with beacon precisely at border
+  function positionTooltip() {
+    if (!targetRef.current || !tooltipRef.current) return;
+    
+    const targetRect = targetRef.current.getBoundingClientRect();
     const tooltipRect = tooltipRef.current.getBoundingClientRect();
     
     // Window dimensions
-    const windowHeight = window.innerHeight;
     const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
     
-    // Calculate positions for different placements
+    // Arrow size for positioning (size of the beacon/arrow)
+    const arrowSize = 8; // Based on border-*-8 classes
+    
+    // Choose best placement that doesn't overlap the target
+    let bestPlacement = "bottom";
+    let x = 0;
+    let y = 0;
+    
+    // Check which position would work best
+    const spaceBelow = windowHeight - targetRect.bottom;
+    const spaceAbove = targetRect.top;
+    const spaceRight = windowWidth - targetRect.right;
+    const spaceLeft = targetRect.left;
+    
+    // Calculate positions for each placement
     const positions = {
-      top: {
-        top: targetRect.top + window.scrollY - tooltipRect.height - 15,
-        left: targetRect.left + window.scrollX + (targetRect.width / 2) - (tooltipRect.width / 2)
-      },
       bottom: {
-        top: targetRect.bottom + window.scrollY + 15,
-        left: targetRect.left + window.scrollX + (targetRect.width / 2) - (tooltipRect.width / 2)
+        x: targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2),
+        y: targetRect.bottom + arrowSize, // Position so arrow touches border
+        fits: spaceBelow >= tooltipRect.height + arrowSize
       },
-      left: {
-        top: targetRect.top + window.scrollY + (targetRect.height / 2) - (tooltipRect.height / 2),
-        left: targetRect.left + window.scrollX - tooltipRect.width - 15
+      top: {
+        x: targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2),
+        y: targetRect.top - tooltipRect.height - arrowSize,
+        fits: spaceAbove >= tooltipRect.height + arrowSize
       },
       right: {
-        top: targetRect.top + window.scrollY + (targetRect.height / 2) - (tooltipRect.height / 2),
-        left: targetRect.right + window.scrollX + 15
+        x: targetRect.right + arrowSize,
+        y: targetRect.top + (targetRect.height / 2) - (tooltipRect.height / 2),
+        fits: spaceRight >= tooltipRect.width + arrowSize
+      },
+      left: {
+        x: targetRect.left - tooltipRect.width - arrowSize,
+        y: targetRect.top + (targetRect.height / 2) - (tooltipRect.height / 2),
+        fits: spaceLeft >= tooltipRect.width + arrowSize
       }
     };
     
-    // Check which position has the most space
-    const spaces = {
-      top: targetRect.top,
-      bottom: windowHeight - targetRect.bottom,
-      left: targetRect.left,
-      right: windowWidth - targetRect.right
-    };
+    // Try to use position in this order if they fit
+    const placementOrder = ['bottom', 'top', 'right', 'left'];
     
-    // Determine best position (use specified position from step or calculate best fit)
-    let bestPosition = tutorialSteps[currentStep].position || "bottom";
+    // Find first position that fits
+    const fittingPlacement = placementOrder.find(p => positions[p].fits);
     
-    if (!tutorialSteps[currentStep].position) {
-      // Find the position with maximum space
-      bestPosition = Object.keys(spaces).reduce((a, b) => spaces[a] > spaces[b] ? a : b);
+    if (fittingPlacement) {
+      bestPlacement = fittingPlacement;
+      x = positions[bestPlacement].x;
+      y = positions[bestPlacement].y;
+    } else {
+      // If no position fits perfectly, use the one with most space
+      const spaces = {
+        bottom: spaceBelow,
+        top: spaceAbove,
+        right: spaceRight,
+        left: spaceLeft
+      };
+      
+      bestPlacement = Object.keys(spaces).reduce((a, b) => spaces[a] > spaces[b] ? a : b);
+      x = positions[bestPlacement].x;
+      y = positions[bestPlacement].y;
     }
     
-    // Apply the position
-    setTooltipPosition(positions[bestPosition]);
-    setTooltipArrowPosition(bestPosition);
+    // Ensure tooltip stays within viewport
+    if (x < 10) x = 10;
+    if (x + tooltipRect.width > windowWidth - 10) x = windowWidth - tooltipRect.width - 10;
+    if (y < 10) y = 10;
+    if (y + tooltipRect.height > windowHeight - 10) y = windowHeight - tooltipRect.height - 10;
     
-    // Ensure tooltip stays within viewport bounds
-    setTimeout(() => {
-      if (tooltipRef.current) {
-        const updatedTooltipRect = tooltipRef.current.getBoundingClientRect();
-        
-        // Check if tooltip is out of viewport and adjust if needed
-        let updatedPosition = { ...positions[bestPosition] };
-        
-        // Adjust horizontally if needed
-        if (updatedTooltipRect.right > windowWidth) {
-          updatedPosition.left = windowWidth - updatedTooltipRect.width - 10;
-        } else if (updatedTooltipRect.left < 0) {
-          updatedPosition.left = 10;
-        }
-        
-        // Adjust vertically if needed
-        if (updatedTooltipRect.bottom > windowHeight) {
-          updatedPosition.top = windowHeight - updatedTooltipRect.height - 10;
-        } else if (updatedTooltipRect.top < 0) {
-          updatedPosition.top = 10;
-        }
-        
-        setTooltipPosition(updatedPosition);
+    // Check if our adjustments would cause the arrow to not align with the target
+    const finalTooltipRect = {
+      left: x,
+      right: x + tooltipRect.width,
+      top: y,
+      bottom: y + tooltipRect.height
+    };
+    
+    // Does this tooltip position overlap with the target?
+    const overlaps = !(
+      finalTooltipRect.left > targetRect.right ||
+      finalTooltipRect.right < targetRect.left ||
+      finalTooltipRect.top > targetRect.bottom ||
+      finalTooltipRect.bottom < targetRect.top
+    );
+    
+    // If there's overlap, force a position away from the target
+    if (overlaps) {
+      // Find the best non-overlapping corner
+      if (spaceBelow > tooltipRect.height + 10) {
+        bestPlacement = "bottom";
+        y = targetRect.bottom + arrowSize;
+        x = (windowWidth - tooltipRect.width) / 2; // Center horizontally
+      } else if (spaceRight > tooltipRect.width + 10) {
+        bestPlacement = "right";
+        x = targetRect.right + arrowSize;
+        y = 10; // Top of screen
+      } else {
+        // Last resort - bottom right corner
+        bestPlacement = "bottom";
+        x = windowWidth - tooltipRect.width - 10;
+        y = windowHeight - tooltipRect.height - 10;
       }
-    }, 0);
-  }, [currentStep, tutorialSteps]);
+    }
+    
+    setPosition({ x, y, placement: bestPlacement });
+    
+    // Update overlay
+    if (overlayRef.current) {
+      Object.assign(overlayRef.current.style, {
+        top: `${targetRect.top}px`,
+        left: `${targetRect.left}px`,
+        width: `${targetRect.width}px`,
+        height: `${targetRect.height}px`,
+      });
+    }
+  }
 
-  // Find and scroll to target element
-  const scrollToTarget = useCallback((target) => {
-    if (!target) return null;
-
-    // Try different selection methods
-    let targetElement = null;
-
+  // Find target element and position tooltip
+  function findTarget(target) {
+    if (!target) return;
+    
+    // Find element
+    let element = null;
     if (typeof target === "string") {
-      // Try querySelector
-      targetElement = document.querySelector(target);
-
-      // If not found, try getElementsByClassName
-      if (!targetElement) {
-        const elements = document.getElementsByClassName(
-          target.replace(".", "")
-        );
-        targetElement = elements.length > 0 ? elements[0] : null;
+      element = document.querySelector(target);
+      if (!element && target.startsWith(".")) {
+        const className = target.substring(1);
+        const elements = document.getElementsByClassName(className);
+        if (elements.length > 0) element = elements[0];
       }
     } else if (target instanceof Element) {
-      targetElement = target;
+      element = target;
     }
-
-    if (targetElement) {
-      // Scroll to element
-      targetElement.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-
-      // Add highlight class for targeting
-      targetElement.classList.add("tour-highlight");
-
-      // Remove existing overlay safely
-      if (overlayRef.current && document.body.contains(overlayRef.current)) {
-        try {
-          document.body.removeChild(overlayRef.current);
-        } catch (e) {
-          console.warn("Error removing overlay:", e);
-        }
-      }
-      
-      // Create new overlay
-      const overlay = document.createElement("div");
-      overlay.classList.add("tour-target-overlay");
-      overlayRef.current = overlay;
-
-      const rect = targetElement.getBoundingClientRect();
-      Object.assign(overlay.style, {
-        position: "absolute",
-        top: `${rect.top + window.scrollY}px`,
-        left: `${rect.left + window.scrollX}px`,
-        width: `${rect.width}px`,
-        height: `${rect.height}px`,
-        border: "3px solid #3b82f6",
-        boxShadow: "0 0 0 9999px rgba(0,0,0,0.5)",
-        zIndex: "9999",
-        pointerEvents: "none",
-        boxSizing: "border-box",
-        borderRadius: "4px"
-      });
-
-      document.body.appendChild(overlay);
-      
-      // Calculate tooltip position
-      calculatePosition(targetElement);
-
-      return targetElement;
-    }
-    return null;
-  }, [calculatePosition]);
-
-  // Trigger mechanism
-  useEffect(() => {
-    // Check if tutorial has been completed
-    const tutorialCompleted = localStorage.getItem(localStorageId) === "completed";
     
-    // Auto-start if not completed, or if startTrigger is true (even if completed)
-    if (!tutorialCompleted || startTrigger) {
-      // Small delay to ensure component is fully mounted
-      const timer = setTimeout(() => {
-        setIsOpen(true);
-      }, 100);
+    if (element) {
+      // Save reference
+      targetRef.current = element;
       
-      return () => clearTimeout(timer);
+      // Scroll element into view
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+      
+      // Add highlight class
+      element.classList.add("tour-highlight");
+      
+      // First position offscreen to prevent flash
+      setPosition({
+        x: -1000,
+        y: -1000,
+        placement: "bottom"
+      });
+      
+      // Create overlay
+      createOverlay(element);
+      
+      // Position tooltip with delay to allow scroll
+      setTimeout(() => {
+        positionTooltip();
+      }, 300);
     }
-  }, [startTrigger, localStorageId]);
+  }
 
-  // Handle step changes and targeting
+  // Handle step changes
   useEffect(() => {
-    let targetElement = null;
-    
     if (isOpen && tutorialSteps[currentStep]?.target) {
-      targetElement = scrollToTarget(tutorialSteps[currentStep].target);
+      findTarget(tutorialSteps[currentStep].target);
     }
-
-    // Handle window resize
-    const handleResize = () => {
-      if (targetElement) {
-        calculatePosition(targetElement);
+    
+    function handleResize() {
+      if (targetRef.current) {
+        positionTooltip();
       }
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      
-      // Cleanup - safely remove highlight
-      if (targetElement) {
-        targetElement.classList.remove("tour-highlight");
-      }
-      
-      // Safely remove overlay if component unmounts or step changes
-      if (overlayRef.current && document.body.contains(overlayRef.current)) {
-        try {
-          document.body.removeChild(overlayRef.current);
-          overlayRef.current = null;
-        } catch (e) {
-          console.warn("Error cleaning up overlay:", e);
+    }
+    
+    function handleScroll() {
+      if (targetRef.current) {
+        // Update overlay immediately
+        if (overlayRef.current) {
+          const rect = targetRef.current.getBoundingClientRect();
+          Object.assign(overlayRef.current.style, {
+            top: `${rect.top}px`,
+            left: `${rect.left}px`,
+          });
         }
+        
+        // Position tooltip with requestAnimationFrame for smoothness
+        requestAnimationFrame(positionTooltip);
+      }
+    }
+    
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleScroll);
+      
+      // Clean up highlight
+      if (targetRef.current) {
+        targetRef.current.classList.remove("tour-highlight");
       }
     };
-  }, [isOpen, currentStep, tutorialSteps, scrollToTarget, calculatePosition]);
+  }, [isOpen, currentStep, tutorialSteps]);
 
-  const nextStep = useCallback(() => {
-    if (currentStep < tutorialSteps.length - 1) {
-      setCurrentStep(prev => prev + 1);
-    } else {
-      handleClose();
-    }
-  }, [currentStep, tutorialSteps.length]);
+  // Clean up when component unmounts
+  useEffect(() => {
+    return () => {
+      if (overlayRef.current && document.body.contains(overlayRef.current)) {
+        document.body.removeChild(overlayRef.current);
+      }
+      
+      document.querySelectorAll(".tour-highlight").forEach(el => {
+        el.classList.remove("tour-highlight");
+      });
+    };
+  }, []);
 
-  const prevStep = useCallback(() => {
-    if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
-    }
-  }, [currentStep]);
-
-  const handleClose = useCallback(() => {
+  // Close tutorial
+  function handleClose() {
     localStorage.setItem(localStorageId, "completed");
     setIsOpen(false);
     
-    // Final cleanup - safely remove overlay
     if (overlayRef.current && document.body.contains(overlayRef.current)) {
-      try {
-        document.body.removeChild(overlayRef.current);
-        overlayRef.current = null;
-      } catch (e) {
-        console.warn("Error removing overlay during close:", e);
-      }
+      document.body.removeChild(overlayRef.current);
     }
     
-    // Remove any highlight classes
-    const highlightedElements = document.querySelectorAll('.tour-highlight');
-    highlightedElements.forEach(el => {
-      el.classList.remove('tour-highlight');
-    });
-  }, [localStorageId]);
+    if (targetRef.current) {
+      targetRef.current.classList.remove("tour-highlight");
+    }
+  }
 
-  // If no steps or not open, don't render
+  // Handle next/previous
+  function handleNext() {
+    if (currentStep < tutorialSteps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      handleClose();
+    }
+  }
+  
+  function handlePrevious() {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  }
+
+  // Don't render if not open or no steps
   if (!isOpen || !tutorialSteps || tutorialSteps.length === 0) {
     return null;
   }
-
+  
   const currentStepData = tutorialSteps[currentStep];
   
-  // Arrow styles based on position
-  const getArrowClasses = () => {
+  // Animation variants
+  const tooltipVariants = {
+    hidden: {
+      opacity: 0,
+      scale: 0.8,
+      y: position.placement === "top" ? -20 : position.placement === "bottom" ? 20 : 0,
+      x: position.placement === "left" ? -20 : position.placement === "right" ? 20 : 0,
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      x: 0,
+      transition: {
+        type: "spring",
+        damping: 25,
+        stiffness: 300,
+      },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.8,
+      transition: {
+        duration: 0.2,
+      },
+    },
+  };
+  
+  // Button animation
+  const buttonPulse = {
+    pulse: {
+      scale: [1, 1.05, 1],
+      transition: {
+        duration: 0.5,
+        repeat: Infinity,
+        repeatType: "reverse",
+      },
+    },
+  };
+  
+  // Get arrow classes based on position
+  function getArrowClasses() {
     const baseClasses = "absolute w-0 h-0";
     
-    switch (tooltipArrowPosition) {
-      case 'top':
+    switch (position.placement) {
+      case "top":
         return `${baseClasses} bottom-0 left-1/2 -translate-x-1/2 -mb-2 border-l-8 border-r-8 border-t-8 border-transparent border-t-white`;
-      case 'bottom':
+      case "bottom":
         return `${baseClasses} top-0 left-1/2 -translate-x-1/2 -mt-2 border-l-8 border-r-8 border-b-8 border-transparent border-b-white`;
-      case 'left':
+      case "left":
         return `${baseClasses} right-0 top-1/2 -translate-y-1/2 -mr-2 border-t-8 border-b-8 border-l-8 border-transparent border-l-white`;
-      case 'right':
+      case "right":
         return `${baseClasses} left-0 top-1/2 -translate-y-1/2 -ml-2 border-t-8 border-b-8 border-r-8 border-transparent border-r-white`;
       default:
         return baseClasses;
     }
-  };
+  }
 
   return (
-    <div 
-      className="fixed" 
+    <motion.div
+      className="fixed"
       style={{
-        top: `${tooltipPosition.top}px`,
-        left: `${tooltipPosition.left}px`,
-        zIndex: 10001
+        top: position.y,
+        left: position.x,
+        zIndex: 10000,
+        maxWidth: "calc(100vw - 20px)",
       }}
+      drag
+      dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
+      dragElastic={0.1}
       ref={tooltipRef}
+      transition={{
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      }}
     >
-      <div className="bg-white rounded-lg shadow-lg w-72 max-w-[90vw] transition-all duration-300">
-        <div className={getArrowClasses()}></div>
-        
-        <div className="p-4 pb-2 border-b border-gray-100">
-          <h3 className="font-semibold text-lg text-gray-800">
-            {currentStepData.title || "Tutorial Step"}
-          </h3>
-        </div>
-
-        <div className="p-4 text-sm text-gray-600 leading-relaxed">
-          {currentStepData.content || "No content provided"}
-        </div>
-
-        <div className="p-4 pt-2 border-t border-gray-100 flex justify-between">
-          <div className="space-x-2">
-            {currentStep > 0 && (
-              <button 
-                type="button"
-                className="px-3 py-2 bg-gray-200 text-gray-700 rounded text-sm font-medium"
-                onClick={(e) => {
-                  e.preventDefault();
-                  prevStep();
-                }}
-              >
-                Previous
-              </button>
-            )}
+      <AnimatePresence mode="wait">
+        <motion.div
+          className="w-72 max-w-full mx-auto"
+          key={`step-${currentStep}`}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={tooltipVariants}
+        >
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className={getArrowClasses()}></div>
             
-            <button 
-              type="button"
-              className="px-3 py-2 bg-blue-500 text-white rounded text-sm font-medium"
-              onClick={(e) => {
-                e.preventDefault();
-                currentStep === tutorialSteps.length - 1 ? handleClose() : nextStep();
-              }}
+            <motion.div
+              className="p-4 pb-2 border-b border-gray-100"
+              initial={{ y: -10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.1 }}
             >
-              {currentStep === tutorialSteps.length - 1 ? "Finish" : "Next"}
-            </button>
+              <h3 className="font-semibold text-lg text-gray-800">
+                {currentStepData.title || "Tutorial Step"}
+              </h3>
+            </motion.div>
+            
+            <motion.div
+              className="p-4 text-sm text-gray-600 leading-relaxed whitespace-pre-wrap"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              {currentStepData.content || "No content provided"}
+            </motion.div>
+            
+            <motion.div
+              className="p-4 pt-2 border-t border-gray-100 flex justify-between"
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Button
+                type="button"
+                className="px-3 py-2 text-default-800 border rounded text-sm font-medium"
+                onPress={handleClose}
+              >
+                Skip
+              </Button>
+              
+              <div className="space-x-2">
+                {currentStep > 0 && (
+                  <Button
+                    type="button"
+                    className="px-3 py-2 bg-gray-200 text-gray-700 rounded text-sm font-medium"
+                    onPress={handlePrevious}
+                  >
+                    Previous
+                  </Button>
+                )}
+                
+                <motion.div
+                  variants={buttonPulse}
+                  animate={currentStep === tutorialSteps.length - 1 ? "pulse" : ""}
+                  className="inline-block"
+                >
+                  <Button
+                    type="button"
+                    className="px-3 py-2 bg-highlightPink text-white rounded text-sm font-medium"
+                    onPress={handleNext}
+                  >
+                    {currentStep === tutorialSteps.length - 1 ? "Finish" : "Next"}
+                  </Button>
+                </motion.div>
+              </div>
+            </motion.div>
           </div>
-          
-          <button 
-            type="button"
-            className="px-3 py-2 bg-red-400 text-white rounded text-sm font-medium"
-            onClick={(e) => {
-              e.preventDefault();
-              handleClose();
-            }}
-          >
-            Skip
-          </button>
-        </div>
-      </div>
-    </div>
+        </motion.div>
+      </AnimatePresence>
+    </motion.div>
   );
 }
