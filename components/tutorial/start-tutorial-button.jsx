@@ -28,10 +28,11 @@ export const StartTutorialButton = ({ setStartTutorial, className, ...props }) =
   }
 
   const handleOnPress = () => {
-    setStartTutorial(true);
+    setStartTutorial(false);
+
     setTimeout(() => {
-      setStartTutorial(false);
-    }, 1000);
+    setStartTutorial(true);
+  }, 10);
   }
 
   return (

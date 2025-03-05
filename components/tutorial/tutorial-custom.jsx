@@ -3,11 +3,12 @@
 import { useState, useEffect, useRef, use } from "react";
 import { Button } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
+import logger from "@/lib/logger";
 
 export default function Tutorial({
   tutorialSteps,
   localStorageId,
-  startTrigger = false,
+  startTrigger = true,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
@@ -15,15 +16,35 @@ export default function Tutorial({
   const tooltipRef = useRef(null);
   const overlayRef = useRef(null);
   const targetRef = useRef(null);
+  const [initialRenderComplete, setInitialRenderComplete] = useState(false);
+
+  // log if startTrigger changes
+  useEffect(() => {
+    logger.info("startTrigger changed", { startTrigger });
+  }, [startTrigger]);
+
+  const checkIfTutorialCompleted = () => {
+    const tutorialCompleted =
+      localStorage.getItem(localStorageId) === "completed";
+    if ((!tutorialCompleted || startTrigger) && isOpen === false) {
+      // First set a timer to open the tutorial
+      const timer = setTimeout(() => {
+        // When opening, don't show the tooltip yet
+        setIsOpen(true);
+        // Give time for initial positioning before showing
+        setTimeout(() => {
+          setInitialRenderComplete(true);
+        }, 1000); // Wait a bit longer than your positioning timeout
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  };
 
   // Check if tutorial has been completed
   useEffect(() => {
-    const tutorialCompleted = localStorage.getItem(localStorageId) === "completed";
-    if (!tutorialCompleted || startTrigger) {
-      const timer = setTimeout(() => setIsOpen(true), 100);
-      return () => clearTimeout(timer);
-    }
-  }, [localStorageId, startTrigger]);
+    if (isOpen) return;
+    checkIfTutorialCompleted();
+  }, [startTrigger, localStorageId]);
 
   // Create spotlight overlay
   function createOverlay(target) {
@@ -35,7 +56,7 @@ export default function Tutorial({
     // Create new overlay
     const overlay = document.createElement("div");
     overlay.classList.add("tour-overlay");
-    
+
     const rect = target.getBoundingClientRect();
     Object.assign(overlay.style, {
       position: "fixed",
@@ -50,7 +71,7 @@ export default function Tutorial({
       pointerEvents: "none",
       transition: "all 0.15s ease",
     });
-    
+
     document.body.appendChild(overlay);
     overlayRef.current = overlay;
   }
@@ -58,58 +79,58 @@ export default function Tutorial({
   // Position tooltip with beacon precisely at border
   function positionTooltip() {
     if (!targetRef.current || !tooltipRef.current) return;
-    
+
     const targetRect = targetRef.current.getBoundingClientRect();
     const tooltipRect = tooltipRef.current.getBoundingClientRect();
-    
+
     // Window dimensions
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
-    
+
     // Arrow size for positioning (size of the beacon/arrow)
     const arrowSize = 8; // Based on border-*-8 classes
-    
+
     // Choose best placement that doesn't overlap the target
     let bestPlacement = "bottom";
     let x = 0;
     let y = 0;
-    
+
     // Check which position would work best
     const spaceBelow = windowHeight - targetRect.bottom;
     const spaceAbove = targetRect.top;
     const spaceRight = windowWidth - targetRect.right;
     const spaceLeft = targetRect.left;
-    
+
     // Calculate positions for each placement
     const positions = {
       bottom: {
-        x: targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2),
+        x: targetRect.left + targetRect.width / 2 - tooltipRect.width / 2,
         y: targetRect.bottom + arrowSize, // Position so arrow touches border
-        fits: spaceBelow >= tooltipRect.height + arrowSize
+        fits: spaceBelow >= tooltipRect.height + arrowSize,
       },
       top: {
-        x: targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2),
+        x: targetRect.left + targetRect.width / 2 - tooltipRect.width / 2,
         y: targetRect.top - tooltipRect.height - arrowSize,
-        fits: spaceAbove >= tooltipRect.height + arrowSize
+        fits: spaceAbove >= tooltipRect.height + arrowSize,
       },
       right: {
         x: targetRect.right + arrowSize,
-        y: targetRect.top + (targetRect.height / 2) - (tooltipRect.height / 2),
-        fits: spaceRight >= tooltipRect.width + arrowSize
+        y: targetRect.top + targetRect.height / 2 - tooltipRect.height / 2,
+        fits: spaceRight >= tooltipRect.width + arrowSize,
       },
       left: {
         x: targetRect.left - tooltipRect.width - arrowSize,
-        y: targetRect.top + (targetRect.height / 2) - (tooltipRect.height / 2),
-        fits: spaceLeft >= tooltipRect.width + arrowSize
-      }
+        y: targetRect.top + targetRect.height / 2 - tooltipRect.height / 2,
+        fits: spaceLeft >= tooltipRect.width + arrowSize,
+      },
     };
-    
+
     // Try to use position in this order if they fit
-    const placementOrder = ['bottom', 'top', 'right', 'left'];
-    
+    const placementOrder = ["bottom", "top", "right", "left"];
+
     // Find first position that fits
-    const fittingPlacement = placementOrder.find(p => positions[p].fits);
-    
+    const fittingPlacement = placementOrder.find((p) => positions[p].fits);
+
     if (fittingPlacement) {
       bestPlacement = fittingPlacement;
       x = positions[bestPlacement].x;
@@ -120,28 +141,32 @@ export default function Tutorial({
         bottom: spaceBelow,
         top: spaceAbove,
         right: spaceRight,
-        left: spaceLeft
+        left: spaceLeft,
       };
-      
-      bestPlacement = Object.keys(spaces).reduce((a, b) => spaces[a] > spaces[b] ? a : b);
+
+      bestPlacement = Object.keys(spaces).reduce((a, b) =>
+        spaces[a] > spaces[b] ? a : b
+      );
       x = positions[bestPlacement].x;
       y = positions[bestPlacement].y;
     }
-    
+
     // Ensure tooltip stays within viewport
     if (x < 10) x = 10;
-    if (x + tooltipRect.width > windowWidth - 10) x = windowWidth - tooltipRect.width - 10;
+    if (x + tooltipRect.width > windowWidth - 10)
+      x = windowWidth - tooltipRect.width - 10;
     if (y < 10) y = 10;
-    if (y + tooltipRect.height > windowHeight - 10) y = windowHeight - tooltipRect.height - 10;
-    
+    if (y + tooltipRect.height > windowHeight - 10)
+      y = windowHeight - tooltipRect.height - 10;
+
     // Check if our adjustments would cause the arrow to not align with the target
     const finalTooltipRect = {
       left: x,
       right: x + tooltipRect.width,
       top: y,
-      bottom: y + tooltipRect.height
+      bottom: y + tooltipRect.height,
     };
-    
+
     // Does this tooltip position overlap with the target?
     const overlaps = !(
       finalTooltipRect.left > targetRect.right ||
@@ -149,7 +174,7 @@ export default function Tutorial({
       finalTooltipRect.top > targetRect.bottom ||
       finalTooltipRect.bottom < targetRect.top
     );
-    
+
     // If there's overlap, force a position away from the target
     if (overlaps) {
       // Find the best non-overlapping corner
@@ -168,9 +193,9 @@ export default function Tutorial({
         y = windowHeight - tooltipRect.height - 10;
       }
     }
-    
+
     setPosition({ x, y, placement: bestPlacement });
-    
+
     // Update overlay
     if (overlayRef.current) {
       Object.assign(overlayRef.current.style, {
@@ -185,7 +210,7 @@ export default function Tutorial({
   // Find target element and position tooltip
   function findTarget(target) {
     if (!target) return;
-    
+
     // Find element
     let element = null;
     if (typeof target === "string") {
@@ -198,27 +223,30 @@ export default function Tutorial({
     } else if (target instanceof Element) {
       element = target;
     }
-    
+
     if (element) {
       // Save reference
       targetRef.current = element;
-      
+
       // Scroll element into view
       element.scrollIntoView({ behavior: "smooth", block: "center" });
-      
+
       // Add highlight class
       element.classList.add("tour-highlight");
-      
+
       // First position offscreen to prevent flash
       setPosition({
         x: -1000,
         y: -1000,
-        placement: "bottom"
+        placement: "bottom",
       });
-      
+
       // Create overlay
+      setTimeout(() => {
       createOverlay(element);
-      
+      }, 1000);
+    
+
       // Position tooltip with delay to allow scroll
       setTimeout(() => {
         positionTooltip();
@@ -231,13 +259,13 @@ export default function Tutorial({
     if (isOpen && tutorialSteps[currentStep]?.target) {
       findTarget(tutorialSteps[currentStep].target);
     }
-    
+
     function handleResize() {
       if (targetRef.current) {
         positionTooltip();
       }
     }
-    
+
     function handleScroll() {
       if (targetRef.current) {
         // Update overlay immediately
@@ -248,19 +276,19 @@ export default function Tutorial({
             left: `${rect.left}px`,
           });
         }
-        
+
         // Position tooltip with requestAnimationFrame for smoothness
         requestAnimationFrame(positionTooltip);
       }
     }
-    
+
     window.addEventListener("resize", handleResize);
     window.addEventListener("scroll", handleScroll, { passive: true });
-    
+
     return () => {
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("scroll", handleScroll);
-      
+
       // Clean up highlight
       if (targetRef.current) {
         targetRef.current.classList.remove("tour-highlight");
@@ -274,8 +302,8 @@ export default function Tutorial({
       if (overlayRef.current && document.body.contains(overlayRef.current)) {
         document.body.removeChild(overlayRef.current);
       }
-      
-      document.querySelectorAll(".tour-highlight").forEach(el => {
+
+      document.querySelectorAll(".tour-highlight").forEach((el) => {
         el.classList.remove("tour-highlight");
       });
     };
@@ -285,11 +313,11 @@ export default function Tutorial({
   function handleClose() {
     localStorage.setItem(localStorageId, "completed");
     setIsOpen(false);
-    
+
     if (overlayRef.current && document.body.contains(overlayRef.current)) {
       document.body.removeChild(overlayRef.current);
     }
-    
+
     if (targetRef.current) {
       targetRef.current.classList.remove("tour-highlight");
     }
@@ -303,7 +331,7 @@ export default function Tutorial({
       handleClose();
     }
   }
-  
+
   function handlePrevious() {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
@@ -314,16 +342,26 @@ export default function Tutorial({
   if (!isOpen || !tutorialSteps || tutorialSteps.length === 0) {
     return null;
   }
-  
+
   const currentStepData = tutorialSteps[currentStep];
-  
+
   // Animation variants
   const tooltipVariants = {
     hidden: {
       opacity: 0,
       scale: 0.8,
-      y: position.placement === "top" ? -20 : position.placement === "bottom" ? 20 : 0,
-      x: position.placement === "left" ? -20 : position.placement === "right" ? 20 : 0,
+      y:
+        position.placement === "top"
+          ? -20
+          : position.placement === "bottom"
+            ? 20
+            : 0,
+      x:
+        position.placement === "left"
+          ? -20
+          : position.placement === "right"
+            ? 20
+            : 0,
     },
     visible: {
       opacity: 1,
@@ -344,7 +382,7 @@ export default function Tutorial({
       },
     },
   };
-  
+
   // Button animation
   const buttonPulse = {
     pulse: {
@@ -356,11 +394,11 @@ export default function Tutorial({
       },
     },
   };
-  
+
   // Get arrow classes based on position
   function getArrowClasses() {
     const baseClasses = "absolute w-0 h-0";
-    
+
     switch (position.placement) {
       case "top":
         return `${baseClasses} bottom-0 left-1/2 -translate-x-1/2 -mb-2 border-l-8 border-r-8 border-t-8 border-transparent border-t-white`;
@@ -375,6 +413,7 @@ export default function Tutorial({
     }
   }
 
+  
   return (
     <motion.div
       className="fixed"
@@ -382,6 +421,7 @@ export default function Tutorial({
         top: position.y,
         left: position.x,
         zIndex: 10000,
+        opacity: initialRenderComplete ? 1 : 0,
         maxWidth: "calc(100vw - 20px)",
       }}
       ref={tooltipRef}
@@ -402,7 +442,7 @@ export default function Tutorial({
         >
           <div className="bg-white rounded-lg shadow-lg overflow-hidden">
             <div className={getArrowClasses()}></div>
-            
+
             <motion.div
               className="p-4 pb-2 border-b border-gray-100"
               initial={{ y: -10, opacity: 0 }}
@@ -413,7 +453,7 @@ export default function Tutorial({
                 {currentStepData.title || "Tutorial Step"}
               </h3>
             </motion.div>
-            
+
             <motion.div
               className="p-4 text-sm text-gray-600 leading-relaxed whitespace-pre-wrap"
               initial={{ opacity: 0 }}
@@ -422,7 +462,7 @@ export default function Tutorial({
             >
               {currentStepData.content || "No content provided"}
             </motion.div>
-            
+
             <motion.div
               className="p-4 pt-2 border-t border-gray-100 flex justify-between"
               initial={{ y: 10, opacity: 0 }}
@@ -436,7 +476,7 @@ export default function Tutorial({
               >
                 Skip
               </Button>
-              
+
               <div className="space-x-2">
                 {currentStep > 0 && (
                   <Button
@@ -447,10 +487,12 @@ export default function Tutorial({
                     Previous
                   </Button>
                 )}
-                
+
                 <motion.div
                   variants={buttonPulse}
-                  animate={currentStep === tutorialSteps.length - 1 ? "pulse" : ""}
+                  animate={
+                    currentStep === tutorialSteps.length - 1 ? "pulse" : ""
+                  }
                   className="inline-block"
                 >
                   <Button
@@ -458,7 +500,9 @@ export default function Tutorial({
                     className="px-3 py-2 bg-highlightPink text-white rounded text-sm font-medium"
                     onPress={handleNext}
                   >
-                    {currentStep === tutorialSteps.length - 1 ? "Finish" : "Next"}
+                    {currentStep === tutorialSteps.length - 1
+                      ? "Finish"
+                      : "Next"}
                   </Button>
                 </motion.div>
               </div>

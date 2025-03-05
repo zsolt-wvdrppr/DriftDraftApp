@@ -21,8 +21,8 @@ import {
   StepTextarea,
 } from "@/components/planner-layout/layout/sectionComponents";
 import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
-import Tutorial from "@/components/tutorial-joyride/tutorial";
-import StartTutorialButton from "@/components/tutorial-joyride/start-tutorial-button";
+import Tutorial from "@/components/tutorial/tutorial-custom";
+import StartTutorialButton from "@/components/tutorial/start-tutorial-button";
 
 const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");

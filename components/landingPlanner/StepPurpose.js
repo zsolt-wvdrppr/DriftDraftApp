@@ -10,9 +10,8 @@ import { useSessionContext } from "@/lib/SessionProvider";
 import PasteButton from '@/components/planner-layout/layout/PasteButton';
 import { StepWrapper, StepQuestion, StepTextarea } from '@/components/planner-layout/layout/sectionComponents';
 import { StepGetAiHintBtn } from '@/components/planner-layout/layout/StepGetAiHintBtn';
-import Tutorial from "@/components/tutorial-joyride/tutorial";
-import StartTutorialButton from "@/components/tutorial-joyride/start-tutorial-button";
-import { off, title } from 'process';
+import Tutorial from "@/components/tutorial/tutorial-custom";
+import StartTutorialButton from "@/components/tutorial/start-tutorial-button";
 
 const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");
