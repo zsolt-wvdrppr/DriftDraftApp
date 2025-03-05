@@ -22,7 +22,6 @@ import { useProfileUpdater } from '@/lib/hooks/useProfileUpdater';
 import { useRestoreStep } from '@/lib/hooks/useRestoreStep';
 import { useUpdateTabName } from '@/lib/hooks/useUpdateTabName';
 import { useSessionContext } from "@/lib/SessionProvider";
-import Tutorial from '@/components/tutorialToaster/Tutorial';
 import { PreviousButton, NextButton, SubmitButton } from '@/components/planner-layout/layout/NavigationButtons';
 import RestartSessionBtn from '@/components/planner-layout/layout/RestartSessionBtn';
 
@@ -51,12 +50,6 @@ const steps = [
     { id: 7, label: "Emotions", icon: <IconMoodSmileBeam />, component: StepEmotions },
     { id: 8, label: "Inspirations", icon: <IconBulb />, component: StepInspirations },
     { id: 9, label: "Contact Details", icon: <IconAddressBook />, component: StepContactInfo }
-];
-
-const tutorialSteps = [
-    { title:"How To Start", message: "Hi there! Let’s take a quick tour to show you where everything is and how it works. You can click ‘END TUTORIAL’ anytime to skip.", targetClass: 'step-0' },
-    { title:"Progress Bar", message: "This is the progress bar. It shows your progress across 10 sections in total.", targetClass: 'step-1' },
-    { title:"Section Selector", message: "This drop-down menu is your section selector. Use it to quickly jump between sections. That's it for now, carry on testing.", targetClass: 'step-2' },
 ];
 
 export default function WebsiteWizardContainer({ }) {
@@ -230,7 +223,6 @@ export default function WebsiteWizardContainer({ }) {
     return (
         <div className="wizard-container w-full">
             <div className="step-0 sicky w-full -z-50"/>
-            {/*<Tutorial localStorageKey="websitePlannerTutorialCompleted" steps={tutorialSteps}/>*/}
             {isSubmitted && <Result formData={formData} />}
 
             {(!isSubmitted) &&

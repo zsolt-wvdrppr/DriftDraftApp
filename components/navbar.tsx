@@ -10,7 +10,7 @@ import {
   NavbarItem,
   NavbarMenuItem,
 } from "@heroui/react";
-import { Kbd, Link, Input } from "@heroui/react";
+import { Link } from "@heroui/react";
 import { link as linkStyles } from "@heroui/react";
 import NextLink from "next/link";
 import clsx from "clsx";
@@ -20,12 +20,15 @@ import MyActivitiesBtn from "@/components/nav-layout/MyActivitiesBtn";
 import AccountBtn from "@/components/nav-layout/AccountBtn";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { SearchIcon, Logo } from "@/components/icons";
+import {  Logo } from "@/components/icons";
 import { useAuth } from "@/lib/AuthContext";
 import { useRedirectAfterLogin } from "@/lib/hooks/useRedirectAfterLogin";
 import logger from "@/lib/logger";
 import { useReferral } from "@/lib/hooks/useReferral";
 import ConfirmationModal from "@/components/confirmation-modal";
+import { StartTutorialButton } from "@/components/tutorial/start-tutorial-button";
+import Tutorial from "@/components/tutorial/tutorial-custom";
+import { title } from "process";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -45,27 +48,6 @@ export const Navbar = () => {
     setIsMenuOpen(false);
     logger.info("Menu closed");
   };
-
-  const searchInput = (
-    <Input
-      aria-label="Search"
-      classNames={{
-        inputWrapper: "bg-default-100",
-        input: "text-sm",
-      }}
-      endContent={
-        <Kbd className="hidden lg:inline-block" keys={["command"]}>
-          K
-        </Kbd>
-      }
-      labelPlacement="outside"
-      placeholder="Search..."
-      startContent={
-        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-      }
-      type="search"
-    />
-  );
 
   return (
     <NextUINavbar

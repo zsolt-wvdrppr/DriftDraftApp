@@ -34,7 +34,7 @@ const AccountBtn = ({
     <div className="flex items-center">
       <Button
         className={cn(
-          "md:bg-default-200 md:py-2 md:px-4 md:rounded-t-none items-center hover:scale-105 cursor-pointer flex gap-2",
+          "account-btn md:bg-default-200 md:py-2 md:px-4 md:rounded-t-none items-center hover:scale-105 cursor-pointer flex gap-2",
           className
         )}
         onPress={handleOnPress}

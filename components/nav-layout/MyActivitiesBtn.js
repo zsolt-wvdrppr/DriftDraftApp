@@ -25,7 +25,7 @@ const MyActivitiesBtn = ({
 
   return (
     <Button
-      className={cn("text-default-foreground hover:scale-105", className)}
+      className={cn("activities-btn text-default-foreground hover:scale-105", className)}
       isExternal={false}
       startContent={<IconHistory className="text-highlightOrange" />}
       variant="flat"
