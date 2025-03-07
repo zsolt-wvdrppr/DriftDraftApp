@@ -31,7 +31,6 @@ export function Providers({ children, themeProps }) {
               </LoadScript>
             </NextThemesProvider>
           </NextUIProvider>
-          p
         </AuthProvider>
       </ReCaptchaProvider>
     </>
