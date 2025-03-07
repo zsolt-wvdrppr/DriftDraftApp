@@ -9,6 +9,7 @@
 		"lint": "next lint . --ext .ts,.tsx --fix --config eslint.config.mjs"
 	},
 	"dependencies": {
+		"@google/generative-ai": "^0.24.0",
 		"@heroui/react": "^2.7.4",
 		"@lexical/code": "^0.27.1",
 		"@lexical/html": "^0.27.1",
