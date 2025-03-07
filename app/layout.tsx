@@ -10,6 +10,8 @@ import { Navbar } from "@/components/navbar";
 import Footer from "@/components/footer";
 
 import { Providers } from "./providers";
+import CookieConsent from "@/components/cookie-consent";
+import { GoogleTagManager } from "@next/third-parties/google";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -34,6 +36,29 @@ export const viewport: Viewport = {
   ],
 };
 
+// This is a client-side script that will run before GTM initializes
+export function generateStaticParams() {
+  return [
+    {
+      script: [
+        {
+          type: "text/javascript",
+          innerHTML: `
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            'consent': 'default',
+            'analytics_storage': 'denied',
+            'ad_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied'
+          });
+        `,
+        },
+      ],
+    },
+  ];
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -41,13 +66,30 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning lang="en">
-      <head />
+      <head>
+        {/* Inline script to set default consent before any tags load */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+              'consent': 'default',
+              'analytics_storage': 'denied',
+              'ad_storage': 'denied',
+              'ad_user_data': 'denied',
+              'ad_personalization': 'denied'
+            });
+          `,
+          }}
+        />
+      </head>
       <body
         className={clsx(
           "min-h-screen bg-background antialiased",
           poppins.className
         )}
       >
+        <CookieConsent />
         <Providers themeProps={{ attribute: "class", defaultTheme: "system" }}>
           <div className="relative flex flex-col h-screen">
             <Suspense fallback={<div>Loading navbar...</div>}>
@@ -60,6 +102,7 @@ export default function RootLayout({
             <Footer />
           </div>
         </Providers>
+        <GoogleTagManager gtmId="GTM-MRQ8RLMC" />
       </body>
     </html>
   );

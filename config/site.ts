@@ -1,8 +1,8 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Next.js + NextUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "DriftDraft.App - Strategic Website Planner",
+  description: "DriftDraft.App is a strategic website planner that helps you plan your website content and structure.",
   navItems: [
     {
       label: "Home",

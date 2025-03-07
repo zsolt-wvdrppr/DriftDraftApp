@@ -18,19 +18,22 @@ export function Providers({ children, themeProps }) {
   const libraries = ["places"];
 
   return (
-    <ReCaptchaProvider reCaptchaKey={reCaptchaKey} useRecaptchaNet={true}>
-      <AuthProvider>
-        <NextUIProvider navigate={router.push}>
-          <NextThemesProvider {...themeProps}>
-            <LoadScript
-              googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-              libraries={libraries}
-            >
-              <SessionProvider>{children}</SessionProvider>
-            </LoadScript>
-          </NextThemesProvider>
-        </NextUIProvider>
-      </AuthProvider>
-    </ReCaptchaProvider>
+    <>
+      <ReCaptchaProvider reCaptchaKey={reCaptchaKey} useRecaptchaNet={true}>
+        <AuthProvider>
+          <NextUIProvider navigate={router.push}>
+            <NextThemesProvider {...themeProps}>
+              <LoadScript
+                googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+                libraries={libraries}
+              >
+                <SessionProvider>{children}</SessionProvider>
+              </LoadScript>
+            </NextThemesProvider>
+          </NextUIProvider>
+          p
+        </AuthProvider>
+      </ReCaptchaProvider>
+    </>
   );
 }
