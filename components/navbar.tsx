@@ -14,6 +14,7 @@ import { Link } from "@heroui/react";
 import { link as linkStyles } from "@heroui/react";
 import NextLink from "next/link";
 import clsx from "clsx";
+import { useSwipeable } from "react-swipeable";
 
 import LogInOutBtn, { LogInBtn } from "@/components/nav-layout/LogInOutBtn";
 import MyActivitiesBtn from "@/components/nav-layout/MyActivitiesBtn";
@@ -33,6 +34,14 @@ export const Navbar = () => {
   const redirectAfterLogin = useRedirectAfterLogin();
 
   const { isReferralModalOpen, setReferralUser, removeReferralParam, referralName } = useReferral();
+  const swipeHandlers = useSwipeable({
+    onSwipedUp: () => setIsMenuOpen(false),
+    trackMouse: false,
+    swipeDuration: 300,
+    preventScrollOnSwipe: true,
+    delta: 10,
+    trackTouch: true,
+  });
 
   const handleLogIn = () => {
     setIsMenuOpen(false);
@@ -156,7 +165,7 @@ export const Navbar = () => {
         />
       </NavbarContent>
 
-      <NavbarMenu>
+      <NavbarMenu {...swipeHandlers}>
         <div className="mx-4 mt-2 flex flex-col gap-2 h-full">
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
