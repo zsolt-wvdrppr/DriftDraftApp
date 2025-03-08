@@ -126,7 +126,7 @@ export const DocumentationWrapper = ({
         key={currentSlug} // This forces re-animation when changing docs
       >
         <motion.div
-          className="prose prose-blue prose-headings:text-primary max-w-none"
+          className="prose prose-a:text-secondary prose-a:no-underline prose-headings:text-primary max-w-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.3 }}
