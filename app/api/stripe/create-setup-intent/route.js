@@ -1,4 +1,4 @@
-// Update payment method /api/stripe/update-payment-method/route.js
+// /api/stripe/create-setup-intent/route.js
 
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
@@ -18,10 +18,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 
 export async function POST(req) {
   try {
-    const { userId, newPaymentMethodId, businessName, vatNumber, billingAddress } = await req.json();
+    const { userId } = await req.json();
 
-    if (!userId || !newPaymentMethodId) {
-      return NextResponse.json({ error: "User ID and payment method are required" }, { status: 400 });
+    if (!userId) {
+      return NextResponse.json({ error: "User ID is required" }, { status: 400 });
     }
 
     // Fetch the user from Supabase
@@ -37,7 +37,7 @@ export async function POST(req) {
 
     let stripeCustomerId = user.stripe_customer_id;
 
-    // 🔹 If user has NO stripe_customer_id, create a new Stripe customer
+    // If user has NO stripe_customer_id, create a new Stripe customer
     if (!stripeCustomerId) {
       const customer = await stripe.customers.create({
         email: user.email,
@@ -46,7 +46,7 @@ export async function POST(req) {
 
       stripeCustomerId = customer.id;
 
-      // 🔹 Save Stripe Customer ID in Supabase
+      // Save Stripe Customer ID in Supabase
       const { error: updateError } = await supabase
         .from("profiles")
         .update({ stripe_customer_id: stripeCustomerId })
@@ -57,19 +57,20 @@ export async function POST(req) {
       }
     }
 
-    // 🔹 Attach the new payment method to the Stripe customer
-    await stripe.paymentMethods.attach(newPaymentMethodId, { customer: stripeCustomerId });
-
-    // 🔹 Set as default payment method
-    await stripe.customers.update(stripeCustomerId, {
-      invoice_settings: { default_payment_method: newPaymentMethodId },
-      name: businessName || undefined,
-      tax_id_data: vatNumber ? [{ type: "eu_vat", value: vatNumber }] : undefined,
-      address: billingAddress ? { line1: billingAddress } : undefined,
+    // Create a SetupIntent
+    const setupIntent = await stripe.setupIntents.create({
+      customer: stripeCustomerId,
+      payment_method_types: ['card'],
+      usage: 'off_session', // This allows the payment method to be used for future payments
     });
 
-    return NextResponse.json({ success: true, stripeCustomerId });
+    return NextResponse.json({ 
+      success: true, 
+      clientSecret: setupIntent.client_secret
+    });
   } catch (error) {
+    console.error("Setup intent creation error:", error);
+
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

@@ -16,6 +16,27 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-01-27.acacia",
 });
 
+// Helper function to calculate tax for subscriptions
+const getDefaultTaxRates = async () => {
+  try {
+    // Get your active tax rates from Stripe
+    const taxRates = await stripe.taxRates.list({
+      active: true,
+      limit: 10,
+    });
+    
+    if (taxRates.data && taxRates.data.length > 0) {
+      // Return tax rate IDs to apply to the subscription
+      return taxRates.data.map(rate => rate.id);
+    }
+    
+    return []; // No tax rates found
+  } catch (error) {
+    logger.warn(`Failed to retrieve tax rates: ${error.message}`);
+    return []; // Return empty array if retrieval fails
+  }
+};
+
 export async function POST(req) {
   try {
     const { userId, priceId } = await req.json();
@@ -41,10 +62,8 @@ export async function POST(req) {
       );
     }
 
-    // ✅ Fetch price details
-    const price = await stripe.prices.retrieve(priceId, {
-      expand: ["product"],
-    });
+    // ✅ Get applicable tax rates
+    const defaultTaxRates = await getDefaultTaxRates();
 
     let subscription;
     let isUpgrade = false;
@@ -68,22 +87,38 @@ export async function POST(req) {
       }
 
       // ✅ Update subscription for next renewal (billing cycle remains unchanged)
+      // Include tax rates in the update
       subscription = await stripe.subscriptions.update(user.subscription_id, {
         items: [{ id: subscription.items.data[0].id, price: priceId }],
         proration_behavior: "none", // No immediate charge or proration
-        automatic_tax: { enabled: true } // Enable automatic tax calculation
+        default_tax_rates: defaultTaxRates.length > 0 ? defaultTaxRates : undefined,
       });
-      logger.debug("🔹 Subscription updated for next renewal with tax enabled.");
+      logger.debug("🔹 Subscription updated for next renewal.");
     } else {
       // ✅ If no existing subscription, create a new one with tax
-      subscription = await stripe.subscriptions.create({
+      const subscriptionParams = {
         customer: user.stripe_customer_id,
         items: [{ price: priceId }],
         metadata: { userId, priceId },
-        automatic_tax: { enabled: true } // Enable automatic tax calculation
-      });
+      };
+
+      // Only add tax rates if we have any
+      if (defaultTaxRates.length > 0) {
+        subscriptionParams.default_tax_rates = defaultTaxRates;
+      }
+
+      // Add auto collection info and email receipts
+      subscriptionParams.collection_method = 'charge_automatically';
+      if (user.email) {
+        subscriptionParams.receipt_email = user.email;
+      }
+
+      subscription = await stripe.subscriptions.create(subscriptionParams);
       
-      logger.debug("🔹 New subscription created with tax calculation enabled.");
+      logger.info(`✅ New subscription created with ID: ${subscription.id}`);
+      if (defaultTaxRates.length > 0) {
+        logger.info(`✅ Applied tax rates: ${defaultTaxRates.join(', ')}`);
+      }
     }
 
     // ✅ Get start and renewal dates from Stripe
@@ -104,6 +139,12 @@ export async function POST(req) {
       .filter((product) => product.default_price.id === priceId)
       .map((product) => product.name);
 
+    // Get tax information from the subscription
+    const taxInfo = {
+      hasTax: subscription.default_tax_rates && subscription.default_tax_rates.length > 0,
+      taxRateIds: subscription.default_tax_rates || [],
+    };
+
     // ✅ Save subscription ID and renewal dates in Supabase
     const { error: updateError } = await supabase
       .from("profiles")
@@ -112,6 +153,7 @@ export async function POST(req) {
         plan_starts_at: planStartsAt,
         plan_renews_at: planRenewsAt,
         tier: tier[0], // save the tier name
+        tax_enabled: taxInfo.hasTax, // Track whether tax is applied
       })
       .eq("user_id", userId);
 
@@ -127,12 +169,13 @@ export async function POST(req) {
       subscriptionId: subscription.id,
       planStartsAt,
       planRenewsAt,
+      taxApplied: taxInfo.hasTax,
       message: isUpgrade
         ? "Subscription change scheduled for next renewal."
         : "Subscription successful!",
     });
   } catch (error) {
-    logger.error(`❌ Subscription Error: ${error.message}`);
+    logger.error(`❌ Subscription operation failed: ${error.message}`);
 
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

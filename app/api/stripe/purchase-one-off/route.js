@@ -16,6 +16,30 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-01-27.acacia",
 });
 
+// Helper function to calculate tax
+const calculateTax = async (amount, customerId) => {
+  try {
+    // Calculate tax using Stripe Tax API
+    const taxCalculation = await stripe.tax.calculations.create({
+      currency: "usd", // Default to USD, adjust if needed
+      customer: customerId,
+      line_items: [
+        {
+          amount: amount,
+          reference: "manual_calculation",
+          tax_behavior: "exclusive",
+        },
+      ],
+    });
+    
+    return taxCalculation.tax_amount_exclusive || 0;
+  } catch (error) {
+    logger.warn(`Failed to calculate tax: ${error.message}`);
+
+    return 0; // Fallback to zero tax if calculation fails
+  }
+};
+
 export async function POST(req) {
   try {
     const { userId, priceId } = await req.json();
@@ -74,40 +98,44 @@ export async function POST(req) {
 
     const defaultPaymentMethod = paymentMethods.data[0].id; // ✅ Use the first saved payment method
 
-    // ✅ Step 1: Create and confirm PaymentIntent (charges the user immediately)
-    let paymentIntent;
+    // ✅ Calculate tax separately using helper function
+    const baseAmount = price.unit_amount;
+    const taxAmount = await calculateTax(baseAmount, user.stripe_customer_id);
+    const totalAmount = baseAmount + taxAmount;
 
-    try {
-      paymentIntent = await stripe.paymentIntents.create({
-        amount: price.unit_amount,
-        currency: price.currency,
-        customer: user.stripe_customer_id,
-        payment_method: defaultPaymentMethod,
-        confirm: true, // ✅ Charge immediately
-        receipt_email: user.email,
-        automatic_payment_methods: {
-          enabled: true,
-          allow_redirects: "never", // ✅ No redirect-based payments
-        },
-        automatic_tax: { enabled: true },
-        metadata: {
-          userId: userId.toString(),
-          priceId: priceId.toString(),
-          creditAmount: creditsToAdd.toString(),
-        },
-      });
+    // ✅ Create PaymentIntent but DON'T confirm it yet
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: totalAmount,
+      currency: price.currency,
+      customer: user.stripe_customer_id,
+      payment_method: defaultPaymentMethod,
+      confirm: false, // Don't confirm automatically server-side
+      receipt_email: user.email,
+      metadata: {
+        userId: userId.toString(),
+        priceId: priceId.toString(),
+        creditAmount: creditsToAdd.toString(),
+        baseAmount: baseAmount.toString(),
+        taxAmount: taxAmount.toString(),
+      },
+      description: `Payment for ${price.product.name} (Base: ${(baseAmount/100).toFixed(2)}, Tax: ${(taxAmount/100).toFixed(2)})`,
+    });
 
-      logger.info(`✅ Payment succeeded for user ${userId}: ${paymentIntent.id}`);
+    logger.info(`✅ Payment Intent created with ID: ${paymentIntent.id}`);
 
-    } catch (err) {
-      logger.error(`❌ Payment failed: ${err.message}`);
-
-      return NextResponse.json({ error: err.message }, { status: 400 });
-    }
-
-    return NextResponse.json({ success: true });
+    // Return the client secret so the frontend can handle 3D Secure if needed
+    return NextResponse.json({ 
+      success: true,
+      clientSecret: paymentIntent.client_secret,
+      paymentIntentId: paymentIntent.id,
+      amount: totalAmount,
+      baseAmount: baseAmount,
+      taxAmount: taxAmount
+    });
 
   } catch (error) {
+    logger.error(`❌ Request failed: ${error.message}`);
+
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
