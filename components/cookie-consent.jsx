@@ -1,6 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Button } from "@heroui/react";
+import ReactMarkdown from "react-markdown";
+import { IconSettings, IconAdCircleOff, IconCircleCheck, IconCookie } from "@tabler/icons-react";
+import { Logo } from "./icons";
 
 const CookieConsent = () => {
   // Consent states: null (not decided), true (accepted), false (rejected)
@@ -14,22 +18,6 @@ const CookieConsent = () => {
     preferences: false,
   });
 
-  // Set default consent to denied BEFORE GTM loads
-  useEffect(() => {
-    // Create dataLayer if it doesn't exist
-    window.dataLayer = window.dataLayer || [];
-
-    // Set default consent to denied for all types
-    window.dataLayer.push({
-      event: "default_consent",
-      consent: "default",
-      analytics_storage: "denied",
-      ad_storage: "denied",
-      ad_user_data: "denied",
-      ad_personalization: "denied",
-    });
-  }, []);
-
   // Check for existing consent on component mount
   useEffect(() => {
     const storedConsent = localStorage.getItem("cookieConsent");
@@ -41,7 +29,7 @@ const CookieConsent = () => {
         setPreferences(parsedConsent);
 
         // Apply stored consent settings
-        initializeGTM(parsedConsent);
+        updateConsent(parsedConsent);
       } catch (e) {
         // If stored value is corrupted, reset it
         localStorage.removeItem("cookieConsent");
@@ -53,40 +41,41 @@ const CookieConsent = () => {
     }
   }, []);
 
-  // Initialize Google Tag Manager based on consent
-  const initializeGTM = (consentPreferences) => {
-    // Create dataLayer if it doesn't exist
-    window.dataLayer = window.dataLayer || [];
+  // Update consent using the proper gtag format
+  const updateConsent = (consentPreferences) => {
+    if (typeof window === "undefined") return;
 
-    // Push consent settings to dataLayer
-    window.dataLayer.push({
-      event: "update_consent",
-      consent: "update",
+    // Define gtag function - ensure it exists
+    window.dataLayer = window.dataLayer || [];
+    // Use the existing gtag function if available or create it
+    const gtag = function () {
+      window.dataLayer.push(arguments);
+    };
+
+    // Important: Update consent FIRST, as a standalone call
+    gtag("consent", "update", {
       analytics_storage: consentPreferences.analytics ? "granted" : "denied",
       ad_storage: consentPreferences.marketing ? "granted" : "denied",
       ad_user_data: consentPreferences.marketing ? "granted" : "denied",
       ad_personalization: consentPreferences.marketing ? "granted" : "denied",
     });
 
-    // If analytics consent is granted, trigger a page view event
-    if (consentPreferences.analytics) {
-      // Small timeout to ensure consent is processed first
-      setTimeout(() => {
-        window.dataLayer.push({
-          event: "consent_driven_pageview",
-        });
-      }, 100);
-    }
+    // Then trigger our custom event for GTM triggers
+    setTimeout(() => {
+      window.dataLayer.push({
+        event: "cookie_consent_update",
+        consent: {
+          analytics: consentPreferences.analytics,
+          marketing: consentPreferences.marketing,
+          preferences: consentPreferences.preferences,
+        },
+      });
 
-    // Also push our custom event for any custom logic
-    window.dataLayer.push({
-      event: "cookie_consent_update",
-      consent: {
-        analytics: consentPreferences.analytics,
-        marketing: consentPreferences.marketing,
-        preferences: consentPreferences.preferences,
-      },
-    });
+      // If analytics consent granted, trigger a pageview
+      if (consentPreferences.analytics) {
+        gtag("event", "page_view");
+      }
+    }, 300);
   };
 
   // Handle accepting all cookies
@@ -102,7 +91,7 @@ const CookieConsent = () => {
     setConsent(true);
     setIsOpen(false);
     localStorage.setItem("cookieConsent", JSON.stringify(allConsent));
-    initializeGTM(allConsent);
+    updateConsent(allConsent);
   };
 
   // Handle rejecting optional cookies
@@ -118,9 +107,23 @@ const CookieConsent = () => {
     setConsent(false);
     setIsOpen(false);
     localStorage.setItem("cookieConsent", JSON.stringify(minimalConsent));
+    updateConsent(minimalConsent);
+  };
 
-    // Still initialize GTM but with restricted consent
-    initializeGTM(minimalConsent);
+  // Handle accepting analytics cookies
+  const acceptAnalytics = () => {
+    const analyticsConsent = {
+      necessary: true,
+      analytics: true,
+      marketing: false,
+      preferences: true,
+    };
+
+    setPreferences(analyticsConsent);
+    setConsent(true);
+    setIsOpen(false);
+    localStorage.setItem("cookieConsent", JSON.stringify(analyticsConsent));
+    updateConsent(analyticsConsent);
   };
 
   // Handle saving preferences
@@ -129,7 +132,7 @@ const CookieConsent = () => {
     setIsOpen(false);
     setShowPreferences(false);
     localStorage.setItem("cookieConsent", JSON.stringify(preferences));
-    initializeGTM(preferences);
+    updateConsent(preferences);
   };
 
   // Handle preference changes
@@ -147,66 +150,57 @@ const CookieConsent = () => {
 
   if (!isOpen) {
     return (
-      <button
-        onClick={openConsentSettings}
-        className="fixed bottom-4 left-4 p-2 bg-gray-200 rounded-full shadow-md z-50 text-sm"
+      <Button
+        onPress={openConsentSettings}
+        className="hidden md:block md:fixed bottom-4 left-4 min-w-0 bg-default-200 rounded-full shadow-md z-50 text-sm"
         aria-label="Cookie settings"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-          />
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-          />
-        </svg>
-      </button>
+        <IconCookie className="w-6 h-6 text-primary" />
+      </Button>
     );
   }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-content1 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-6">
-          <h2 className="text-xl font-bold mb-4">Cookie Consent</h2>
+          <div className="flex gap-x-3 items-center mb-4">
+          <Logo className="w-24 h-24 mx-auto" />
+          <h2 className="text-2xl font-bold text-primary">Cookie Consent</h2>
+          </div>
 
           {!showPreferences ? (
             <>
-              <p className="mb-4">
-              We use cookies only to anonymously analyse site traffic and improve your browsing experience and site features.<br /><br />We do not use your data for advertising or personalisation purposes.<br /><br />By continuing to use this website, you agree to our use of cookies.
-              </p>
+            <div className="prose prose-strong:font-medium">
+              <ReactMarkdown>
+                {consentText}
+              </ReactMarkdown>
+              </div>
 
-              <div className="flex flex-wrap gap-3 mt-6 w-full justify-end">
-                {/*<button
-                  onClick={() => setShowPreferences(true)}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition"
+              <div className="flex flex-wrap gap-3 mt-6 w-full justify-between">
+                <Button
+                  onPress={() => setShowPreferences(true)}
+                  className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
                 >
+                  <IconSettings className="mr-2" />
                   Cookie Preferences
-                </button>
-                <button
-                  onClick={rejectOptional}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition"
+                </Button>
+                <div className="flex gap-3">
+                <Button
+                  onPress={acceptAnalytics}
+                  className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
                 >
-                  Reject Optional
-                </button>*/}
-                <button
-                  onClick={acceptAll}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+                  <IconAdCircleOff className="mr-2 text-default-600" />
+                  Reject Marketing
+                </Button>
+                <Button
+                  onPress={acceptAll}
+                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary transition"
                 >
-                  Acknowledge
-                </button>
+                  <IconCircleCheck className="mr-2" />
+                  Accept All
+                </Button>
+                </div>
               </div>
             </>
           ) : (
@@ -318,18 +312,24 @@ const CookieConsent = () => {
               </div>
 
               <div className="flex flex-wrap gap-3 mt-6">
-                <button
-                  onClick={() => setShowPreferences(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100 transition"
+                <Button
+                  onPress={() => setShowPreferences(false)}
+                  className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
                 >
                   Back
-                </button>
-                <button
-                  onClick={savePreferences}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+                </Button>
+                <Button
+                  onPress={acceptAnalytics}
+                  className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
+                >
+                  No Marketing
+                </Button>
+                <Button
+                  onPress={savePreferences}
+                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-700 transition"
                 >
                   Save Preferences
-                </button>
+                </Button>
               </div>
             </>
           )}
@@ -353,3 +353,10 @@ const CookieConsent = () => {
 };
 
 export default CookieConsent;
+
+const consentText = `
+ We use cookies **to anonymously analyse traffic and enhance your experience and features of this web application**.
+
+We'd appreciate it if you allowed analytics and user-experience cookies, even if you prefer not to accept all cookies.
+
+              `;

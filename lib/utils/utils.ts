@@ -160,3 +160,44 @@ export function getPlannerTypeFromPath(pathname: string) {
 
   return null;
 }
+
+/**
+ * Saves a user preference while respecting their consent choices.
+ * 
+ * This function checks if the user has granted preferences consent before
+ * saving data persistently to localStorage. If preferences consent has not
+ * been granted, it falls back to sessionStorage which is cleared when the
+ * browser session ends, ensuring compliance with privacy regulations.
+ * 
+ * @param {string} key - The key to store the preference under
+ * @param {T} value - The preference value to store
+ * @returns {void}
+ */
+export const saveUserPreference = <T>(key: string, value: T): void => {
+  // Define type for consent data
+  interface ConsentSettings {
+    necessary?: boolean;
+    analytics?: boolean;
+    marketing?: boolean;
+    preferences?: boolean;
+  }
+  
+  // Get current consent status
+  const storedConsent: ConsentSettings = JSON.parse(
+    localStorage.getItem("cookieConsent") || "{}"
+  );
+  
+  // Convert value to string appropriately
+  const valueToStore = typeof value === 'string' 
+    ? value 
+    : JSON.stringify(value);
+  
+  if (storedConsent.preferences === true) {
+    // User has given preference consent, store persistently
+    localStorage.setItem(key, valueToStore);
+  } else {
+    // User has not given preference consent
+    // Use sessionStorage instead, which is cleared when the browser session ends
+    sessionStorage.setItem(key, valueToStore);
+  }
+};

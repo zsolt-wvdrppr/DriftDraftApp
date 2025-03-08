@@ -26,9 +26,6 @@ import { useRedirectAfterLogin } from "@/lib/hooks/useRedirectAfterLogin";
 import logger from "@/lib/logger";
 import { useReferral } from "@/lib/hooks/useReferral";
 import ConfirmationModal from "@/components/confirmation-modal";
-import { StartTutorialButton } from "@/components/tutorial/start-tutorial-button";
-import Tutorial from "@/components/tutorial/tutorial-custom";
-import { title } from "process";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

@@ -1,17 +1,18 @@
+// File: app/layout.tsx (updated)
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import { Toaster } from "sonner";
 import { Poppins } from "next/font/google";
 import { Suspense } from "react";
+import { GoogleTagManager } from "@next/third-parties/google";
 
 import { siteConfig } from "@/config/site";
 import { Navbar } from "@/components/navbar";
 import Footer from "@/components/footer";
+import CookieConsent from "@/components/cookie-consent";
 
 import { Providers } from "./providers";
-import CookieConsent from "@/components/cookie-consent";
-import { GoogleTagManager } from "@next/third-parties/google";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -36,28 +37,24 @@ export const viewport: Viewport = {
   ],
 };
 
-// This is a client-side script that will run before GTM initializes
-export function generateStaticParams() {
-  return [
-    {
-      script: [
-        {
-          type: "text/javascript",
-          innerHTML: `
-          window.dataLayer = window.dataLayer || [];
-          window.dataLayer.push({
-            'consent': 'default',
-            'analytics_storage': 'denied',
-            'ad_storage': 'denied',
-            'ad_user_data': 'denied',
-            'ad_personalization': 'denied'
-          });
-        `,
-        },
-      ],
-    },
-  ];
-}
+export const consentInitScript = `
+// Define dataLayer and gtag function
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+// Set default consent state (MUST run before GTM loads)
+gtag('consent', 'default', {
+  'analytics_storage': 'denied',
+  'ad_storage': 'denied',
+  'ad_user_data': 'denied',
+  'ad_personalization': 'denied',
+  'wait_for_update': 2000
+});
+
+// Additional settings to enforce consent mode
+gtag('set', 'ads_data_redaction', true);
+gtag('set', 'url_passthrough', true);
+`;
 
 export default function RootLayout({
   children,
@@ -67,19 +64,10 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang="en">
       <head>
-        {/* Inline script to set default consent before any tags load */}
+        {/* Insert consent script before GTM loads */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({
-              'consent': 'default',
-              'analytics_storage': 'denied',
-              'ad_storage': 'denied',
-              'ad_user_data': 'denied',
-              'ad_personalization': 'denied'
-            });
-          `,
+            __html: consentInitScript,
           }}
         />
       </head>
@@ -89,7 +77,6 @@ export default function RootLayout({
           poppins.className
         )}
       >
-        <CookieConsent />
         <Providers themeProps={{ attribute: "class", defaultTheme: "system" }}>
           <div className="relative flex flex-col h-screen">
             <Suspense fallback={<div>Loading navbar...</div>}>
@@ -101,7 +88,9 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
+          <CookieConsent />
         </Providers>
+        {/* Load GTM after consent is initialized */}
         <GoogleTagManager gtmId="GTM-MRQ8RLMC" />
       </body>
     </html>

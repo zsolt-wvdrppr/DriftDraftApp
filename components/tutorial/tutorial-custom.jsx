@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, use } from "react";
 import { Button } from "@heroui/react";
 import { motion, AnimatePresence } from "framer-motion";
 import logger from "@/lib/logger";
+import { saveUserPreference } from "@/lib/utils/utils";
 
 export default function Tutorial({
   tutorialSteps,
@@ -311,7 +312,7 @@ export default function Tutorial({
 
   // Close tutorial
   function handleClose() {
-    localStorage.setItem(localStorageId, "completed");
+    saveUserPreference(localStorageId, `completed`);
     setIsOpen(false);
 
     if (overlayRef.current && document.body.contains(overlayRef.current)) {
