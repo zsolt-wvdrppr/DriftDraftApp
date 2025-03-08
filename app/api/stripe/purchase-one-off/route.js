@@ -21,10 +21,7 @@ export async function POST(req) {
     const { userId, priceId } = await req.json();
 
     if (!userId || !priceId) {
-      return NextResponse.json(
-        { error: "User ID and price ID are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "User ID and price ID are required" }, { status: 400 });
     }
 
     // ✅ Fetch user from Supabase
@@ -35,10 +32,7 @@ export async function POST(req) {
       .single();
 
     if (userError || !user) {
-      return NextResponse.json(
-        { error: `User not found by id = ${userId}` },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: `User not found by id = ${userId}` }, { status: 404 });
     }
 
     // ✅ Fetch product price from Stripe
@@ -47,10 +41,7 @@ export async function POST(req) {
     });
 
     if (!price || !price.product || price.recurring) {
-      return NextResponse.json(
-        { error: "Invalid product price" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Invalid product price" }, { status: 400 });
     }
 
     const productId = price.product.id;
@@ -83,32 +74,7 @@ export async function POST(req) {
 
     const defaultPaymentMethod = paymentMethods.data[0].id; // ✅ Use the first saved payment method
 
-    // ✅ Create a tax calculation for the purchase
-    const taxCalculation = await stripe.tax.calculations.create({
-      currency: price.currency,
-      customer: user.stripe_customer_id,
-      line_items: [
-        {
-          amount: price.unit_amount,
-          reference: productId,
-          tax_behavior: "exclusive", // Tax is added to the price
-          tax_code: productMetadata.tax_code || "txcd_10000000", // Default to general tax code if not specified
-        },
-      ],
-      // Optional: Add customer location if available
-      // customer_details: {
-      //   address: {
-      //     line1: '...',
-      //     city: '...',
-      //     state: '...',
-      //     postal_code: '...',
-      //     country: '...',
-      //   },
-      //   address_source: 'shipping' // or 'billing'
-      // },
-    });
-
-    // ✅ Step 1: Create and confirm PaymentIntent (charges the user immediately)
+    // ✅ Step 1: Create and confirm PaymentIntent with automatic tax enabled
     let paymentIntent;
 
     try {
@@ -127,31 +93,30 @@ export async function POST(req) {
           userId: userId.toString(),
           priceId: priceId.toString(),
           creditAmount: creditsToAdd.toString(),
-          includedTax: Boolean(taxCalculation.tax_amount_inclusive).toString(),
         },
-        // ✅ Add tax information
-        tax: {
-          calculation: taxCalculation.id,
-        },
-        description: `${price.product.name} purchase with ${taxCalculation.tax_amount_inclusive ? "tax included" : "no tax"}`,
+        // ✅ Enable automatic tax calculation
+        automatic_tax: {
+          enabled: true
+        }
       });
 
-      logger.info(
-        `✅ Payment succeeded for user ${userId}: ${paymentIntent.id}`
-      );
+      logger.info(`✅ Payment succeeded for user ${userId}: ${paymentIntent.id}`);
+
     } catch (err) {
       logger.error(`❌ Payment failed: ${err.message}`);
 
       return NextResponse.json({ error: err.message }, { status: 400 });
     }
 
-    return NextResponse.json({
+    return NextResponse.json({ 
       success: true,
       paymentIntentId: paymentIntent.id,
       amount: paymentIntent.amount,
-      tax: taxCalculation.tax_amount_inclusive || 0,
     });
+
   } catch (error) {
+    logger.error(`❌ API Error: ${error.message}`);
+
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

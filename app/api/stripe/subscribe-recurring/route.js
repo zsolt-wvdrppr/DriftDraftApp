@@ -49,11 +49,6 @@ export async function POST(req) {
     let subscription;
     let isUpgrade = false;
 
-    // ✅ Create automatic tax configuration
-    const automaticTax = {
-      enabled: true
-    };
-
     // ✅ If user already has a subscription, modify it
     if (user.subscription_id) {
       isUpgrade = true;
@@ -76,21 +71,16 @@ export async function POST(req) {
       subscription = await stripe.subscriptions.update(user.subscription_id, {
         items: [{ id: subscription.items.data[0].id, price: priceId }],
         proration_behavior: "none", // No immediate charge or proration
-        automatic_tax: automaticTax // Enable automatic tax calculation
+        automatic_tax: { enabled: true } // Enable automatic tax calculation
       });
-      logger.debug("🔹 Subscription updated for next renewal with tax calculation enabled.");
+      logger.debug("🔹 Subscription updated for next renewal with tax enabled.");
     } else {
       // ✅ If no existing subscription, create a new one with tax
       subscription = await stripe.subscriptions.create({
         customer: user.stripe_customer_id,
         items: [{ price: priceId }],
         metadata: { userId, priceId },
-        automatic_tax: automaticTax, // Enable automatic tax calculation
-        // Optional: You can also add customer billing address details if not already in Stripe
-        // customer_update: {
-        //   address: 'auto', // Automatically update customer's address for tax calculation
-        //   shipping: 'auto' // Automatically update customer's shipping address
-        // }
+        automatic_tax: { enabled: true } // Enable automatic tax calculation
       });
       
       logger.debug("🔹 New subscription created with tax calculation enabled.");
@@ -114,7 +104,7 @@ export async function POST(req) {
       .filter((product) => product.default_price.id === priceId)
       .map((product) => product.name);
 
-    // ✅ Save subscription ID, renewal dates, and tax info in Supabase
+    // ✅ Save subscription ID and renewal dates in Supabase
     const { error: updateError } = await supabase
       .from("profiles")
       .update({
@@ -122,7 +112,6 @@ export async function POST(req) {
         plan_starts_at: planStartsAt,
         plan_renews_at: planRenewsAt,
         tier: tier[0], // save the tier name
-        tax_enabled: true // Track that tax is enabled for this subscription
       })
       .eq("user_id", userId);
 
@@ -133,28 +122,11 @@ export async function POST(req) {
       );
     }
 
-    // ✅ Calculate and include tax information in the response
-    let taxAmount = 0;
-    let taxRate = 0;
-    
-    if (subscription.tax && subscription.tax.amount_total) {
-      taxAmount = subscription.tax.amount_total;
-      
-      // Calculate approximate tax rate if possible
-      const subtotal = subscription.items.data[0].price.unit_amount;
-
-      if (subtotal > 0) {
-        taxRate = (taxAmount / subtotal) * 100;
-      }
-    }
-
     return NextResponse.json({
       success: true,
       subscriptionId: subscription.id,
       planStartsAt,
       planRenewsAt,
-      taxAmount,
-      taxRate: taxRate.toFixed(2) + '%',
       message: isUpgrade
         ? "Subscription change scheduled for next renewal."
         : "Subscription successful!",
