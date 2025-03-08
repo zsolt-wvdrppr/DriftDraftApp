@@ -5,6 +5,7 @@ import { Button } from "@heroui/react";
 import ReactMarkdown from "react-markdown";
 import { IconSettings, IconAdCircleOff, IconCircleCheck, IconCookie } from "@tabler/icons-react";
 import { Logo } from "./icons";
+import Link from "next/link";
 
 const CookieConsent = () => {
   // Consent states: null (not decided), true (accepted), false (rejected)
@@ -337,12 +338,12 @@ const CookieConsent = () => {
           <div className="mt-6 pt-4 border-t border-gray-200 text-sm text-gray-500">
             <p>
               To learn more about how we use cookies, please see our{" "}
-              <a
-                href="/privacy-policy"
+              <Link
+                href="/cookies"
                 className="text-blue-600 hover:underline"
               >
-                Privacy Policy
-              </a>
+                Cookie Policy
+              </Link>
               .
             </p>
           </div>
