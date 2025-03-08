@@ -248,7 +248,7 @@ const SubscriptionAndTopup = () => {
           </Card>
 
           {/* Pass the promo code applied callback to the PromocodeInput component */}
-          <Card className="p-2 border min-h-fit">
+          <Card className="p-2 border min-h-[75px]">
             <PromocodeInput onPromoCodeApplied={handlePromoApplied} />
           </Card>
         </div>
