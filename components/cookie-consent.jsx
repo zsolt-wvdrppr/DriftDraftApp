@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import { IconSettings, IconAdCircleOff, IconCircleCheck, IconCookie } from "@tabler/icons-react";
 import { Logo } from "./icons";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
 const CookieConsent = () => {
   // Consent states: null (not decided), true (accepted), false (rejected)
@@ -149,207 +150,352 @@ const CookieConsent = () => {
     setIsOpen(true);
   };
 
-  if (!isOpen) {
-    return (
-      <Button
-        onPress={openConsentSettings}
-        className="hidden md:block md:fixed bottom-4 left-4 min-w-0 bg-default-200 rounded-full shadow-md z-50 text-sm"
-        aria-label="Cookie settings"
-      >
-        <IconCookie className="w-6 h-6 text-primary" />
-      </Button>
-    );
-  }
+  // Animation variants for the cookie settings button
+  const buttonVariants = {
+    hidden: { opacity: 0, scale: 0 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: { 
+        duration: 0.3,
+        ease: "easeOut"
+      }
+    },
+    exit: { 
+      opacity: 0, 
+      scale: 0,
+      transition: { 
+        duration: 0.2,
+        ease: "easeIn"
+      }
+    }
+  };
+
+  // Animation variants for the modal
+  const modalBackdropVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        duration: 0.3
+      }
+    },
+    exit: { 
+      opacity: 0,
+      transition: { 
+        duration: 0.2,
+        when: "afterChildren"
+      }
+    }
+  };
+
+  const modalContentVariants = {
+    hidden: { 
+      opacity: 0, 
+      scale: 0.8, 
+      x: "-20%", 
+      y: "20%", 
+      originX: 0,
+      originY: 1
+    },
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      x: "0%", 
+      y: "0%",
+      transition: { 
+        type: "spring",
+        damping: 25,
+        stiffness: 300,
+        delay: 0.1
+      }
+    },
+    exit: { 
+      opacity: 0, 
+      scale: 0.8,
+      transition: { 
+        duration: 0.2,
+        ease: "easeIn"
+      }
+    }
+  };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-content1 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6">
-          <div className="flex gap-x-3 items-center mb-4">
-          <Logo className="w-24 h-24 mx-auto" />
-          <h2 className="text-2xl font-bold text-primary">Cookie Consent</h2>
-          </div>
+    <>
+      <AnimatePresence>
+        {!isOpen && (
+          <motion.div
+            key="settings-button"
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={buttonVariants}
+            className="fixed bottom-4 left-4 z-50"
+          >
+            <Button
+              onPress={openConsentSettings}
+              className="hidden min-w-0 md:block bg-default-200 rounded-full shadow-md text-sm"
+              aria-label="Cookie settings"
+            >
+              <IconCookie className="w-6 h-6 text-primary" />
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-          {!showPreferences ? (
-            <>
-            <div className="prose prose-strong:font-medium">
-              <ReactMarkdown>
-                {consentText}
-              </ReactMarkdown>
-              </div>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            key="cookie-modal"
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={modalBackdropVariants}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          >
+            <motion.div 
+              variants={modalContentVariants}
+              className="bg-content1 rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            >
+              <div className="p-6">
+                <div className="flex gap-x-3 items-center mb-4">
+                  <Logo className="w-24 h-24 mx-auto" />
+                  <h2 className="text-2xl font-bold text-primary">Cookie Consent</h2>
+                </div>
 
-              <div className="flex flex-wrap gap-3 mt-6 w-full justify-between">
-                <Button
-                  onPress={() => setShowPreferences(true)}
-                  className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
-                >
-                  <IconSettings className="mr-2" />
-                  Cookie Preferences
-                </Button>
-                <div className="flex gap-3">
-                <Button
-                  onPress={acceptAnalytics}
-                  className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
-                >
-                  <IconAdCircleOff className="mr-2 text-default-600" />
-                  Reject Marketing
-                </Button>
-                <Button
-                  onPress={acceptAll}
-                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary transition"
-                >
-                  <IconCircleCheck className="mr-2" />
-                  Accept All
-                </Button>
+                <AnimatePresence mode="wait">
+                  {!showPreferences ? (
+                    <motion.div
+                      key="main-content"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div className="prose prose-strong:font-medium">
+                        <ReactMarkdown>
+                          {consentText}
+                        </ReactMarkdown>
+                      </div>
+
+                      <div className="flex flex-wrap gap-3 mt-6 w-full justify-between">
+                        <Button
+                          onPress={() => setShowPreferences(true)}
+                          className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
+                        >
+                          <IconSettings className="mr-2" />
+                          Cookie Preferences
+                        </Button>
+                        <div className="flex gap-3">
+                          <Button
+                            onPress={acceptAnalytics}
+                            className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
+                          >
+                            <IconAdCircleOff className="mr-2 text-default-600" />
+                            Reject Marketing
+                          </Button>
+                          <Button
+                            onPress={acceptAll}
+                            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary transition"
+                          >
+                            <IconCircleCheck className="mr-2" />
+                            Accept All
+                          </Button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="preferences-content"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <p className="mb-4">
+                        Customize your cookie preferences. Necessary cookies help make
+                        the website usable by enabling basic functions.
+                      </p>
+
+                      <div className="space-y-4 my-6">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="font-semibold">Necessary Cookies</h3>
+                            <p className="text-sm text-gray-500">
+                              Required for the website to function. Cannot be disabled.
+                            </p>
+                          </div>
+                          <div className="relative">
+                            <input
+                              type="checkbox"
+                              checked={preferences.necessary}
+                              disabled
+                              className="sr-only"
+                            />
+                            <div className="block bg-gray-300 w-14 h-8 rounded-full"></div>
+                            <div
+                              className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform translate-x-6`}
+                            ></div>
+                          </div>
+                        </div>
+
+                        <motion.div 
+                          className="flex items-center justify-between"
+                          whileHover={{ scale: 1.02 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <div>
+                            <h3 className="font-semibold">Analytics Cookies</h3>
+                            <p className="text-sm text-gray-500">
+                              Help us improve by tracking anonymous usage data.
+                            </p>
+                          </div>
+                          <div
+                            className="relative cursor-pointer"
+                            onClick={() => handlePreferenceChange("analytics")}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={preferences.analytics}
+                              onChange={() => {}} // Empty handler since onClick is on parent
+                              className="sr-only"
+                            />
+                            <div
+                              className={`block w-14 h-8 rounded-full ${preferences.analytics ? "bg-blue-600" : "bg-gray-300"}`}
+                            ></div>
+                            <motion.div
+                              className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full`}
+                              animate={{
+                                x: preferences.analytics ? 24 : 0
+                              }}
+                              transition={{
+                                type: "spring",
+                                stiffness: 500,
+                                damping: 30
+                              }}
+                            ></motion.div>
+                          </div>
+                        </motion.div>
+
+                        <motion.div 
+                          className="flex items-center justify-between"
+                          whileHover={{ scale: 1.02 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <div>
+                            <h3 className="font-semibold">Marketing Cookies</h3>
+                            <p className="text-sm text-gray-500">
+                              Allow us to provide personalized ads on other platforms.
+                            </p>
+                          </div>
+                          <div
+                            className="relative cursor-pointer"
+                            onClick={() => handlePreferenceChange("marketing")}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={preferences.marketing}
+                              onChange={() => {}} // Empty handler since onClick is on parent
+                              className="sr-only"
+                            />
+                            <div
+                              className={`block w-14 h-8 rounded-full ${preferences.marketing ? "bg-blue-600" : "bg-gray-300"}`}
+                            ></div>
+                            <motion.div
+                              className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full`}
+                              animate={{
+                                x: preferences.marketing ? 24 : 0
+                              }}
+                              transition={{
+                                type: "spring",
+                                stiffness: 500,
+                                damping: 30
+                              }}
+                            ></motion.div>
+                          </div>
+                        </motion.div>
+
+                        <motion.div 
+                          className="flex items-center justify-between"
+                          whileHover={{ scale: 1.02 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <div>
+                            <h3 className="font-semibold">Preferences Cookies</h3>
+                            <p className="text-sm text-gray-500">
+                              Remember your settings and provide enhanced functionality.
+                            </p>
+                          </div>
+                          <div
+                            className="relative cursor-pointer"
+                            onClick={() => handlePreferenceChange("preferences")}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={preferences.preferences}
+                              onChange={() => {}} // Empty handler since onClick is on parent
+                              className="sr-only"
+                            />
+                            <div
+                              className={`block w-14 h-8 rounded-full ${preferences.preferences ? "bg-blue-600" : "bg-gray-300"}`}
+                            ></div>
+                            <motion.div
+                              className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full`}
+                              animate={{
+                                x: preferences.preferences ? 24 : 0
+                              }}
+                              transition={{
+                                type: "spring",
+                                stiffness: 500,
+                                damping: 30
+                              }}
+                            ></motion.div>
+                          </div>
+                        </motion.div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-3 mt-6">
+                        <Button
+                          onPress={() => setShowPreferences(false)}
+                          className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
+                        >
+                          Back
+                        </Button>
+                        <Button
+                          onPress={acceptAnalytics}
+                          className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
+                        >
+                          No Marketing
+                        </Button>
+                        <Button
+                          onPress={savePreferences}
+                          className="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-700 transition"
+                        >
+                          Save Preferences
+                        </Button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <div className="mt-6 pt-4 border-t border-gray-200 text-sm text-gray-500">
+                  <p>
+                    To learn more about how we use cookies, please see our{" "}
+                    <Link
+                      href="/cookies"
+                      className="text-primary hover:underline"
+                    >
+                      Cookie Policy
+                    </Link>
+                    .
+                  </p>
                 </div>
               </div>
-            </>
-          ) : (
-            <>
-              <p className="mb-4">
-                Customize your cookie preferences. Necessary cookies help make
-                the website usable by enabling basic functions.
-              </p>
-
-              <div className="space-y-4 my-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">Necessary Cookies</h3>
-                    <p className="text-sm text-gray-500">
-                      Required for the website to function. Cannot be disabled.
-                    </p>
-                  </div>
-                  <div className="relative">
-                    <input
-                      type="checkbox"
-                      checked={preferences.necessary}
-                      disabled
-                      className="sr-only"
-                    />
-                    <div className="block bg-gray-300 w-14 h-8 rounded-full"></div>
-                    <div
-                      className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform translate-x-6`}
-                    ></div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">Analytics Cookies</h3>
-                    <p className="text-sm text-gray-500">
-                      Help us improve by tracking anonymous usage data.
-                    </p>
-                  </div>
-                  <div
-                    className="relative cursor-pointer"
-                    onClick={() => handlePreferenceChange("analytics")}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={preferences.analytics}
-                      onChange={() => {}} // Empty handler since onClick is on parent
-                      className="sr-only"
-                    />
-                    <div
-                      className={`block w-14 h-8 rounded-full ${preferences.analytics ? "bg-blue-600" : "bg-gray-300"}`}
-                    ></div>
-                    <div
-                      className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform ${preferences.analytics ? "translate-x-6" : ""}`}
-                    ></div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">Marketing Cookies</h3>
-                    <p className="text-sm text-gray-500">
-                      Allow us to provide personalized ads on other platforms.
-                    </p>
-                  </div>
-                  <div
-                    className="relative cursor-pointer"
-                    onClick={() => handlePreferenceChange("marketing")}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={preferences.marketing}
-                      onChange={() => {}} // Empty handler since onClick is on parent
-                      className="sr-only"
-                    />
-                    <div
-                      className={`block w-14 h-8 rounded-full ${preferences.marketing ? "bg-blue-600" : "bg-gray-300"}`}
-                    ></div>
-                    <div
-                      className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform ${preferences.marketing ? "translate-x-6" : ""}`}
-                    ></div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">Preferences Cookies</h3>
-                    <p className="text-sm text-gray-500">
-                      Remember your settings and provide enhanced functionality.
-                    </p>
-                  </div>
-                  <div
-                    className="relative cursor-pointer"
-                    onClick={() => handlePreferenceChange("preferences")}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={preferences.preferences}
-                      onChange={() => {}} // Empty handler since onClick is on parent
-                      className="sr-only"
-                    />
-                    <div
-                      className={`block w-14 h-8 rounded-full ${preferences.preferences ? "bg-blue-600" : "bg-gray-300"}`}
-                    ></div>
-                    <div
-                      className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform ${preferences.preferences ? "translate-x-6" : ""}`}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-wrap gap-3 mt-6">
-                <Button
-                  onPress={() => setShowPreferences(false)}
-                  className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
-                >
-                  Back
-                </Button>
-                <Button
-                  onPress={acceptAnalytics}
-                  className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
-                >
-                  No Marketing
-                </Button>
-                <Button
-                  onPress={savePreferences}
-                  className="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-700 transition"
-                >
-                  Save Preferences
-                </Button>
-              </div>
-            </>
-          )}
-
-          <div className="mt-6 pt-4 border-t border-gray-200 text-sm text-gray-500">
-            <p>
-              To learn more about how we use cookies, please see our{" "}
-              <Link
-                href="/cookies"
-                className="text-primary hover:underline"
-              >
-                Cookie Policy
-              </Link>
-              .
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
