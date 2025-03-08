@@ -355,8 +355,7 @@ const CookieConsent = () => {
 export default CookieConsent;
 
 const consentText = `
- We use cookies **to anonymously analyse traffic and enhance your experience and features of this web application**.
+We use cookies **to anonymously analyse traffic and enhance your experience and features of this web application**.
 
-We'd appreciate it if you allowed analytics and user-experience cookies, even if you prefer not to accept all cookies.
-
+We'd appreciate it if you allowed analytics and user-experience cookies by selecting **Reject Marketing**, even if you prefer not to accept all cookies.
               `;
