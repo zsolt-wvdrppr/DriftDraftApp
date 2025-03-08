@@ -7,16 +7,16 @@ import { Divider, Link } from "@heroui/react";
 const Footer = () => {
   
   return (
-    <footer className="w-full flex flex-col items-center gap-y-4 pt-10 pb-4 text-gray-600 text-sm">
+    <footer className="p-2 w-full flex flex-col items-center gap-y-4 pt-10 pb-4 text-gray-600 text-sm">
       <Divider />
 
       {/* Privacy & T&C */}
-      <div className="flex gap-x-4">
+      <div className="flex gap-x-4 justify-between">
         <Link
           href="https://wavedropper.com/privacy"
           isExternal
           underline="hover"
-          className="text-highlightBlue"
+          className="text-default-500 text-sm text-center"
         >
           Privacy Policy
         </Link>
@@ -24,13 +24,18 @@ const Footer = () => {
           href="https://wavedropper.com/terms"
           isExternal
           underline="hover"
-          className="text-highlightBlue"
+          className="text-default-500 text-sm text-center"
         >
           Terms & Conditions
         </Link>
+        <Link
+          href="/cookies"
+          underline="hover"
+          className="text-default-500 text-sm text-center"
+        >
+          Cookie Policy
+        </Link>
       </div>
-
-      <WavedropperSignature />
 
       {/* reCAPTCHA Disclaimer (smaller and less prominent) */}
       <p className="max-w-2xl text-center text-gray-500 text-xs">
@@ -54,6 +59,9 @@ const Footer = () => {
         </Link>
         .
       </p>
+
+      <WavedropperSignature />
+
     </footer>
   );
 };
