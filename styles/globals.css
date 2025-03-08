@@ -45,7 +45,3 @@ input:-webkit-autofill {
   .grecaptcha-badge {
     @apply !hidden;
   }
-
-  button #hj-survey-toggle-1 {
-    @apply opacity-80;
-  }
