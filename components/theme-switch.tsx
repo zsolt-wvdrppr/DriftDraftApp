@@ -1,12 +1,13 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { SwitchProps, useSwitch } from "@heroui/react";
 import { useTheme } from "next-themes";
 import { useIsSSR } from "@react-aria/ssr";
 import clsx from "clsx";
 
+import logger from "@/lib/logger";
 import { SunFilledIcon, MoonFilledIcon } from "@/components/icons";
 
 export interface ThemeSwitchProps {
@@ -18,12 +19,36 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
   className,
   classNames,
 }) => {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const isSSR = useIsSSR();
+  
+  // Initialize with null and set it after theme resolves
+  const [themeLogo, setThemeLogo] = useState<string | null>(null);
 
   const onChange = () => {
-    theme === "light" ? setTheme("dark") : setTheme("light");
+    resolvedTheme === "light" ? setTheme("dark") : setTheme("light");
   };
+
+  // Effect to update the theme logo based on the current theme
+  useEffect(() => {
+    // Use resolvedTheme instead of theme for more reliable detection
+    // resolvedTheme will be the actual theme currently showing
+    if (!resolvedTheme) return;
+    
+    let _themeLogo = "";
+
+    if (resolvedTheme === "light") {
+      _themeLogo = "moon";
+    } else {
+      _themeLogo = "sun";
+    }
+
+    setThemeLogo(_themeLogo);
+
+    logger.debug("ThemeSwitch: resolvedTheme", resolvedTheme);
+    logger.debug("ThemeSwitch: themeLogo", _themeLogo);
+
+  }, [resolvedTheme]);
 
   const {
     Component,
@@ -33,8 +58,8 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
     getInputProps,
     getWrapperProps,
   } = useSwitch({
-    isSelected: theme === "light" || isSSR,
-    "aria-label": `Switch to ${theme === "light" || isSSR ? "dark" : "light"} mode`,
+    isSelected: resolvedTheme === "light" || isSSR,
+    "aria-label": `Switch to ${resolvedTheme === "light" || isSSR ? "dark" : "light"} mode`,
     onChange,
   });
 
@@ -44,7 +69,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
         className: clsx(
           "px-px transition-opacity hover:opacity-80 cursor-pointer",
           className,
-          classNames?.base,
+          classNames?.base
         ),
       })}
     >
@@ -66,13 +91,14 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
               "px-0",
               "mx-0",
             ],
-            classNames?.wrapper,
+            classNames?.wrapper
           ),
         })}
       >
-        {!isSelected || isSSR ? (
+        {themeLogo === "sun" && (
           <SunFilledIcon size={22} />
-        ) : (
+        )}
+        {themeLogo === "moon" && (
           <MoonFilledIcon size={22} />
         )}
       </div>
