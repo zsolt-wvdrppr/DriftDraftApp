@@ -42,6 +42,7 @@ const config: Config = {
         highlightPink: '#FF006E',
         highlightPurple: '#8338EC',
         highlightBlue: '#3A86FF',
+        brandPink: '#fa00fa'
       },
       screens: {
         'mobile2': '414px',

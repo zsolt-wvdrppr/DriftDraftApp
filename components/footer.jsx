@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import WavedropperSignature from "@/components/WavedropperSignature";
 import { Divider, Link } from "@heroui/react";
 
 const Footer = () => {
   
   return (
-    <footer className="p-2 w-full flex flex-col items-center gap-y-4 pt-10 pb-4 text-gray-600 text-sm">
+    <footer className="p-2 w-full flex flex-col items-center gap-y-4 pt-10 pb-4 text-default-500 text-sm">
       <Divider />
 
       {/* Privacy & T&C */}
@@ -38,7 +38,7 @@ const Footer = () => {
       </div>
 
       {/* reCAPTCHA Disclaimer (smaller and less prominent) */}
-      <p className="max-w-2xl text-center text-gray-500 text-xs">
+      <p className="max-w-2xl text-center text-default-500 text-xs">
         This site is protected by reCAPTCHA and subject to the{" "}
         <Link
           href="https://policies.google.com/privacy"

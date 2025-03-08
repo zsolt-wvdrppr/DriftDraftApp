@@ -340,7 +340,7 @@ const CookieConsent = () => {
               To learn more about how we use cookies, please see our{" "}
               <Link
                 href="/cookies"
-                className="text-blue-600 hover:underline"
+                className="text-primary hover:underline"
               >
                 Cookie Policy
               </Link>

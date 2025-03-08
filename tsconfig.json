@@ -25,6 +25,6 @@
       "@/components/*": ["components/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/page.js", "tailwind.config.js", "app/login/page.js", "app/layout.tsx", "app/signup/page.js", "app/providers.js", "components/nav-layout/MyActivitiesBtn.js", "app/api/add-payment-method/route.ts", "components/account/payment_method.jsx", "app/api/deleteUser/route.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/page.js", "tailwind.config.js", "app/login/page.js", "app/layout.tsx", "app/signup/page.js", "app/providers.js", "components/nav-layout/MyActivitiesBtn.js", "app/api/add-payment-method/route.ts", "components/account/payment_method.jsx", "app/api/deleteUser/route.ts", "app/docs/[[...slug]]/page.jsx"],
   "exclude": ["node_modules"]
 }
