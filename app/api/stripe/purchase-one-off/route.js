@@ -74,7 +74,7 @@ export async function POST(req) {
 
     const defaultPaymentMethod = paymentMethods.data[0].id; // ✅ Use the first saved payment method
 
-    // ✅ Step 1: Create and confirm PaymentIntent with automatic tax enabled
+    // ✅ Step 1: Create and confirm PaymentIntent (charges the user immediately)
     let paymentIntent;
 
     try {
@@ -89,15 +89,12 @@ export async function POST(req) {
           enabled: true,
           allow_redirects: "never", // ✅ No redirect-based payments
         },
+        automatic_tax: { enabled: true },
         metadata: {
           userId: userId.toString(),
           priceId: priceId.toString(),
           creditAmount: creditsToAdd.toString(),
         },
-        // ✅ Enable automatic tax calculation
-        automatic_tax: {
-          enabled: true
-        }
       });
 
       logger.info(`✅ Payment succeeded for user ${userId}: ${paymentIntent.id}`);
@@ -108,15 +105,9 @@ export async function POST(req) {
       return NextResponse.json({ error: err.message }, { status: 400 });
     }
 
-    return NextResponse.json({ 
-      success: true,
-      paymentIntentId: paymentIntent.id,
-      amount: paymentIntent.amount,
-    });
+    return NextResponse.json({ success: true });
 
   } catch (error) {
-    logger.error(`❌ API Error: ${error.message}`);
-
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
