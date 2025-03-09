@@ -102,8 +102,8 @@ export const showHintToast = (
     () => (
       <div className="p-4 shadow-lg rounded-lg bg-neutralSnow dark:bg-zinc-900 md:bg-neutralSnow/95 dark:md:bg-zinc-900 max-h-[90vh] overflow-y-auto select-text">
         <h4 className="font-bold dark:text-neutralSnow">Hint</h4>
+        <div className="prose py-6 dark:text-slate-200">
         <ReactMarkdown
-          className="prose py-6 dark:text-slate-200"
           components={{
             a: ({ node, ...props }) => (
               <span className="relative flex flex-wrap">
@@ -148,6 +148,7 @@ export const showHintToast = (
         >
           {`${hints}`}
         </ReactMarkdown>
+        </div>
         {userMsg && <p className="text-sm pb-6 text-right">{userMsg}</p>}
         <div className="flex justify-between">
           <Button
@@ -198,8 +199,8 @@ export const showWhyWeAskToast = (reason, whyToastRef, onDismiss) => {
 
   const newToastId = toast.custom(
     () => (
-      <div className="p-4 shadow-lg rounded-lg bg-neutralSnow dark:bg-zinc-900 md:bg-neutralSnow/95 dark:md:bg-zinc-900 max-h-[90vh] overflow-y-auto select-text">
-        <ReactMarkdown className="prose">{reason}</ReactMarkdown>
+      <div className="p-4 prose shadow-lg rounded-lg bg-neutralSnow dark:bg-zinc-900 md:bg-neutralSnow/95 dark:md:bg-zinc-900 max-h-[90vh] overflow-y-auto select-text">
+        <ReactMarkdown>{reason}</ReactMarkdown>
         <div className="flex justify-end">
           <Button
             className="mt-4"

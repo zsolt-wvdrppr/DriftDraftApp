@@ -42,9 +42,10 @@ const HintButton = ({
 
   const handleClick = () => {
     handleToast('hint');
+    logger.debug('HintButton: handleClick');
     setNewHintAvailable(false);
     setLastHint(hint);
-  };
+  };  
 
   useEffect(() => {
     updateFormData("newHintAvailable", newHintAvailable);
