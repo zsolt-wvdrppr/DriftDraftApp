@@ -175,21 +175,31 @@ const SubscriptionAndTopup = () => {
             ) : (
               <p className="text-lg text-center">No active subscription</p>
             )}
-            <div id="manage-button" className="">
-              <Button
-                onPress={onPlanOpen}
-                className="bg-primary text-white font-semibold w-full"
-                isDisabled={
-                  (services?.planExpiresAt && expiryDate > now) ||
-                  !paymentMethod ||
-                  paymentMethodLoading
-                }
-              >
-                {services?.hasActiveSubscription
-                  ? "Change Subscription"
-                  : "Select Plan"}
-              </Button>
-            </div>
+            {!services?.hasActiveSubscription ? (
+              <div id="manage-button" className="">
+                <Button
+                  onPress={onPlanOpen}
+                  className="bg-primary text-white font-semibold w-full"
+                  isDisabled={
+                    (services?.planExpiresAt && expiryDate > now) ||
+                    !paymentMethod ||
+                    paymentMethodLoading
+                  }
+                >
+                  Select Plan
+                </Button>
+              </div>
+            ) : (
+              <div className="h-10 flex items-end justify-center">
+                {services?.planExpiresAt && expiryDate > now && (
+                  <p className="text-danger text-center text-sm max-w-52 opacity-80 whitespace-pre-wrap">
+                    {`Plan is set to cancel on\n${formatDateToLocal(
+                      services?.planExpiresAt || ""
+                    )}.`}
+                  </p>
+                )}
+              </div>
+            )}
             {services?.hasActiveSubscription && !services.planExpiresAt && (
               <Button
                 onPress={onCancelOpen}
@@ -256,9 +266,9 @@ const SubscriptionAndTopup = () => {
           <TransferCredit
             onSuccess={refreshPaidServicesData}
             isDisabled={
-              (!paymentMethodLoading &&
+              !paymentMethodLoading &&
               !paymentMethod &&
-              services?.topUpCredits < 0)
+              services?.topUpCredits < 0
             }
           />
         </Card>
@@ -349,9 +359,13 @@ const SubscriptionAndTopup = () => {
       <Tooltip
         anchorSelect="#topup-button"
         place="top"
-        className="break-words max-w-60 text-justify"
+        className="break-words max-w-60"
       >
-        {`Add or update your payment method to top-up credits.`}
+        {paymentMethod && !paymentMethodLoading ? (
+          <span>{`Top-up your credits. Select from multiple options.`}</span>
+        ) : (
+          <span>{`Add or update your payment method to top-up credits.`}</span>
+        )}
       </Tooltip>
     </div>
   );

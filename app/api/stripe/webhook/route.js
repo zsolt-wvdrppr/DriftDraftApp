@@ -106,7 +106,7 @@ export async function POST(req) {
     // ✅ Fetch user by subscription ID
     const { data: user, error: userError } = await supabase
       .from("profiles")
-      .select("user_id, allowance_credits, pending_credits")
+      .select("user_id, allowance_credits")
       .eq("subscription_id", subscriptionId)
       .single();
 
@@ -138,19 +138,11 @@ export async function POST(req) {
       );
     }
 
-    // ✅ Deduct pending credits before resetting allowance credits
-    const newAllowance = Math.max(creditsToAdd - user.pending_credits, 0);
-
-    logger.info(
-      `✅ [CREDIT RESET] ${creditsToAdd} new credits, ${user.pending_credits} pending credits deducted. Final balance: ${newAllowance}`
-    );
-
     // ✅ Update user credits
     const { error: updateError } = await supabase
       .from("profiles")
       .update({
-        allowance_credits: newAllowance, // Ensures pending_credits is deducted
-        pending_credits: 0, // Reset pending_credits after applying deduction
+        allowance_credits: creditsToAdd, // Add credits to allowance
       })
       .eq("user_id", user.user_id);
 
@@ -164,7 +156,7 @@ export async function POST(req) {
     }
 
     logger.info(
-      `✅ [CREDITS UPDATED] Successfully set ${newAllowance} credits for user: ${user.user_id}`
+      `✅ [CREDITS UPDATED] Successfully set ${creditsToAdd} credits for user: ${user.user_id}`
     );
 
     return NextResponse.json({ success: true });
@@ -295,6 +287,194 @@ export async function POST(req) {
       return NextResponse.json(
         { error: "Failed to clear subscription details." },
         { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ success: true });
+  }
+
+  // ✅ Handle payment_intent.requires_action (3D Secure needed)
+  if (event.type === "payment_intent.requires_action") {
+    const paymentIntent = event.data.object;
+    let subscriptionId = paymentIntent.metadata?.subscription_id;
+
+    // If subscription_id isn't in metadata, try to find it from the invoice
+    if (!subscriptionId && paymentIntent.invoice) {
+      try {
+        const invoice = await stripe.invoices.retrieve(paymentIntent.invoice);
+
+        subscriptionId = invoice.subscription;
+      } catch (err) {
+        logger.error(`❌ Error fetching invoice: ${err.message}`);
+      }
+    }
+
+    if (subscriptionId) {
+      logger.info(
+        `🔹 Payment requires 3D Secure authentication for subscription: ${subscriptionId}`
+      );
+    } else {
+      logger.info(
+        `🔹 Payment requires 3D Secure authentication (no subscription ID available)`
+      );
+    }
+
+    return NextResponse.json({ success: true });
+  }
+
+  // ✅ Handle invoice.payment_action_required
+  if (event.type === "invoice.payment_action_required") {
+    const invoice = event.data.object;
+    const subscriptionId = invoice.subscription;
+
+    logger.info(
+      `🔹 Invoice payment requires action for subscription: ${subscriptionId}`
+    );
+
+    return NextResponse.json({ success: true });
+  }
+
+  // ✅ Handle invoice.payment_failed
+  if (event.type === "invoice.payment_failed") {
+    const invoice = event.data.object;
+    const subscriptionId = invoice.subscription;
+    const customerId = invoice.customer;
+
+    logger.info(
+      `🔹 Invoice payment failed for subscription: ${subscriptionId}`
+    );
+
+    // Try to find user by customer ID first (more reliable than subscription ID)
+    let userData = null;
+    let userError = null;
+
+    if (customerId) {
+      ({ data: userData, error: userError } = await supabase
+        .from("profiles")
+        .select("user_id, email")
+        .eq("stripe_customer_id", customerId)
+        .single());
+    }
+
+    // If not found by customer ID, try subscription ID
+    if ((!userData || userError) && subscriptionId) {
+      ({ data: userData, error: userError } = await supabase
+        .from("profiles")
+        .select("user_id, email")
+        .eq("subscription_id", subscriptionId)
+        .single());
+    }
+
+    if (userError || !userData) {
+      logger.error(
+        `❌ User not found for subscription: ${subscriptionId} or customer: ${customerId}`
+      );
+
+      // Do not return error, just acknowledge the webhook
+      return NextResponse.json({ received: true });
+    }
+
+    logger.info(`✅ Recorded payment failure for user: ${userData.user_id}`);
+
+    return NextResponse.json({ success: true });
+  }
+
+  // ✅ Handle customer.subscription.created
+  // ✅ Handle customer.subscription.created - Save subscription details
+  if (event.type === "customer.subscription.created") {
+    const subscription = event.data.object;
+    const subscriptionId = subscription.id;
+    const customerId = subscription.customer;
+
+    logger.info(
+      `🔹 New subscription created: ${subscriptionId} for customer: ${customerId}`
+    );
+
+    try {
+      // Find user by customer ID
+      const { data: user, error: userError } = await supabase
+        .from("profiles")
+        .select("user_id")
+        .eq("stripe_customer_id", customerId)
+        .single();
+
+      if (userError || !user) {
+        logger.error(`❌ User not found for customer: ${customerId}`);
+
+        return NextResponse.json({ received: true });
+      }
+
+      // Get plan/tier information
+      let tierName = "Unknown";
+
+      try {
+        if (subscription.items.data.length > 0) {
+          const priceId = subscription.items.data[0].price.id;
+          const price = await stripe.prices.retrieve(priceId, {
+            expand: ["product"],
+          });
+
+          tierName = price.product.name || "Unknown";
+        }
+      } catch (tierError) {
+        logger.warn(`⚠️ Error finding tier name: ${tierError.message}`);
+      }
+
+      // Get dates
+      const planStartsAt = new Date(
+        subscription.current_period_start * 1000
+      ).toISOString();
+      const planRenewsAt = new Date(
+        subscription.current_period_end * 1000
+      ).toISOString();
+
+      // Save subscription details to user profile
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({
+          subscription_id: subscriptionId,
+          plan_starts_at: planStartsAt,
+          plan_renews_at: planRenewsAt,
+          tier: tierName,
+        })
+        .eq("user_id", user.user_id);
+
+      if (updateError) {
+        logger.error(
+          `❌ Failed to save subscription details: ${updateError.message}`
+        );
+
+        return NextResponse.json({ received: true });
+      }
+
+      logger.info(`✅ Saved subscription details for user: ${user.user_id}`);
+
+      // Check payment status
+      if (subscription.status === "incomplete" && subscription.latest_invoice) {
+        logger.info(
+          `🔹 Subscription is incomplete, checking payment intent status`
+        );
+
+        try {
+          const invoice = await stripe.invoices.retrieve(
+            subscription.latest_invoice,
+            {
+              expand: ["payment_intent"],
+            }
+          );
+
+          if (invoice.payment_intent?.status === "requires_action") {
+            logger.info(
+              `🔹 Payment requires authentication for subscription: ${subscriptionId}`
+            );
+          }
+        } catch (error) {
+          logger.error(`❌ Error fetching invoice: ${error.message}`);
+        }
+      }
+    } catch (error) {
+      logger.error(
+        `❌ Error processing subscription creation: ${error.message}`
       );
     }
 
