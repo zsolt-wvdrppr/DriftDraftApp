@@ -1,12 +1,39 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { IconLogin2, IconLogout } from "@tabler/icons-react";
 import { Button } from "@heroui/react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { useSessionContext } from "@/lib/SessionProvider";
 import logger from "@/lib/logger";
 
 export const LogInBtn = ({ onChange, className, noTitle = false }) => {
+  const [redirect, setRedirect] = useState(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const urlRedirect = searchParams.get("redirect");
+      const urlReferral = searchParams.get("ref");
+
+      if (urlReferral) {
+        setRedirect(`${urlRedirect}?ref=${urlReferral}`);
+      } else if (urlRedirect) {
+        setRedirect(urlRedirect);
+      }
+    }
+  }, []);
+
+  const handleClick = async () => {
+    logger.info("Logging in...");
+    router.push(redirect ? `/login?redirect=${redirect}` : "/login");
+    await onChange();
+  }
+
   return (
-    <Button className={className} onPress={onChange}>
+    <Button className={className} onPress={handleClick}>
       <IconLogin2 className="text-success" size={26} />
       {!noTitle && <span>Login</span>}
     </Button>

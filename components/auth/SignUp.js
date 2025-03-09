@@ -32,17 +32,22 @@ export default function SignUp() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const urlRedirect = searchParams.get("redirect");
-      const urlReferral = searchParams.get("referral");
+      const urlReferral = searchParams.get("ref");
 
-      if (urlRedirect) setRedirect(urlRedirect);
-      setReferral(urlReferral); // ✅ Now `referral` is `null` if missing, ensuring reactivity
+      setReferral(urlReferral);
+
+      if (urlReferral) {
+        setRedirect(`${urlRedirect}?ref=${urlReferral}`);
+      } else if (urlRedirect) {
+        setRedirect(urlRedirect);
+      }
     }
   }, []);
 
   useEffect(() => {
     if (user && referral !== undefined) {
       // ✅ Ensure referral has been resolved
-      const targetUrl = `${redirect}${referral ? `?referral=${referral}` : ""}`;
+      const targetUrl = `${redirect}${referral ? `?ref=${referral}` : ""}`;
 
       router.replace(targetUrl);
     }
@@ -102,9 +107,12 @@ export default function SignUp() {
     setError(null);
 
     try {
-      const redirectPath =
-        new URLSearchParams(window.location.search).get("redirect") ||
-        "/activities";
+      const redirectParam = new URLSearchParams(window.location.search).get(
+        "redirect"
+      );
+      const redirectPath = redirectParam
+        ? `?redirect=${redirectParam}`
+        : "/activities";
 
       logger.info(`${window.location.origin}${redirectPath}`);
 
@@ -115,7 +123,7 @@ export default function SignUp() {
           emailRedirectTo: `${window.location.origin}${redirectPath}`,
           data: {
             full_name: name,
-            referral_name: referralName || null, // ✅ Store referral name if exists
+            referral_name: referral, // ✅ Store referral name if exists
           },
         },
       });
@@ -225,7 +233,14 @@ export default function SignUp() {
             {loading ? "Signing up..." : "Sign Up"}
           </Button>
           <p className="text-center text-small">
-            <Link href={`/login?redirect=${encodeURIComponent(redirect)}`} size="sm">
+            <Link
+              href={
+                redirect
+                  ? `/login?redirect=${encodeURIComponent(redirect)}`
+                  : "/login"
+              }
+              size="sm"
+            >
               Already have an account? Log In
             </Link>
           </p>

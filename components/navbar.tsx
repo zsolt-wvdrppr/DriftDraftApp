@@ -23,7 +23,6 @@ import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import {  Logo } from "@/components/icons";
 import { useAuth } from "@/lib/AuthContext";
-import { useRedirectAfterLogin } from "@/lib/hooks/useRedirectAfterLogin";
 import logger from "@/lib/logger";
 import { useReferral } from "@/lib/hooks/useReferral";
 import ConfirmationModal from "@/components/confirmation-modal";
@@ -31,7 +30,6 @@ import ConfirmationModal from "@/components/confirmation-modal";
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user } = useAuth();
-  const redirectAfterLogin = useRedirectAfterLogin();
 
   const { isReferralModalOpen, setReferralUser, removeReferralParam, referralName } = useReferral();
   const swipeHandlers = useSwipeable({
@@ -45,7 +43,6 @@ export const Navbar = () => {
 
   const handleLogIn = () => {
     setIsMenuOpen(false);
-    redirectAfterLogin();
   };
 
   // Modified handleLogout to close the menu
@@ -131,15 +128,6 @@ export const Navbar = () => {
           <NavbarItem className="flex gap-4 items-center">
             <ThemeSwitch aria-label="Theme Switch" className="h-10 md:hidden" />
           </NavbarItem>
-          {/*user && (
-            <NavbarItem className="flex gap-4 items-center">
-              <AccountBtn
-                noLabel={true}
-                user={user}
-                onPress={() => setIsMenuOpen(false)}
-              />
-            </NavbarItem>
-          )*/}
           <NavbarItem className="flex gap-4 items-center">
             {user && (
               <MyActivitiesBtn

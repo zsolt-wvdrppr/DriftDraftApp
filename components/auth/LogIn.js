@@ -23,23 +23,33 @@ export default function LogIn() {
   const { user } = useAuth(); // Access user state
   const [referral, setReferral] = useState(null);
   const [redirect, setRedirect] = useState(null);
+  const [buttonLogin, setButtonLogin] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-
       const urlRedirect = searchParams.get("redirect");
-      const urlReferral = searchParams.get("referral");
+      const urlReferral = searchParams.get("ref");
 
-      if (urlRedirect) setRedirect(urlRedirect);
-      setReferral(urlReferral); // ✅ Now `referral` is `null` if missing, ensuring reactivity
+      setReferral(urlReferral);
+
+      if (urlReferral) {
+        setRedirect(`${urlRedirect}?ref=${urlReferral}`);
+      } else if (urlRedirect) {
+        setRedirect(urlRedirect);
+      }
     }
   }, []);
 
   useEffect(() => {
-    if (user && referral !== undefined) { // ✅ Ensure referral has been resolved
-      const targetUrl = `${redirect}${referral ? `?referral=${referral}` : ""}`;
+    if (user && referral !== undefined && referral && !buttonLogin) {
+      // ✅ Ensure referral has been resolved
+      const targetUrl = `${redirect}${referral ? `?ref=${referral}` : ""}`;
 
       router.replace(targetUrl);
+      logger.debug("Replace Redirecting to:", targetUrl);
+    } else if (user && !referral && !buttonLogin) {
+      router.replace("/activities");
+      logger.debug("Replace Redirecting to:", redirect);
     }
   }, [user, referral, redirect]);
 
@@ -57,6 +67,7 @@ export default function LogIn() {
   }, [error]);
 
   const handleLogin = async (email, password) => {
+    setButtonLogin(true);
     setLoading(true);
     setError(null);
 
@@ -89,9 +100,15 @@ export default function LogIn() {
         return;
       }
 
-      const redirectUrl =
-        new URLSearchParams(window.location.search).get("redirect") ||
-        "/activities";
+      const redirectParameter = new URLSearchParams(window.location.search).get(
+        "redirect"
+      );
+
+      const redirectUrl = redirectParameter
+        ? decodeURIComponent(redirectParameter)
+        : "/activities";
+
+      logger.debug("Redirecting to:", redirectUrl);
 
       router.push(redirectUrl);
     } catch (err) {
@@ -103,6 +120,7 @@ export default function LogIn() {
   };
 
   const handleSocialLogin = async (provider) => {
+    setButtonLogin(true);
     setLoading(true);
     setError(null);
     try {
@@ -160,6 +178,7 @@ export default function LogIn() {
                 className="min-w-0"
                 type="button"
                 onPress={() => setPasswordVisible(!passwordVisible)}
+                onSuccess={() => setPasswordVisible(!passwordVisible)}
               >
                 {passwordVisible ? (
                   <Icon
@@ -193,7 +212,13 @@ export default function LogIn() {
           <Button color="primary" disabled={loading} type="submit">
             {loading ? "Logging in..." : "Log In"}
           </Button>
-          <Link href={`/signup?redirect=${encodeURIComponent(redirect)}`}>
+          <Link
+            href={
+              redirect
+                ? `/signup?redirect=${encodeURIComponent(redirect)}`
+                : "/signup"
+            }
+          >
             <span className="text-center text-sm m-auto">
               {"Don't have an account? Sign Up"}
             </span>
