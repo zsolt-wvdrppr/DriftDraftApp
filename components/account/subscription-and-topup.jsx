@@ -190,9 +190,9 @@ const SubscriptionAndTopup = () => {
                 </Button>
               </div>
             ) : (
-              <div className="h-10 flex items-end justify-center">
+              <div className="flex items-end justify-center">
                 {services?.planExpiresAt && expiryDate > now && (
-                  <p className="text-danger text-center text-sm max-w-52 opacity-80 whitespace-pre-wrap">
+                  <p className="text-danger text-center text-sm max-w-62 opacity-80 whitespace-pre-wrap">
                     {`Plan is set to cancel on\n${formatDateToLocal(
                       services?.planExpiresAt || ""
                     )}.`}
