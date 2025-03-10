@@ -180,6 +180,65 @@ export async function POST(req) {
     return NextResponse.json({ success: true });
   }
 
+  // ✅ Handle invoice.created event
+  if (event.type === "invoice.created") {
+    const invoice = event.data.object;
+    const subscriptionId = invoice.subscription;
+
+    // Skip if there's no subscription (likely a one-time purchase invoice)
+    if (!subscriptionId) {
+      logger.info(`🔹 Skipping non-subscription invoice: ${invoice.id}`);
+
+      return NextResponse.json({ ignored: true });
+    }
+
+    logger.info(
+      `🔹 Processing new invoice for subscription: ${subscriptionId}`
+    );
+
+    // ✅ Fetch user by subscription ID
+    const { data: user, error: userError } = await supabase
+      .from("profiles")
+      .select("user_id, subscription_id")
+      .eq("subscription_id", subscriptionId)
+      .single();
+
+    if (userError || !user) {
+      logger.error(`❌ User not found for subscription: ${subscriptionId}`);
+
+      return NextResponse.json(
+        { error: "User not found for this subscription." },
+        { status: 404 }
+      );
+    }
+
+    // Update the plan_renews_at date based on the invoice period_end
+    const planRenewsAt = new Date(invoice.period_end * 1000).toISOString();
+
+    // ✅ Update user's renewal date
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({
+        plan_renews_at: planRenewsAt,
+      })
+      .eq("user_id", user.user_id);
+
+    if (updateError) {
+      logger.error(`❌ Failed to update renewal date: ${updateError.message}`);
+
+      return NextResponse.json(
+        { error: "Failed to update renewal date." },
+        { status: 500 }
+      );
+    }
+
+    logger.info(
+      `✅ Updated renewal date for user: ${user.user_id} to ${planRenewsAt}`
+    );
+
+    return NextResponse.json({ success: true });
+  }
+
   // ✅ Handle invoice.paid event - This is for one-time purchases
   if (event.type === "invoice.paid") {
     const invoice = event.data.object;
@@ -494,20 +553,22 @@ export async function POST(req) {
     return NextResponse.json({ success: true });
   }
 
-  // ✅ Handle Subscription Cancellation (Immediate or at Period End)
+  // ✅ Enhanced Handler for Subscription Updates
   if (event.type === "customer.subscription.updated") {
     const subscription = event.data.object;
     const subscriptionId = subscription.id;
     const status = subscription.status;
+    const currentPeriodEnd = subscription.current_period_end;
+    const currentPeriodStart = subscription.current_period_start;
 
     logger.debug(
-      `🔹 Subscription ${subscriptionId} updated, status: ${status}`
+      `🔹 Subscription ${subscriptionId} updated, status: ${status}, period: ${new Date(currentPeriodStart * 1000).toISOString()} to ${new Date(currentPeriodEnd * 1000).toISOString()}`
     );
 
     // ✅ Fetch user by subscription ID
     const { data: user, error: userError } = await supabase
       .from("profiles")
-      .select("user_id, subscription_id")
+      .select("user_id, subscription_id, plan_renews_at")
       .eq("subscription_id", subscriptionId)
       .single();
 
@@ -522,9 +583,7 @@ export async function POST(req) {
 
     // ✅ Handle scheduled cancellation (cancel at period end)
     if (subscription.cancel_at_period_end) {
-      const planExpiresAt = new Date(
-        subscription.current_period_end * 1000
-      ).toISOString();
+      const planExpiresAt = new Date(currentPeriodEnd * 1000).toISOString();
 
       logger.debug(`✅ Subscription scheduled to cancel at: ${planExpiresAt}`);
 
@@ -547,6 +606,8 @@ export async function POST(req) {
           { status: 500 }
         );
       }
+
+      return NextResponse.json({ success: true });
     }
 
     // ✅ Handle immediate cancellation (subscription is completely canceled)
@@ -572,6 +633,131 @@ export async function POST(req) {
           { error: "Failed to update subscription cancellation." },
           { status: 500 }
         );
+      }
+
+      return NextResponse.json({ success: true });
+    }
+
+    // ✅ Handle subscription renewal - Check if this is a renewal by comparing period dates
+    if (status === "active") {
+      const planRenewsAt = new Date(currentPeriodEnd * 1000).toISOString();
+      const oldRenewalDate = user.plan_renews_at;
+
+      // Update the renewal date
+      const { error: updateDateError } = await supabase
+        .from("profiles")
+        .update({
+          plan_renews_at: planRenewsAt,
+        })
+        .eq("user_id", user.user_id);
+
+      if (updateDateError) {
+        logger.error(
+          `❌ Failed to update renewal date: ${updateDateError.message}`
+        );
+      } else {
+        logger.info(
+          `✅ Updated renewal date for user: ${user.user_id} to ${planRenewsAt}`
+        );
+      }
+
+      // Check if this is likely a renewal (period end has changed)
+      const isRenewal =
+        oldRenewalDate &&
+        new Date(oldRenewalDate).getTime() <
+          new Date(currentPeriodEnd * 1000).getTime();
+
+      // If this is a new period, update the credits
+      if (isRenewal) {
+        logger.info(
+          `🔹 Processing subscription renewal for user: ${user.user_id}`
+        );
+
+        try {
+          // Get the subscription item to find the price
+          if (subscription.items.data.length === 0) {
+            logger.error(
+              `❌ No subscription items found for subscription: ${subscriptionId}`
+            );
+
+            return NextResponse.json({ success: true }); // Continue with date update only
+          }
+
+          const priceId = subscription.items.data[0].price.id;
+
+          // Get credit amount from product metadata
+          const price = await stripe.prices.retrieve(priceId, {
+            expand: ["product"],
+          });
+
+          const creditsToAdd = price.product.metadata.credit_amount
+            ? parseInt(price.product.metadata.credit_amount, 10)
+            : 0;
+
+          if (!creditsToAdd) {
+            logger.error(
+              `❌ Invalid credit amount in metadata for price ID: ${priceId}`
+            );
+
+            return NextResponse.json({ success: true }); // Continue with date update only
+          }
+
+          // Update user credits
+          const { error: updateCreditsError } = await supabase
+            .from("profiles")
+            .update({
+              allowance_credits: creditsToAdd, // Set credits to allowance amount
+            })
+            .eq("user_id", user.user_id);
+
+          if (updateCreditsError) {
+            logger.error(
+              `❌ Failed to update credits: ${updateCreditsError.message}`
+            );
+
+            return NextResponse.json({ success: true }); // Continue with date update only
+          }
+
+          // Record the transaction - Correctly handling the promise
+          try {
+            const { error: transactionError } = await supabase
+              .from("credit_transactions")
+              .insert({
+                user_id: user.user_id,
+                amount: creditsToAdd,
+                type: "subscription_renewal",
+                stripe_invoice_id: subscription.latest_invoice,
+                metadata: {
+                  subscription_id: subscriptionId,
+                  price_id: priceId,
+                  product_name: price.product.name,
+                  renewal_date: new Date().toISOString(),
+                },
+              });
+
+            if (transactionError) {
+              logger.error(
+                `❌ Error recording transaction: ${transactionError.message}`
+              );
+            } else {
+              logger.info(`✅ Transaction recorded for subscription renewal`);
+            }
+          } catch (transactionError) {
+            logger.error(
+              `❌ Exception recording transaction: ${transactionError.message}`
+            );
+            // Continue since credits were updated successfully
+          }
+
+          logger.info(
+            `✅ [CREDITS UPDATED] Successfully set ${creditsToAdd} credits for user: ${user.user_id}`
+          );
+        } catch (error) {
+          logger.error(
+            `❌ Error processing subscription renewal: ${error.message}`
+          );
+          // Continue with renewal date update only
+        }
       }
     }
 
@@ -621,6 +807,16 @@ export async function POST(req) {
         { status: 500 }
       );
     }
+
+    return NextResponse.json({ success: true });
+  }
+
+  // Also add handlers for the test clock events if you're using them for testing
+  if (
+    event.type === "test_helpers.test_clock.advancing" ||
+    event.type === "test_helpers.test_clock.ready"
+  ) {
+    logger.info(`🔹 Test clock event: ${event.type}`);
 
     return NextResponse.json({ success: true });
   }

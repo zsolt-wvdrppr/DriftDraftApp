@@ -59,7 +59,7 @@ export default function ResetPassword() {
       toast.success(success, {
         position: "top-center",
         closeButton: true,
-        duration: Infinity,
+        duration: 5000,
         classNames: {
           toast: "text-green-800",
         },

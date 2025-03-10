@@ -188,7 +188,7 @@ export default function UserActivities() {
           </div>
         ),
         {
-          duration: Infinity,
+          duration: 5000,
           onDismiss: () => {
             toastRef.current = null;
           },

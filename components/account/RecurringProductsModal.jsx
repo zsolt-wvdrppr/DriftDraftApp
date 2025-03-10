@@ -15,7 +15,12 @@ import { toast } from "sonner";
 
 import { useAuth } from "@/lib/AuthContext";
 import logger from "@/lib/logger";
-import { IconStack, IconStack2, IconStack3, IconStethoscope } from "@tabler/icons-react";
+import {
+  IconStack,
+  IconStack2,
+  IconStack3,
+  IconStethoscope,
+} from "@tabler/icons-react";
 
 // Utility function to create key from a name
 const createKey = (name) => name.toLowerCase().replace(/ /g, "_");
@@ -30,7 +35,7 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
   const [clientSecret, setClientSecret] = useState("");
   const [subscriptionId, setSubscriptionId] = useState("");
   const [requiresAuth, setRequiresAuth] = useState(false);
-  
+
   const stripe = useStripe();
   const elements = useElements();
 
@@ -52,17 +57,23 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
   // Function to handle payment attempt
   const handlePaymentAttempt = async () => {
     if (!clientSecret || !stripe) return;
-    
+
     setRequiresAuth(true);
-    
+
     try {
-      logger.debug(`[RECURRING PRODUCTS] - Attempting payment with client secret`);
-      
+      logger.debug(
+        `[RECURRING PRODUCTS] - Attempting payment with client secret`
+      );
+
       // Use confirmCardPayment to trigger the authentication flow
-      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret);
-      
+      const { error, paymentIntent } =
+        await stripe.confirmCardPayment(clientSecret);
+
       if (error) {
-        logger.error(`[RECURRING PRODUCTS] - Payment confirmation failed:`, error);
+        logger.error(
+          `[RECURRING PRODUCTS] - Payment confirmation failed:`,
+          error
+        );
         setError(error.message || "Payment failed");
         toast.error("Payment failed: " + error.message);
         setRequiresAuth(false);
@@ -70,10 +81,10 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
         onClose();
         return;
       }
-      
+
       // Payment succeeded
       logger.debug(`[RECURRING PRODUCTS] - Payment confirmed successfully!`);
-      
+
       // Notify success
       toast.success("Subscription successful! Your plan is now active.", {
         position: "bottom-right",
@@ -83,20 +94,21 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
           toast: "text-green-800",
         },
       });
-      
+
       // Clean up
       setRequiresAuth(false);
       setClientSecret("");
       setSelectedProduct(null);
-      
-      // Call onSuccess callback
+
+      // Payment succeeded, refresh credits and close modal
       if (onSuccess) {
-        onSuccess();
+        setTimeout(() => {
+          onSuccess(); // This should trigger `refreshCredits`
+        }, 2000);
       }
-      
+
       // Close modal
       onClose();
-      
     } catch (err) {
       logger.error(`[RECURRING PRODUCTS] - Error during payment attempt:`, err);
       setError("An error occurred during payment processing.");
@@ -136,37 +148,35 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
 
       // Check if we received a client secret for payment
       if (data.clientSecret) {
-        logger.debug(`[RECURRING PRODUCTS] - Received client secret for payment`);
+        logger.debug(
+          `[RECURRING PRODUCTS] - Received client secret for payment`
+        );
         setClientSecret(data.clientSecret);
         setSubscriptionId(data.subscriptionId);
-        
+
         // The useEffect will handle payment confirmation when clientSecret is set
         return;
       }
 
       // If no client secret needed (e.g., for plan changes)
       setSelectedProduct(null);
-      
+
       // Notify about success
       if (onSuccess) {
         onSuccess();
       }
-      
+
       // Close modal
       onClose();
-      
-      toast.success(
-        data.message || "Subscription successful!",
-        {
-          position: "bottom-right",
-          closeButton: true,
-          duration: 5000,
-          classNames: {
-            toast: "text-green-800",
-          },
-        }
-      );
-      
+
+      toast.success(data.message || "Subscription successful!", {
+        position: "bottom-right",
+        closeButton: true,
+        duration: 5000,
+        classNames: {
+          toast: "text-green-800",
+        },
+      });
     } catch (err) {
       logger.error(`[RECURRING PRODUCTS] - Unexpected Error:`, err);
       setError("An unexpected error occurred.");
@@ -182,6 +192,7 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
     "text-highlightBlue",
     "text-highlightPurple",
     "text-highlightOrange",
+    "text-primary",
   ];
 
   const icons = {
@@ -189,7 +200,7 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
     Power: <IconStack2 size={24} className="text-highlightPurple" />,
     Pro: <IconStack3 size={24} className="text-highlightOrange" />,
     Starter: <IconStack size={24} className="text-highlightBlue" />,
-  }
+  };
 
   if (!products || !products.length) {
     return null;
@@ -219,8 +230,13 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
             <ModalBody>
               {requiresAuth ? (
                 <div className="text-center p-4">
-                  <p className="mb-4">Please wait while we process your payment and set up your subscription.</p>
-                  <p className="text-sm text-gray-500">This may take a moment. Please do not close this window.</p>
+                  <p className="mb-4">
+                    Please wait while we process your payment and set up your
+                    subscription.
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    This may take a moment. Please do not close this window.
+                  </p>
                 </div>
               ) : (
                 <Select

@@ -46,8 +46,7 @@ const AnimatedNumber = ({ value }) => {
 
 const SubscriptionAndTopup = () => {
   // Assumes that your session context now includes a refreshPaidServicesData function
-  const { refreshPaidServicesData, paidServicesData: services } =
-    useSessionContext();
+  const { refreshPaidServicesData, paidServicesData: services } = useSessionContext();
   const stripe = useStripe();
   const elements = useElements();
   const { user } = useAuth();
@@ -91,9 +90,10 @@ const SubscriptionAndTopup = () => {
   const expiryDate = new Date(services?.planExpiresAt).getTime() / 1000;
 
   const tierColor = {
-    Pro: "bg-highlightPurple",
-    Advanced: "bg-highlightOrange",
+    Power: "bg-highlightPurple",
+    Pro: "bg-highlightOrange",
     Starter: "bg-highlightBlue",
+    Tester: "bg-primary",
   };
 
   const handleCancellation = async () => {
