@@ -163,6 +163,7 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess }) => {
     "text-highlightOrange",
     "text-highlightBlue",
     "text-highlightPurple",
+    "text-highlightGreen",
   ];
 
   if (!products || !products.length) {

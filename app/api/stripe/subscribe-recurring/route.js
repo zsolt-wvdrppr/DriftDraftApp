@@ -16,28 +16,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-01-27.acacia",
 });
 
-// Helper function to calculate tax for subscriptions
-const getDefaultTaxRates = async () => {
-  try {
-    // Get your active tax rates from Stripe
-    const taxRates = await stripe.taxRates.list({
-      active: true,
-      limit: 10,
-    });
-    
-    if (taxRates.data && taxRates.data.length > 0) {
-      // Return tax rate IDs to apply to the subscription
-      return taxRates.data.map(rate => rate.id);
-    }
-    
-    return []; // No tax rates found
-  } catch (error) {
-    logger.warn(`Failed to retrieve tax rates: ${error.message}`);
-
-    return []; // Return empty array if retrieval fails
-  }
-};
-
 export async function POST(req) {
   try {
     const body = await req.json();
@@ -68,11 +46,6 @@ export async function POST(req) {
       );
     }
 
-    // ✅ Get applicable tax rates
-    const defaultTaxRates = await getDefaultTaxRates();
-
-    logger.debug(`🔹 Found ${defaultTaxRates.length} tax rates to apply`);
-
     let subscription;
     let isUpgrade = false;
     let clientSecret = null;
@@ -98,13 +71,13 @@ export async function POST(req) {
         }
 
         // ✅ Update subscription for next renewal (billing cycle remains unchanged)
-        // Include tax rates in the update
+        // Enable automatic tax calculation
         subscription = await stripe.subscriptions.update(user.subscription_id, {
           items: [{ id: subscription.items.data[0].id, price: priceId }],
           proration_behavior: "none", // No immediate charge or proration
-          default_tax_rates: defaultTaxRates.length > 0 ? defaultTaxRates : undefined,
+          automatic_tax: { enabled: true },
         });
-        logger.debug("🔹 Subscription updated for next renewal");
+        logger.debug("🔹 Subscription updated for next renewal with automatic tax");
       } catch (subscriptionError) {
         logger.error(`❌ Error handling existing subscription: ${subscriptionError.message}`);
         throw subscriptionError;
@@ -114,17 +87,14 @@ export async function POST(req) {
       logger.debug(`🔹 Creating new subscription for user ${userId}`);
       
       try {
+        // Create subscription with automatic tax calculation enabled
         const subscriptionParams = {
           customer: user.stripe_customer_id,
           items: [{ price: priceId }],
           metadata: { userId, priceId },
           expand: ['latest_invoice.payment_intent'],
+          automatic_tax: { enabled: true },
         };
-
-        // Only add tax rates if we have any
-        if (defaultTaxRates.length > 0) {
-          subscriptionParams.default_tax_rates = defaultTaxRates;
-        }
 
         // Create subscription
         subscription = await stripe.subscriptions.create(subscriptionParams);
@@ -203,6 +173,29 @@ export async function POST(req) {
       logger.warn(`⚠️ Error finding tier name: ${tierError.message}`);
     }
 
+    // ✅ Get tax information from latest invoice
+    let taxDetails = null;
+    
+    try {
+      if (subscription.latest_invoice) {
+        const invoice = await stripe.invoices.retrieve(subscription.latest_invoice);
+        
+        // Get automatic tax information
+        if (invoice.automatic_tax) {
+          taxDetails = {
+            enabled: invoice.automatic_tax.enabled,
+            status: invoice.automatic_tax.status,
+            taxAmount: invoice.tax,
+            taxPercentage: invoice.total > 0 ? (invoice.tax / invoice.total) * 100 : 0,
+          };
+          
+          logger.debug(`🔹 Retrieved tax details: ${JSON.stringify(taxDetails)}`);
+        }
+      }
+    } catch (taxError) {
+      logger.warn(`⚠️ Error retrieving tax information: ${taxError.message}`);
+    }
+
     // ✅ Save additional subscription details in Supabase
     // (We already saved the subscription_id immediately after creation)
     try {
@@ -241,6 +234,7 @@ export async function POST(req) {
       subscriptionId: subscription.id,
       planStartsAt,
       planRenewsAt,
+      taxDetails,
       requiresAuthentication: !!clientSecret,
       clientSecret,
       message: isUpgrade

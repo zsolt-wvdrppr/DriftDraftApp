@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { useAuth } from "@/lib/AuthContext";
 import { usePaymentMethod } from "@/lib/hooks/usePaymentMethod";
-import { Card, Button, Form, Input, Textarea } from "@heroui/react";
+import { Card, Button, Form, Input, Textarea, Select, SelectItem, Avatar } from "@heroui/react";
 import {
   IconCreditCard,
   IconBuilding,
@@ -12,8 +12,20 @@ import {
   IconMapPin,
   IconAlertTriangleFilled,
   IconCircleCheck,
+  IconFlag,
+  IconHome,
+  IconMap,
+  IconMailbox,
 } from "@tabler/icons-react";
 import useDarkMode from "@/lib/hooks/useDarkMode";
+
+// List of countries for the dropdown with ISO codes and flag URLs
+const COUNTRIES = [
+  { value: "GB", label: "United Kingdom", flag: "gb" },
+  { value: "AU", label: "Australia", flag: "au" },
+  { value: "CA", label: "Canada", flag: "ca" },
+  { value: "US", label: "United States", flag: "us" },
+];
 
 export default function PaymentMethod() {
   const stripe = useStripe();
@@ -36,16 +48,33 @@ export default function PaymentMethod() {
     updatePaymentMethod,
   } = usePaymentMethod(userId, stripe, elements);
 
-  // ✅ State for billing details, pre-filled with Stripe data
+  // ✅ State for billing details, now structured properly for Stripe
   const [businessNameState, setBusinessName] = useState("");
   const [vatNumberState, setVatNumber] = useState("");
-  const [billingAddressState, setBillingAddress] = useState("");
+  
+  // New structured address fields
+  const [addressLine1, setAddressLine1] = useState("");
+  const [addressLine2, setAddressLine2] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [country, setCountry] = useState("");
 
   // ✅ Update state when Stripe data is loaded
   useEffect(() => {
     setBusinessName(businessName || "");
     setVatNumber(vatNumber || "");
-    setBillingAddress(billingAddress || "");
+    
+    // Parse billing address if it exists
+    if (billingAddress && typeof billingAddress === 'object') {
+      setAddressLine1(billingAddress.line1 || "");
+      setAddressLine2(billingAddress.line2 || "");
+      setCity(billingAddress.city || "");
+      setState(billingAddress.state || "");
+      setPostalCode(billingAddress.postal_code || "");
+      setCountry(billingAddress.country || "");
+    }
+    
     setLocalPaymentMethod(paymentMethod);
   }, [businessName, vatNumber, billingAddress, paymentMethod]);
 
@@ -72,6 +101,23 @@ export default function PaymentMethod() {
       return;
     }
 
+    // Validate required address fields for tax calculation
+    if (!addressLine1 || !city || !postalCode || !country) {
+      setSetupError("Address Line 1, City, Postal Code, and Country are required.");
+      setProcessingPayment(false);
+      return;
+    }
+
+    // Prepare structured address object
+    const formattedAddress = {
+      line1: addressLine1,
+      line2: addressLine2 || undefined,
+      city,
+      state: state || undefined,
+      postal_code: postalCode,
+      country,
+    };
+
     try {
       // Step 1: Create a SetupIntent on the server
       const setupResponse = await fetch("/api/stripe/create-setup-intent", {
@@ -96,7 +142,12 @@ export default function PaymentMethod() {
             billing_details: {
               name: businessNameState || undefined,
               address: {
-                line1: billingAddressState || undefined,
+                line1: addressLine1,
+                line2: addressLine2 || undefined,
+                city,
+                state: state || undefined,
+                postal_code: postalCode,
+                country,
               },
             },
           },
@@ -118,7 +169,7 @@ export default function PaymentMethod() {
           newPaymentMethodId: setupIntent.payment_method,
           businessName: businessNameState || null,
           vatNumber: vatNumberState || null,
-          billingAddress: billingAddressState || null,
+          billingAddress: formattedAddress,
         }),
       });
 
@@ -129,7 +180,6 @@ export default function PaymentMethod() {
       }
 
       // Step 4: Get payment method details from the API response or fetch them separately
-      // Instead of using stripe.retrievePaymentMethod which doesn't exist in the client
       let updatedPaymentMethod;
       
       if (responseData.paymentMethod) {
@@ -185,7 +235,7 @@ export default function PaymentMethod() {
         onSubmit={handleUpdatePaymentMethod}
         className="flex flex-row items-stretch justify-center flex-wrap gap-4"
       >
-        <Card className="flex-grow max-w-sm p-4 gap-y-4">
+        <Card className="flex-grow max-w-md p-4 gap-y-4 border-0 shadow-none">
           {/* ✅ Business Name */}
           <Input
             label="Business Name (Optional)"
@@ -216,12 +266,29 @@ export default function PaymentMethod() {
             }}
           />
 
-          {/* ✅ Billing Address */}
-          <Textarea
-            label="Billing Address"
-            value={billingAddressState}
-            onChange={(e) => setBillingAddress(e.target.value)}
-            placeholder="Street, City, ZIP, Country"
+          {/* ✅ Address Line 1 - Required */}
+          <Input
+            label="Address Line 1"
+            type="text"
+            value={addressLine1}
+            onChange={(e) => setAddressLine1(e.target.value)}
+            placeholder="Street address"
+            isRequired
+            startIcon={<IconHome />}
+            classNames={{
+              label: "!text-primary dark:!text-accentMint",
+              input: "dark:!text-white",
+              inputWrapper: "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
+            }}
+          />
+
+          {/* ✅ Address Line 2 - Optional */}
+          <Input
+            label="Address Line 2 (Optional)"
+            type="text"
+            value={addressLine2}
+            onChange={(e) => setAddressLine2(e.target.value)}
+            placeholder="Apt, Suite, Building (optional)"
             startIcon={<IconMapPin />}
             classNames={{
               label: "!text-primary dark:!text-accentMint",
@@ -229,8 +296,87 @@ export default function PaymentMethod() {
               inputWrapper: "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
             }}
           />
+
+          {/* ✅ City - Required */}
+          <Input
+            label="City"
+            type="text"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            placeholder="City"
+            isRequired
+            startIcon={<IconMap />}
+            classNames={{
+              label: "!text-primary dark:!text-accentMint",
+              input: "dark:!text-white",
+              inputWrapper: "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
+            }}
+          />
+
+          <div className="flex gap-4">
+            {/* ✅ State/Province */}
+            <Input
+              label="State/Province"
+              type="text"
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              placeholder="State/Province"
+              classNames={{
+                label: "!text-primary dark:!text-accentMint",
+                input: "dark:!text-white",
+                inputWrapper: "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
+              }}
+            />
+
+            {/* ✅ Postal Code - Required */}
+            <Input
+              label="Postal Code"
+              type="text"
+              value={postalCode}
+              onChange={(e) => setPostalCode(e.target.value)}
+              placeholder="ZIP/Postal Code"
+              isRequired
+              startIcon={<IconMailbox />}
+              classNames={{
+                label: "!text-primary dark:!text-accentMint",
+                input: "dark:!text-white",
+                inputWrapper: "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
+              }}
+            />
+          </div>
+
+          {/* ✅ Country - Required */}
+          <Select
+            label="Country"
+            placeholder="Select country"
+            selectedKeys={country ? [country] : []}
+            onChange={(e) => setCountry(e.target.value)}
+            isRequired
+            startContent={<IconFlag />}
+            classNames={{
+              label: "!text-primary dark:!text-accentMint",
+              trigger: "dark:!text-white bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
+            }}
+          >
+            {COUNTRIES.map((countryOption) => (
+              <SelectItem
+                key={countryOption.value}
+                value={countryOption.value}
+                startContent={
+                  <Avatar 
+                    alt={countryOption.label} 
+                    className="w-6 h-6" 
+                    src={`https://flagcdn.com/${countryOption.flag}.svg`} 
+                  />
+                }
+              >
+                {countryOption.label}
+              </SelectItem>
+            ))}
+          </Select>
         </Card>
-        <Card className="p-4 min-h-68 gap-y-4 flex justify-between border max-w-sm flex-grow">
+
+        <Card className="p-4 h-60 gap-y-4 flex justify-between border max-w-sm flex-grow">
           <div className="flex gap-x-4 items-center justify-between">
             <IconCreditCard size={24} aria-label="Card number input" />
             {localPaymentMethod ? (

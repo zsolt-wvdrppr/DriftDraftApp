@@ -15,8 +15,7 @@ import { toast } from "sonner";
 
 import { useAuth } from "@/lib/AuthContext";
 import logger from "@/lib/logger";
-import { IconStack, IconStack2, IconStack3 } from "@tabler/icons-react";
-import { Tooltip } from "react-tooltip";
+import { IconStack, IconStack2, IconStack3, IconStethoscope } from "@tabler/icons-react";
 
 // Utility function to create key from a name
 const createKey = (name) => name.toLowerCase().replace(/ /g, "_");
@@ -186,8 +185,9 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
   ];
 
   const icons = {
-    Pro: <IconStack2 size={24} className="text-highlightPurple" />,
-    Advanced: <IconStack3 size={24} className="text-highlightOrange" />,
+    Tester: <IconStethoscope size={24} className="text-primary" />,
+    Power: <IconStack2 size={24} className="text-highlightPurple" />,
+    Pro: <IconStack3 size={24} className="text-highlightOrange" />,
     Starter: <IconStack size={24} className="text-highlightBlue" />,
   }
 
