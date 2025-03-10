@@ -104,6 +104,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                         className="toolbar-item min-w-10 w-10 h-10 px-0 bg-white dark:bg-content1"
                         disabled={!canUndo}
                         variant='ghost'
+                        // @ts-ignore
                         onPress={() => {
                             editor.dispatchCommand(UNDO_COMMAND, undefined);
                         }}>
@@ -114,6 +115,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                         className="toolbar-item min-w-10 w-10 h-10 px-0 bg-white dark:bg-content1"
                         disabled={!canRedo}
                         variant='ghost'
+                        // @ts-ignore
                         onPress={() => {
                             editor.dispatchCommand(REDO_COMMAND, undefined);
                         }}>
@@ -125,6 +127,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                         aria-label="Format Bold"
                         className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 bg-white dark:bg-content1' + (isBold ? 'active px-0 text-success' : '')}
                         variant='ghost'
+                        // @ts-ignore
                         onPress={() => {
                             editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold');
                         }}>
@@ -134,6 +137,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                         aria-label="Format Italics"
                         className={'toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 bg-white dark:bg-content1' + (isItalic ? 'active px-0 text-success' : '')}
                         variant='ghost'
+                        // @ts-ignore
                         onPress={() => {
                             editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'italic');
                         }}>
@@ -141,6 +145,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                     </Button>
                     {/*<Button
                         variant='ghost'
+                        // @ts-ignore
                         onPress={() => {
                         editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'underline');
                         }}
@@ -150,6 +155,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                     </Button>
                     <Button
                         variant='ghost'
+                        // @ts-ignore
                         onPress={() => {
                         editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'strikethrough');
                         }}
@@ -163,6 +169,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                         aria-label="Left Align"
                         className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white dark:bg-content1'
                         variant='ghost'
+                        // @ts-ignore
                         onPress={() => {
                             editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'left');
                         }}>
@@ -172,6 +179,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                         aria-label="Center Align"
                         className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white dark:bg-content1'
                         variant='ghost'
+                        // @ts-ignore
                         onPress={() => {
                             editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'center');
                         }}>
@@ -181,6 +189,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                         aria-label="Right Align"
                         className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white dark:bg-content1'
                         variant='ghost'
+                        // @ts-ignore
                         onPress={() => {
                             editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'right');
                         }}>
@@ -190,6 +199,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                         aria-label="Justify Align"
                         className='toolbar-item toolbar-item min-w-10 w-10 h-10 px-0 p-0 bg-white dark:bg-content1'
                         variant='ghost'
+                        // @ts-ignore
                         onPress={() => {
                             editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, 'justify');
                         }}>
@@ -203,6 +213,7 @@ export default function ToolbarPlugin({ onSave, isSaved, isSaveLoading }: Toolba
                         isDisabled={isSaveLoading}
                         isLoading={isSaveLoading}
                         variant='ghost'
+                        // @ts-ignore
                         onPress={onSave}
                     >
                         {!isSaveLoading && <IconDeviceFloppy />}

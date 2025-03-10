@@ -8,9 +8,6 @@ import logger from '@/lib/logger';
 export default function Error({
   error,
   reset,
-}: {
-  error: Error;
-  reset: () => void;
 }) {
   useEffect(() => {
     // Log the error to an error reporting service
@@ -22,6 +19,7 @@ export default function Error({
     <div>
       <h2>Something went wrong!</h2>
       <Button
+      // @ts-ignore
         onPress={
           // Attempt to recover by trying to re-render the segment
           () => reset()

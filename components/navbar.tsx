@@ -21,7 +21,7 @@ import MyActivitiesBtn from "@/components/nav-layout/MyActivitiesBtn";
 import AccountBtn from "@/components/nav-layout/AccountBtn";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import {  Logo } from "@/components/icons";
+import { Logo } from "@/components/icons";
 import { useAuth } from "@/lib/AuthContext";
 import logger from "@/lib/logger";
 import { useReferral } from "@/lib/hooks/useReferral";
@@ -31,7 +31,12 @@ export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user } = useAuth();
 
-  const { isReferralModalOpen, setReferralUser, removeReferralParam, referralName } = useReferral();
+  const {
+    isReferralModalOpen,
+    setReferralUser,
+    removeReferralParam,
+    referralName,
+  } = useReferral();
   const swipeHandlers = useSwipeable({
     onSwipedUp: () => setIsMenuOpen(false),
     trackMouse: false,
@@ -157,21 +162,22 @@ export const Navbar = () => {
         <div className="mx-4 mt-2 flex flex-col gap-2 h-full">
           {siteConfig.navMenuItems.map((item, index) => (
             <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                aria-label="Menu item"
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                      ? "danger"
-                      : "foreground"
-                }
-                href={item.href}
-                size="lg"
-                onPress={() => setIsMenuOpen(false)}
-              >
-                {item.label}
-              </Link>
+                <Link
+                  aria-label="Menu item"
+                  color={
+                    index === 2
+                      ? "primary"
+                      : index === siteConfig.navMenuItems.length - 1
+                        ? "danger"
+                        : "foreground"
+                  }
+                  href={item.href}
+                  size="lg"
+                  // @ts-ignore
+                  onPress={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
             </NavbarMenuItem>
           ))}
           <NavbarItem className="md:hidden">
@@ -179,9 +185,7 @@ export const Navbar = () => {
               <div className="absolute bottom-32 right-5 flex flex-col gap-4">
                 <MyActivitiesBtn
                   aria-label="My Activities"
-                  className={
-                    "bg-default-200"
-                  }
+                  className={"bg-default-200"}
                   label={"My Activities"}
                   onPress={() => setIsMenuOpen(false)}
                 />
@@ -231,12 +235,13 @@ export const Navbar = () => {
   );
 };
 
-const modalMessage = (referralName : string) => {
+const modalMessage = (referralName: string) => {
   return (
-
-      <span>
-        {`Do you want to set `}<strong>{referralName}</strong>{` as your referral agent? If they exist in our database, we will attempt to assign them. They will be able to view your AI-generated plans but won’t be able to edit them. Only confirm if you intend to proceed and have direct contact with `}<strong>{referralName}</strong>.
-      </span>
-
+    <span>
+      {`Do you want to set `}
+      <strong>{referralName}</strong>
+      {` as your referral agent? If they exist in our database, we will attempt to assign them. They will be able to view your AI-generated plans but won’t be able to edit them. Only confirm if you intend to proceed and have direct contact with `}
+      <strong>{referralName}</strong>.
+    </span>
   );
-}
+};

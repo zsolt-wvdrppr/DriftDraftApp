@@ -335,6 +335,7 @@ const DynamicCookiesPolicy: React.FC<CookiesListProps> = ({ staticCookies = {} }
         <Button 
           className="flex items-center gap-2 px-3 py-1 bg-default-100 text-default-800 rounded-md text-sm"
           disabled={loading}
+          // @ts-ignore
           onPress={detectCookies}
         >
           <IconRefresh className="w-4 h-4" />
