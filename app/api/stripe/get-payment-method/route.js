@@ -43,6 +43,16 @@ export async function POST(req) {
 
     const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
 
+    // Format the billing address properly
+    const billingAddress = customer.address ? {
+      line1: customer.address.line1 || "",
+      line2: customer.address.line2 || "",
+      city: customer.address.city || "",
+      state: customer.address.state || "",
+      postal_code: customer.address.postal_code || "",
+      country: customer.address.country || "",
+    } : null;
+
     return NextResponse.json({
       success: true,
       paymentMethod: {
@@ -54,9 +64,11 @@ export async function POST(req) {
       },
       businessName: customer.name || "",
       vatNumber: customer.tax_id_data?.[0]?.value || "",
-      billingAddress: customer.address?.line1 || "",
+      billingAddress,
     });
   } catch (error) {
+    console.error("Error fetching payment method:", error);
+
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

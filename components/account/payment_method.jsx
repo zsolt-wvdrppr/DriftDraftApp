@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { useAuth } from "@/lib/AuthContext";
 import { usePaymentMethod } from "@/lib/hooks/usePaymentMethod";
-import { Card, Button, Form, Input, Textarea, Select, SelectItem, Avatar } from "@heroui/react";
+import { Card, Button, Form, Input, Select, SelectItem, Avatar } from "@heroui/react";
 import {
   IconCreditCard,
   IconBuilding,
@@ -18,14 +18,7 @@ import {
   IconMailbox,
 } from "@tabler/icons-react";
 import useDarkMode from "@/lib/hooks/useDarkMode";
-
-// List of countries for the dropdown with ISO codes and flag URLs
-const COUNTRIES = [
-  { value: "GB", label: "United Kingdom", flag: "gb" },
-  { value: "AU", label: "Australia", flag: "au" },
-  { value: "CA", label: "Canada", flag: "ca" },
-  { value: "US", label: "United States", flag: "us" },
-];
+import { COUNTRIES, isEUCountry, validateVatNumber } from "@/lib/utils/utils";
 
 export default function PaymentMethod() {
   const stripe = useStripe();
@@ -34,9 +27,9 @@ export default function PaymentMethod() {
   const userId = user?.id;
   const isDarkMode = useDarkMode(); 
   const [processingPayment, setProcessingPayment] = useState(false);
-  const [setupError, setSetupError] = useState(null);
-  const [setupSuccess, setSetupSuccess] = useState(false);
   const [localPaymentMethod, setLocalPaymentMethod] = useState(null);
+  const [vatRequired, setVatRequired] = useState(false);
+  const [vatError, setVatError] = useState("");
 
   const {
     paymentMethod,
@@ -45,6 +38,7 @@ export default function PaymentMethod() {
     billingAddress,
     loading,
     error,
+    setupSuccess,
     updatePaymentMethod,
   } = usePaymentMethod(userId, stripe, elements);
 
@@ -62,21 +56,38 @@ export default function PaymentMethod() {
 
   // ✅ Update state when Stripe data is loaded
   useEffect(() => {
-    setBusinessName(businessName || "");
-    setVatNumber(vatNumber || "");
-    
-    // Parse billing address if it exists
-    if (billingAddress && typeof billingAddress === 'object') {
-      setAddressLine1(billingAddress.line1 || "");
-      setAddressLine2(billingAddress.line2 || "");
-      setCity(billingAddress.city || "");
-      setState(billingAddress.state || "");
-      setPostalCode(billingAddress.postal_code || "");
-      setCountry(billingAddress.country || "");
+    // Only update form state when loading is complete to prevent blank form flashing
+    if (!loading) {
+      setBusinessName(businessName || "");
+      setVatNumber(vatNumber || "");
+      
+      // Parse billing address if it exists
+      if (billingAddress && typeof billingAddress === 'object') {
+        console.log("Setting form fields from billing address:", billingAddress);
+        setAddressLine1(billingAddress.line1 || "");
+        setAddressLine2(billingAddress.line2 || "");
+        setCity(billingAddress.city || "");
+        setState(billingAddress.state || "");
+        setPostalCode(billingAddress.postal_code || "");
+        setCountry(billingAddress.country || "");
+      }
+      
+      setLocalPaymentMethod(paymentMethod);
     }
-    
-    setLocalPaymentMethod(paymentMethod);
-  }, [businessName, vatNumber, billingAddress, paymentMethod]);
+  }, [businessName, vatNumber, billingAddress, paymentMethod, loading]);
+
+  // Update VAT requirement based on country selection
+  useEffect(() => {
+    if (country) {
+      const isEU = isEUCountry(country);
+      setVatRequired(isEU);
+      
+      // Clear VAT error when country changes
+      setVatError("");
+      
+      console.log(`Country set to ${country}, EU status: ${isEU ? "EU" : "Non-EU"}`);
+    }
+  }, [country]);
 
   // Clear the card element on successful setup
   useEffect(() => {
@@ -85,136 +96,49 @@ export default function PaymentMethod() {
       if (cardElement) {
         cardElement.clear();
       }
+      
+      // Optional: Auto-hide success message after a few seconds
+      const timer = setTimeout(() => {
+        // We don't need to set any state here as the success state is in the hook
+      }, 5000);
+      
+      return () => clearTimeout(timer);
     }
   }, [setupSuccess, elements]);
 
-  // New function to handle payment method update with 3D Secure
+  // Updated function to handle payment method update with 3D Secure
   const handleUpdatePaymentMethod = async (e) => {
     e.preventDefault();
     setProcessingPayment(true);
-    setSetupError(null);
-    setSetupSuccess(false);
-
-    if (!stripe || !elements) {
-      setSetupError("Stripe has not loaded yet.");
-      setProcessingPayment(false);
-      return;
-    }
-
-    // Validate required address fields for tax calculation
-    if (!addressLine1 || !city || !postalCode || !country) {
-      setSetupError("Address Line 1, City, Postal Code, and Country are required.");
-      setProcessingPayment(false);
-      return;
-    }
-
-    // Prepare structured address object
-    const formattedAddress = {
-      line1: addressLine1,
-      line2: addressLine2 || undefined,
-      city,
-      state: state || undefined,
-      postal_code: postalCode,
-      country,
-    };
-
+    setVatError("");
+    
     try {
-      // Step 1: Create a SetupIntent on the server
-      const setupResponse = await fetch("/api/stripe/create-setup-intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
-      });
-      
-      const setupData = await setupResponse.json();
-      
-      if (!setupResponse.ok) {
-        throw new Error(setupData.error || "Failed to create setup intent");
-      }
-      
-      // Step 2: Confirm the SetupIntent with the card element
-      const cardElement = elements.getElement(CardElement);
-      const { error: confirmError, setupIntent } = await stripe.confirmCardSetup(
-        setupData.clientSecret,
-        {
-          payment_method: {
-            card: cardElement,
-            billing_details: {
-              name: businessNameState || undefined,
-              address: {
-                line1: addressLine1,
-                line2: addressLine2 || undefined,
-                city,
-                state: state || undefined,
-                postal_code: postalCode,
-                country,
-              },
-            },
-          },
+      // Check VAT number if country is in EU
+      if (vatRequired) {
+        if (!vatNumberState) {
+          setVatError("VAT number is required for EU countries");
+          setProcessingPayment(false);
+          return;
         }
-      );
-
-      if (confirmError) {
-        throw new Error(confirmError.message);
-      }
-
-      // Step 3: Send updated billing details to the API with the confirmed payment method
-      const response = await fetch("/api/stripe/update-payment-method", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId,
-          newPaymentMethodId: setupIntent.payment_method,
-          businessName: businessNameState || null,
-          vatNumber: vatNumberState || null,
-          billingAddress: formattedAddress,
-        }),
-      });
-
-      const responseData = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(responseData.error || "Failed to update payment method.");
-      }
-
-      // Step 4: Get payment method details from the API response or fetch them separately
-      let updatedPaymentMethod;
-      
-      if (responseData.paymentMethod) {
-        // If your API returns payment method details
-        updatedPaymentMethod = responseData.paymentMethod;
-      } else {
-        // Otherwise, make a separate API call to get payment method details
-        const pmResponse = await fetch("/api/stripe/get-payment-method", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId }),
-        });
         
-        const pmData = await pmResponse.json();
-        
-        if (pmResponse.ok && pmData.success) {
-          updatedPaymentMethod = pmData.paymentMethod;
+        if (!validateVatNumber(vatNumberState, country)) {
+          setVatError(`Invalid VAT format. VAT should start with country code (${country}) followed by 8-12 alphanumeric characters`);
+          setProcessingPayment(false);
+          return;
         }
       }
-
-      // Update local state with the new payment method
-      if (updatedPaymentMethod) {
-        setLocalPaymentMethod(updatedPaymentMethod);
-      }
       
-      setSetupSuccess(true);
-      
-      // Optional: Display a success message that auto-hides after a few seconds
-      setTimeout(() => {
-        setSetupSuccess(false);
-      }, 5000);
-
-    } catch (err) {
-      console.error("Payment method update error:", err);
-      setSetupError(err.message || "An unexpected error occurred.");
+      // Call the hook's updatePaymentMethod with all form data
+      await updatePaymentMethod({
+        addressLine1,
+        addressLine2,
+        city,
+        state,
+        postalCode,
+        country,
+        businessNameState,
+        vatNumberState
+      });
     } finally {
       setProcessingPayment(false);
     }
@@ -253,17 +177,23 @@ export default function PaymentMethod() {
 
           {/* ✅ VAT Number */}
           <Input
-            label="VAT Number (Optional)"
+            label={vatRequired ? "VAT Number (Required for EU)" : "VAT Number (Optional)"}
             type="text"
             value={vatNumberState}
             onChange={(e) => setVatNumber(e.target.value)}
-            placeholder="Enter VAT number"
+            placeholder={vatRequired ? `${country}123456789` : "Enter VAT number"}
+            isRequired={vatRequired}
+            color={vatError ? "danger" : undefined}
             startIcon={<IconFileText />}
             classNames={{
-              label: "!text-primary dark:!text-accentMint",
+              label: vatRequired ? "!text-danger dark:!text-danger" : "!text-primary dark:!text-accentMint",
               input: "dark:!text-white",
-              inputWrapper: "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
+              inputWrapper: vatError 
+                ? "!border-danger bg-danger/10" 
+                : "bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
             }}
+            description={vatRequired ? `Format: ${country} followed by 8-12 characters` : undefined}
+            errorMessage={vatError}
           />
 
           {/* ✅ Address Line 1 - Required */}
@@ -358,21 +288,25 @@ export default function PaymentMethod() {
               trigger: "dark:!text-white bg-primary/10 dark:bg-content1 border focus-within:!bg-content1",
             }}
           >
-            {COUNTRIES.map((countryOption) => (
-              <SelectItem
-                key={countryOption.value}
-                value={countryOption.value}
-                startContent={
-                  <Avatar 
-                    alt={countryOption.label} 
-                    className="w-6 h-6" 
-                    src={`https://flagcdn.com/${countryOption.flag}.svg`} 
-                  />
-                }
-              >
-                {countryOption.label}
-              </SelectItem>
-            ))}
+            {COUNTRIES
+              .sort((a, b) => a.label.localeCompare(b.label))
+              .map((countryOption) => (
+                <SelectItem
+                  key={countryOption.value}
+                  value={countryOption.value}
+                  textValue={countryOption.label}
+                  startContent={
+                    <Avatar 
+                      alt={countryOption.label} 
+                      className="w-6 h-6" 
+                      src={`https://flagcdn.com/${countryOption.flag}.svg`} 
+                    />
+                  }
+                >
+                  {countryOption.label} {countryOption.isEU ? "(EU)" : ""}
+                </SelectItem>
+              ))
+            }
           </Select>
         </Card>
 
@@ -406,18 +340,18 @@ export default function PaymentMethod() {
           <Button
             type="submit"
             color="primary"
-            disabled={!stripe || processingPayment}
+            disabled={!stripe || processingPayment || loading}
             className="w-full"
           >
-            {processingPayment ? "Processing..." : "Update Payment Method"}
+            {processingPayment || loading ? "Processing..." : "Update Payment Method"}
           </Button>
         </Card>
       </Form>
 
-      {(error || setupError) && (
+      {(error || vatError) && (
         <div className="flex gap-4 items-center mt-4 justify-center">
           <IconAlertTriangleFilled size={24} className="text-highlightYellow" />
-          <p className="text-danger text-center">{setupError || error}</p>
+          <p className="text-danger text-center">{vatError || error}</p>
         </div>
       )}
     </div>

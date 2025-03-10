@@ -201,3 +201,64 @@ export const saveUserPreference = <T>(key: string, value: T): void => {
     sessionStorage.setItem(key, valueToStore);
   }
 };
+
+// List of countries with ISO codes, flag codes, and EU membership status
+export const COUNTRIES = [
+  { value: "AT", label: "Austria", flag: "at", isEU: true },
+  { value: "BE", label: "Belgium", flag: "be", isEU: true },
+  { value: "BG", label: "Bulgaria", flag: "bg", isEU: true },
+  { value: "HR", label: "Croatia", flag: "hr", isEU: true },
+  { value: "CY", label: "Cyprus", flag: "cy", isEU: true },
+  { value: "CZ", label: "Czech Republic", flag: "cz", isEU: true },
+  { value: "DK", label: "Denmark", flag: "dk", isEU: true },
+  { value: "EE", label: "Estonia", flag: "ee", isEU: true },
+  { value: "FI", label: "Finland", flag: "fi", isEU: true },
+  { value: "FR", label: "France", flag: "fr", isEU: true },
+  { value: "DE", label: "Germany", flag: "de", isEU: true },
+  { value: "GR", label: "Greece", flag: "gr", isEU: true },
+  { value: "HU", label: "Hungary", flag: "hu", isEU: true },
+  { value: "IE", label: "Ireland", flag: "ie", isEU: true },
+  { value: "IT", label: "Italy", flag: "it", isEU: true },
+  { value: "LV", label: "Latvia", flag: "lv", isEU: true },
+  { value: "LT", label: "Lithuania", flag: "lt", isEU: true },
+  { value: "LU", label: "Luxembourg", flag: "lu", isEU: true },
+  { value: "MT", label: "Malta", flag: "mt", isEU: true },
+  { value: "NL", label: "Netherlands", flag: "nl", isEU: true },
+  { value: "PL", label: "Poland", flag: "pl", isEU: true },
+  { value: "PT", label: "Portugal", flag: "pt", isEU: true },
+  { value: "RO", label: "Romania", flag: "ro", isEU: true },
+  { value: "SK", label: "Slovakia", flag: "sk", isEU: true },
+  { value: "SI", label: "Slovenia", flag: "si", isEU: true },
+  { value: "ES", label: "Spain", flag: "es", isEU: true },
+  { value: "SE", label: "Sweden", flag: "se", isEU: true },
+  { value: "GB", label: "United Kingdom", flag: "gb", isEU: false },
+  { value: "US", label: "United States", flag: "us", isEU: false },
+  { value: "CA", label: "Canada", flag: "ca", isEU: false },
+  { value: "AU", label: "Australia", flag: "au", isEU: false },
+  { value: "NZ", label: "New Zealand", flag: "nz", isEU: false },
+  { value: "JP", label: "Japan", flag: "jp", isEU: false },
+  { value: "CN", label: "China", flag: "cn", isEU: false },
+  { value: "IN", label: "India", flag: "in", isEU: false },
+  { value: "BR", label: "Brazil", flag: "br", isEU: false },
+  { value: "RU", label: "Russia", flag: "ru", isEU: false },
+  { value: "ZA", label: "South Africa", flag: "za", isEU: false },
+  { value: "SG", label: "Singapore", flag: "sg", isEU: false },
+  { value: "CH", label: "Switzerland", flag: "ch", isEU: false },
+];
+
+// Helper function to check if a country is in the EU
+export const isEUCountry = (countryCode: string) => {
+  const country = COUNTRIES.find(c => c.value === countryCode);
+
+  return country ? country.isEU : false;
+};
+
+// VAT number validation
+export const validateVatNumber = (vatNumber: string, countryCode: any) => {
+  if (!vatNumber || !countryCode) return false;
+  
+  // Basic format: 2-letter country code followed by 8-12 alphanumeric characters
+  const vatRegex = new RegExp(`^${countryCode}[0-9A-Za-z]{8,12}$`);
+
+  return vatRegex.test(vatNumber);
+};
