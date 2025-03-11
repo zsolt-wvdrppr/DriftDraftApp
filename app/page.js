@@ -3,11 +3,11 @@ import ServiceTitle from "@/components/ServiceTitle";
 
 export default function Home() {
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+    <section className="light dark:dark flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <ServiceTitle />
 
-      <div class="mx-2 bg-yellow-100 border-l-4 border-yellow-400 text-yellow-800 p-4 rounded-xl text-sm max-w-xl self-center mt-6">
-        <p class="font-medium">Beta Notice</p>
+      <div class="mx-2 bg-yellow-100 border-l-4 border-yellow-400 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100 p-4 rounded-xl text-sm max-w-xl self-center mt-6">
+        <p class="font-semibold">Beta Notice</p>
         <p>
           {`This app is currently in beta, so you might encounter minor bugs or
           unfinished features. We’re working hard to improve it!`}
