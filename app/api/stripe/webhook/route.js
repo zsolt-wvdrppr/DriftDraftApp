@@ -795,6 +795,7 @@ export async function POST(req) {
         plan_renews_at: null,
         plan_expires_at: null,
         plan_starts_at: null,
+        allowance_credits: 0,
         tier: "Free",
       })
       .eq("user_id", user.user_id);
