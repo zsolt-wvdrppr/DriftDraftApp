@@ -6,14 +6,20 @@ export default function Home() {
     <section className="light dark:dark flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <ServiceTitle />
 
-      <div class="mx-2 bg-yellow-100 border-l-4 border-yellow-400 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100 p-4 rounded-xl text-sm max-w-xl self-center mt-6">
-        <p class="font-semibold">Beta Notice</p>
+      <div className="mx-2 bg-yellow-100 border-l-4 border-yellow-400 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100 p-4 rounded-xl text-sm max-w-xl self-center mt-6">
+        <p className="font-semibold">Beta Notice</p>
         <p>
           {`This app is currently in beta, so you might encounter minor bugs or
           unfinished features. We’re working hard to improve it!`}
         </p>
-        <p class="mt-2">
+        <p className="mt-2">
           {`Spotted something odd? Feel free to use the feedback form — it’ll automatically attach a screenshot of the page you’re on.`}
+        </p>
+      </div>
+      <div className="mx-2 bg-slate-100 border-l-4 border-accent text-primary dark:bg-content1 p-4 rounded-xl text-sm max-w-xl self-center mt-6">
+        <p className="font-semibold">Sign up now and get 14 free credits</p>
+        <p>
+          {`Join today and receive 14 complimentary credits to get started. You can use these credits to create a website or landing page plan.`}
         </p>
       </div>
 
