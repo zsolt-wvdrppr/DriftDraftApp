@@ -21,15 +21,6 @@ import Cookies from "js-cookie";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { useReCaptcha } from "next-recaptcha-v3";
 
-import logger from "@/lib/logger";
-import { useAuth } from "@/lib/AuthContext";
-import { useSessionContext } from "@/lib/SessionProvider";
-import {
-  formatDateToLocalBasic,
-  sanitizeFilename,
-  sortItemsByDate as handleSortItemsByDate,
-} from "@/lib/utils/utils";
-import { useGeneratePdf } from "@/lib/hooks/useGeneratePdf";
 
 import EditableMarkdownModal from "../planner-layout/layout/EditableMarkdownModal";
 
@@ -38,6 +29,16 @@ import { legend } from "./utils";
 import sendSessionToPlanfix from "./sendSessionToPlanfix";
 import ConfirmationModal from "./ConfirmationModal";
 import NewSessionSelectorInner from "./startNewSessionSelectorInner";
+
+import { useGeneratePdf } from "@/lib/hooks/useGeneratePdf";
+import {
+  formatDateToLocalBasic,
+  sanitizeFilename,
+  sortItemsByDate as handleSortItemsByDate,
+} from "@/lib/utils/utils";
+import { useSessionContext } from "@/lib/SessionProvider";
+import { useAuth } from "@/lib/AuthContext";
+import logger from "@/lib/logger";
 
 export default function UserActivities() {
   const {
@@ -229,7 +230,8 @@ export default function UserActivities() {
   }
 
 
-  const handleReview = (item) => {
+  const handleReview = (e, item) => {
+    e.preventDefault();
     logger.debug("Reviewing item:", item);
     startTransition(async () => {
       try {
@@ -478,15 +480,15 @@ export default function UserActivities() {
                   <div className="flex gap-2 w-full">
                     <div className="flex w-full justify-around">
                       <div>
-                        <Link
+                        <button
                           className="dark:text-white cursor-pointer hover:scale-125 transition-all"
-                          onPress={() => handleReview(item)}
+                          onClick={(e) => handleReview(e, item)}
                         >
                           <IconReorder
                             className="text-violet-500"
                             id="review-icon"
                           />
-                        </Link>
+                        </button>
                         <Tooltip anchorSelect="#review-icon" place="top">
                           Review Questionnaire & Regenerate Plan
                         </Tooltip>
