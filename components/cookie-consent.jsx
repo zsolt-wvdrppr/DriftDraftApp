@@ -251,7 +251,7 @@ const CookieConsent = () => {
             animate="visible"
             exit="exit"
             variants={modalBackdropVariants}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[1000] p-4"
           >
             <motion.div 
               variants={modalContentVariants}
@@ -278,7 +278,7 @@ const CookieConsent = () => {
                         </ReactMarkdown>
                       </div>
 
-                      <div className="flex flex-wrap gap-3 mt-6 w-full justify-between">
+                      <div className="flex flex-col md:flex-row gap-3 mt-6 w-full justify-between">
                         <Button
                           onPress={() => setShowPreferences(true)}
                           className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
@@ -286,19 +286,19 @@ const CookieConsent = () => {
                           <IconSettings className="mr-2" />
                           Cookie Preferences
                         </Button>
-                        <div className="flex gap-3">
+                        <div className="flex gap-3 justify-between">
                           <Button
                             onPress={acceptAnalytics}
                             className="px-4 py-2 border border-default-200 rounded-md text-default-600 hover:bg-default-200 transition"
                           >
-                            <IconAdCircleOff className="mr-2 text-default-600" />
+                            <IconAdCircleOff className="hidden md:block mr-2 text-default-600" />
                             Reject Marketing
                           </Button>
                           <Button
                             onPress={acceptAll}
                             className="px-4 py-2 bg-primary text-white rounded-md hover:bg-secondary transition"
                           >
-                            <IconCircleCheck className="mr-2" />
+                            <IconCircleCheck className="hidden md:block mr-2" />
                             Accept All
                           </Button>
                         </div>
