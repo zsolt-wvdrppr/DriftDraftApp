@@ -450,7 +450,7 @@ export default function Tutorial({
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
             >
-              <h3 className="font-semibold text-lg text-gray-800">
+              <h3 className="font-semibold text-lg text-gray-800 dark:text-gray-800">
                 {currentStepData.title || "Tutorial Step"}
               </h3>
             </motion.div>
@@ -472,7 +472,7 @@ export default function Tutorial({
             >
               <Button
                 type="button"
-                className="px-3 py-2 text-default-800 border rounded text-sm font-medium"
+                className="px-3 py-2 text-default-800 dark:text-default-200 border rounded text-sm font-medium"
                 onPress={handleClose}
               >
                 Skip
