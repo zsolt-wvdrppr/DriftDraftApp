@@ -5,7 +5,6 @@ import {
   IconCircleDashedCheck,
   IconProgressHelp,
   IconCopy,
-  IconInfoCircle,
 } from "@tabler/icons-react";
 
 const validateDomain = (domain) => {
@@ -109,7 +108,6 @@ const DomainChecker = () => {
         () => (
           <div className="flex flex-col p-4 bg-white shadow-lg rounded-md border">
             <div className="flex items-center gap-2">
-              <IconInfoCircle className="text-primary" size={20} />
               <p className="text-md font-semibold text-primary">{message}</p>
             </div>
             <ul className="mt-2 list-disc pl-4 text-sm flex flex-col gap-y-2 py-4">
