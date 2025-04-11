@@ -5,12 +5,15 @@ import {
   IconCircleDashedCheck,
   IconProgressHelp,
   IconCopy,
+  IconInfoCircle,
 } from "@tabler/icons-react";
 
 const validateDomain = (domain) => {
-  domain = domain.replace(/^(https?:\/\/)/, ""); // Remove http/https
+  // Remove protocol and www if present
+  domain = domain.replace(/^(https?:\/\/)?(www\.)?/, "");
 
-  const domainRegex = /^(?!www\.)[a-zA-Z0-9-]{1,63}\.[a-zA-Z]{2,6}$/;
+  // This regex allows for multiple TLD segments (like .co.uk, .com.au, etc.)
+  const domainRegex = /^(?!-)(?:[a-zA-Z0-9-]{1,63}(?<!-)\.)+[a-zA-Z]{2,}$/;
 
   return domainRegex.test(domain) ? domain : null;
 };
@@ -21,6 +24,7 @@ const DomainChecker = () => {
   const [isChecking, setIsChecking] = useState(false);
   const [isAvailable, setIsAvailable] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
+  const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
 
   const handleSelectedCopy = (content) => {
@@ -51,7 +55,7 @@ const DomainChecker = () => {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // ✅ Prevents the parent form from submitting
+      e.preventDefault(); // Prevents the parent form from submitting
       handleCheckDomain();
     }
   };
@@ -79,6 +83,7 @@ const DomainChecker = () => {
 
         setIsAvailable(data.isAvailable);
         setSuggestions(data.suggestions || []);
+        setMessage(data.message || null);
       } catch (err) {
         setError(err.message);
         toast.error(
@@ -97,7 +102,48 @@ const DomainChecker = () => {
   }, [checkedDomain]);
 
   useEffect(() => {
-    if (isAvailable === true) {
+    // Handle .uk domain special case first
+    if (isAvailable === null && message) {
+      toast.dismiss();
+      toast.custom(
+        () => (
+          <div className="flex flex-col p-4 bg-white shadow-lg rounded-md border">
+            <div className="flex items-center gap-2">
+              <IconInfoCircle className="text-primary" size={20} />
+              <p className="text-md font-semibold text-primary">{message}</p>
+            </div>
+            <ul className="mt-2 list-disc pl-4 text-sm flex flex-col gap-y-2 py-4">
+              {suggestions.map((s) => (
+                <li key={s.domain} className="flex flex-row">
+                  <Button
+                    className="min-w-0 hover:scale-110 transition-all font-semibold text-secondary"
+                    title="Copy domain name to clipboard"
+                    onPress={() => handleSelectedCopy(s.domain)}
+                  >
+                    <IconCopy
+                      className="text-primary dark:text-accent mx-1 cursor-copy"
+                      size={16}
+                    />
+                    {s.domain}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+            <Button
+              className="font-semibold self-end"
+              color="primary"
+              variant="bordered"
+              onPress={() => toast.dismiss()}
+            >
+              Close
+            </Button>
+          </div>
+        ),
+        { duration: Infinity }
+      );
+    } 
+    // Normal domain availability handling
+    else if (isAvailable === true) {
       toast.success(`Good news! ${checkedDomain} is available!`, {
         duration: 10000,
         closeButton: true,
@@ -153,7 +199,7 @@ const DomainChecker = () => {
         }, 1000);
       }
     }
-  }, [isAvailable, suggestions]);
+  }, [isAvailable, suggestions, message, checkedDomain]);
 
   return (
     <Input
@@ -169,8 +215,6 @@ const DomainChecker = () => {
           type="button"
           onPress={handleCheckDomain}
         >
-          {" "}
-          {/* ✅ Prevents form submission */}
           <IconProgressHelp size={34} />
         </Button>
       }
@@ -178,7 +222,7 @@ const DomainChecker = () => {
       placeholder="Enter domain (e.g., example.com)"
       value={domain}
       onChange={(e) => setDomain(e.target.value)}
-      onKeyDown={handleKeyDown} // ✅ Trigger check on Enter key
+      onKeyDown={handleKeyDown}
     />
   );
 };
