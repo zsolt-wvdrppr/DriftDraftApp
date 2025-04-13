@@ -31,7 +31,7 @@ When credits are deducted, the system prioritizes:
 ### **Credit Reset & Expiry**
 - **Monthly subscription credits reset** at the start of each billing cycle.
 - **Top-up credits never expire** unless the user deletes their account.
-- **Unused monthly credits do not roll over**—they expire at the end of the month.
+- **Unused monthly credits do not roll over**—they expire at the end of the billing cycle.
 
 ---
 
