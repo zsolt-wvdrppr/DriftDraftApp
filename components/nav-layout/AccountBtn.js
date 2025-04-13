@@ -30,6 +30,15 @@ const AccountBtn = ({
     }
   };
 
+  // A function that takes a string and removes last characters if it is too long
+  const truncateString = (str, num) => {
+    if (str.length > num) {
+      return str.slice(0, num) + "...";
+    }
+
+    return str;
+  };
+
   return (
     <div className="flex items-center">
       <Button
@@ -43,7 +52,7 @@ const AccountBtn = ({
         {!noLabel && (
           <p className={cn("", labelClassName)}>
             <span className="text-default-foreground">
-              {label || first_name}
+              {truncateString(label, 10) || truncateString(first_name, 10)}
             </span>
           </p>
         )}
