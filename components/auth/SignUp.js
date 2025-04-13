@@ -82,7 +82,7 @@ export default function SignUp() {
     try {
       const redirectPath =
         new URLSearchParams(window.location.search).get("redirect") ||
-        "/profile";
+        "/account";
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
