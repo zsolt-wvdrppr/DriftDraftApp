@@ -26,7 +26,7 @@ export default function Tutorial({
 
   const checkIfTutorialCompleted = () => {
     const tutorialCompleted =
-      localStorage.getItem(localStorageId) === "completed";
+      localStorage.getItem(localStorageId) === "completed" || sessionStorage.getItem(localStorageId) === "completed";
     if ((!tutorialCompleted || startTrigger) && isOpen === false) {
       // First set a timer to open the tutorial
       const timer = setTimeout(() => {
