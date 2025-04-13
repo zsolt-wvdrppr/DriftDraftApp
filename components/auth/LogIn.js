@@ -205,7 +205,7 @@ export default function LogIn() {
             <Checkbox name="remember" size="sm">
               Remember me
             </Checkbox>
-            <Link className="text-default-500" href="#" size="sm">
+            <Link className="text-default-500" href="reset-password" size="sm">
               Forgot password?
             </Link>
           </div>
