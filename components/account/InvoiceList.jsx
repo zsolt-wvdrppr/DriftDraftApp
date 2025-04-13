@@ -34,7 +34,7 @@ const InvoiceList = () => {
             className="mt-4 overflow-hidden"
           >
             {loading && <p>Loading invoices...</p>}
-            {error && <p className="text-red-500">{error}</p>}
+            {/*error && <p className="text-red-500">{error}</p>*/}
             {invoices.length === 0 && !loading && <p>No paid invoices found.</p>}
 
             {invoices.length > 0 && (
