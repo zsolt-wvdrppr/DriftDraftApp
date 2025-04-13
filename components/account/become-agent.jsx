@@ -146,7 +146,7 @@ export const BecomeAgentInput = () => {
           >
             {referralName && (
               <>
-                <h3 className="text-lg">Agent Panel</h3>
+                <h3 className="text-xl">Agent Settings</h3>
                 <p className="text-justify">{`Welcome, ${referralName}! You can change your referral name below.`}</p>
               </>
             )}
@@ -154,6 +154,8 @@ export const BecomeAgentInput = () => {
               <>
                 <h3 className="text-lg">Become an agent</h3>
                 <p className="text-justify">{`Set a unique agent name to get started. As an agent, you can invite users to connect with you and view their AI-generated plans in the agent panel below. Your agent name must be unique and will be used for referrals.`}</p>
+                <p className="text-justify">{`Your agent name must be at least 5 characters long and can only contain lowercase letters, numbers, and hyphens.`}</p>
+                <p className="text-justify">{`Once you've set your agent name, reload or refresh the page if the Agent Panel hasn't appeared at the bottom yet.`}</p>              
               </>
             )}
             <Input
