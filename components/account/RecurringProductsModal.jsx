@@ -22,10 +22,17 @@ import {
   IconStethoscope,
 } from "@tabler/icons-react";
 
+import { Tooltip } from "react-tooltip";
+
 // Utility function to create key from a name
 const createKey = (name) => name.toLowerCase().replace(/ /g, "_");
 
-const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
+const RecurringProductsModal = ({
+  isOpen,
+  onClose,
+  onSuccess,
+  isDisabled = false,
+}) => {
   const { products, loading } = useRecurringProducts();
   const [selectedProduct, setSelectedProduct] = useState();
   const { user } = useAuth();
@@ -228,7 +235,7 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
               {requiresAuth ? "Processing Payment" : "Manage Your Subscription"}
             </ModalHeader>
             <ModalBody>
-              {requiresAuth ? (
+              {requiresAuth ?
                 <div className="text-center p-4">
                   <p className="mb-4">
                     Please wait while we process your payment and set up your
@@ -238,8 +245,7 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
                     This may take a moment. Please do not close this window.
                   </p>
                 </div>
-              ) : (
-                <Select
+              : <Select
                   aria-label="Select a product"
                   variant="underlined"
                   items={products}
@@ -291,10 +297,10 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
                     </SelectItem>
                   )}
                 </Select>
-              )}
+              }
             </ModalBody>
             <ModalFooter>
-              {requiresAuth ? (
+              {requiresAuth ?
                 <Button
                   className="bg-blue-500 text-white"
                   isLoading={true}
@@ -302,9 +308,9 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
                 >
                   Processing Payment...
                 </Button>
-              ) : (
-                <>
+              : <>
                   <Button
+                    id="cancel-plan"
                     onPress={onClose}
                     className="bg-gray-500 text-white"
                     isDisabled={loadingPayment}
@@ -312,20 +318,24 @@ const RecurringProductsModal = ({ isOpen, onClose, onSuccess }) => {
                     Cancel
                   </Button>
                   <Button
+                    id="confirm-plan"
                     className="bg-green-500 text-white"
                     onPress={handlePurchase}
                     isLoading={loadingPayment}
-                    isDisabled={!selectedProduct}
+                    aria-label="Confirm Plan"
+                    isDisabled={
+                      !selectedProduct || loadingPayment || isDisabled
+                    }
                   >
                     Confirm Plan
                   </Button>
                 </>
-              )}
+              }
             </ModalFooter>
           </ModalContent>
         </Modal>
       }
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-red-500">{"Error with selection"}</p>}
     </div>
   );
 };

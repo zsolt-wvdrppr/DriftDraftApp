@@ -20,7 +20,7 @@ import { IconCoins } from "@tabler/icons-react";
 // Utility function to create key from a name
 const createKey = (name) => name.toLowerCase().replace(/ /g, "_");
 
-const OneOffProductsModal = ({ isOpen, onClose, onSuccess }) => {
+const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false }) => {
   const { products, loading } = useOneOffProducts();
   const [selectedProduct, setSelectedProduct] = useState();
   const { user } = useAuth();
@@ -285,7 +285,7 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess }) => {
                     className="bg-green-500 text-white"
                     onPress={handlePurchase}
                     isLoading={loadingPayment}
-                    isDisabled={!selectedProduct || !stripe}
+                    isDisabled={!selectedProduct || !stripe || isDisabled}
                   >
                     Confirm Top-up
                   </Button>

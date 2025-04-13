@@ -180,11 +180,6 @@ const SubscriptionAndTopup = () => {
                 <Button
                   onPress={onPlanOpen}
                   className="bg-primary text-white font-semibold w-full"
-                  isDisabled={
-                    (services?.planExpiresAt && expiryDate > now) ||
-                    !paymentMethod ||
-                    paymentMethodLoading
-                  }
                 >
                   Select Plan
                 </Button>
@@ -250,7 +245,6 @@ const SubscriptionAndTopup = () => {
               <Button
                 onPress={onTopupOpen}
                 className="bg-lime-500 text-white w-full font-semibold mx-auto"
-                isDisabled={!paymentMethod || paymentMethodLoading}
               >
                 Top-Up Now
               </Button>
@@ -281,12 +275,14 @@ const SubscriptionAndTopup = () => {
         isOpen={isPlanOpen}
         onClose={onPlanClose}
         onSuccess={refreshPaidServicesData}
+        isDisabled={(services?.planExpiresAt && expiryDate > now) || !paymentMethod || paymentMethodLoading}
       />
 
       <OneOffProductsModal
         isOpen={isTopupOpen}
         onClose={onTopupClose}
         onSuccess={refreshPaidServicesData}
+        isDisabled={!paymentMethod || paymentMethodLoading}
       />
 
       <CancelSubscriptionModal
