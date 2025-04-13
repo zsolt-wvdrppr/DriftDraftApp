@@ -110,16 +110,27 @@ export async function DELETE(req) {
     }
 
     // ✅ Delete the user from `profiles`
-    const { error: deleteError } = await supabaseRoleKey
+    const { error: deleteProfileError } = await supabaseRoleKey
       .from("profiles")
       .delete()
       .eq("user_id", userId);
 
-    if (deleteError) {
-      return NextResponse.json({ error: "Failed to delete user." }, { status: 500 });
+    if (deleteProfileError) {
+      logger.error("❌ Failed to delete user profile:", deleteProfileError);
+
+      return NextResponse.json({ error: "Failed to delete user profile." }, { status: 500 });
     }
 
-    logger.info(`✅ User ${userId} successfully deleted.`);
+    // ✅ Delete the user from Supabase auth.users table
+    const { error: deleteUserError } = await supabaseRoleKey.auth.admin.deleteUser(userId);
+
+    if (deleteUserError) {
+      logger.error("❌ Failed to delete user from auth:", deleteUserError);
+
+      return NextResponse.json({ error: "Failed to delete user account." }, { status: 500 });
+    }
+
+    logger.info(`✅ User ${userId} successfully deleted from both profile and auth.`);
 
     return NextResponse.json({ success: true }, { status: 200 });
 
