@@ -19,6 +19,7 @@ import {
 } from "@tabler/icons-react";
 import useDarkMode from "@/lib/hooks/useDarkMode";
 import { COUNTRIES, isEUCountry, validateVatNumber } from "@/lib/utils/utils";
+import logger from "@/lib/logger";
 
 export default function PaymentMethod() {
   const stripe = useStripe();
@@ -63,7 +64,7 @@ export default function PaymentMethod() {
       
       // Parse billing address if it exists
       if (billingAddress && typeof billingAddress === 'object') {
-        console.log("Setting form fields from billing address:", billingAddress);
+        logger.debug("Setting form fields from billing address:", billingAddress);
         setAddressLine1(billingAddress.line1 || "");
         setAddressLine2(billingAddress.line2 || "");
         setCity(billingAddress.city || "");
@@ -85,7 +86,7 @@ export default function PaymentMethod() {
       // Clear VAT error when country changes
       setVatError("");
       
-      console.log(`Country set to ${country}, EU status: ${isEU ? "EU" : "Non-EU"}`);
+      logger.debug(`Country set to ${country}, EU status: ${isEU ? "EU" : "Non-EU"}`);
     }
   }, [country]);
 
