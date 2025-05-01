@@ -24,6 +24,8 @@ import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHi
 import Tutorial from "@/components/tutorial/tutorial-custom";
 import StartTutorialButton from "@/components/tutorial/start-tutorial-button";
 
+import { Divider } from "@heroui/react"
+
 const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");
   const [localServiceDescription, setLocalServiceDescription] = useState("");
@@ -188,7 +190,7 @@ const StepPurpose = ({ ref }) => {
        target: ".get-ai-hint-btn",
        title: "💡 Try This!",
        content:
-         "Click this button to get an AI-generated hint for this section! \n\n🚀 Even if you're unsure what to write, just type in a few words and give it a try! \n\n⚠️ If this button is disabled, make sure you've filled in the required fields first.",
+         "Click this button to get an AI-generated suggestion for this section! \n\n🚀 Even if you're unsure what to write, just type in a few words and give it a try! \n\n⚠️ If this button is disabled, make sure you've filled in the required fields first.",
      },    
      {
        target: ".why-we-ask-btn",
@@ -198,15 +200,15 @@ const StepPurpose = ({ ref }) => {
      },
      {
        target: ".check-hint-btn",
-       title: "🧐 Review & Copy AI Hints!",
+       title: "🧐 Review & Copy AI Suggestions!",
        content:
-         "If you've received an AI-generated hint, click here to review it before using it.\n\n📋 Found it useful? You can also copy it directly from this panel and paste it into your answer field for easy editing!",
+         "If you've received an AI-generated suggestion, click here to review it before using it.\n\n📋 Found it useful? You can also copy it directly from this panel and paste it into your answer field for easy editing!",
      },
      {
        target: ".paste-btn",
-       title: "📌 Paste Your Hint!",
+       title: "📌 Paste Your Suggestion!",
        content:
-         "Use this button to paste the copied hint into your answer field. \n\n📌 It will be added below any existing text, so you can refine your response with ease.",
+         "Use this button to paste the copied suggestion into your answer field. \n\n📌 It will be added below any existing text, so you can refine your response with ease.",
      },
      {
        target: ".next-btn",
@@ -278,7 +280,8 @@ const StepPurpose = ({ ref }) => {
             onChange={handleAdditionalDetailsChange}
           />
         </div>
-        <div className="col-span-4 flex-1 pt-8 my-other-step">
+        <Divider className="my-8" />
+        <div className="col-span-4 flex-1 my-other-step">
           <StepQuestion
             content={content}
             question={content.questionAddition2}

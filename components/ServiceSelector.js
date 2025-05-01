@@ -10,6 +10,8 @@ import {
 import { Button } from "@heroui/react";
 import { Link } from "@heroui/react";
 
+import RestartSessionBtn from "@/components/planner-layout/layout/RestartSessionBtn";
+
 const ServiceSelector = () => { 
 
   const defaultContent =
@@ -37,17 +39,14 @@ const ServiceSelector = () => {
             "Create a strategic website blueprint. Our AI helps you to define your goals, target audience, content structure and more."
           }
           <div className="flex justify-end py-2 pl-4 mt-4">
-            <Button
+           <RestartSessionBtn
               alt="Start planning"
               aria-label="Start Website Planner"
-              as={Link}
-              color="primary"
-              href={urls.websitePlanner}
-              isExternal={false}
-              variant="shadow"
+              className={"border-2 border-brandPink h-auto py-2 text-lg bg-brandPink text-white"}
+              targetPathname={"website-planner"}
             >
-              Start Your Website Plan
-            </Button>
+              Start Planning
+            </RestartSessionBtn>
           </div>
         </AccordionItem>
         <AccordionItem
@@ -62,17 +61,14 @@ const ServiceSelector = () => {
             "Create a strategic landing page blueprint. Our AI helps you define your objectives, pinpoint your target audience, structure your content, and more."
           }
           <div className="flex justify-end py-2 pl-4 mt-4">
-            <Button
+          <RestartSessionBtn
               alt="Start planning"
-              aria-label="Start Landing Page Planner"
-              as={Link}
-              color="primary"
-              href={urls.landingPagePlanner}
-              isExternal={false}
-              variant="shadow"
+              aria-label="Start Website Planner"
+              className={"border-2 border-brandPink h-auto py-2 text-lg bg-brandPink text-white"}
+              targetPathname={"landingpage-planner"}
             >
-              Start Your Landing Page
-            </Button>
+              Start Planning
+            </RestartSessionBtn>
           </div>
         </AccordionItem>
         <AccordionItem

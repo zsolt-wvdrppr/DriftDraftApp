@@ -101,7 +101,7 @@ export const showHintToast = (
   const newToastId = toast.custom(
     () => (
       <div className="p-4 shadow-lg rounded-lg bg-neutralSnow dark:bg-zinc-900 md:bg-neutralSnow/95 dark:md:bg-zinc-900 max-h-[90vh] overflow-y-auto select-text">
-        <h4 className="font-bold dark:text-neutralSnow">Hint</h4>
+        <h4 className="font-bold dark:text-neutralSnow">Suggestion</h4>
         <div className="prose py-6 dark:text-slate-200">
         <ReactMarkdown
           components={{

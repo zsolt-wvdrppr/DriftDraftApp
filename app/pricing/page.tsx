@@ -8,7 +8,7 @@ export default function PricingPage() {
       <div className="text-lg">
         <span>DriftDraft.App operates on a credit-based system:</span><br /><br />
         <ul className="list-disc list-inside text-left">
-        <li><strong>AI Hint Generation:</strong> 1 credit per AI hint.</li>
+        <li><strong>AI Suggestion:</strong> 1 credit per AI suggestion.</li>
         <li><strong>Plan Generation:</strong> 4 credits per full plan.</li>
         </ul>
       </div>

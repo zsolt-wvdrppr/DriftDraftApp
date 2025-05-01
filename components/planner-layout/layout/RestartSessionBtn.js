@@ -5,11 +5,12 @@ import { useRouter, usePathname } from "next/navigation";
 import { IconFilePlus } from "@tabler/icons-react";
 import { useTransition } from "react";
 import { Tooltip } from "react-tooltip";
+import { cn } from "@/lib/utils/utils";
 
 import logger from "@/lib/logger";
 import { useSessionContext } from "@/lib/SessionProvider";
 
-const RestartSessionBtn = ({ children, targetPathname }) => {
+const RestartSessionBtn = ({ children, targetPathname, className, ...props }) => {
   const { startNewSession } = useSessionContext();
   const router = useRouter();
   const pathname = usePathname();
@@ -39,14 +40,15 @@ const RestartSessionBtn = ({ children, targetPathname }) => {
   return (
     <>
       <Button
-        className="new-session-btn flex flex-col items-center self-end h-16 gap-2"
+        className={cn("new-session-btn flex flex-col items-center self-end h-16 gap-2 text-accentMint", className)}
         id="restart-session"
         isDisabled={isPending}
         onPress={handlePress}
+        {...props}
       >
         <div className="flex items-center gap-4">
           <div>{children}</div>
-          <IconFilePlus className="text-secondary" size={30} />
+          <IconFilePlus size={30} />
         </div>
       </Button>
       <Tooltip anchorSelect="#restart-session" place="top">

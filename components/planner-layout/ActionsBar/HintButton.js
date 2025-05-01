@@ -58,19 +58,19 @@ const HintButton = ({
   return (
       <Button
         auto
-        aria-label="Check hint"
+        aria-label="View AI Suggestion"
         className={`check-hint-btn select-none md:w-32 md:h-24 break-words md:relative bottom-0 -right-4 z-10 md:bg-transparent md:shadow-md dark:md:border-1 dark:md:border-content1 md:right-auto flex md:border-3 md:border-transparent
-          ${!hint ? 'cursor-not-allowed border-3 border-transparent opacity-40' : ''}`}
+          ${!hint ? 'cursor-not-allowed border-3 border-transparent opacity-40 grayscale' : ''}`}
         disabled={!hint}
-        title={hint ? 'Check hint' : 'Not Available'}
+        title={hint ? 'View AI Suggestion' : 'Not Available'}
         variant="none"
         onPress={handleClick}
       >
         
           <span
-            className={`hidden md:block absolute bottom-0 dark:md:bottom-1 ${newHintAvailable ? 'animate-pulse font-bold' : ''}`}
+            className={`hidden md:block absolute text-xs md:bottom-1 whitespace-pre-line leading-3 dark:md:bottom-1 ${newHintAvailable ? 'animate-pulse font-bold' : ''}`}
           >
-            {hint ? "Check Hint" : "Not Available"}
+            {hint ? "View Suggestion" : "Not Available"}
           </span>
    
         <NewHintNotifierIcon trigger={newHintAvailable} />

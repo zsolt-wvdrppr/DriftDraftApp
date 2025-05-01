@@ -15,12 +15,12 @@ const WhyWeAskButton = ({ whyDoWeAsk, handleToast }) => {
       onPress={() => handleToast('why')}
     >
       {whyDoWeAsk && (
-        <span className="hidden absolute bottom-0 dark:md:bottom-1 md:block">
+        <span className="hidden text-xs absolute  md:bottom-0 dark:md:bottom-1 md:block">
           Why We Ask
         </span>
       )}
       <IconZoomQuestionFilled
-        className="dark:text-white text-accentMint"
+        className="dark:text-white text-highlightBlue -mb-1"
         size={28}
       />
     </Button>

@@ -8,22 +8,6 @@ import { IconCheck, IconPlant, IconUsersGroup, IconMagnet, IconRocket, IconDiamo
 import { useRouter, usePathname } from 'next/navigation';
 import { Spinner } from "@heroui/react";
 
-import logger from '@/lib/logger';
-import { useAuth } from '@/lib/AuthContext';
-import {
-    updateUrlParams,
-    handleValidation,
-    goToNextStep,
-    goToPreviousStep,
-    handleSubmit,
-    handleSectionPicker
-} from '@/lib/plannerFormNavigation';
-import { useProfileUpdater } from '@/lib/hooks/useProfileUpdater';
-import { useRestoreStep } from '@/lib/hooks/useRestoreStep';
-import { useUpdateTabName } from '@/lib/hooks/useUpdateTabName';
-import { useSessionContext } from "@/lib/SessionProvider";
-import { PreviousButton, NextButton, SubmitButton } from '@/components/planner-layout/layout/NavigationButtons';
-import RestartSessionBtn from '@/components/planner-layout/layout/RestartSessionBtn';
 
 import ProgressBar from './ProgressBar';
 import StepPurpose from './StepPurpose';
@@ -37,6 +21,23 @@ import StepEmotions from './StepEmotions';
 import StepInspirations from './StepInspirations';
 import StepContactInfo from './StepContactInfo';
 import Result from './Result';
+
+import RestartSessionBtn from '@/components/planner-layout/layout/RestartSessionBtn';
+import { PreviousButton, NextButton, SubmitButton } from '@/components/planner-layout/layout/NavigationButtons';
+import { useSessionContext } from "@/lib/SessionProvider";
+import { useUpdateTabName } from '@/lib/hooks/useUpdateTabName';
+import { useRestoreStep } from '@/lib/hooks/useRestoreStep';
+import { useProfileUpdater } from '@/lib/hooks/useProfileUpdater';
+import {
+    updateUrlParams,
+    handleValidation,
+    goToNextStep,
+    goToPreviousStep,
+    handleSubmit,
+    handleSectionPicker
+} from '@/lib/plannerFormNavigation';
+import { useAuth } from '@/lib/AuthContext';
+import logger from '@/lib/logger';
 
 // Step definitions
 const steps = [
@@ -231,7 +232,7 @@ export default function WebsiteWizardContainer({ }) {
     }
 
     return (
-        <div className="wizard-container w-full">
+        <div className="wizard-container w-full overflow-hidden mb-16">
             <div className="step-0 sicky w-full -z-50"/>
             {isSubmitted && <Result formData={formData} />}
 
@@ -283,8 +284,8 @@ export default function WebsiteWizardContainer({ }) {
                                 <motion.div
                                     key={currentStep}
                                     animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -50 }}
-                                    initial={{ opacity: 0, x: 50 }}
+                                    exit={{ opacity: 0, x: 0 }}
+                                    initial={{ opacity: 0, x: 0 }}
                                     transition={{ duration: 0.5 }}
                                 >
                                     <CurrentStepComponent
@@ -297,7 +298,7 @@ export default function WebsiteWizardContainer({ }) {
                         </AnimatePresence>
                     </Suspense>
                     {/* Navigation Buttons */}
-                    <div className="navigation-buttons w-full flex gap-2 justify-evenly py-8">
+                    <div className="fixed z-50 bottom-0 backdrop-blur-sm bg-white/50 dark:bg-content1/50 md:backdrop-blur-none md:relative navigation-buttons w-full flex gap-2 justify-between md:justify-evenly pt-1 md:py-8">
                         <PreviousButton
                             disabled={currentStep <= 0}
                             onPress={handlePrevious}
