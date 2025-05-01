@@ -22,7 +22,7 @@ const StepDomain = ({ ref }) => {
   const [isInputInvalid, setIsInputInvalid] = useState(false);
   const formData = sessionData.formData;
   const [localValue, setLocalValue] = useState(
-    formData[stepNumber]?.domain || ""
+    formData?.[stepNumber]?.domain || ""
   );
 
   useEffect(() => {
@@ -32,12 +32,20 @@ const StepDomain = ({ ref }) => {
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      if (!formData[stepNumber]?.domain) {
+      if (!formData?.[stepNumber]?.domain) {
         setError("Additional details are required.");
         setIsInputInvalid(true);
 
         return false;
       }
+
+      if (localValue?.length < 5) {
+        setError("Please provide at least 5 characters.\n\nTry to Refine with AI!");
+        setIsInputInvalid(true);
+
+        return false;
+      }
+
       setIsInputInvalid(false);
 
       return true; // Validation passed

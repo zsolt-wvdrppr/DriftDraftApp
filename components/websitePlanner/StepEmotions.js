@@ -28,12 +28,20 @@ const StepEmotions = ({ ref }) => {
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      if (!formData[stepNumber]?.emotions) {
+      if (!formData?.[stepNumber]?.emotions) {
         setError("Additional details are required.");
         setIsInputInvalid(true);
 
         return false;
       }
+
+      if (localValue?.length < 50) {
+        setError("Description must be at least 50 characters long. Try to Refine with AI!");
+        setIsInputInvalid(true);
+
+        return false;
+      }
+
       setIsInputInvalid(false);
 
       return true; // Validation passed
@@ -55,20 +63,20 @@ const StepEmotions = ({ ref }) => {
   const [userMsg, setUserMsg] = useState(null);
 
   const question = content.question;
-  const purpose = `${formData[0]?.purpose}.` || "";
+  const purpose = `${formData?.[0]?.purpose}.` || "";
   const purposeDetails =
-    `Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` ||
+    `Some more details about it's purpose: ${formData?.[0]?.purposeDetails}\n` ||
     "";
-  const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
-  const audience = `${formData[1].audience}. ` || "";
+  const serviceDescription = `${formData?.[0]?.serviceDescription}\n` || "";
+  const audience = `${formData?.[1].audience}. ` || "";
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
     formData?.[3]?.urls?.toString().trim() !== ""
-      ? `- Competitors:  ${formData[3].urls.toString()}`
+      ? `- Competitors:  ${formData?.[3].urls.toString()}`
       : "";
-  const usps = formData[4].usps || "";
-  const domains = formData[5]?.domain || "";
-  const brandGuidelines = formData[6]?.brandGuidelines || "";
+  const usps = formData?.[4].usps || "";
+  const domains = formData?.[5]?.domain || "";
+  const brandGuidelines = formData?.[6]?.brandGuidelines || "";
   const emotionIdeas =  localValue ? `My thoughts regarding feelings and emotions:  ${localValue}.` : "";
 
   const isAIAvailable =
@@ -94,7 +102,7 @@ const StepEmotions = ({ ref }) => {
       <StepWrapper
         hint={aiHint}
         userMsg={userMsg}
-        whyDoWeAsk={content.why_do_we_ask}
+        whyDoWeAsk={content?.why_do_we_ask}
       >
         <StepQuestion content={content} />
         <StepGetAiHintBtn

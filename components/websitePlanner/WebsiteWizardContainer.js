@@ -249,7 +249,7 @@ export default function WebsiteWizardContainer({ }) {
                             <DropdownTrigger>
                                 <Button className="section-selector-dropdown capitalize w-full md:max-w-80" color="secondary" variant="flat">
                                     <div className="grid grid-cols-4 items-center w-full">
-                                        <span className="col-span-1 text-primary">{steps[currentStep]?.icon}</span>
+                                        <span className="col-span-1 text-primary dark:text-white/80">{steps[currentStep]?.icon}</span>
                                         <span className="col-span-2 text-lg">{tabName}</span>
                                         <span className="col-span-1 justify-self-end">
                                             {formData && formData[currentStep]?.isValid && <IconCheck className='text-secondaryPersianGreen' size={20} />}

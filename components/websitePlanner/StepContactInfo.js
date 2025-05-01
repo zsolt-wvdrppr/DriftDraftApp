@@ -127,7 +127,7 @@ const StepContactInfo = ({ ref }) => {
     // Utility functions for validation
     const validateEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-    const validateTel = (value) => /^\+?(\d.*){3,}$/.test(value);
+    const validateTel = (value) => "" | /^\+?(\d.*){3,}$/.test(value);
 
     const validateURL = (url) => {
 
@@ -147,7 +147,8 @@ const StepContactInfo = ({ ref }) => {
     return (
         <form>
             <div className="md:py-10 max-w-screen-md mx-auto">
-                <div className="col-span-3 grid grid-cols-2 gap-4 items-center mt-8 px-4">
+            <p className='bg-yellow-100 whitespace-pre-line border-l-4 border-yellow-400 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100 p-4 rounded-xl text-sm max-w-xl self-center mx-2'>{`These details will only be used if you request a quote. To do that, first complete the next step. Then, you’ll be able to request a quote under "My Activities".`}</p>
+                <div className="col-span-3 grid grid-cols-2 gap-4 items-center mt-4 px-4">
                     {content.fields.map((field, index) => (
                         <div key={index} className="relative">
                             {/* Render Input Fields */}

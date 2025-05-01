@@ -35,7 +35,7 @@ const StepUSPs = ({ ref }) => {
         return false;
       }
 
-      if (localValue.length < 50) {
+      if (localValue?.length < 50) {
         setError("Please provide at least 50 characters.\n\nTry to Refine with AI!");
         setIsInputInvalid(true);
 
@@ -62,17 +62,17 @@ const StepUSPs = ({ ref }) => {
   );
   const [userMsg, setUserMsg] = useState(null);
 
-  const question = content.question;
-  const purpose = `${formData[0]?.purpose}.` || "";
-  const purposeDetails = formData[0]?.purposeDetails
-    ? ` ${formData[0]?.purposeDetails} \n`
+  const question = content?.question;
+  const purpose = `${formData?.[0]?.purpose}.` || "";
+  const purposeDetails = formData?.[0]?.purposeDetails
+    ? ` ${formData?.[0]?.purposeDetails} \n`
     : "";
   const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
-  const audience = `${formData[1].audience}. ` || "";
+  const audience = `${formData?.[1]?.audience}. ` || "";
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
     formData?.[3]?.urls?.toString() !== ""
-      ? `I have identified the following competitors: ${formData[3].urls.toString()}.`
+      ? `I have identified the following competitors: ${formData[3]?.urls?.toString()}.`
       : "";
   const usps = localValue
     ? `My Unique Selling Points that I gathered: ${localValue}\n`
@@ -97,7 +97,7 @@ const StepUSPs = ({ ref }) => {
       <StepWrapper
         hint={aiHint}
         userMsg={userMsg}
-        whyDoWeAsk={content.why_do_we_ask}
+        whyDoWeAsk={content?.why_do_we_ask}
       >
         <StepQuestion content={content} />
         <StepGetAiHintBtn

@@ -64,7 +64,7 @@ const StepEmotions = ({ ref }) => {
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
     formData?.[3]?.urls?.toString().trim() !== ""
-      ? `- Competitors:  ${formData[3].urls.toString()}`
+      ? `- Competitors:  ${formData[3]?.urls?.toString()}`
       : "";
   const usps = formData[4].usps || "";
   const brandGuidelines = formData[5].brandGuidelines || "";

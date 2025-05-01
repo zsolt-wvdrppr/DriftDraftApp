@@ -34,6 +34,14 @@ const StepBrandGuidelines = ({ ref }) => {
 
         return false;
       }
+
+      if (localValue?.length < 50) {
+        setError("Brand guidelines must be at least 50 characters long. Try to Refine with AI!");
+        setIsInputInvalid(true);
+
+        return false;
+      }
+
       setIsInputInvalid(false);
 
       return true; // Validation passed
@@ -55,19 +63,19 @@ const StepBrandGuidelines = ({ ref }) => {
   const [userMsg, setUserMsg] = useState(null);
 
   const question = content.question;
-  const purpose = `${formData[0]?.purpose}.` || "";
-  const purposeDetails = formData[0]?.purposeDetails ?
-    ` ${formData[0]?.purposeDetails}\n` :
+  const purpose = `${formData?.[0]?.purpose}.` || "";
+  const purposeDetails = formData?.[0]?.purposeDetails ?
+    ` ${formData?.[0]?.purposeDetails}\n` :
     "";
   const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
-  const audience = `${formData[1].audience}. ` || "";
+  const audience = `${formData?.[1]?.audience}. ` || "";
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
     formData?.[3]?.urls?.toString() !== ""
-      ? `${formData[3].urls.toString()}.`
+      ? `${formData?.[3].urls?.toString()}.`
       : "";
-  const usps = formData[4]?.usps || "";
-  const domains = formData[5].domain || "";
+  const usps = formData?.[4]?.usps || "";
+  const domains = formData?.[5]?.domain || "";
   const brandIdeas = localValue ? `- **My ideas regarding the brand guidelines**: ${localValue}` : "";
 
   const isAIAvailable =
@@ -119,7 +127,7 @@ Ensure all suggestions are innovative, SEO-friendly, descriptive, and catchy. Fo
       <StepWrapper
         hint={aiHint}
         userMsg={userMsg}
-        whyDoWeAsk={content.why_do_we_ask}
+        whyDoWeAsk={content?.why_do_we_ask}
       >
         <StepQuestion content={content} />
         <StepGetAiHintBtn

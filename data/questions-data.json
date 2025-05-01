@@ -66,7 +66,7 @@
       "required": true,
       "hint": "- Choose an **SEO-friendly domain** that includes relevant keywords related to your business or industry. For example, a bakery could use `freshbakeshop.com`.\n- Keep the domain **short and easy to remember** (ideally 6–14 characters long).\n- Avoid using **special characters** (e.g., hyphens or numbers), unless absolutely necessary.\n- Ensure it’s **brandable and unique** to your business while still being clear to your target audience.\n- Check for **availability across social media platforms** if you plan to use the same name for branding consistency.\n- Consider purchasing **common misspellings or alternative versions** of your domain to prevent traffic loss (e.g., `freshbakes.com` in addition to `freshbakeshop.com`).",
       "why_do_we_ask": "**Why do we ask?**\n\nA custom domain and branded email enhance professionalism and help build brand recognition. Proper domain setup also ensures a smooth website launch, prevents emails from going to spam, and supports website features like contact forms that may rely on email notifications. A well-chosen domain can also improve search engine optimisation, making it easier for customers to find you.",
-      "placeholder": "e.g., mybusiness.com, bestservices.co.uk"
+      "placeholder": "e.g. something bike related, or mybusiness.com..."
     },
     {
       "question": "Do you currently have brand guidelines (e.g., logo, colours, fonts)?\nIf so, please provide details; if not, what ideas do you have?",
@@ -120,7 +120,7 @@
         {
           "question": "Phone Number",
           "type": "text",
-          "required": true
+          "required": false
         },
         {
           "question": "Organisation’s Name",

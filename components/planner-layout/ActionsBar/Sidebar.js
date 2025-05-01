@@ -55,11 +55,8 @@ const Sidebar = React.memo(({ hint, whyDoWeAsk, onHintClicked, onWhyClicked, use
   }
   
   return (
-    <motion.div
-      animate={{ opacity: 1 }}
-      className="fixed bottom-0 z-[60] left-1/2 -translate-x-1/2 md:relative mt-8 md:mt-0 flex justify-between md:justify-center md:flex-col md:items-end md:justify-items-center gap-4"
-      initial={{ opacity: 1 }}
-      transition={{ duration: 0 }}
+    <div
+      className="fixed bottom-0 z-[60] left-1/2 -translate-x-1/2 md:relative mt-8 md:mt-0 flex justify-between md:justify-center md:items-center md:flex-col md:justify-items-center gap-4"
     >
       <HintButton
         handleToast={() => handleToast('hint')}
@@ -70,7 +67,7 @@ const Sidebar = React.memo(({ hint, whyDoWeAsk, onHintClicked, onWhyClicked, use
         handleToast={() => handleToast('why')}
         whyDoWeAsk={whyDoWeAsk}
       />
-    </motion.div>
+    </div>
   );
 });
 

@@ -48,9 +48,9 @@ const StepPurpose = ({ ref }) => {
       formData?.[stepNumber]?.serviceDescription || ""
     );
     if (formData?.[stepNumber]?.purpose) {
-      setSelectedKeys(new Set([formData[stepNumber].purpose]));
+      setSelectedKeys(new Set([formData?.[stepNumber]?.purpose]));
       setIsOtherSelected(
-        formData[stepNumber].purpose === "Other (please specify)"
+        formData?.[stepNumber]?.purpose === "Other (please specify)"
       );
     }
     if (!formData?.[stepNumber]?.purpose) {
@@ -63,7 +63,7 @@ const StepPurpose = ({ ref }) => {
     validateStep: () => {
       // Manual validation for NextUI fields
       //logger.info("selectedKeys", selectedKeys.currentKey);
-      if (!formData[stepNumber]?.purpose) {
+      if (!formData?.[stepNumber]?.purpose) {
         setPurposeIsInvalid(true);
         setError("Please select a goal before proceeding.");
 
@@ -71,14 +71,14 @@ const StepPurpose = ({ ref }) => {
       }
       if (
         isOtherSelected &&
-        (!localPurposeDetails || localPurposeDetails.length < 10)
+        (!localPurposeDetails || localPurposeDetails?.length < 10)
       ) {
         setError("Additional details are required. (10 characters minimum)");
         setDetailsIsInvalid(true);
 
         return false;
       }
-      if (!localServiceDescription || localServiceDescription.length < 50) {
+      if (!localServiceDescription || localServiceDescription?.length < 50) {
         setError(
           "Please provide a more detailed service description. Try to Refine with AI! (50 characters minimum)"
         );
@@ -107,18 +107,18 @@ const StepPurpose = ({ ref }) => {
 
     setLocalPurposeDetails(value);
     updateFormData("purposeDetails", value);
-    setDetailsIsInvalid(isOtherSelected && value.length < 10);
+    setDetailsIsInvalid(isOtherSelected && value?.length < 10);
   };
 
   const handleServiceDescriptionChange = (e) => {
     const value = e.target.value;
 
     logger.debug("value", value);
-    logger.debug("condition:", value.length > 15 && !purposeIsInvalid);
+    logger.debug("condition:", value?.length > 15 && !purposeIsInvalid);
 
     setLocalServiceDescription(value);
     updateFormData("serviceDescription", value);
-    setServiceDescIsInvalid(value.length < 50);
+    setServiceDescIsInvalid(value?.length < 50);
   };
 
   const [aiHint, setAiHint] = useState(
@@ -128,7 +128,7 @@ const StepPurpose = ({ ref }) => {
   const [isAIAvailable, setIsAIAvailable] = useState(true);
 
   useEffect(() => {
-    if (localServiceDescription.length > 15 && !purposeIsInvalid) {
+    if (localServiceDescription?.length > 15 && !purposeIsInvalid) {
       setIsAIAvailable(true);
     } else {
       setIsAIAvailable(false);
@@ -232,7 +232,7 @@ const StepPurpose = ({ ref }) => {
       <StepWrapper
         hint={aiHint}
         userMsg={userMsg}
-        whyDoWeAsk={content.why_do_we_ask}
+        whyDoWeAsk={content?.why_do_we_ask}
       >
         <StepQuestion content={content} />
         <div className="flex flex-col md:flex-row gap-4 my-first-step">
@@ -244,8 +244,8 @@ const StepPurpose = ({ ref }) => {
                 variant="bordered"
               >
                 {Array.from(selectedKeys).join(", ").replaceAll("_", " ") ||
-                  content.placeholder[0]}
-                {content.required && (
+                  content?.placeholder[0]}
+                {content?.required && (
                   <span className="text-red-500 ml-[-6px]">*</span>
                 )}
               </Button>
@@ -254,7 +254,7 @@ const StepPurpose = ({ ref }) => {
               disallowEmptySelection
               aria-label="Single selection example"
               color=""
-              isRequired={content.required}
+              isRequired={content?.required}
               selectedKeys={selectedKeys}
               selectionMode="single"
               variant="flat"
@@ -274,7 +274,7 @@ const StepPurpose = ({ ref }) => {
             }}
             isRequired={isOtherSelected}
             label="Additional Details"
-            placeholder={`(${isOtherSelected ? "required" : "optional"}) ${content.placeholder[1]}`}
+            placeholder={`(${isOtherSelected ? "required" : "optional"}) ${content?.placeholder[1]}`}
             validationBehavior="aria"
             value={localPurposeDetails}
             onChange={handleAdditionalDetailsChange}
@@ -284,7 +284,7 @@ const StepPurpose = ({ ref }) => {
         <div className="col-span-4 flex-1 my-other-step">
           <StepQuestion
             content={content}
-            question={content.questionAddition2}
+            question={content?.questionAddition2}
           />
         </div>
         <StepGetAiHintBtn
@@ -311,7 +311,7 @@ const StepPurpose = ({ ref }) => {
             isRequired={true}
             label="Service Description"
             localValue={localServiceDescription}
-            placeholder={content.placeholder[2]}
+            placeholder={content?.placeholder[2]}
           />
         </PasteButton>
       </StepWrapper>

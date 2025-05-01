@@ -57,8 +57,8 @@ const StepPurpose = ({ ref }) => {
 
         return false;
       }
-      if (!localServiceDescription || localServiceDescription.length < 50) {
-        setError("Please provide a more detailed service description. (50 characters minimum)");
+      if (!localServiceDescription || localServiceDescription?.length < 50) {
+        setError("Please provide a more detailed service description. Try to Refine with AI! (50 characters minimum)");
         setServiceDescIsInvalid(true);
 
         return false;
@@ -95,7 +95,7 @@ const StepPurpose = ({ ref }) => {
 
     setLocalServiceDescription(value);
     updateFormData("serviceDescription", value);
-    setServiceDescIsInvalid(value.length < 50);
+    setServiceDescIsInvalid(value?.length < 50);
   };
 
   const [aiHint, setAiHint] = useState(sessionData?.formData?.[stepNumber]?.aiHint || null);

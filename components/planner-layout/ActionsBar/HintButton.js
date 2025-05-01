@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useMemo } from 'react';
-import PropTypes from 'prop-types';
-import { Button } from '@heroui/react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect, useMemo } from "react";
+import PropTypes from "prop-types";
+import { Button } from "@heroui/react";
+import { useSearchParams } from "next/navigation";
 
-import useToastSound from '@/lib/hooks/useToastSound';
-import logger from '@/lib/logger';
-import { useSessionContext } from '@/lib/SessionProvider';
+import useToastSound from "@/lib/hooks/useToastSound";
+import logger from "@/lib/logger";
+import { useSessionContext } from "@/lib/SessionProvider";
 
-import NewHintNotifierIcon from './NewHintNotifierIcon';
+import NewHintNotifierIcon from "./NewHintNotifierIcon";
 
 const HintButton = ({
   hints: hint,
@@ -18,19 +18,22 @@ const HintButton = ({
 }) => {
   const { sessionData, updateFormData } = useSessionContext();
   const searchParams = useSearchParams();
-  const stepNumber = searchParams.get('step') || 'unknown';
+  const stepNumber = searchParams.get("step") || "unknown";
   const [newHintAvailable, setNewHintAvailable] = useState(false); // Track if new hint is available
-  const [lastHint, setLastHint] = useState(sessionData?.formData?.[stepNumber]?.lastHint || ""); // Last known hints
+  const [lastHint, setLastHint] = useState(
+    sessionData?.formData?.[stepNumber]?.lastHint || ""
+  ); // Last known hints
   const playSound = useToastSound();
 
   const hintsChanged = useMemo(() => {
     logger.debug(`HintButton: hints=${hint}, lastHints=${lastHint}`);
-    logger.debug(`HintButton: hintsChanged=${JSON.stringify(hint) !== JSON.stringify(lastHint)}`);
+    logger.debug(
+      `HintButton: hintsChanged=${JSON.stringify(hint) !== JSON.stringify(lastHint)}`
+    );
     if (!hint) return false;
 
     return JSON.stringify(hint) !== JSON.stringify(lastHint);
   }, [hint, lastHint]);
-  
 
   // Detect hint changes and update state
   useEffect(() => {
@@ -41,11 +44,11 @@ const HintButton = ({
   }, [hint, sessionData]);
 
   const handleClick = () => {
-    handleToast('hint');
-    logger.debug('HintButton: handleClick');
+    handleToast("hint");
+    logger.debug("HintButton: handleClick");
     setNewHintAvailable(false);
     setLastHint(hint);
-  };  
+  };
 
   useEffect(() => {
     updateFormData("newHintAvailable", newHintAvailable);
@@ -56,25 +59,25 @@ const HintButton = ({
   }, [lastHint]);
 
   return (
-      <Button
-        auto
+    <div className="flex flex-col justify-center items-center">
+      <button
         aria-label="View AI Suggestion"
-        className={`check-hint-btn select-none md:w-32 md:h-24 break-words md:relative bottom-0 -right-4 z-10 md:bg-transparent md:shadow-md dark:md:border-1 dark:md:border-content1 md:right-auto flex md:border-3 md:border-transparent
-          ${!hint ? 'cursor-not-allowed border-3 border-transparent opacity-40 grayscale' : ''}`}
+        className={`check-hint-btn ${!hint ? "cursor-not-allowed opacity-40 grayscale" : ""} relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden transition-all rounded-full duration-200 text-sm font-medium text-gray-900 group bg-gradient-to-br from-accentMint to-secondaryTeal group-hover:from-secondaryPersianGreen group-hover:to-blue-600 hover:text-white dark:text-white disabled:cursor-not-allowed focus:ring-4 focus:outline-none focus:ring-accentMint/20 dark:focus:ring-secondaryPersianGreen/55`}
         disabled={!hint}
-        title={hint ? 'View AI Suggestion' : 'Not Available'}
-        variant="none"
-        onPress={handleClick}
+        title={hint ? "View AI Suggestion" : "AI suggestion not available"}
+        onClick={(e) => {
+          e.preventDefault();
+          handleClick();
+        }}
       >
-        
-          <span
-            className={`hidden md:block absolute text-xs md:bottom-1 whitespace-pre-line leading-3 dark:md:bottom-1 ${newHintAvailable ? 'animate-pulse font-bold' : ''}`}
-          >
-            {hint ? "View Suggestion" : "Not Available"}
-          </span>
-   
-        <NewHintNotifierIcon trigger={newHintAvailable} />
-      </Button>
+        <span className="relative transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent flex">
+          <NewHintNotifierIcon className={"p-1 md:px-2.5 md:py-2.5 text-brandPink transition-colors duration-200 group-hover:text-white"} trigger={newHintAvailable} />
+        </span>
+      </button>
+      <span className="hidden md:block text-sm mt-2 text-primary dark:text-slate-200">
+        {hint ? "View Suggestion" : "Not Available"}
+      </span>
+    </div>
   );
 };
 
