@@ -9,13 +9,13 @@ import {
 /** Previous Button Component */
 export const PreviousButton = ({ disabled, onPress }) => (
   <Button
-    className="md:w-32 text-secondaryPersianGreen/80 border-secondaryPersianGreen border-2 text-md font-bold tracking-wider flex justify-center items-center rounded-l-none rounded-br-none md:rounded-l-xl md:rounded-br-sm md:rounded-r-xl shadow-none disabled:bg-gray-300 disabled:border-gray-300 disabled:opacity-60 disabled:shadow-none disabled:text-default-100"
+    className="md:w-32 text-primary dark:text-white border-primary dark:border-secondaryPersianGreen border-2 text-md font-bold tracking-wider flex justify-center items-center rounded-l-none rounded-br-none md:rounded-l-xl md:rounded-br-sm md:rounded-r-xl shadow-none disabled:bg-gray-300 disabled:border-gray-300 disabled:opacity-60 disabled:shadow-none disabled:text-default-100"
     disabled={disabled}
     title="Previous Section"
     variant="shadow"
     onPress={onPress}
   >
-    <IconArrowBigRight className="rotate-180 scale-x-150" size={34}/>
+    <IconArrowBigRight className="rotate-180 scale-x-110" size={34}/>
   </Button>
 );
 
@@ -41,13 +41,13 @@ export const NextButton = ({ isPending, onPress, debounceDelay = 500 }) => {
 
   return (
     <Button
-      className="next-btn md:w-32 border-2 text-white/80 shadow-none bg-secondaryPersianGreen border-secondaryPersianGreen text-md font-bold tracking-wider flex justify-center items-center rounded-r-none rounded-bl-none md:rounded-bl-xl md:roudned-l-xl md:rounded-r-xl"
+      className="next-btn md:w-32 border-2 text-white shadow-none bg-primary border-primary dark:bg-secondaryPersianGreen dark:border-secondaryPersianGreen text-md font-bold tracking-wider flex justify-center items-center rounded-r-none rounded-bl-none md:rounded-bl-xl md:roudned-l-xl md:rounded-r-xl"
       disabled={isPending || isDebouncing} // Disable button during debounce
       title="Next Section"
       variant="shadow"
       onPress={handleClick}
     >
-      {isPending ? "" : <IconArrowBigRight className="scale-x-150 pt-0.5 md:pt-0" size={34}/>}
+      {isPending ? "" : <IconArrowBigRight className="scale-x-110 pt-0.5 md:pt-0" size={34}/>}
     </Button>
   );
 };
@@ -60,7 +60,7 @@ NextButton.propTypes = {
 /** Submit Button Component */
 export const SubmitButton = ({ isPending, onPress }) => (
   <Button
-    className="md:w-32 border-2 text-white/80 shadow-none bg-secondaryPersianGreen border-secondaryPersianGreen text-md font-bold tracking-wider flex justify-center items-center rounded-r-none rounded-bl-none md:rounded-bl-xl md:roudned-l-xl md:rounded-r-xl"
+    className="md:w-32 border-2 text-white shadow-none bg-primary border-primary dark:bg-secondaryPersianGreen dark:border-secondaryPersianGreen text-md font-bold tracking-wider flex justify-center items-center rounded-r-none rounded-bl-none md:rounded-bl-xl md:roudned-l-xl md:rounded-r-xl"
     disabled={isPending}
     isLoading={isPending}
     title="Genearte a plan"

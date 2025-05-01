@@ -30,6 +30,14 @@ const StepAudience = ({ ref }) => {
 
         return false;
       }
+
+      if (localValue.length < 50) {
+        setError("Please provide at least 50 characters.\n\nTry to Refine with AI!");
+        setAudiencelsIsInvalid(true);
+
+        return false;
+      }
+
       setAudiencelsIsInvalid(false);
 
       return true; // Validation passed

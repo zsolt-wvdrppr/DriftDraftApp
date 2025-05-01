@@ -1,12 +1,20 @@
-import { IconBulbFilled } from '@tabler/icons-react';
+import { IconBulbFilled, IconBulb } from "@tabler/icons-react";
 
-const NewHintNotifierIcon = ({trigger}) => {
+const NewHintNotifierIcon = ({ trigger }) => {
   return (
-    <IconBulbFilled
-          className={`top-2 left-1 ${trigger ? "text-yellow-400 animate-bounce" : "dark:text-white text-brandPink"}`}
+    <>
+      {trigger ?
+        <IconBulbFilled
+          className={`top-2 left-1 ${trigger ? "text-brandPink dark:text-yellow-400 animate-bounce" : " text-brandPink"}`}
           size={32}
         />
-  )
-}
+      : <IconBulb
+          className={`top-2 left-1 ${trigger ? "text-brandPink dark:text-yellow-400 animate-bounce" : "text-brandPink"}`}
+          size={32}
+        />
+      }
+    </>
+  );
+};
 
-export default NewHintNotifierIcon
+export default NewHintNotifierIcon;

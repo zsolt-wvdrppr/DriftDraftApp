@@ -34,6 +34,14 @@ const StepMarketing = ({ ref }) => {
 
         return false;
       }
+
+      if (localValue.length < 50) {
+        setError("Please provide at least 50 characters.\n\nTry to Refine with AI!");
+        setIsInputInvalid(true);
+
+        return false;
+      }
+
       setIsInputInvalid(false);
 
       return true; // Validation passed

@@ -80,7 +80,7 @@ const StepPurpose = ({ ref }) => {
       }
       if (!localServiceDescription || localServiceDescription.length < 50) {
         setError(
-          "Please provide a more detailed service description. (50 characters minimum)"
+          "Please provide a more detailed service description. Try to Refine with AI! (50 characters minimum)"
         );
         setServiceDescIsInvalid(true);
 

@@ -2,7 +2,7 @@
     {
       "question": "What is the primary purpose you want your website to achieve?",
       "questionAddition1": "If you selected 'Other', please specify.",
-      "questionAddition2": "What do you offer, and how does it benefit your audience?\nWhat challenges or needs does it help address?",
+      "questionAddition2": "What do you offer, and how does it benefit your audience?",
       "isValid": false,
       "tabName": "Purpose",
       "type": "select",
