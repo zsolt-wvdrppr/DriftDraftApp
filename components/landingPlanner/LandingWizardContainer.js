@@ -113,6 +113,17 @@ const steps = [
 ];
 
 export default function LandingWizardContainer({}) {
+
+  const { user, loading } = useAuth(); // Access user state
+
+    // If no user is logged in, redirect to login page
+    useEffect(() => {
+        if (!user && !loading) {
+            logger.debug('[WIZZ] No user found. Redirecting to login page.');
+            router.push('/login');
+        }
+    }, [user, loading]);
+
   const {
     sessionData,
     updateSessionData,
@@ -132,7 +143,6 @@ export default function LandingWizardContainer({}) {
     setSteps(steps);
   }, []);
 
-  const { user, loading } = useAuth(); // Access user state
   const [isSubmitted, setIsSubmitted] = useState(false); // Track submission state
   const [tabName, setTabName] = useState(steps[0]?.label || "");
   const stepRef = useRef(null);
