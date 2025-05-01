@@ -63,7 +63,7 @@ export const StepGetAiHintBtn = ({
                 onPress={handleFetchHint}
             >
                 <IconBulb className={`text-warning ${isClicked ? "" : "animate-bounce"}`} size={20} />
-                Get AI Hint
+                Refine with AI
             </Button>
             <Button
                 className={`${isAIAvailable ? "hidden" : "flex get-ai-hint-btn"} items-center gap-2 opacity-50 hover:!opacity-50`}
@@ -72,7 +72,7 @@ export const StepGetAiHintBtn = ({
                 onPress={() => setError('Please fill in all required fields before getting an AI hint.')}
             >
                 <IconAi size={20} />
-                Get AI Hint
+                Refine with AI
             </Button>
         </div>
     );
