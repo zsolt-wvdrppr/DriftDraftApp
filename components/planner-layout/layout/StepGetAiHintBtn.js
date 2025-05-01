@@ -58,8 +58,7 @@ export const StepGetAiHintBtn = ({
     return (
         <div className="flex relative justify-end mb-4 mt-0">
             <Button
-                className={`${!isAIAvailable ? "hidden" : "flex get-ai-hint-btn"} items-center gap-2`}
-                color="primary"
+                className={`${!isAIAvailable ? "hidden" : "flex get-ai-hint-btn"} bg-brandPink text-white font-semibold text-medium items-center gap-2`}
                 isLoading={isPending}
                 onPress={handleFetchHint}
             >
