@@ -30,6 +30,13 @@ const StepAudience = ({ ref }) => {
 
         return false;
       }
+
+      if (localValue.length < 50) {
+        setError("Please provide at least 50 characters. Try to Refine with AI!");
+        setAudiencelsIsInvalid(true);
+        
+        return false;
+      }
       setAudiencelsIsInvalid(false);
 
       return true; // Validation passed
@@ -50,9 +57,9 @@ const StepAudience = ({ ref }) => {
   const [userMsg, setUserMsg] = useState(null);
 
   const question = content.question;
-  const purpose = `- The purpose purpuse of this project: ${formData[0]?.purpose}\n` || '';
-  const purposeDetails = formData[0]?.purposeDetails ? `- Additional details about the purpose: ${formData[0]?.purposeDetails}\n` : '';
-  const serviceDescription = `- What I offer to my audience: ${formData[0]?.serviceDescription}\n` || '';
+  const purpose = `- The purpose purpuse of this project: ${formData?.[0]?.purpose}\n` || '';
+  const purposeDetails = formData?.[0]?.purposeDetails ? `- Additional details about the purpose: ${formData?.[0]?.purposeDetails}\n` : '';
+  const serviceDescription = `- What I offer to my audience: ${formData?.[0]?.serviceDescription}\n` || '';
   const audience = localValue ? `- Details about the audience or ideal customer/client: ${localValue}\n` : '';
   const isAIAvailable = question && purpose && serviceDescription;
   const promptImprover = `A target audience is the group that most needs your product or service. Consider their demographics (age, location), beliefs, lifestyle and subcultures. Focus on what motivates them, their challenges and how you can address these needs, ensuring an authentic, relevant brand voice.
@@ -63,7 +70,7 @@ const StepAudience = ({ ref }) => {
 
   return (
     <form ref={formRef}>
-      <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
+      <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content?.why_do_we_ask}>
         <StepQuestion content={content} />
         <StepGetAiHintBtn
           content={content}
@@ -84,7 +91,7 @@ const StepAudience = ({ ref }) => {
             isRequired={true}
             label="Target Audience"
             localValue={localValue}
-            placeholder={content.placeholder}
+            placeholder={content?.placeholder}
           />
         </PasteButton>
       </StepWrapper>

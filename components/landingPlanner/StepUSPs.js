@@ -15,7 +15,7 @@ import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHi
 const StepUSPs = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 4;
-  const content = questionsData[stepNumber];
+  const content = questionsData?.[stepNumber];
   const formRef = useRef();
   const [isInputInvalid, setIsInputInvalid] = useState(false);
   const formData = sessionData?.formData || {};
@@ -28,12 +28,20 @@ const StepUSPs = ({ ref }) => {
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      if (!formData[stepNumber]?.usps) {
+      if (!formData?.[stepNumber]?.usps) {
         setError("Additional details are required.");
         setIsInputInvalid(true);
 
         return false;
       }
+
+      if (localValue.length < 50) {
+        setError("Please provide at least 50 characters. Try to Refine with AI!");
+        setIsInputInvalid(true);
+
+        return false;
+      }
+
       setIsInputInvalid(false);
 
       return true; // Validation passed
@@ -55,16 +63,16 @@ const StepUSPs = ({ ref }) => {
   const [userMsg, setUserMsg] = useState(null);
 
   const question = content.question;
-  const purpose = `${formData[0]?.purpose}.` || "";
-  const purposeDetails = formData[0]?.purposeDetails ?
-    ` ${formData[0]?.purposeDetails} \n` :
+  const purpose = `${formData?.[0]?.purpose}.` || "";
+  const purposeDetails = formData?.[0]?.purposeDetails ?
+    ` ${formData?.[0]?.purposeDetails} \n` :
     "";
-  const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
-  const audience = `${formData[1].audience}. ` || "";
+  const serviceDescription = `${formData?.[0]?.serviceDescription}\n` || "";
+  const audience = `${formData?.[1]?.audience}. ` || "";
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
     formData?.[3]?.urls?.toString() !== ""
-      ? `I have identified the following competitors: ${formData[3].urls.toString()}.`
+      ? `I have identified the following competitors: ${formData?.[3]?.urls?.toString()}.`
       : "";
   const usps = localValue ?
     `My Unique Selling Points that I gathered: ${localValue}\n` : "";
@@ -88,7 +96,7 @@ const StepUSPs = ({ ref }) => {
       <StepWrapper
         hint={aiHint}
         userMsg={userMsg}
-        whyDoWeAsk={content.why_do_we_ask}
+        whyDoWeAsk={content?.why_do_we_ask}
       >
         <StepQuestion content={content} />
         <StepGetAiHintBtn

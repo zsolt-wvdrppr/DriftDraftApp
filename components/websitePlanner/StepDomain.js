@@ -17,7 +17,7 @@ import { IconClipboard } from "@tabler/icons-react";
 const StepDomain = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 5;
-  const content = questionsData[stepNumber];
+  const content = questionsData?.[stepNumber];
   const formRef = useRef();
   const [isInputInvalid, setIsInputInvalid] = useState(false);
   const formData = sessionData.formData;
@@ -66,17 +66,17 @@ const StepDomain = ({ ref }) => {
   );
   const [userMsg, setUserMsg] = useState(null);
 
-  const question = content.question;
-  const purpose = `${formData[0]?.purpose}.` || "";
-  const purposeDetails = formData[0]?.purposeDetails
-    ? ` ${formData[0]?.purposeDetails} \n`
+  const question = content?.question;
+  const purpose = `${formData?.[0]?.purpose}.` || "";
+  const purposeDetails = formData?.[0]?.purposeDetails
+    ? ` ${formData?.[0]?.purposeDetails} \n`
     : "";
-  const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
-  const audience = `${formData[1]?.audience}. ` || "";
+  const serviceDescription = `${formData?.[0]?.serviceDescription}\n` || "";
+  const audience = `${formData?.[1]?.audience}. ` || "";
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
     formData?.[3]?.urls?.toString() !== ""
-      ? `- Competitors: ${formData[3].urls.toString()}.`
+      ? `- Competitors: ${formData?.[3]?.urls?.toString()}.`
       : "";
   const usps = formData[4].usps || "";
   const domainIdeas = localValue
@@ -101,7 +101,7 @@ const StepDomain = ({ ref }) => {
         checkDomain={true}
         hint={aiHint}
         userMsg={userMsg}
-        whyDoWeAsk={content.why_do_we_ask}
+        whyDoWeAsk={content?.why_do_we_ask}
       >
         <StepQuestion content={content} />
         <StepGetAiHintBtn
@@ -142,7 +142,7 @@ const StepDomain = ({ ref }) => {
           }
           isRequired={true}
           label="Domain Name"
-          placeholder={content.placeholder}
+          placeholder={content?.placeholder}
           validationBehavior="aria"
           value={localValue}
           onChange={handleTextareaChange}

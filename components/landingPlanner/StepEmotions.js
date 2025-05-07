@@ -15,10 +15,10 @@ import StepGetAiHintBtn from "@/components/planner-layout/layout/StepGetAiHintBt
 const StepEmotions = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 6;
-  const content = questionsData[stepNumber];
+  const content = questionsData?.[stepNumber];
   const formRef = useRef();
   const [isInputInvalid, setIsInputInvalid] = useState(false);
-  const formData = sessionData.formData;
+  const formData = sessionData?.formData;
   const [localValue, setLocalValue] = useState("");
 
   useEffect(() => {
@@ -34,6 +34,14 @@ const StepEmotions = ({ ref }) => {
 
         return false;
       }
+
+      if (localValue.length < 50) {
+        setError("Please provide at least 50 characters. Try to Refine with AI!");
+        setIsInputInvalid(true);
+
+        return false;
+      }
+
       setIsInputInvalid(false);
 
       return true; // Validation passed
@@ -54,20 +62,20 @@ const StepEmotions = ({ ref }) => {
   );
   const [userMsg, setUserMsg] = useState(null);
 
-  const question = content.question;
-  const purpose = `${formData[0]?.purpose}.` || "";
+  const question = content?.question;
+  const purpose = `${formData?.[0]?.purpose}.` || "";
   const purposeDetails =
-    `Some more details about it's purpose: ${formData[0]?.purposeDetails}\n` ||
+    `Some more details about it's purpose: ${formData?.[0]?.purposeDetails}\n` ||
     "";
-  const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
-  const audience = `${formData[1].audience}. ` || "";
+  const serviceDescription = `${formData?.[0]?.serviceDescription}\n` || "";
+  const audience = `${formData?.[1]?.audience}. ` || "";
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
     formData?.[3]?.urls?.toString().trim() !== ""
-      ? `- Competitors:  ${formData[3]?.urls?.toString()}`
+      ? `- Competitors:  ${formData?.[3]?.urls?.toString()}`
       : "";
-  const usps = formData[4].usps || "";
-  const brandGuidelines = formData[5].brandGuidelines || "";
+  const usps = formData?.[4]?.usps || "";
+  const brandGuidelines = formData?.[5].brandGuidelines || "";
   const emotionIdeas =  localValue ? `My thoughts regarding feelings and emotions:  ${localValue}.` : "";
 
   const isAIAvailable =
@@ -92,7 +100,7 @@ const StepEmotions = ({ ref }) => {
       <StepWrapper
         hint={aiHint}
         userMsg={userMsg}
-        whyDoWeAsk={content.why_do_we_ask}
+        whyDoWeAsk={content?.why_do_we_ask}
       >
         <StepQuestion content={content} />
         <StepGetAiHintBtn

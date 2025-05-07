@@ -65,6 +65,7 @@ export const StepTextarea = ({ content, label, localValue, handleTextareaChange,
       isClearable={true}
       isRequired={isRequired}
       label={label}
+      maxLength={800}
       maxRows={25}
       minRows={4}
       placeholder={placeholder || content.placeholder}

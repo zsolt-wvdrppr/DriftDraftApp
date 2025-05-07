@@ -93,20 +93,20 @@ const Result = () => {
   });
 
   /* Form data */
-  const formData = sessionData.formData;
-  const purpose = formData[0].purpose;
-  const purposeDetails = formData[0]?.purposeDetails || ""; // optional
-  const serviceDescription = formData[0].serviceDescription;
-  const audience = formData[1].audience;
-  const marketing = formData[2].marketing || "";
+  const formData = sessionData?.formData;
+  const purpose = formData?.[0]?.purpose;
+  const purposeDetails = formData?.[0]?.purposeDetails || ""; // optional
+  const serviceDescription = formData?.[0]?.serviceDescription;
+  const audience = formData?.[1]?.audience;
+  const marketing = formData?.[2]?.marketing || "";
   const competitors =
-    formData[3]?.urls?.toString() !== ""
-      ? `I have identified the following competitors: ${formData[3].urls.toString()}.`
+    formData?.[3]?.urls?.toString() !== ""
+      ? `I have identified the following competitors: ${formData?.[3]?.urls?.toString()}.`
       : ""; // optional
-  const usps = formData[4].usps || "";
-  const brandGuidelines = formData[5].brandGuidelines || "";
-  const emotions = formData[6].emotions || "";
-  const inspirations = formData[7]?.inspirations?.toString() || ""; // optional
+  const usps = formData?.[4].usps || "";
+  const brandGuidelines = formData?.[5].brandGuidelines || "";
+  const emotions = formData?.[6]?.emotions || "";
+  const inspirations = formData?.[7]?.inspirations?.toString() || ""; // optional
   /* End of form data */
 
   useEffect(() => {
@@ -114,8 +114,8 @@ const Result = () => {
 
     if (aiResultRef.current !== null) {
       // Prevent multiple updates
-      updateSessionData("aiGeneratedPlan", aiResultRef.current);
-      updateAiGeneratedPlanInDb(userId, sessionId, aiResultRef.current);
+      updateSessionData("aiGeneratedPlan", aiResultRef?.current);
+      updateAiGeneratedPlanInDb(userId, sessionId, aiResultRef?.current);
       setContentForTitleGeneration(
         serviceDescription + " " + brandGuidelines + " " + emotions
       );
@@ -320,7 +320,7 @@ const Result = () => {
 
           logger.debug("Results:", results);
 
-          if (!results || results.length > 0) {
+          if (!results || results?.length > 0) {
             // Store the combined result in the state
             setAiResult(combinedResult);
 
@@ -371,13 +371,13 @@ const Result = () => {
   ];
 
   useEffect(() => {
-    if (isLoading && prompts.length > 0) {
+    if (isLoading && prompts?.length > 0) {
       const completedCount = executedPrompts || 0;
-      const totalCount = prompts.length;
+      const totalCount = prompts?.length;
       const calculatedProgress = (completedCount / totalCount) * 100;
 
       setProgress(calculatedProgress);
-      setCurrentStep(Math.floor((completedCount / totalCount) * steps.length));
+      setCurrentStep(Math.floor((completedCount / totalCount) * steps?.length));
 
       // Ensure the progress bar completes only when all prompts finish
       if (completedCount === totalCount) {
@@ -387,14 +387,14 @@ const Result = () => {
 
     logger.debug("[PROGRESS] - Calculated progress:", progress);
     logger.debug("[PROGRESS] - completedCount:", executedPrompts);
-    logger.debug("[PROGRESS] - totalCount:", prompts.length);
+    logger.debug("[PROGRESS] - totalCount:", prompts?.length);
   }, [executedPrompts, prompts, isLoading]);
 
   const aiResultWithTitle = `# ${generatedTitle}\n\n${aiResult}`;
 
   const first_name =
   fullName?.split(" ")[0] ||
-  sessionData.formData[8].firstname;
+  sessionData?.formData?.[8].firstname;
 
   return (
     <div className=" md:mx-auto">

@@ -163,42 +163,6 @@ export default function LandingWizardContainer({}) {
     });
   };
 
-  const suggestToUseAI = (stepNumber) => {
-
-    const exceptionSteps = [7]; // Steps where AI suggestion is applicable
-
-    if (exceptionSteps.includes(stepNumber)) {
-        return true; // No suggestion needed for this step
-    }
-
-    if (suggestionFired) {
-      return true; // AI hint already suggested, no need to suggest again
-    }
-
-    const stepData = formData[stepNumber] || {};
-
-    if (stepData.aiHint) {
-      setSuggestionFired(true);
-
-      return true; // AI hint already provided, no need to suggest again
-    }
-
-    const errorMessage =
-      "We noticed you haven't refined your input yet. Why not give our AI a try? The more details you provide, the better the AI can assist you. Click on the 'Refine with AI' button to get started!";
-
-    errorToast(errorMessage, 15000); // Show error message for 15 seconds
-    setSuggestionFired(true); // Set flag to prevent further suggestions
-
-    return false;
-  };
-
-  /*useEffect(() => {
-        if (!isInitialised && !sessionData?.sessionId) {
-            logger.debug('[WIZZ] No session data found. Starting new session.');
-            startNewSession();
-        }
-    }, [isInitialised, sessionData]);*/
-
   // Handle error toast and reset
   useEffect(() => {
     if (error) {
@@ -245,11 +209,6 @@ export default function LandingWizardContainer({}) {
 
   // Validate the current step and move to the next one
   const handleNext = () => {
-    if (!suggestToUseAI(currentStep)) {
-      return;
-    } else {
-      setSuggestionFired(false); // Reset suggestion flag
-  }
 
     goToNextStep(
       currentStep,
@@ -259,7 +218,8 @@ export default function LandingWizardContainer({}) {
       formData,
       handleFormDataUpdate,
       setCurrentStep,
-      updateUrlParams
+      updateUrlParams,
+
     );
     if (user?.id && sessionData) {
       logger.debug("[WIZZ] updating session data");
@@ -319,11 +279,15 @@ export default function LandingWizardContainer({}) {
   };
 
   const validateStep = () => {
+
+    const exceptionsArr = [7];
+
     return handleValidation(
       stepRef,
       currentStep,
       formData,
-      handleFormDataUpdate
+      handleFormDataUpdate,
+      exceptionsArr // Steps that don't require AI suggestion
     );
   };
 
