@@ -44,6 +44,7 @@ export default function PaymentMethod() {
   } = usePaymentMethod(userId, stripe, elements);
 
   // ✅ State for billing details, now structured properly for Stripe
+  const [nameState, setName] = useState("");
   const [businessNameState, setBusinessName] = useState("");
   const [vatNumberState, setVatNumber] = useState("");
   
@@ -163,11 +164,12 @@ export default function PaymentMethod() {
         <Card className="flex-grow max-w-md p-4 gap-y-4 border-0 shadow-none">
           {/* ✅ Business Name */}
           <Input
-            label="Business Name (Optional)"
+            label="Name on Card"
             type="text"
             value={businessNameState}
             onChange={(e) => setBusinessName(e.target.value)}
-            placeholder="Enter your company name"
+            isRequired
+            placeholder="Enter the name on the payment card"
             startIcon={<IconBuilding />}
             classNames={{
               label: "!text-primary dark:!text-accentMint",
