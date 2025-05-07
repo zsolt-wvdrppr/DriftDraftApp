@@ -9,6 +9,7 @@ import {
   Button,
   Input,
 } from "@heroui/react";
+import { Divider } from "@heroui/react";
 
 import questionsData from "@/data/questions-data.json";
 import logger from "@/lib/logger";
@@ -21,10 +22,9 @@ import {
   StepTextarea,
 } from "@/components/planner-layout/layout/sectionComponents";
 import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
+import ModalWithReader from "@/components/planner-layout/layout/modal-with-reader";
 import Tutorial from "@/components/tutorial/tutorial-custom";
 import StartTutorialButton from "@/components/tutorial/start-tutorial-button";
-
-import { Divider } from "@heroui/react"
 
 const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");
@@ -135,95 +135,143 @@ const StepPurpose = ({ ref }) => {
     }
   }, [localServiceDescription, purposeIsInvalid]);
 
-  const purpose = selectedKeys
-    ? `${selectedKeys.values().next().value}.`
-    : "unknown.";
-  const purposeDetails = localPurposeDetails
-    ? `Additional details about the service’s purpose: ${localPurposeDetails}.`
+  const purpose =
+    selectedKeys ? `${selectedKeys.values().next().value}.` : "unknown.";
+  const purposeDetails =
+    localPurposeDetails ?
+      `Additional details about the service’s purpose: ${localPurposeDetails}.`
     : "";
-  const serviceDescription = localServiceDescription
-    ? `Some details about what I offer to my audience: ${localServiceDescription}.`
+  const serviceDescription =
+    localServiceDescription ?
+      `Some details about what I offer to my audience: ${localServiceDescription}.`
     : "";
 
   const prompt = `Consider that the business goal is to ${purpose}. ${purposeDetails} The user offers: ${serviceDescription}. Refine what the user offers with a neutral description explaining, how it benefits the audience, and what challenges it solves. Keep the response informative and under 450 characters. Avoid direct marketing language or calls to action.Present the results in a clear and easy-to-read format using markdown! Do not return code!`;
 
   const [startTutorial, setStartTutorial] = useState(false);
 
- const tutorialSteps = [
-     {
-       target: ".new-session-btn",
-       title: "Welcome to the\n\n Website Planner Tutorial! 🚀",
-       content:
-         "⚠️ Be careful!\n\nStarting a new session will reset the planner, and if your current session isn't saved, you will lose all progress. \n\nOnly click this if you're sure you want to start over!",
-     },
-     {
-       target: ".progress-bar",
-       title: "📊 Track Your Progress!",
-       content:
-         "This progress bar helps you see how far you've come. The more sections you complete, the closer you are to a fully planned website. Keep going! 🚀",
-     },
-     {
-       target: ".section-selector-dropdown",
-       title: "👆 Click It!",
-       content:
-         "📂 Navigate Through Sections!\n\nUse this dropdown to move between different sections of the planner. \n\n✅ Completed sections will be marked with a green tick so you can easily track progress.\n\n⚠️ If you try to move ahead without finishing a required section, an error message will appear at the bottom to explain what’s missing. Give it a try.",
-     },
-     {
-       target: ".select-goal",
-       title: "🎯 Select Your Goal!",
-       content:
-         "Choose the goal that best describes your website’s purpose. \n\nPicking the right goal ensures your plan aligns with your business objectives!",
-     },
-     {
-       target: ".additional-details",
-       title: "📝 Add More Details!",
-       content:
-         "Provide additional details about your website’s purpose. \n\nFor example:\n👉 'I want to get subscribers' \n👉 'I aim to sell digital products' \n\nTry writing your main goal here!",
-     },
-     {
-       target: ".service-description",
-       title: "💼 Describe Your Services!",
-       content:
-         "Explain what you offer to your audience. \n\nFor example:\n👉 'I offer a subscription to my newsletter' \n👉 'I provide online coaching sessions' \n\nGive it a go! ✍️",
-     },
-     {
-       target: ".get-ai-hint-btn",
-       title: "💡 Try This!",
-       content:
-         "Click this button to get an AI-generated suggestion for this section! \n\n🚀 Even if you're unsure what to write, just type in a few words and give it a try! \n\n⚠️ If this button is disabled, make sure you've filled in the required fields first.",
-     },    
-     {
-       target: ".why-we-ask-btn",
-       title: "👆 Click It!",
-       content:
-         "❓ Why This Question?\n\nCurious why we ask this? Click here to learn how your answers help shape your website’s strategy and make it more effective.",
-     },
-     {
-       target: ".check-hint-btn",
-       title: "🧐 Review & Copy AI Suggestions!",
-       content:
-         "If you've received an AI-generated suggestion, click here to review it before using it.\n\n📋 Found it useful? You can also copy it directly from this panel and paste it into your answer field for easy editing!",
-     },
-     {
-       target: ".paste-btn",
-       title: "📌 Paste Your Suggestion!",
-       content:
-         "Use this button to paste the copied suggestion into your answer field. \n\n📌 It will be added below any existing text, so you can refine your response with ease.",
-     },
-     {
-       target: ".next-btn",
-       title: "➡️ Move Forward!",
-       content:
-         "Click this button to go to the next section. \n\n🛠️ If you're logged in, your session will be saved automatically and can be continued later under 'My Activities'.\n\n🏁 This tutorial ends here! If you want to redo it, just click on the 🛟 lifebuoy icon on the right. 🎉",
-     },
-   ];
+  const tutorialSteps = [
+    {
+      target: ".new-session-btn",
+      title: "Welcome to the\n\n Website Planner Tutorial! 🚀",
+      content:
+        "⚠️ Be careful!\n\nStarting a new session will reset the planner, and if your current session isn't saved, you will lose all progress. \n\nOnly click this if you're sure you want to start over!",
+    },
+    {
+      target: ".progress-bar",
+      title: "📊 Track Your Progress!",
+      content:
+        "This progress bar helps you see how far you've come. The more sections you complete, the closer you are to a fully planned website. Keep going! 🚀",
+    },
+    {
+      target: ".section-selector-dropdown",
+      title: "👆 Click It!",
+      content:
+        "📂 Navigate Through Sections!\n\nUse this dropdown to move between different sections of the planner. \n\n✅ Completed sections will be marked with a green tick so you can easily track progress.\n\n⚠️ If you try to move ahead without finishing a required section, an error message will appear at the bottom to explain what’s missing. Give it a try.",
+    },
+    {
+      target: ".select-goal",
+      title: "🎯 Select Your Goal!",
+      content:
+        "Choose the goal that best describes your website’s purpose. \n\nPicking the right goal ensures your plan aligns with your business objectives!",
+    },
+    {
+      target: ".additional-details",
+      title: "📝 Add More Details!",
+      content:
+        "Provide additional details about your website’s purpose. \n\nFor example:\n👉 'I want to get subscribers' \n👉 'I aim to sell digital products' \n\nTry writing your main goal here!",
+    },
+    {
+      target: ".service-description",
+      title: "💼 Describe Your Services!",
+      content:
+        "Explain what you offer to your audience. \n\nFor example:\n👉 'I offer a subscription to my newsletter' \n👉 'I provide online coaching sessions' \n\nGive it a go! ✍️",
+    },
+    {
+      target: ".get-ai-hint-btn",
+      title: "💡 Try This!",
+      content:
+        "Click this button to get an AI-generated suggestion for this section! \n\n🚀 Even if you're unsure what to write, just type in a few words and give it a try! \n\n⚠️ If this button is disabled, make sure you've filled in the required fields first.",
+    },
+    {
+      target: ".why-we-ask-btn",
+      title: "👆 Click It!",
+      content:
+        "❓ Why This Question?\n\nCurious why we ask this? Click here to learn how your answers help shape your website’s strategy and make it more effective.",
+    },
+    {
+      target: ".check-hint-btn",
+      title: "🧐 Review & Copy AI Suggestions!",
+      content:
+        "If you've received an AI-generated suggestion, click here to review it before using it.\n\n📋 Found it useful? You can also copy it directly from this panel and paste it into your answer field for easy editing!",
+    },
+    {
+      target: ".paste-btn",
+      title: "📌 Paste Your Suggestion!",
+      content:
+        "Use this button to paste the copied suggestion into your answer field. \n\n📌 It will be added below any existing text, so you can refine your response with ease.",
+    },
+    {
+      target: ".next-btn",
+      title: "➡️ Move Forward!",
+      content:
+        "Click this button to go to the next section. \n\n🛠️ If you're logged in, your session will be saved automatically and can be continued later under 'My Activities'.\n\n🏁 This tutorial ends here! If you want to redo it, just click on the 🛟 lifebuoy icon on the right. 🎉",
+    },
+  ];
+
+  const simpleContent = (
+    <div className="space-y-4">
+    <h3 className="text-lg font-semibold">Getting Started with Your Website Planner</h3>
   
+    <p>
+      To build a great website, we start with clarity. Just answer a few key questions to help us shape your plan.
+    </p>
+
+    <div className="p-4 w-full">
+    <video autoPlay loop className="object-contain -mr-10 border-2 rounded-lg" controls={false} muted={true}>
+      <source src="/guide-videos/website-planner-purpose.mp4" type="video/mp4" />
+      <track
+        label="English"
+        src="/guide-videos/captions-en.vtt"
+        srcLang="en"
+      />
+      Your browser does not support the video tag.
+    </video>
+    </div>
+  
+    <div className="bg-green-50 p-4 rounded-md">
+      <h4 className="font-medium text-green-800">Quick Overview</h4>
+      <ul className="list-disc pl-5 text-green-700 space-y-1">
+        <li><strong>Goal:</strong>{` Select your website’s main purpose.`}</li>
+        <li><strong>Extra goal details:</strong> {`Optional — unless you pick "Other".`}</li>
+        <li><strong>Service description:</strong> Tell us what you offer and how it helps your audience.</li>
+      </ul>
+    </div>
+  
+    <div className="bg-yellow-50 p-4 rounded-md">
+      <h4 className="font-medium text-yellow-800">Pro Tip</h4>
+      <p className="text-yellow-700">
+        The more detail you give, the more helpful our AI can be. Use the <strong>{`"Refine with AI"`}</strong> button to enhance your message instantly.
+      </p>
+    </div>
+  
+    <p>
+      {`First time here? After closing this guide, you’ll have the option to take a short tutorial — it's quick, helpful, and skippable anytime.`}
+    </p>
+  
+    <p><strong>{`Let’s make something amazing. You’re in control — and we’re here to help.`}</strong></p>
+  </div>
+  
+  );
 
   return (
     <form ref={formRef}>
-      <StartTutorialButton
-        setStartTutorial={setStartTutorial}
+      <ModalWithReader
+        autoPop={true}
+        content={simpleContent}
+        title="Website Planning Tips"
       />
+      <StartTutorialButton setStartTutorial={setStartTutorial} />
       <Tutorial
         localStorageId="website-purpose"
         startTrigger={startTutorial}
@@ -261,7 +309,7 @@ const StepPurpose = ({ ref }) => {
               onSelectionChange={handleSelectionChange}
             >
               {content.options.map((option) => (
-                <DropdownItem key={option}>{option}</DropdownItem>
+                <DropdownItem key={option} className="hover:bg-secondary hover:text-white transition-all">{option}</DropdownItem>
               ))}
             </DropdownMenu>
           </Dropdown>
