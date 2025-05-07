@@ -231,7 +231,7 @@ const StepPurpose = ({ ref }) => {
               inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${detailsIsInvalid ? "border-danger !bg-danger-50" : ""}`,
             }}
             isRequired={isOtherSelected}
-            label="Additional Details"
+            label="Additional Details Of Your Goals"
             placeholder={`(${isOtherSelected ? "required" : "optional"}) ${content.placeholder[1]}`}
             validationBehavior='aria'
             value={localPurposeDetails}
