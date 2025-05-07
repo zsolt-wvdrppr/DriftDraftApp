@@ -164,6 +164,7 @@ export default function PaymentMethod() {
         <Card className="flex-grow max-w-md p-4 gap-y-4 border-0 shadow-none">
           {/* ✅ Business Name */}
           <Input
+            autoComplete="Name"
             label="Name on Card"
             type="text"
             value={businessNameState}
@@ -180,6 +181,7 @@ export default function PaymentMethod() {
 
           {/* ✅ VAT Number */}
           <Input
+            autoComplete="VAT Number"
             label={vatRequired ? "VAT Number (Required for EU)" : "VAT Number (Optional)"}
             type="text"
             value={vatNumberState}
@@ -201,6 +203,7 @@ export default function PaymentMethod() {
 
           {/* ✅ Address Line 1 - Required */}
           <Input
+            autoComplete="Address Line 1"
             label="Address Line 1"
             type="text"
             value={addressLine1}
@@ -217,6 +220,7 @@ export default function PaymentMethod() {
 
           {/* ✅ Address Line 2 - Optional */}
           <Input
+            autoComplete="Address Line 2"
             label="Address Line 2 (Optional)"
             type="text"
             value={addressLine2}
@@ -232,6 +236,7 @@ export default function PaymentMethod() {
 
           {/* ✅ City - Required */}
           <Input
+            autoComplete="City"
             label="City"
             type="text"
             value={city}
@@ -249,6 +254,7 @@ export default function PaymentMethod() {
           <div className="flex gap-4">
             {/* ✅ State/Province */}
             <Input
+              autoComplete="State/Province"
               label="State/Province"
               type="text"
               value={state}
@@ -263,6 +269,7 @@ export default function PaymentMethod() {
 
             {/* ✅ Postal Code - Required */}
             <Input
+              autoComplete="Postal Code"
               label="Postal Code"
               type="text"
               value={postalCode}
@@ -280,6 +287,7 @@ export default function PaymentMethod() {
 
           {/* ✅ Country - Required */}
           <Select
+            autoComplete="Country"
             label="Country"
             placeholder="Select country"
             selectedKeys={country ? [country] : []}
