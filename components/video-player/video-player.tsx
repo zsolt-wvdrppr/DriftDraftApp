@@ -58,6 +58,7 @@ const VideoPlayer = ({
   const [isPlaying, setIsPlaying] = useState(playing);
   const [wasPlaying, setWasPlaying] = useState(playing);
   const [isIOS, setIsIOS] = useState(false);
+  const [playbackAttempted, setPlaybackAttempted] = useState(false);
   
   // Refs
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -68,11 +69,14 @@ const VideoPlayer = ({
   const playVideo = () => {
     if (!videoRef.current) return;
     
-    // For iOS, ensure we have proper attributes set
+    // For iOS, we need to ensure video is properly set up
     if (isIOS) {
+      videoRef.current.setAttribute('playsinline', 'true');
+      videoRef.current.setAttribute('webkit-playsinline', 'true');
       videoRef.current.playsInline = true;
-      videoRef.current.muted = muted;
     }
+    
+    setPlaybackAttempted(true);
     
     const playPromise = videoRef.current.play();
     
@@ -87,9 +91,8 @@ const VideoPlayer = ({
           console.error("Playback failed:", error);
           setIsPlaying(false);
           
-          // On iOS, autoplay often fails unless muted
+          // On iOS, try muted if unmuted fails
           if (!muted && isIOS && videoRef.current) {
-            // Attempt to play muted if unmuted fails on iOS
             videoRef.current.muted = true;
             videoRef.current.play().catch(e => {
               console.error("Muted playback also failed:", e);
@@ -103,10 +106,11 @@ const VideoPlayer = ({
   useEffect(() => {
     setIsClient(true);
     
-    // Detect iOS
-    const userAgent = navigator.userAgent || navigator.vendor;
-    const isIOSDevice = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
-
+    // More robust iOS detection
+    const isIOSDevice = typeof navigator !== 'undefined' && 
+      (/iPad|iPhone|iPod/.test(navigator.userAgent) || 
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+    
     setIsIOS(isIOSDevice);
   }, []);
 
@@ -117,16 +121,17 @@ const VideoPlayer = ({
     observerRef.current = new IntersectionObserver(
       ([entry]) => {
         const isIntersecting = entry.isIntersecting;
-
         setIsVisible(isIntersecting);
 
         if (isIntersecting) {
           // Element has entered the viewport
           if (videoRef.current && wasPlaying && pauseWhenOutOfView) {
-            // Resume playing if it was playing before going out of view
-            // For iOS, we need to ensure video is ready
-            if (isIOS && videoRef.current.readyState < 2) {
-              videoRef.current.load();
+            // For iOS, we need a different approach
+            if (isIOS) {
+              // Make sure it's completely loaded before playing
+              if (videoRef.current.readyState < 3) {
+                videoRef.current.load();
+              }
             }
             
             playVideo();
@@ -211,6 +216,8 @@ const VideoPlayer = ({
 
   const togglePlay = () => {
     if (!videoRef.current) return;
+    
+    setPlaybackAttempted(true);
     
     if (videoRef.current.paused) {
       playVideo();
@@ -299,7 +306,7 @@ const VideoPlayer = ({
             ref={videoRef}
             autoPlay={false}
             className={styles.videoElement}
-            controls={controls || isIOS}
+            controls={controls}
             loop={loop}
             muted={muted}
             playsInline={true}
@@ -324,7 +331,7 @@ const VideoPlayer = ({
             }}
             onLoadedData={handleLoadedData}
             onLoadedMetadata={() => {
-              // Important for iOS - helps with playback
+              // For iOS, ensure the video is ready to play
               if (isIOS && playing && isVisible) {
                 playVideo();
               }
@@ -340,20 +347,19 @@ const VideoPlayer = ({
             }}
             onTimeUpdate={onProgress ? handleTimeUpdate : undefined}
           >
-            {/* Always include the track element for accessibility */}
+            {/* Track element without src to avoid the small black square artifact */}
             <track 
               default 
               kind="captions"
               label="English"
-              //src={captionSrc || "/captions/empty.vtt"}
               srcLang="en"
             />
             Your browser does not support the video tag.
           </video>
         )}
         
-        {/* Play/Pause Button Overlay - Always visible on iOS */}
-        {(!controls || isIOS) && isLoaded && isVisible && (
+        {/* Play/Pause Button Overlay */}
+        {!controls && isLoaded && isVisible && (
           <div 
             aria-label={isPlaying ? "Pause video" : "Play video"}
             className={styles.videoOverlay}
