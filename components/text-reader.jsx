@@ -18,7 +18,8 @@ export default function TextReader({
   children, 
   className = "", 
   compact = false,
-  autoHighlight = false
+  autoHighlight = false,
+  placement = "left",
 }) {
   // Speech synthesis state
   const [speechState, setSpeechState] = useState("idle"); // "idle", "playing", "paused"
@@ -217,7 +218,7 @@ export default function TextReader({
   return (
     <div className={`text-reader ${className}`}>
       {/* Control bar */}
-      <div className="flex mb-2">
+      <div className={`flex mb-2 ${placement === "left" ? "justify-start" : placement === "right" ? "justify-end" : placement === "center" ? "justify-center" : placement}`}>
         {typeof window !== "undefined" && window.speechSynthesis && renderSpeechControls()}
       </div>
       

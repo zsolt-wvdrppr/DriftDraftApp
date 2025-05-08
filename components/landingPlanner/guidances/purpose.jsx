@@ -1,6 +1,6 @@
 import ReactMarkdown from "react-markdown";
 
-import VideoPlayer from "@/components/video-player";
+import VideoPlayer from "@/components/video-player/video-player";
 
 const PurposeGuide = () => {
   const introText = `

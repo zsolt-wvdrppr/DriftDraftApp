@@ -185,7 +185,7 @@ const Result = () => {
             **Objective:** Establish design direction and competitive context with headings.
             
             **User Inputs:**
-            - **Brand Guidelines:** "${brandGuidelines}" (Colors, fonts, style. Doc if available.)
+            - **Brand Guidelines:** "${brandGuidelines}" (Colors, fonts, style. Doc if available. Must include exact colour codes if available.)
             - **Desired Emotional Impact:** "${emotions}" (Visitor feelings? e.g., Trust, excitement.)
             - **Competitors:** "${competitors}" (Competitors & landing pages.)
             - **Unique Selling Points (USPs):** "${usps}" (Your unique advantage?)

@@ -100,9 +100,9 @@ const Result = () => {
   const audience = formData[1].audience;
   const marketing = formData[2].marketing || "";
   const competitors =
-    formData[3]?.urls?.toString() !== ""
-      ? `I have identified the following competitors: ${formData[3].urls.toString()}.`
-      : ""; // optional
+    formData[3]?.urls?.toString() !== "" ?
+      `I have identified the following competitors: ${formData[3].urls.toString()}.`
+    : ""; // optional
   const usps = formData[4].usps || "";
   const domain = formData[5].domain || "";
   const brandGuidelines = formData[6].brandGuidelines || "";
@@ -186,7 +186,7 @@ const Result = () => {
             **Objective:** Establish design direction and competitive context with headings.
             
             **User Inputs:**
-            - **Brand Guidelines:** "${brandGuidelines}" (Include colors, fonts, style. Doc if available.)
+            - **Brand Guidelines:** "${brandGuidelines}" (Include colors, fonts, style. Doc if available. Must include exact colour codes if available.)
             - **Desired Emotional Impact:** "${emotions}" (Visitor feelings? e.g., Trust, excitement.)
             - **Competitors:** "${competitors}" (Competitors & websites.)
             - **Unique Selling Points (USPs):** "${usps}" (Your unique advantage?)
@@ -257,53 +257,88 @@ const Result = () => {
           generateNewPrompts: false,
         },
         {
-          prompt: `Prompt 4: Website Wireframe & Final Strategic Plan - Final Output
+          prompt: `Prompt 4: Comprehensive Website Wireframe & Strategic Plan
+
+                  **Objective:** Create a detailed website wireframe with ASCII visualisations and a comprehensive strategic plan.
+
+                  **Part 1: Detailed Website Wireframe**
+
+                  - Create a complete website wireframe showing all recommended pages and their sections
+                  - For each page, include:
+                    - Page name and purpose
+                    - Main sections with brief content descriptions
+                    - Navigation elements
+                    - Call-to-action placement
+                  - Use ASCII drawings to visualise layout for each page (minimum 3 pages)
+                  - Include mobile and desktop versions for the homepage
+
+                  **ASCII Drawing Example:**
+                  +------------------------------------------+
+                  |                HEADER                    |
+                  +------------------------------------------+
+                  |                                          |
+                  |               HERO IMAGE                 |
+                  |         [Headline Text Here]             |
+                  |         [Subheadline Text]               |
+                  |         [Primary CTA Button]             |
+                  +------------------------------------------+
+                  |                                          |
+                  |            FEATURES SECTION              |
+                  |  +--------+  +--------+  +--------+     |
+                  |  | Feat 1 |  | Feat 2 |  | Feat 3 |     |
+                  |  +--------+  +--------+  +--------+     |
+                  +------------------------------------------+
+                  |                FOOTER                    |
+                  +------------------------------------------+
+
+                  **Part 2: Strategic Implementation Plan**
+
+                  ## Website Strategy Overview
+                  - Primary business objectives and how the website supports them
+                  - Target audience profiles and their user journeys
+                  - Content strategy and information architecture
+                  - Conversion funnels and key interaction points
+                  - Technical requirements and platform recommendations
+                  - SEO and marketing integration points
+                  - Analytics strategy and KPI tracking plan
+
+                  ## Implementation Timeline
+                  - Development phases with key milestones
+                  - Content creation schedule
+                  - Testing and launch plan
+
+                  ## Outstanding Questions
+                  - List any information gaps that need clarification
+                  - Recommendations for additional user research if needed
           
-          **Objective:** Create wireframe and final strategy with headings and flat bullet points.
-          
-          **Task:**
-          
-          **Part 1: Simple Wireframe Outline**
-          - **Output a wireframe outline using Markdown headings (h2) and flat bullet points (using '-').  Ensure bullet points are NOT nested.**
-          
-          ## Proposed Wireframe Outline (h2)
-          - Hero Section (Example Headline, Subheadline, CTA)
-          - Recipe Showcase Section
-          - Value Proposition Section
-          - Testimonials/Social Proof Section
-          - Pricing & Packages Section
-          - About Us/Our Story Section
-          - Call to Action
-          - Footer
-          
-          **Part 2: Final Strategic Overview**
-          - **Output a strategic overview using Markdown headings (h2, h3) and flat bullet points (using '-'). Ensure bullet points are NOT nested.**
-          
-          ## Final Website Strategic Overview (h2)
-          
-          ### Core Purpose and Goals (h3)
-          - Primary conversion goal: ...
-          - Secondary goal: ...
-          
-          ### Target Audience Profile (h3)
-          - Characteristic 1: ...
-          - Characteristic 2: ...
-          
-          ### Brand and Design Direction (h3)
-          - Direction point 1: ...
-          - Direction point 2: ...
-          
-          ### Marketing and Promotion Plan (h3)
-          - Plan point 1: ...
-          
-          ### Key Technical Specifications (h3)
-          - Spec 1: ...
-          
-          ### Outstanding Questions / Missing Information (h3)
-          - Question 1: ...
-          
-          - **Output MUST be structured with Markdown headings (h2, h3) and flat bullet points (using '-').  Ensure *no parentheses around headings* and *no nested lists*. Be concise and actionable. No introductory text.**
-          - **Final Output: Markdown wireframe outline and strategic plan document.**`,
+                **Part 2: Final Strategic Overview**
+                - **Output a strategic overview using Markdown headings (h2, h3) and flat bullet points (using '-'). Ensure bullet points are NOT nested.**
+
+                ## Final Website Strategic Overview (h2)
+
+                ### Core Purpose and Goals (h3)
+                - Primary conversion goal: ...
+                - Secondary goal: ...
+
+                ### Target Audience Profile (h3)
+                - Characteristic 1: ...
+                - Characteristic 2: ...
+
+                ### Brand and Design Direction (h3)
+                - Direction point 1: ...
+                - Direction point 2: ...
+
+                ### Marketing and Promotion Plan (h3)
+                - Plan point 1: ...
+
+                ### Key Technical Specifications (h3)
+                - Spec 1: ...
+
+                ### Outstanding Questions / Missing Information (h3)
+                - Question 1: ...
+
+                - **Output MUST be structured with Markdown headings (h2, h3) and flat bullet points (using '-'). Ensure *no parentheses around headings* and *no nested lists*. Be concise and actionable. No introductory text.**
+                - **Final Output: Detailed wireframe with ASCII drawings and strategic plan document.**`,
           dependsOn: 2,
           generateNewPrompts: false,
         },
@@ -328,9 +363,7 @@ const Result = () => {
 
             // Update the plan in the database
             await updateAiGeneratedPlanInDb(userId, sessionId, combinedResult);
-            toast.success(
-              "Website plan generated and saved successfully."
-            );
+            toast.success("Website plan generated and saved successfully.");
           }
         } catch (err) {
           // Catch and handle errors during prompt execution or DB updates
@@ -395,12 +428,11 @@ const Result = () => {
   const aiResultWithTitle = `# ${generatedTitle}\n\n${aiResult}`;
 
   const first_name =
-  fullName?.split(" ")[0] ||
-  sessionData.formData[8].firstname;
+    fullName?.split(" ")[0] || sessionData.formData[8].firstname;
 
   return (
     <div className=" md:mx-auto">
-      {isLoading && hasCredits ? (
+      {isLoading && hasCredits ?
         <div className="flex flex-col left-0 top-0 bottom-0 right-0 absolute w-full items-center justify-center py-10">
           <Card
             aria-label="Progress indicator"
@@ -427,8 +459,7 @@ const Result = () => {
             </CardFooter>
           </Card>
         </div>
-      ) : (
-        hasCredits && (
+      : hasCredits && (
           <>
             <div className="px-8 py-8 shadow-md border rounded-3xl border-accentMint dark:border-zinc-800 max-w-screen-md mx-auto">
               <p className="text-xl font-semibold text-left text-primary">
@@ -524,7 +555,7 @@ const Result = () => {
             </div>
           </>
         )
-      )}
+      }
 
       {!hasCredits && (
         <div className="flex flex-col justify-center items-center py-8">

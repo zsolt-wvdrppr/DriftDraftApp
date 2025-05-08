@@ -1,0 +1,86 @@
+/* Reset for ReactPlayer */
+.reactPlayer {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  background-color: transparent !important;
+}
+
+/* Fix for React Player's internal video wrapper */
+.reactPlayer > div {
+  width: 100% !important;
+  height: 100% !important;
+  background-color: transparent !important;
+}
+
+/* Fix all video elements including those inside iframes */
+.reactPlayer video,
+.reactPlayer iframe {
+  width: 100% !important;
+  height: 100% !important;
+  left: 0 !important;
+  top: 0 !important;
+  position: absolute !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  object-fit: cover !important;
+  background-color: transparent !important;
+  /* Scale slightly to hide possible edge artifacts */
+  transform: scale(1.01) !important;
+}
+
+/* Extra force fix for YouTube player */
+.reactPlayer iframe[src*="youtube"] {
+  pointer-events: none;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) scale(1.01) !important;
+  margin: 0 !important;
+}
+
+/* Container fixes */
+.videoPlayerContainer {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0 !important; /* Prevent unexpected spacing */
+  font-size: 0 !important; /* Prevent unexpected spacing */
+  background-color: transparent !important;
+}
+
+.videoWrapper {
+  margin: 0 !important;
+  padding-top: calc(var(--aspect-ratio, 56.25%)) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  background-color: transparent !important;
+  /* Add a tiny scale to eliminate edge pixel issues */
+  transform: scale(1.005) !important;
+}
+
+/* Transition state */
+.videoLoading .reactPlayer {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.videoLoaded .reactPlayer {
+  opacity: 1;
+}
+
+/* Force repaint trick */
+.videoForceRepaint {
+  transform: translateZ(0);
+}
+
+/* Explicit overrides for large screens */
+@media (min-width: 1024px) {
+  .videoWrapper {
+    transform: scale(1.01) !important; /* More aggressive scaling on large screens */
+  }
+  
+  .reactPlayer video,
+  .reactPlayer iframe {
+    transform: scale(1.02) !important; /* More aggressive scaling on large screens */
+  }
+}
