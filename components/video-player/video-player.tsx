@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
 import styles from './video-player.module.css';
-import logger from '@/lib/logger';
 
 type VideoPlayerProps = {
   url: string;
@@ -58,111 +57,16 @@ const VideoPlayer = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [isPlaying, setIsPlaying] = useState(playing);
   const [wasPlaying, setWasPlaying] = useState(playing);
-  const [isIOS, setIsIOS] = useState(false);
-  const [userInteracted, setUserInteracted] = useState(false);
+  const [hasError, setHasError] = useState(false);
   
   // Refs
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  // Handle user interaction - separate function for accessibility
-  const handleUserInteraction = () => {
-    setUserInteracted(true);
-    if (isIOS && videoRef.current?.paused && playing) {
-      playVideoOnIOS();
-    }
-  };
-
-  // iOS-specific play function
-  const playVideoOnIOS = () => {
-    if (!videoRef.current) return;
-    
-    // Set required iOS attributes
-    videoRef.current.playsInline = true;
-    
-    // Always try to play muted first on iOS (most reliable)
-    const originalMuted = videoRef.current.muted;
-    videoRef.current.muted = true;
-    
-    const playPromise = videoRef.current.play();
-    
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          // If we succeeded with muted playback and originally wanted unmuted,
-          // try to unmute after a short delay (this often works on iOS)
-          if (!originalMuted) {
-            setTimeout(() => {
-              if (videoRef.current) {
-                videoRef.current.muted = originalMuted;
-              }
-            }, 500);
-          }
-          
-          setIsPlaying(true);
-          setWasPlaying(true);
-          onPlay?.();
-        })
-        .catch((error) => {
-          logger.error("iOS video playback failed:", error);
-          setIsPlaying(false);
-        });
-    }
-  };
-
-  // Cross-platform play function
-  const playVideo = () => {
-    if (!videoRef.current) return;
-    
-    // Use iOS-specific function if on iOS
-    if (isIOS) {
-      playVideoOnIOS();
-      return;
-    }
-    
-    // Standard playback for other platforms
-    const playPromise = videoRef.current.play();
-    
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          setIsPlaying(true);
-          setWasPlaying(true);
-          onPlay?.();
-        })
-        .catch((error) => {
-          logger.error("Playback failed:", error);
-          setIsPlaying(false);
-        });
-    }
-  };
-
   // Handle hydration mismatch
   useEffect(() => {
     setIsClient(true);
-    
-    // More robust iOS detection
-    const isIOSDevice = typeof navigator !== 'undefined' && 
-      (/iPad|iPhone|iPod/.test(navigator.userAgent) || 
-      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
-    
-    setIsIOS(isIOSDevice);
-    
-    // Add a document-level touch/click listener for iOS
-    if (isIOSDevice) {
-      const handleDocumentInteraction = () => {
-        setUserInteracted(true);
-      };
-      
-      document.addEventListener('touchstart', handleDocumentInteraction, { once: true });
-      document.addEventListener('click', handleDocumentInteraction, { once: true });
-      
-      return () => {
-        document.removeEventListener('touchstart', handleDocumentInteraction);
-        document.removeEventListener('click', handleDocumentInteraction);
-      };
-    }
   }, []);
 
   // Set up visibility observer for lazy loading and pause-when-out-of-view
@@ -172,18 +76,19 @@ const VideoPlayer = ({
     observerRef.current = new IntersectionObserver(
       ([entry]) => {
         const isIntersecting = entry.isIntersecting;
+
         setIsVisible(isIntersecting);
 
         if (isIntersecting) {
           // Element has entered the viewport
-          if (videoRef.current && wasPlaying && pauseWhenOutOfView) {
-            playVideo();
+          if (wasPlaying && pauseWhenOutOfView) {
+            setIsPlaying(true);
           }
         } else {
           // Element has left the viewport
-          if (videoRef.current && !videoRef.current.paused && pauseWhenOutOfView) {
+          if (isPlaying && pauseWhenOutOfView) {
             setWasPlaying(true); // Remember it was playing
-            videoRef.current.pause();
+            setIsPlaying(false);
           }
         }
       },
@@ -198,24 +103,7 @@ const VideoPlayer = ({
     return () => {
       observerRef.current?.disconnect();
     };
-  }, [isClient, pauseWhenOutOfView, wasPlaying, isIOS]);
-
-  // Handle playing prop changes
-  useEffect(() => {
-    if (!videoRef.current || !isVisible) return;
-    
-    if (playing && videoRef.current.paused) {
-      // For iOS, ensure user has interacted first
-      if (isIOS && !userInteracted) {
-        logger.debug("Waiting for user interaction on iOS before playing");
-        return;
-      }
-      
-      playVideo();
-    } else if (!playing && !videoRef.current.paused) {
-      videoRef.current.pause();
-    }
-  }, [playing, isVisible, isIOS, userInteracted]);
+  }, [isClient, pauseWhenOutOfView, wasPlaying, isPlaying]);
 
   // Handle playback rate
   useEffect(() => {
@@ -223,13 +111,6 @@ const VideoPlayer = ({
       videoRef.current.playbackRate = playbackRate;
     }
   }, [playbackRate]);
-
-  // Handle user interaction (important for iOS)
-  useEffect(() => {
-    if (isIOS && userInteracted && videoRef.current && playing && isVisible) {
-      playVideoOnIOS();
-    }
-  }, [isIOS, userInteracted, playing, isVisible]);
 
   // Calculate aspect ratio padding
   const getPaddingTop = () => {
@@ -246,55 +127,18 @@ const VideoPlayer = ({
     return ratioMap[aspectRatio] || '56.25%';
   };
 
-  // Handlers
-  const handleLoadedData = () => {
-    setIsLoaded(true);
-    
-    // For iOS, need user interaction before playing
-    if (playing && isVisible && videoRef.current?.paused) {
-      if (!isIOS || userInteracted) {
-        playVideo();
-      }
-    }
-  };
-
-  const handleCanPlay = () => {
-    if (playing && isVisible && videoRef.current?.paused) {
-      if (!isIOS || userInteracted) {
-        playVideo();
-      }
-    }
-  };
-
-  const handleTimeUpdate = () => {
-    if (videoRef.current && onProgress) {
-      onProgress({
-        currentTime: videoRef.current.currentTime,
-        duration: videoRef.current.duration || 0
-      });
-    }
-  };
-
   const togglePlay = () => {
-    if (!videoRef.current) return;
-    
-    setUserInteracted(true);
-    
-    if (videoRef.current.paused) {
-      playVideo();
-    } else {
-      videoRef.current.pause();
-      setIsPlaying(false);
-      setWasPlaying(false);
-      onPause?.();
-    }
+    setIsPlaying(!isPlaying);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === ' ' || e.key === 'Enter') {
-      e.preventDefault();
-      togglePlay();
-    }
+  // Determine video type
+  const getVideoType = () => {
+    if (url.endsWith('.mp4')) return 'video/mp4';
+    if (url.endsWith('.webm')) return 'video/webm';
+    if (url.endsWith('.ogg')) return 'video/ogg';
+    if (url.endsWith('.mov')) return 'video/quicktime';
+
+    return 'video/mp4'; // Default
   };
 
   // Early return during SSR or if no URL is provided
@@ -318,7 +162,7 @@ const VideoPlayer = ({
         }}
       >
         {/* Thumbnail or Skeleton Loader */}
-        {(!isVisible || !isLoaded || (isIOS && !userInteracted && !isPlaying)) && (
+        {(!isVisible || !isLoaded || hasError) && (
           <>
             {thumbnail ? (
               <div 
@@ -336,20 +180,20 @@ const VideoPlayer = ({
                 }}
               >
                 <button 
+                  aria-label="Play video"
+                  className={styles.playButton} 
                   type="button"
-                  aria-label="Play video" 
-                  className={styles.playButton}
-                  onClick={handleUserInteraction}
+                  onClick={togglePlay}
                 />
               </div>
             ) : (
               showDefaultSkeleton && (
                 <div className={styles.skeleton}>
                   <button
+                    aria-label="Play video"
+                    className={styles.playButton} 
                     type="button"
-                    aria-label="Play video" 
-                    className={styles.playButton}
-                    onClick={handleUserInteraction}
+                    onClick={togglePlay}
                   />
                 </div>
               )
@@ -361,14 +205,13 @@ const VideoPlayer = ({
         {isVisible && (
           <video
             ref={videoRef}
-            autoPlay={false}
+            autoPlay={isPlaying}
             className={styles.videoElement}
             controls={controls}
             loop={loop}
             muted={muted}
             playsInline={true}
             preload="auto"
-            src={url}
             style={{
               position: 'absolute',
               top: 0,
@@ -380,18 +223,15 @@ const VideoPlayer = ({
               transition: 'opacity 0.3s ease',
               backgroundColor,
             }}
-            onCanPlay={handleCanPlay}
+            onCanPlay={() => {
+              setIsLoaded(true);
+              onPlay?.();
+            }}
             onEnded={onEnded}
             onError={(e) => {
-              logger.error("Video error:", e);
+              console.error("Video error:", e);
+              setHasError(true);
               onError?.();
-            }}
-            onLoadedData={handleLoadedData}
-            onLoadedMetadata={() => {
-              // For iOS, we need user interaction
-              if (isIOS && playing && isVisible && userInteracted) {
-                playVideoOnIOS();
-              }
             }}
             onPause={() => {
               setIsPlaying(false);
@@ -402,8 +242,19 @@ const VideoPlayer = ({
               setWasPlaying(true);
               onPlay?.();
             }}
-            onTimeUpdate={onProgress ? handleTimeUpdate : undefined}
+            onTimeUpdate={onProgress ? () => {
+              if (videoRef.current && onProgress) {
+                onProgress({
+                  currentTime: videoRef.current.currentTime,
+                  duration: videoRef.current.duration || 0
+                });
+              }
+            } : undefined}
           >
+            {/* Use source element instead of src attribute - this is key */}
+            <source src={url} type={getVideoType()} />
+            
+            {/* Track element without src */}
             <track 
               default 
               kind="captions"
@@ -415,11 +266,11 @@ const VideoPlayer = ({
         )}
         
         {/* Play/Pause Button Overlay */}
-        {!controls && isLoaded && isVisible && (
+        {!controls && isLoaded && isVisible && !hasError && (
           <button 
-            type="button"
             aria-label={isPlaying ? "Pause video" : "Play video"}
             className={styles.videoOverlay}
+            type="button"
             onClick={togglePlay}
           >
             {!isPlaying && (
