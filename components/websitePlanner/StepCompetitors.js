@@ -21,7 +21,8 @@ import {
 } from "@/components/planner-layout/layout/sectionComponents";
 import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
 import LocationSearch from "@/components/planner-layout/location-search";
-
+import ModalWithReader from "@/components/planner-layout/layout/modal-with-reader";
+import CompetitorsGuide from "@/components/websitePlanner/guidances/comptetitors";
 
 const StepCompetitors = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -59,17 +60,18 @@ const StepCompetitors = ({ ref }) => {
   const validateURL = (url) => {
     try {
       // Add protocol if missing to allow parsing with URL constructor
-      const urlString = url?.includes('://') ? url : `https://${url}`;
-      
+      const urlString = url?.includes("://") ? url : `https://${url}`;
+
       // Use the URL constructor to validate the structure
       const urlObj = new URL(urlString);
-      
+
       // Extract the hostname for validation
       const hostname = urlObj?.hostname;
-      
+
       // Basic domain validation
-      const domainRegex = /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])?$/i;
-      
+      const domainRegex =
+        /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])?$/i;
+
       return domainRegex.test(hostname);
     } catch (error) {
       // If URL constructor throws an error, the URL is invalid
@@ -112,8 +114,9 @@ const StepCompetitors = ({ ref }) => {
   const [userMsg, setUserMsg] = useState(null);
   const [location, setLocation] = useState(null);
   const purpose = `${formData?.[0]?.purpose}.` || "";
-  const purposeDetails = formData?.[0]?.purposeDetails
-    ? ` and to ${formData?.[0]?.purposeDetails}\n`
+  const purposeDetails =
+    formData?.[0]?.purposeDetails ?
+      ` and to ${formData?.[0]?.purposeDetails}\n`
     : "";
   const serviceDescription = `${formData?.[0]?.serviceDescription}.\n` || "";
   const audience = ` targetning ${formData?.[1]?.audience}. ` || "";
@@ -131,6 +134,11 @@ const StepCompetitors = ({ ref }) => {
 
   return (
     <form ref={formRef}>
+      <ModalWithReader
+        autoPop={true}
+        content={<CompetitorsGuide />}
+        title="Website Planner Guide"
+      />
       <StepWrapper
         hint={aiHint}
         userMsg={userMsg}
@@ -156,15 +164,21 @@ const StepCompetitors = ({ ref }) => {
               logger.debug("Location selected:", place);
             }}
           />
-          <IconAlertTriangleFilled className="text-amber-600 drop-shadow-xl mt-4 ml-2 animate-pulse" id="disclaimer" size={24} />
+          <IconAlertTriangleFilled
+            className="text-amber-600 drop-shadow-xl mt-4 ml-2 animate-pulse"
+            id="disclaimer"
+            size={24}
+          />
         </div>
         <Tooltip
           anchorSelect="#disclaimer"
           className="max-w-60 md:max-w-sm relative z-50"
-          >
-            <span className="font-semibold text-lg">Experimental feature</span><br /><br />
-            {`At this step, the AI attempts to identify possible competitors using Google Search. This feature is in experimental mode, so results may be inaccurate or incomplete. Issues may arise in non-English regions or when searching within a narrow location. If no results are found, consider broadening the business area for better accuracy.`}
-          </Tooltip>
+        >
+          <span className="font-semibold text-lg">Experimental feature</span>
+          <br />
+          <br />
+          {`At this step, the AI attempts to identify possible competitors using Google Search. This feature is in experimental mode, so results may be inaccurate or incomplete. Issues may arise in non-English regions or when searching within a narrow location. If no results are found, consider broadening the business area for better accuracy.`}
+        </Tooltip>
         <Divider className="my-4" />
         <AnimatePresence initial={false}>
           {urls.map((url, index) => (

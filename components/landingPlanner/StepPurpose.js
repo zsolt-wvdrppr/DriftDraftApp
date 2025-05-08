@@ -12,7 +12,6 @@ import { StepWrapper, StepQuestion, StepTextarea } from '@/components/planner-la
 import { StepGetAiHintBtn } from '@/components/planner-layout/layout/StepGetAiHintBtn';
 import Tutorial from "@/components/tutorial/tutorial-custom";
 import StartTutorialButton from "@/components/tutorial/start-tutorial-button";
-
 import ModalWithReader from "@/components/planner-layout/layout/modal-with-reader";
 import PurposeGuide from "@/components/landingPlanner/guidances/purpose";
 

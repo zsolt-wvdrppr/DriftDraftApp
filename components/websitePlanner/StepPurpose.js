@@ -227,7 +227,7 @@ const StepPurpose = ({ ref }) => {
       <ModalWithReader
         autoPop={true}
         content={<PurposeGuide />}
-        title="Website Planning Guide"
+        title="Website Planner Guide"
       />
       <StartTutorialButton setStartTutorial={setStartTutorial} />
       <Tutorial

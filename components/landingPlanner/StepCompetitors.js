@@ -21,7 +21,8 @@ import {
 } from "@/components/planner-layout/layout/sectionComponents";
 import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
 import LocationSearch from "@/components/planner-layout/location-search";
-
+import ModalWithReader from "@/components/planner-layout/layout/modal-with-reader";
+import CompetitorsGuide from "@/components/landingPlanner/guidances/comptetitors";
 
 const StepCompetitors = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -131,6 +132,11 @@ const StepCompetitors = ({ ref }) => {
 
   return (
     <form ref={formRef}>
+        <ModalWithReader
+              autoPop={true}
+              content={<CompetitorsGuide />}
+              title="Landing Page Planner Guide"
+            />
       <StepWrapper
         hint={aiHint}
         userMsg={userMsg}

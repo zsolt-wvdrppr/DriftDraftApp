@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useRef, useState, useImperativeHandle, useEffect } from "react";
-import { Input, Textarea, Divider } from "@heroui/react";
+import { Textarea, Divider } from "@heroui/react";
+import { IconClipboard } from "@tabler/icons-react";
+
+import DomainChecker from "./DomainChecker";
 
 import questionsData from "@/data/questions-data.json";
 import { useSessionContext } from "@/lib/SessionProvider";
@@ -10,9 +13,8 @@ import {
   StepQuestion,
 } from "@/components/planner-layout/layout/sectionComponents";
 import StepGetAiHintBtn from "@/components/planner-layout/layout/StepGetAiHintBtn";
-import DomainChecker from "./DomainChecker";
-
-import { IconClipboard } from "@tabler/icons-react";
+import ModalWithReader from "@/components/planner-layout/layout/modal-with-reader";
+import DomainGuide from "@/components/websitePlanner/guidances/domain";
 
 const StepDomain = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -40,7 +42,9 @@ const StepDomain = ({ ref }) => {
       }
 
       if (localValue?.length < 5) {
-        setError("Please provide at least 5 characters.\n\nTry to Refine with AI!");
+        setError(
+          "Please provide at least 5 characters.\n\nTry to Refine with AI!"
+        );
         setIsInputInvalid(true);
 
         return false;
@@ -68,20 +72,18 @@ const StepDomain = ({ ref }) => {
 
   const question = content?.question;
   const purpose = `${formData?.[0]?.purpose}.` || "";
-  const purposeDetails = formData?.[0]?.purposeDetails
-    ? ` ${formData?.[0]?.purposeDetails} \n`
-    : "";
+  const purposeDetails =
+    formData?.[0]?.purposeDetails ? ` ${formData?.[0]?.purposeDetails} \n` : "";
   const serviceDescription = `${formData?.[0]?.serviceDescription}\n` || "";
   const audience = `${formData?.[1]?.audience}. ` || "";
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
-    formData?.[3]?.urls?.toString() !== ""
-      ? `- Competitors: ${formData?.[3]?.urls?.toString()}.`
-      : "";
-  const usps = formData[4].usps || "";
-  const domainIdeas = localValue
-    ? `- My ideas regarding the domain: ${localValue}`
+    formData?.[3]?.urls?.toString() !== "" ?
+      `- Competitors: ${formData?.[3]?.urls?.toString()}.`
     : "";
+  const usps = formData[4].usps || "";
+  const domainIdeas =
+    localValue ? `- My ideas regarding the domain: ${localValue}` : "";
 
   const isAIAvailable =
     question && purpose && serviceDescription && audience && marketing && usps;
@@ -97,6 +99,11 @@ const StepDomain = ({ ref }) => {
 
   return (
     <form ref={formRef}>
+      <ModalWithReader
+        autoPop={true}
+        content={<DomainGuide />}
+        title="Website Planner Guide"
+      />
       <StepWrapper
         checkDomain={true}
         hint={aiHint}
@@ -132,10 +139,11 @@ const StepDomain = ({ ref }) => {
               onClick={() => {
                 // Paste URL from clipboard
                 navigator.clipboard.readText().then((text) => {
-
                   const domain = text.replace(/(^\w+:|^)\/\//, "");
 
-                  handleTextareaChange({ target: { value: `${localValue} ${domain}` } });
+                  handleTextareaChange({
+                    target: { value: `${localValue} ${domain}` },
+                  });
                 });
               }}
             />
