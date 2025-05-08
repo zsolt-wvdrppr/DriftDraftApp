@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 import styles from './video-player.module.css';
+import logger from '@/lib/logger';
 
 type VideoPlayerProps = {
   url: string;
@@ -55,14 +56,16 @@ const VideoPlayer = ({
   const [isClient, setIsClient] = useState(false);
   const [isVisible, setIsVisible] = useState(!lazyLoad);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(playing);
-  const [wasPlaying, setWasPlaying] = useState(playing);
   const [hasError, setHasError] = useState(false);
+  
+  // For the UI only - tracks if video is currently playing
+  const [isPlaying, setIsPlaying] = useState(playing);
   
   // Refs
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const wasPlayingRef = useRef(playing);
 
   // Handle hydration mismatch
   useEffect(() => {
@@ -76,19 +79,19 @@ const VideoPlayer = ({
     observerRef.current = new IntersectionObserver(
       ([entry]) => {
         const isIntersecting = entry.isIntersecting;
-
         setIsVisible(isIntersecting);
 
         if (isIntersecting) {
           // Element has entered the viewport
-          if (wasPlaying && pauseWhenOutOfView) {
-            setIsPlaying(true);
+          if (wasPlayingRef.current && pauseWhenOutOfView && videoRef.current) {
+            // Try to play
+            videoRef.current.play().catch(err => logger.error('Failed to play:', err));
           }
         } else {
           // Element has left the viewport
-          if (isPlaying && pauseWhenOutOfView) {
-            setWasPlaying(true); // Remember it was playing
-            setIsPlaying(false);
+          if (videoRef.current && !videoRef.current.paused && pauseWhenOutOfView) {
+            wasPlayingRef.current = true; // Remember it was playing
+            videoRef.current.pause();
           }
         }
       },
@@ -103,7 +106,21 @@ const VideoPlayer = ({
     return () => {
       observerRef.current?.disconnect();
     };
-  }, [isClient, pauseWhenOutOfView, wasPlaying, isPlaying]);
+  }, [isClient, pauseWhenOutOfView]);
+
+  // Sync with playing prop
+  useEffect(() => {
+    if (!videoRef.current || !isLoaded) return;
+    
+    if (playing && videoRef.current.paused) {
+      videoRef.current.play().catch(err => logger.error('Failed to play:', err));
+    } else if (!playing && !videoRef.current.paused) {
+      videoRef.current.pause();
+    }
+    
+    // Update the state to match
+    setIsPlaying(!videoRef.current.paused);
+  }, [playing, isLoaded]);
 
   // Handle playback rate
   useEffect(() => {
@@ -127,8 +144,23 @@ const VideoPlayer = ({
     return ratioMap[aspectRatio] || '56.25%';
   };
 
+  // DIRECT video control function without state changes
   const togglePlay = () => {
-    setIsPlaying(!isPlaying);
+    if (!videoRef.current) return;
+    
+    // Directly control video without intermediate state
+    if (videoRef.current.paused) {
+      videoRef.current.play().then(() => {
+        setIsPlaying(true);
+        wasPlayingRef.current = true;
+      }).catch(err => {
+        logger.error('Failed to play:', err);
+        setIsPlaying(false);
+      });
+    } else {
+      videoRef.current.pause();
+      setIsPlaying(false);
+    }
   };
 
   // Determine video type
@@ -137,7 +169,6 @@ const VideoPlayer = ({
     if (url.endsWith('.webm')) return 'video/webm';
     if (url.endsWith('.ogg')) return 'video/ogg';
     if (url.endsWith('.mov')) return 'video/quicktime';
-
     return 'video/mp4'; // Default
   };
 
@@ -180,9 +211,9 @@ const VideoPlayer = ({
                 }}
               >
                 <button 
-                  aria-label="Play video"
-                  className={styles.playButton} 
                   type="button"
+                  aria-label="Play video" 
+                  className={styles.playButton}
                   onClick={togglePlay}
                 />
               </div>
@@ -190,9 +221,9 @@ const VideoPlayer = ({
               showDefaultSkeleton && (
                 <div className={styles.skeleton}>
                   <button
-                    aria-label="Play video"
-                    className={styles.playButton} 
                     type="button"
+                    aria-label="Play video" 
+                    className={styles.playButton}
                     onClick={togglePlay}
                   />
                 </div>
@@ -205,7 +236,6 @@ const VideoPlayer = ({
         {isVisible && (
           <video
             ref={videoRef}
-            autoPlay={isPlaying}
             className={styles.videoElement}
             controls={controls}
             loop={loop}
@@ -225,11 +255,22 @@ const VideoPlayer = ({
             }}
             onCanPlay={() => {
               setIsLoaded(true);
-              onPlay?.();
+              
+              // Initial play if needed
+              if (playing && videoRef.current?.paused) {
+                videoRef.current.play().catch(err => 
+                  logger.error('Failed to play on canplay:', err)
+                );
+              }
+              
+              // Update UI state based on actual video state
+              if (videoRef.current) {
+                setIsPlaying(!videoRef.current.paused);
+              }
             }}
             onEnded={onEnded}
             onError={(e) => {
-              console.error("Video error:", e);
+              logger.error("Video error:", e);
               setHasError(true);
               onError?.();
             }}
@@ -239,7 +280,7 @@ const VideoPlayer = ({
             }}
             onPlay={() => {
               setIsPlaying(true);
-              setWasPlaying(true);
+              wasPlayingRef.current = true;
               onPlay?.();
             }}
             onTimeUpdate={onProgress ? () => {
@@ -251,10 +292,8 @@ const VideoPlayer = ({
               }
             } : undefined}
           >
-            {/* Use source element instead of src attribute - this is key */}
             <source src={url} type={getVideoType()} />
             
-            {/* Track element without src */}
             <track 
               default 
               kind="captions"
@@ -268,9 +307,9 @@ const VideoPlayer = ({
         {/* Play/Pause Button Overlay */}
         {!controls && isLoaded && isVisible && !hasError && (
           <button 
+            type="button"
             aria-label={isPlaying ? "Pause video" : "Play video"}
             className={styles.videoOverlay}
-            type="button"
             onClick={togglePlay}
           >
             {!isPlaying && (
