@@ -63,6 +63,7 @@ export const StepGetAiHintBtn = ({
                 onPress={handleFetchHint}
             >
                 <IconBulb className={`text-white ${isClicked ? "" : "animate-bounce -mb-1.5"}`} size={24} />
+
                 Refine with AI
             </Button>
             <Button
