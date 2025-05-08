@@ -22,7 +22,7 @@ const HomePageIntro = () => {
         <div className="w-full overflow-hidden rounded-xl outline-2 outline outline-primary/20 dark:outline-primary shadow-lg">
           <VideoPlayer
             loop
-            aspectRatio="1400:1080"
+            aspectRatio="400:308"
             className="h-full w-full overflow-hidden"
             controls={false}
             muted={true}
@@ -49,7 +49,7 @@ const HomePageIntro = () => {
         <div className="w-full min-w-full md:min-w-96 overflow-hidden rounded-xl outline-2 outline outline-primary/20 dark:outline-primary shadow-lg">
           <VideoPlayer
             loop
-            aspectRatio="1584:1080"
+            aspectRatio="400:308"
             className="h-full w-full overflow-hidden"
             controls={false}
             muted={true}
@@ -71,7 +71,7 @@ const HomePageIntro = () => {
         <div className="w-full min-w-full md:min-w-96 overflow-hidden rounded-xl outline-2 outline outline-primary/20 dark:outline-primary shadow-lg">
           <VideoPlayer
             loop
-            aspectRatio="1584:1080"
+            aspectRatio="400:308"
             className="h-full w-full overflow-hidden"
             controls={false}
             muted={true}
@@ -96,7 +96,7 @@ const HomePageIntro = () => {
         <div className="w-full overflow-hidden rounded-xl outline-2 outline outline-primary/20 dark:outline-primary shadow-lg">
           <VideoPlayer
             loop
-            aspectRatio="1584:1080"
+            aspectRatio="400:308"
             className="h-full w-full overflow-hidden"
             controls={false}
             muted={true}
