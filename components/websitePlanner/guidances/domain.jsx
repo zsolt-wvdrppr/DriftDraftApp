@@ -42,7 +42,8 @@ Use the copy buttons next to domain names to quickly copy them to your clipboard
           controls={false}
           muted={true}
           playing={true}
-          url="/guide-videos/domain-guide.mp4"
+          playbackRate={1}
+          url="/guide-videos/domain-guide-lg.mp4"
         />
       </div>
 

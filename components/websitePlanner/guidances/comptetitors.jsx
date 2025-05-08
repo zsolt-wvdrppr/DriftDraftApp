@@ -41,7 +41,8 @@ Use the copy icon next to each URL to quickly copy the website address to your c
           controls={false}
           muted={true}
           playing={true}
-          url="/guide-videos/competitors-guide.mp4"
+          playbackRate={1}
+          url="/guide-videos/competitors-guide-lg.mp4"
         />
       </div>
 

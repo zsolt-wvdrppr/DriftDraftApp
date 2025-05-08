@@ -43,7 +43,8 @@ Need help? Click **"Refine with AI"** to instantly improve your descriptions.
           controls={false}
           muted={true}
           playing={true}
-          url="/guide-videos/website-planner-purpose.mp4"
+          playbackRate={1}
+          url="/guide-videos/website-planner-purpose-lg.mp4"
         />
       </div>
 
