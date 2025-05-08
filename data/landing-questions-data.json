@@ -110,7 +110,7 @@
         {
           "question": "Phone Number",
           "type": "text",
-          "required": true
+          "required": false
         },
         {
           "question": "Organisation’s Name",

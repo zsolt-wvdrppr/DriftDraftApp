@@ -127,7 +127,7 @@ const StepContactInfo = ({ ref }) => {
     // Utility functions for validation
     const validateEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-    const validateTel = (value) => /^\+?(\d.*){3,}$/.test(value);
+    const validateTel = (value) => value === "" || /^\+?(\d.*){3,}$/.test(value);
 
     const validateURL = (url) => {
 
