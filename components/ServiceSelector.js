@@ -16,17 +16,11 @@ const ServiceSelector = () => {
 
   const defaultContent =
     "This feature is not available yet. Please check back later.";
-  const urls = {
-    websitePlanner: "/website-planner?step=0",
-    landingPagePlanner: "/landingpage-planner",
-    landingPageWriter: "/landing-page-writer",
-    websiteGenerator: "/website-generator",
-  };
 
   return (
     <div className="max-w-screen-sm w-screen">
       <h2 className="text-2xl font-semibold text-center p-8">Select a tool</h2>
-      <Accordion className="w-full px-8" variant="splitted">
+      <Accordion className="w-full px-2 sm:px-8" variant="splitted">
         <AccordionItem
           key="website-planner"
           aria-label="Website Planner"

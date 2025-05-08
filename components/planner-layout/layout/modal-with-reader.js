@@ -83,6 +83,7 @@ export default function ModalWithReader({
       // If paused, just resume
       if (speechState === "paused") {
         resumeReading();
+
         return;
       }
 
@@ -102,6 +103,7 @@ export default function ModalWithReader({
         if (typeof content === "string") {
           // Create a temporary div to parse HTML content
           const tempDiv = document.createElement("div");
+
           tempDiv.innerHTML = content;
           textToRead = tempDiv.innerText;
         } else if (typeof content === "object") {
@@ -186,18 +188,18 @@ export default function ModalWithReader({
       case "playing":
         return (
           <div className="flex justify-end gap-2">
-            <Button variant="bordered" onPress={pauseReading} className="h-10">
-              <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-player-pause-filled" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M9 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" strokeWidth="0" fill="currentColor"></path>
-                <path d="M17 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" strokeWidth="0" fill="currentColor"></path>
+            <Button className="h-10" variant="bordered" onPress={pauseReading}>
+              <svg className="icon icon-tabler icon-tabler-player-pause-filled" fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0z" fill="none" stroke="none" />
+                <path d="M9 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" fill="currentColor" strokeWidth="0" />
+                <path d="M17 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" fill="currentColor" strokeWidth="0" />
               </svg>
               <span className="ml-1">Pause</span>
             </Button>
-            <Button variant="bordered" onPress={stopReading} className="h-10">
-              <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-player-stop-filled" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M17 4h-10a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-10a3 3 0 0 0 -3 -3z" strokeWidth="0" fill="currentColor"></path>
+            <Button className="h-10" variant="bordered" onPress={stopReading}>
+              <svg className="icon icon-tabler icon-tabler-player-stop-filled" fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0z" fill="none" stroke="none" />
+                <path d="M17 4h-10a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-10a3 3 0 0 0 -3 -3z" fill="currentColor" strokeWidth="0" />
               </svg>
               <span className="ml-1">Stop</span>
             </Button>
@@ -206,17 +208,17 @@ export default function ModalWithReader({
       case "paused":
         return (
           <div className="flex justify-end gap-2">
-            <Button variant="bordered" onPress={resumeReading} className="h-10">
-              <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-player-play-filled" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" strokeWidth="0" fill="currentColor"></path>
+            <Button className="h-10" variant="bordered" onPress={resumeReading}>
+              <svg className="icon icon-tabler icon-tabler-player-play-filled" fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0z" fill="none" stroke="none" />
+                <path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" fill="currentColor" strokeWidth="0" />
               </svg>
               <span className="ml-1">Resume</span>
             </Button>
-            <Button variant="bordered" onPress={stopReading} className="h-10">
-              <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-player-stop-filled" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                <path d="M17 4h-10a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-10a3 3 0 0 0 -3 -3z" strokeWidth="0" fill="currentColor"></path>
+            <Button className="h-10" variant="bordered" onPress={stopReading}>
+              <svg className="icon icon-tabler icon-tabler-player-stop-filled" fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 0h24v24H0z" fill="none" stroke="none" />
+                <path d="M17 4h-10a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-10a3 3 0 0 0 -3 -3z" fill="currentColor" strokeWidth="0" />
               </svg>
               <span className="ml-1">Stop</span>
             </Button>
@@ -225,12 +227,12 @@ export default function ModalWithReader({
       case "idle":
       default:
         return (
-          <Button color="primary" variant="bordered" onPress={startReading} className="h-10 w-fit self-end">
-            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-volume" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M15 8a5 5 0 0 1 0 8"></path>
-              <path d="M17.7 5a9 9 0 0 1 0 14"></path>
-              <path d="M6 15h-2a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h2l3.5 -4.5a.8 .8 0 0 1 1.5 .5v14a.8 .8 0 0 1 -1.5 .5l-3.5 -4.5"></path>
+          <Button className="h-10 w-fit self-end" color="primary" variant="bordered" onPress={startReading}>
+            <svg className="icon icon-tabler icon-tabler-volume" fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 0h24v24H0z" fill="none" stroke="none" />
+              <path d="M15 8a5 5 0 0 1 0 8" />
+              <path d="M17.7 5a9 9 0 0 1 0 14" />
+              <path d="M6 15h-2a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h2l3.5 -4.5a.8 .8 0 0 1 1.5 .5v14a.8 .8 0 0 1 -1.5 .5l-3.5 -4.5" />
             </svg>
             <span className="ml-1">Read Aloud</span>
           </Button>
@@ -253,8 +255,8 @@ export default function ModalWithReader({
           base: "sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl", // Responsive widths
         }}
         isOpen={isOpen}
-        onOpenChange={onOpenChange}
         scrollBehavior="inside" // Ensure scrollable content
+        onOpenChange={onOpenChange}
       >
         <ModalContent>
           {(onClose) => (
