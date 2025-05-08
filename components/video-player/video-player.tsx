@@ -23,7 +23,7 @@ type VideoPlayerProps = {
   onPlay?: () => void;
   onPause?: () => void;
   onEnded?: () => void;
-  onError?: () => void;
+  onError?: (e?: Event) => void;
   onProgress?: (state: { currentTime: number; duration: number }) => void;
 };
 
@@ -57,15 +57,57 @@ const VideoPlayer = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [isPlaying, setIsPlaying] = useState(playing);
   const [wasPlaying, setWasPlaying] = useState(playing);
+  const [isIOS, setIsIOS] = useState(false);
   
   // Refs
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
+  // Safely attempt to play video
+  const playVideo = () => {
+    if (!videoRef.current) return;
+    
+    // For iOS, ensure we have proper attributes set
+    if (isIOS) {
+      videoRef.current.playsInline = true;
+      videoRef.current.muted = muted;
+    }
+    
+    const playPromise = videoRef.current.play();
+    
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          setIsPlaying(true);
+          setWasPlaying(true);
+          onPlay?.();
+        })
+        .catch((error) => {
+          console.error("Playback failed:", error);
+          setIsPlaying(false);
+          
+          // On iOS, autoplay often fails unless muted
+          if (!muted && isIOS && videoRef.current) {
+            // Attempt to play muted if unmuted fails on iOS
+            videoRef.current.muted = true;
+            videoRef.current.play().catch(e => {
+              console.error("Muted playback also failed:", e);
+            });
+          }
+        });
+    }
+  };
+
   // Handle hydration mismatch
   useEffect(() => {
     setIsClient(true);
+    
+    // Detect iOS
+    const userAgent = navigator.userAgent || navigator.vendor;
+    const isIOSDevice = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+
+    setIsIOS(isIOSDevice);
   }, []);
 
   // Set up visibility observer for lazy loading and pause-when-out-of-view
@@ -82,9 +124,12 @@ const VideoPlayer = ({
           // Element has entered the viewport
           if (videoRef.current && wasPlaying && pauseWhenOutOfView) {
             // Resume playing if it was playing before going out of view
-            videoRef.current.play().catch(() => {
-              // Autoplay might be blocked
-            });
+            // For iOS, we need to ensure video is ready
+            if (isIOS && videoRef.current.readyState < 2) {
+              videoRef.current.load();
+            }
+            
+            playVideo();
           }
         } else {
           // Element has left the viewport
@@ -105,16 +150,14 @@ const VideoPlayer = ({
     return () => {
       observerRef.current?.disconnect();
     };
-  }, [isClient, pauseWhenOutOfView, wasPlaying]);
+  }, [isClient, pauseWhenOutOfView, wasPlaying, isIOS]);
 
   // Handle playing prop changes
   useEffect(() => {
     if (!videoRef.current || !isVisible) return;
     
     if (playing && videoRef.current.paused) {
-      videoRef.current.play().catch(() => {
-        setIsPlaying(false);
-      });
+      playVideo();
     } else if (!playing && !videoRef.current.paused) {
       videoRef.current.pause();
     }
@@ -146,9 +189,14 @@ const VideoPlayer = ({
   const handleLoadedData = () => {
     setIsLoaded(true);
     if (playing && isVisible && videoRef.current?.paused) {
-      videoRef.current.play().catch(() => {
-        setIsPlaying(false);
-      });
+      playVideo();
+    }
+  };
+
+  const handleCanPlay = () => {
+    // This event is important for iOS
+    if (playing && isVisible && videoRef.current?.paused) {
+      playVideo();
     }
   };
 
@@ -165,13 +213,7 @@ const VideoPlayer = ({
     if (!videoRef.current) return;
     
     if (videoRef.current.paused) {
-      videoRef.current.play().then(() => {
-        setIsPlaying(true);
-        setWasPlaying(true);
-        onPlay?.();
-      }).catch(() => {
-        setIsPlaying(false);
-      });
+      playVideo();
     } else {
       videoRef.current.pause();
       setIsPlaying(false);
@@ -255,13 +297,13 @@ const VideoPlayer = ({
         {isVisible && (
           <video
             ref={videoRef}
-            playsInline
-            autoPlay={playing && isVisible}
+            autoPlay={false}
             className={styles.videoElement}
-            controls={controls}
+            controls={controls || isIOS}
             loop={loop}
             muted={muted}
-            preload="auto"
+            playsInline={true}
+            preload="metadata"
             src={url}
             style={{
               position: 'absolute',
@@ -274,9 +316,19 @@ const VideoPlayer = ({
               transition: 'opacity 0.3s ease',
               backgroundColor,
             }}
+            onCanPlay={handleCanPlay}
             onEnded={onEnded}
-            onError={onError}
+            onError={(e) => {
+              console.error("Video error:", e);
+              onError?.();
+            }}
             onLoadedData={handleLoadedData}
+            onLoadedMetadata={() => {
+              // Important for iOS - helps with playback
+              if (isIOS && playing && isVisible) {
+                playVideo();
+              }
+            }}
             onPause={() => {
               setIsPlaying(false);
               onPause?.();
@@ -288,6 +340,7 @@ const VideoPlayer = ({
             }}
             onTimeUpdate={onProgress ? handleTimeUpdate : undefined}
           >
+            {/* Always include the track element for accessibility */}
             <track 
               default 
               kind="captions"
@@ -295,11 +348,12 @@ const VideoPlayer = ({
               //src={captionSrc || "/captions/empty.vtt"}
               srcLang="en"
             />
+            Your browser does not support the video tag.
           </video>
         )}
         
-        {/* Play/Pause Button Overlay */}
-        {!controls && isLoaded && isVisible && (
+        {/* Play/Pause Button Overlay - Always visible on iOS */}
+        {(!controls || isIOS) && isLoaded && isVisible && (
           <div 
             aria-label={isPlaying ? "Pause video" : "Play video"}
             className={styles.videoOverlay}

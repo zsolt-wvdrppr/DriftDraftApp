@@ -1,12 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import dynamic from 'next/dynamic';
-
-// Dynamically import ReactPlayer to avoid SSR issues
-const ReactPlayer = dynamic(() => import('react-player'), { ssr: false });
 
 type BackgroundVideoPlayerProps = {
   url: string;
   fallbackImage?: string;
+  captionSrc?: string;  // Added caption source prop
   playing?: boolean;
   loop?: boolean;
   muted?: boolean;
@@ -22,6 +19,7 @@ type BackgroundVideoPlayerProps = {
 const BackgroundVideoPlayer = ({
   url,
   fallbackImage,
+  captionSrc,  // Added caption source prop
   playing = true,
   loop = true,
   muted = true,
@@ -36,7 +34,11 @@ const BackgroundVideoPlayer = ({
   const [isClient, setIsClient] = useState(false);
   const [isVisible, setIsVisible] = useState(!lazyLoad);
   const [isVideoReady, setIsVideoReady] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  
+  const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Handle hydration mismatch
   useEffect(() => {
@@ -49,11 +51,12 @@ const BackgroundVideoPlayer = ({
       return;
     }
 
-    const observer = new IntersectionObserver(
+    observerRef.current = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
-          observer.disconnect();
+          // Once visible, we can disconnect
+          observerRef.current?.disconnect();
         }
       },
       {
@@ -62,12 +65,41 @@ const BackgroundVideoPlayer = ({
       }
     );
 
-    observer.observe(containerRef.current);
+    observerRef.current.observe(containerRef.current);
 
     return () => {
-      observer.disconnect();
+      observerRef.current?.disconnect();
     };
   }, [lazyLoad, isClient, lazyLoadMargin]);
+
+  // Handle playback state when "playing" prop changes
+  useEffect(() => {
+    if (!videoRef.current || !isVisible) return;
+    
+    if (playing) {
+      // Promise is only returned in modern browsers
+      const playPromise = videoRef.current.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.error("Video playback error:", error);
+          // Don't set error if it's just a user interaction requirement
+          if (error.name !== "NotAllowedError") {
+            setHasError(true);
+          }
+        });
+      }
+    } else {
+      videoRef.current.pause();
+    }
+  }, [playing, isVisible]);
+
+  // Handle playback rate changes
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = playbackRate;
+    }
+  }, [playbackRate]);
 
   // Early return during SSR or if no URL is provided
   if (!isClient || !url) return null;
@@ -87,8 +119,8 @@ const BackgroundVideoPlayer = ({
         opacity,
       }}
     >
-      {/* Fallback image - shows until video is ready */}
-      {fallbackImage && !isVideoReady && (
+      {/* Fallback image - shows until video is ready or if playback fails */}
+      {fallbackImage && (!isVideoReady || hasError) && (
         <div 
           className="fallback-image"
           style={{
@@ -105,60 +137,52 @@ const BackgroundVideoPlayer = ({
         />
       )}
       
-      {/* Video player */}
+      {/* Video element */}
       {isVisible && (
-        <div
-          className="background-video-wrapper"
+        <video
+          ref={videoRef}
+          autoPlay={playing}
+          loop={loop}
+          muted={muted}
+          playsInline={true} 
+          preload="auto"
           style={{
             position: 'absolute',
             top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: '100%',
-            height: '100%',
             minWidth: '100%',
             minHeight: '100%',
+            width: 'auto',
+            height: 'auto',
+            objectFit: 'cover',
+            opacity: isVideoReady ? opacity : 0,
+            transition: 'opacity 0.5s ease',
+          }}
+          onCanPlay={() => {
+            setIsVideoReady(true);
+            onReady?.();
+          }}
+          onError={(e) => {
+            console.error("Video error:", e);
+            setHasError(true);
           }}
         >
-          <ReactPlayer
-            config={{
-              file: {
-                attributes: {
-                  style: {
-                    objectFit: 'cover',
-                    width: '100%',
-                    height: '100%',
-                    minWidth: '100%',
-                    minHeight: '100%',
-                  },
-                },
-              },
-            }}
-            controls={false}
-            height="100%"
-            loop={loop}
-            muted={muted}
-            playbackRate={playbackRate}
-            playing={playing}
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              minWidth: '100%', 
-              minHeight: '100%',
-              width: 'auto',
-              height: 'auto',
-              objectFit: 'cover',
-            }}
-            url={url}
-            width="100%"
-            onReady={() => {
-              setIsVideoReady(true);
-              onReady?.();
-            }}
+          <source src={url} type={url.endsWith('.mp4') ? 'video/mp4' : 
+                            url.endsWith('.webm') ? 'video/webm' : 
+                            url.endsWith('.ogg') ? 'video/ogg' : 
+                            url.endsWith('.mov') ? 'video/quicktime' : 
+                            'video/mp4'} />
+          {/* Always include caption track for accessibility */}
+          <track 
+            default 
+            kind="captions"
+            label="English"
+            //src={captionSrc || "/captions/empty.vtt"}
+            srcLang="en"
           />
-        </div>
+         
+        </video>
       )}
     </div>
   );
