@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useRef, useState, useImperativeHandle, useEffect } from "react";
-import { Input, Textarea, Divider } from "@heroui/react";
+import { Textarea, Divider } from "@heroui/react";
+import { IconClipboard } from "@tabler/icons-react";
+
+import DomainChecker from "./DomainChecker";
 
 import questionsData from "@/data/questions-data.json";
 import { useSessionContext } from "@/lib/SessionProvider";
@@ -10,19 +13,18 @@ import {
   StepQuestion,
 } from "@/components/planner-layout/layout/sectionComponents";
 import StepGetAiHintBtn from "@/components/planner-layout/layout/StepGetAiHintBtn";
-import DomainChecker from "./DomainChecker";
-
-import { IconClipboard } from "@tabler/icons-react";
+import ModalWithReader from "@/components/planner-layout/layout/modal-with-reader";
+import DomainGuide from "@/components/websitePlanner/guidances/domain";
 
 const StepDomain = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 5;
-  const content = questionsData[stepNumber];
+  const content = questionsData?.[stepNumber];
   const formRef = useRef();
   const [isInputInvalid, setIsInputInvalid] = useState(false);
   const formData = sessionData.formData;
   const [localValue, setLocalValue] = useState(
-    formData[stepNumber]?.domain || ""
+    formData?.[stepNumber]?.domain || ""
   );
 
   useEffect(() => {
@@ -32,12 +34,22 @@ const StepDomain = ({ ref }) => {
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      if (!formData[stepNumber]?.domain) {
+      if (!formData?.[stepNumber]?.domain) {
         setError("Additional details are required.");
         setIsInputInvalid(true);
 
         return false;
       }
+
+      if (localValue?.length < 5) {
+        setError(
+          "Please provide at least 5 characters.\n\nTry to Refine with AI!"
+        );
+        setIsInputInvalid(true);
+
+        return false;
+      }
+
       setIsInputInvalid(false);
 
       return true; // Validation passed
@@ -58,22 +70,20 @@ const StepDomain = ({ ref }) => {
   );
   const [userMsg, setUserMsg] = useState(null);
 
-  const question = content.question;
-  const purpose = `${formData[0]?.purpose}.` || "";
-  const purposeDetails = formData[0]?.purposeDetails
-    ? ` ${formData[0]?.purposeDetails} \n`
-    : "";
-  const serviceDescription = `${formData[0]?.serviceDescription}\n` || "";
-  const audience = `${formData[1]?.audience}. ` || "";
+  const question = content?.question;
+  const purpose = `${formData?.[0]?.purpose}.` || "";
+  const purposeDetails =
+    formData?.[0]?.purposeDetails ? ` ${formData?.[0]?.purposeDetails} \n` : "";
+  const serviceDescription = `${formData?.[0]?.serviceDescription}\n` || "";
+  const audience = `${formData?.[1]?.audience}. ` || "";
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
-    formData?.[3]?.urls?.toString() !== ""
-      ? `- Competitors: ${formData[3].urls.toString()}.`
-      : "";
-  const usps = formData[4].usps || "";
-  const domainIdeas = localValue
-    ? `- My ideas regarding the domain: ${localValue}`
+    formData?.[3]?.urls?.toString() !== "" ?
+      `- Competitors: ${formData?.[3]?.urls?.toString()}.`
     : "";
+  const usps = formData[4].usps || "";
+  const domainIdeas =
+    localValue ? `- My ideas regarding the domain: ${localValue}` : "";
 
   const isAIAvailable =
     question && purpose && serviceDescription && audience && marketing && usps;
@@ -89,11 +99,16 @@ const StepDomain = ({ ref }) => {
 
   return (
     <form ref={formRef}>
+      <ModalWithReader
+        autoPop={true}
+        content={<DomainGuide />}
+        title="Website Planner Guide"
+      />
       <StepWrapper
         checkDomain={true}
         hint={aiHint}
         userMsg={userMsg}
-        whyDoWeAsk={content.why_do_we_ask}
+        whyDoWeAsk={content?.why_do_we_ask}
       >
         <StepQuestion content={content} />
         <StepGetAiHintBtn
@@ -124,17 +139,18 @@ const StepDomain = ({ ref }) => {
               onClick={() => {
                 // Paste URL from clipboard
                 navigator.clipboard.readText().then((text) => {
-
                   const domain = text.replace(/(^\w+:|^)\/\//, "");
 
-                  handleTextareaChange({ target: { value: `${localValue} ${domain}` } });
+                  handleTextareaChange({
+                    target: { value: `${localValue} ${domain}` },
+                  });
                 });
               }}
             />
           }
           isRequired={true}
           label="Domain Name"
-          placeholder={content.placeholder}
+          placeholder={content?.placeholder}
           validationBehavior="aria"
           value={localValue}
           onChange={handleTextareaChange}

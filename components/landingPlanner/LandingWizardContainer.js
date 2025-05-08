@@ -113,16 +113,15 @@ const steps = [
 ];
 
 export default function LandingWizardContainer({}) {
-
   const { user, loading } = useAuth(); // Access user state
 
-    // If no user is logged in, redirect to login page
-    useEffect(() => {
-        if (!user && !loading) {
-            logger.debug('[WIZZ] No user found. Redirecting to login page.');
-            router.push('/login');
-        }
-    }, [user, loading]);
+  // If no user is logged in, redirect to login page
+  useEffect(() => {
+    if (!user && !loading) {
+      logger.debug("[WIZZ] No user found. Redirecting to login page.");
+      router.push("/login");
+    }
+  }, [user, loading]);
 
   const {
     sessionData,
@@ -156,20 +155,13 @@ export default function LandingWizardContainer({}) {
   useRestoreStep(formData, setCurrentStep, "/landingpage-planner");
   useUpdateTabName(currentStep, steps, setTabName);
 
-  const errorToast = (message) => {
+  const errorToast = (message, duration = 5000) => {
     toast.error(message, {
-      duration: 5000,
+      duration,
       closeButton: true,
       classNames: { toast: "text-danger" },
     });
   };
-
-  /*useEffect(() => {
-        if (!isInitialised && !sessionData?.sessionId) {
-            logger.debug('[WIZZ] No session data found. Starting new session.');
-            startNewSession();
-        }
-    }, [isInitialised, sessionData]);*/
 
   // Handle error toast and reset
   useEffect(() => {
@@ -195,8 +187,9 @@ export default function LandingWizardContainer({}) {
 
     const stepData = formData[stepNumber] || {};
 
-    const update = isFullStepUpdate
-      ? { ...stepData, ...valueOrObject }
+    const update =
+      isFullStepUpdate ?
+        { ...stepData, ...valueOrObject }
       : { ...stepData, [keyOrStep]: valueOrObject };
 
     // Check if update is actually needed
@@ -216,6 +209,7 @@ export default function LandingWizardContainer({}) {
 
   // Validate the current step and move to the next one
   const handleNext = () => {
+
     goToNextStep(
       currentStep,
       steps,
@@ -224,7 +218,8 @@ export default function LandingWizardContainer({}) {
       formData,
       handleFormDataUpdate,
       setCurrentStep,
-      updateUrlParams
+      updateUrlParams,
+
     );
     if (user?.id && sessionData) {
       logger.debug("[WIZZ] updating session data");
@@ -284,11 +279,15 @@ export default function LandingWizardContainer({}) {
   };
 
   const validateStep = () => {
+
+    const exceptionsArr = [7];
+
     return handleValidation(
       stepRef,
       currentStep,
       formData,
-      handleFormDataUpdate
+      handleFormDataUpdate,
+      exceptionsArr // Steps that don't require AI suggestion
     );
   };
 
@@ -301,7 +300,7 @@ export default function LandingWizardContainer({}) {
   }
 
   return (
-    <div className="wizard-container w-full">
+    <div className="wizard-container w-full overflow-hidden mb-16">
       <div className="step-0 sicky w-full -z-50" />
 
       {isSubmitted && <Result formData={formData} />}
@@ -373,7 +372,7 @@ export default function LandingWizardContainer({}) {
             fallback={<div className="text-center p-4">Loading...</div>}
           >
             <AnimatePresence mode="wait">
-              {CurrentStepComponent ? (
+              {CurrentStepComponent ?
                 <motion.div
                   key={currentStep}
                   animate={{ opacity: 1, x: 0 }}
@@ -383,24 +382,21 @@ export default function LandingWizardContainer({}) {
                 >
                   <CurrentStepComponent ref={stepRef} />
                 </motion.div>
-              ) : (
-                <div className="text-center p-4">
+              : <div className="text-center p-4">
                   No component defined for this step.
                 </div>
-              )}
+              }
             </AnimatePresence>
           </Suspense>
           {/* Navigation Buttons */}
-          <div className="navigation-buttons w-full flex gap-2 justify-evenly py-8">
+          <div className="fixed z-50 bottom-0 backdrop-blur-sm bg-white/50 dark:bg-content1/50 md:backdrop-blur-none md:relative navigation-buttons w-full flex gap-2 justify-between md:justify-evenly pt-1 md:py-8">
             <PreviousButton
               disabled={currentStep <= 0}
               onPress={handlePrevious}
             />
-            {currentStep < steps.length - 1 ? (
+            {currentStep < steps.length - 1 ?
               <NextButton isPending={isPending} onPress={handleNext} />
-            ) : (
-              <SubmitButton isPending={isPending} onPress={handleFormSubmit} />
-            )}
+            : <SubmitButton isPending={isPending} onPress={handleFormSubmit} />}
           </div>
         </div>
       )}

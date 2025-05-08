@@ -2,7 +2,7 @@
     {
       "question": "What is the primary purpose you want your landing page to achieve?",
       "questionAddition1": "If you selected 'Other', please specify.",
-      "questionAddition2": "What do you offer, and how does it benefit your audience?\nWhat challenges or needs does it help address?",
+      "questionAddition2": "What do you offer, and how does it benefit your audience?",
       "isValid": false,
       "tabName": "Purpose",
       "type": "select",
@@ -16,7 +16,7 @@
       ],
       "hint": " We offer [Product/Service A] and [Product/Service B], solving [Problem A] and [Problem B] respectively.  This helps customers by [Benefit A] and [Benefit B], saving them time and/or money.",
       "why_do_we_ask": "Understanding the purpose of your landing page is essential to ensure it’s designed effectively. If your landing page’s performance impacts business profitability, particularly in sectors like eCommerce or for businesses that acquire customers online, every design detail and feature must support that goal. A well-optimised, purpose-driven landing page not only keeps customers engaged but also guides them through a carefully planned marketing funnel, encouraging actions like making a purchase or getting in touch.\n\nKnowing what you offer and how it helps your customers is key to showcasing your value on the landing page. It allows us to recommend features that highlight your strengths and communicate effectively with your audience.",
-      "placeholder": ["Select your goal","Details about your primary goal","Describe what you offer and how it benefits your audience. For example: 'We provide eco-friendly cleaning products that promote healthier homes and reduce waste.'"]
+      "placeholder": ["Select your goal","More about your goals","Describe what you offer and how it benefits your audience. For example: 'We provide eco-friendly cleaning products that promote healthier homes and reduce waste.'"]
     },
     {
       "question": "Who is your target audience? Describe your ideal customer or client.",
@@ -110,7 +110,7 @@
         {
           "question": "Phone Number",
           "type": "text",
-          "required": true
+          "required": false
         },
         {
           "question": "Organisation’s Name",

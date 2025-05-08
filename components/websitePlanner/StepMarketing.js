@@ -15,7 +15,7 @@ import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHi
 const StepMarketing = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 2;
-  const content = questionsData[stepNumber];
+  const content = questionsData?.[stepNumber];
   const formRef = useRef();
   const [isInputInvalid, setIsInputInvalid] = useState(false);
   const formData = sessionData?.formData || {};
@@ -28,12 +28,20 @@ const StepMarketing = ({ ref }) => {
   useImperativeHandle(ref, () => ({
     validateStep: () => {
       // Manual validation for NextUI fields
-      if (!formData[stepNumber]?.marketing) {
+      if (!formData?.[stepNumber]?.marketing) {
         setError("Additional details are required.");
         setIsInputInvalid(true);
 
         return false;
       }
+
+      if (localValue?.length < 50) {
+        setError("Please provide at least 50 characters.\n\nTry to Refine with AI!");
+        setIsInputInvalid(true);
+
+        return false;
+      }
+
       setIsInputInvalid(false);
 
       return true; // Validation passed
@@ -54,15 +62,15 @@ const StepMarketing = ({ ref }) => {
   );
   const [userMsg, setUserMsg] = useState(null);
 
-  const question = content.question;
+  const question = content?.question;
   const purpose =
-    `${formData[0]?.purpose}.` || "";
-  const purposeDetails = formData[0]?.purposeDetails ?
-    `Additional details about the purpose: ${formData[0]?.purposeDetails}\n` : "";
+    `${formData?.[0]?.purpose}.` || "";
+  const purposeDetails = formData?.[0]?.purposeDetails ?
+    `Additional details about the purpose: ${formData?.[0]?.purposeDetails}\n` : "";
   const serviceDescription =
-    `What I offer to my audience: ${formData[0]?.serviceDescription}.\n` || "";
+    `What I offer to my audience: ${formData?.[0]?.serviceDescription}.\n` || "";
   const audience =
-    `Consider the following regarding my ideal prospects: ${formData[1]?.audience}. ` || "";
+    `Consider the following regarding my ideal prospects: ${formData?.[1]?.audience}. ` || "";
   const marketing = localValue ?
     `Details about the marketing strategy: ${localValue}. ` : "";
   const promptImprover = `
@@ -92,7 +100,7 @@ const StepMarketing = ({ ref }) => {
       <StepWrapper
         hint={aiHint}
         userMsg={userMsg}
-        whyDoWeAsk={content.why_do_we_ask}
+        whyDoWeAsk={content?.why_do_we_ask}
       >
         <StepQuestion content={content} />
         <StepGetAiHintBtn

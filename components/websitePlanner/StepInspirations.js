@@ -13,12 +13,12 @@ import { StepWrapper, StepQuestion } from '@/components/planner-layout/layout/se
 const StepInspirations = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 8;
-  const content = questionsData[stepNumber];
+  const content = questionsData?.[stepNumber];
   const formRef = useRef();
-  const formData = sessionData.formData;
+  const formData = sessionData?.formData;
 
   useEffect(() => {
-    if (!formData[stepNumber]?.urls) {
+    if (!formData?.[stepNumber]?.urls) {
 
       updateFormData("urls", ['']);
 
@@ -29,8 +29,8 @@ const StepInspirations = ({ ref }) => {
   const [inspirations, setInspirations] = useState(['']);
 
   useEffect(()=>{
-    setUrls(formData[stepNumber]?.urls || ['']);
-    setInspirations(formData[stepNumber]?.inspirations || ['']);
+    setUrls(formData?.[stepNumber]?.urls || ['']);
+    setInspirations(formData?.[stepNumber]?.inspirations || ['']);
   },[])
 
   useImperativeHandle(ref, () => ({
@@ -54,13 +54,13 @@ const StepInspirations = ({ ref }) => {
   const validateURL = (url) => {
     try {
       // Add protocol if missing to allow parsing with URL constructor
-      const urlString = url.includes('://') ? url : `https://${url}`;
+      const urlString = url?.includes('://') ? url : `https://${url}`;
       
       // Use the URL constructor to validate the structure
       const urlObj = new URL(urlString);
       
       // Extract the hostname for validation
-      const hostname = urlObj.hostname;
+      const hostname = urlObj?.hostname;
       
       // Basic domain validation
       const domainRegex = /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])?$/i;
@@ -73,7 +73,7 @@ const StepInspirations = ({ ref }) => {
   };
 
   const handleAddUrl = (index) => {
-    if (!validateURL(urls[index])) {
+    if (!validateURL(urls?.[index])) {
       setError('Invalid URL. Please correct it before adding a new one.');
 
       return;
@@ -90,16 +90,16 @@ const StepInspirations = ({ ref }) => {
   };
 
   const handleRemoveUrl = (index) => {
-    const updatedUrls = urls.filter((_, i) => i !== index);
+    const updatedUrls = urls?.filter((_, i) => i !== index);
 
-    setUrls(updatedUrls.length > 0 ? updatedUrls : ['']);
+    setUrls(updatedUrls?.length > 0 ? updatedUrls : ['']);
 
-    const updatedInspirations = inspirations.filter((_, i) => i !== index);
+    const updatedInspirations = inspirations?.filter((_, i) => i !== index);
 
-    setInspirations(updatedInspirations.length > 0 ? updatedInspirations : ['']);
+    setInspirations(updatedInspirations?.length > 0 ? updatedInspirations : ['']);
 
     updateFormData("urls", updatedUrls);
-    updateFormData("inspirations", updatedInspirations.length > 0 ? updatedInspirations : ['']);
+    updateFormData("inspirations", updatedInspirations?.length > 0 ? updatedInspirations : ['']);
   };
 
   const handleChangeUrl = (value, index) => {
@@ -110,7 +110,7 @@ const StepInspirations = ({ ref }) => {
   };
 
   const handleTextareaChange = (value, index) => {
-    const updatedInspirations = inspirations.map((inspiration, i) => (i === index ? value : inspiration));
+    const updatedInspirations = inspirations?.map((inspiration, i) => (i === index ? value : inspiration));
 
     setInspirations(updatedInspirations);
     updateFormData("inspirations", updatedInspirations);
@@ -118,7 +118,7 @@ const StepInspirations = ({ ref }) => {
 
   return (
     <form ref={formRef}>
-      <StepWrapper hint={content.hint} userMsg={content.user_msg} whyDoWeAsk={content.why_do_we_ask}>
+      <StepWrapper hint={content?.hint} userMsg={content?.user_msg} whyDoWeAsk={content?.why_do_we_ask}>
         <StepQuestion content={content} />
           <AnimatePresence initial={false}>
             {urls.map((url, index) => (
@@ -149,7 +149,7 @@ const StepInspirations = ({ ref }) => {
                     }
                   }}
                 />
-                 {urls.length > 1 && (
+                 {urls?.length > 1 && (
                   <IconXboxXFilled className='absolute -right-3 -top-3 md:left-1/4 md:top-14 opacity-70 text-danger cursor-pointer drop-shadow-lg hover:scale-110 hover:opacity-100 transition-all' onClick={() => handleRemoveUrl(index)} />
                 )}
                 <Textarea
@@ -172,7 +172,7 @@ const StepInspirations = ({ ref }) => {
             className="mt-4 border hover:scale-105 transition-all focus-within:shadow-none"
             type="button"
             variant='shadow'
-            onPress={() => handleAddUrl(urls.length - 1)}
+            onPress={() => handleAddUrl(urls?.length - 1)}
           >
             <IconRowInsertBottom className='text-secondaryPersianGreen' />
             Add Another URL

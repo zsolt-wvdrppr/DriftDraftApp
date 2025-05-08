@@ -21,7 +21,8 @@ import {
 } from "@/components/planner-layout/layout/sectionComponents";
 import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
 import LocationSearch from "@/components/planner-layout/location-search";
-
+import ModalWithReader from "@/components/planner-layout/layout/modal-with-reader";
+import CompetitorsGuide from "@/components/landingPlanner/guidances/comptetitors";
 
 const StepCompetitors = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
@@ -31,12 +32,12 @@ const StepCompetitors = ({ ref }) => {
   const formData = sessionData?.formData || {};
 
   useEffect(() => {
-    if (!formData[stepNumber]?.urls) {
+    if (!formData?.[stepNumber]?.urls) {
       updateFormData("urls", [""]);
     }
   }, [formData, stepNumber]);
 
-  const [urls, setUrls] = useState(formData[stepNumber]?.urls || [""]);
+  const [urls, setUrls] = useState(formData?.[stepNumber]?.urls || [""]);
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -59,18 +60,18 @@ const StepCompetitors = ({ ref }) => {
   const validateURL = (url) => {
     try {
       // Add protocol if missing to allow parsing with URL constructor
-      const urlString = url.includes('://') ? url : `https://${url}`;
+      const urlString = url?.includes('://') ? url : `https://${url}`;
       
       // Use the URL constructor to validate the structure
       const urlObj = new URL(urlString);
       
       // Extract the hostname for validation
-      const hostname = urlObj.hostname;
+      const hostname = urlObj?.hostname;
       
       // Basic domain validation
       const domainRegex = /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])?$/i;
       
-      return domainRegex.test(hostname);
+      return domainRegex?.test(hostname);
     } catch (error) {
       // If URL constructor throws an error, the URL is invalid
       return false;
@@ -91,14 +92,14 @@ const StepCompetitors = ({ ref }) => {
   };
 
   const handleRemoveUrl = (index) => {
-    const updatedUrls = urls.filter((_, i) => i !== index);
+    const updatedUrls = urls?.filter((_, i) => i !== index);
 
-    setUrls(updatedUrls.length > 0 ? updatedUrls : [""]);
+    setUrls(updatedUrls?.length > 0 ? updatedUrls : [""]);
     updateFormData("urls", updatedUrls);
   };
 
   const handleChangeUrl = (value, index) => {
-    const updatedUrls = urls.map((url, i) => (i === index ? value : url));
+    const updatedUrls = urls?.map((url, i) => (i === index ? value : url));
 
     setUrls(updatedUrls);
     updateFormData("urls", updatedUrls);
@@ -111,16 +112,16 @@ const StepCompetitors = ({ ref }) => {
   );
   const [userMsg, setUserMsg] = useState(null);
   const [location, setLocation] = useState(null);
-  const purpose = `${formData[0]?.purpose}.` || "";
-  const purposeDetails = formData[0]?.purposeDetails
-    ? ` and to ${formData[0]?.purposeDetails}\n`
+  const purpose = `${formData?.[0]?.purpose}.` || "";
+  const purposeDetails = formData?.[0]?.purposeDetails
+    ? ` and to ${formData?.[0]?.purposeDetails}\n`
     : "";
-  const serviceDescription = `${formData[0]?.serviceDescription}.\n` || "";
-  const audience = ` targetning ${formData[1]?.audience}. ` || "";
+  const serviceDescription = `${formData?.[0]?.serviceDescription}.\n` || "";
+  const audience = ` targetning ${formData?.[1]?.audience}. ` || "";
   const marketing =
     `Details about the marketing strategy: ${formData?.[2]?.marketing}` || "";
 
-  const businessArea = location ? ` in ${location.address}.` : "";
+  const businessArea = location ? ` in ${location?.address}.` : "";
 
   const isAIAvailable = purpose && serviceDescription && audience;
 
@@ -131,10 +132,15 @@ const StepCompetitors = ({ ref }) => {
 
   return (
     <form ref={formRef}>
+        <ModalWithReader
+              autoPop={true}
+              content={<CompetitorsGuide />}
+              title="Landing Page Planner Guide"
+            />
       <StepWrapper
         hint={aiHint}
         userMsg={userMsg}
-        whyDoWeAsk={content.why_do_we_ask}
+        whyDoWeAsk={content?.why_do_we_ask}
       >
         <StepQuestion content={content} />
         <StepGetAiHintBtn
@@ -191,14 +197,14 @@ const StepCompetitors = ({ ref }) => {
                     title="Paste URL from clipboard"
                     onClick={() => {
                       // Paste URL from clipboard
-                      navigator.clipboard.readText().then((text) => {
+                      navigator?.clipboard?.readText()?.then((text) => {
                         handleChangeUrl(text, index);
                       });
                     }}
                   />
                 }
                 label={`Competitor URL ${index + 1}`}
-                placeholder={content.placeholder}
+                placeholder={content?.placeholder}
                 startContent={
                   <IconWorldWww className="h-5 text-primary dark:text-accentMint opacity-70 ml-[-3px]" />
                 }
@@ -228,7 +234,7 @@ const StepCompetitors = ({ ref }) => {
           title="Add Another URL to the list"
           type="button"
           variant="shadow"
-          onPress={() => handleAddUrl(urls.length - 1)}
+          onPress={() => handleAddUrl(urls?.length - 1)}
         >
           <IconRowInsertBottom className="text-secondaryPersianGreen" />
           Add Another URL

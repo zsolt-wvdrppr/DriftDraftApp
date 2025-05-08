@@ -8,7 +8,7 @@ export const StepOuterWrapper = ({ className = '', children }) => {
 const _className = " " + className;
 
   return (
-    <div className={cn("flex flex-col md:grid md:grid-cols-4 gap-2 md:gap-6 md:py-10 max-w-screen-xl px-6 md:px-0" + _className)}>
+    <div className={cn("flex flex-col md:grid md:grid-cols-4 gap-2 md:gap-6 md:py-10 max-w-screen-xl px-2 md:px-0" + _className)}>
       {children}
     </div>
   )
@@ -46,7 +46,7 @@ export const StepQuestion = ({ content, question, className = '' }) => {
   const _className = " " + className;
 
   return (
-    <h2 className={cn("text-lg font-semibold mb-4 text-primary dark:text-accentMint whitespace-break-spaces" + _className)}>
+    <h2 className={cn("text-sm md:text-medium lg:text-lg font-semibold mb-4 text-primary dark:text-accentMint whitespace-break-spaces" + _className)}>
       {question ? question : content?.question} {content?.required && <span className="text-red-500">*</span>}
     </h2>
   )
@@ -65,6 +65,7 @@ export const StepTextarea = ({ content, label, localValue, handleTextareaChange,
       isClearable={true}
       isRequired={isRequired}
       label={label}
+      maxLength={800}
       maxRows={25}
       minRows={4}
       placeholder={placeholder || content.placeholder}

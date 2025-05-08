@@ -12,6 +12,8 @@ import { StepWrapper, StepQuestion, StepTextarea } from '@/components/planner-la
 import { StepGetAiHintBtn } from '@/components/planner-layout/layout/StepGetAiHintBtn';
 import Tutorial from "@/components/tutorial/tutorial-custom";
 import StartTutorialButton from "@/components/tutorial/start-tutorial-button";
+import ModalWithReader from "@/components/planner-layout/layout/modal-with-reader";
+import PurposeGuide from "@/components/landingPlanner/guidances/purpose";
 
 const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");
@@ -32,7 +34,7 @@ const StepPurpose = ({ ref }) => {
     setLocalServiceDescription(formData?.[stepNumber]?.serviceDescription || "");
     if (formData?.[stepNumber]?.purpose) {
       setSelectedKeys(new Set([formData[stepNumber].purpose]));
-      setIsOtherSelected(formData[stepNumber].purpose === "Other (please specify)");
+      setIsOtherSelected(formData?.[stepNumber]?.purpose === "Other (please specify)");
     }
     if (!formData?.[stepNumber]?.purpose) {
       setSelectedKeys(new Set([]));
@@ -51,14 +53,14 @@ const StepPurpose = ({ ref }) => {
 
         return false;
       }
-      if (isOtherSelected && (!localPurposeDetails || localPurposeDetails.length < 10)) {
+      if (isOtherSelected && (!localPurposeDetails || localPurposeDetails?.length < 10)) {
         setError("Additional details are required. (10 characters minimum)");
         setDetailsIsInvalid(true);
 
         return false;
       }
-      if (!localServiceDescription || localServiceDescription.length < 50) {
-        setError("Please provide a more detailed service description. (50 characters minimum)");
+      if (!localServiceDescription || localServiceDescription?.length < 50) {
+        setError("Please provide a more detailed service description. Try to Refine with AI! (50 characters minimum)");
         setServiceDescIsInvalid(true);
 
         return false;
@@ -73,29 +75,29 @@ const StepPurpose = ({ ref }) => {
 
   const handleSelectionChange = (keys) => {
     setSelectedKeys(keys);
-    const selectedPurpose = keys.currentKey;
+    const selectedPurpose = keys?.currentKey;
 
     updateFormData("purpose", selectedPurpose);
     setPurposeIsInvalid(!selectedPurpose);
   };
 
   const handleAdditionalDetailsChange = (e) => {
-    const value = e.target.value;
+    const value = e?.target?.value;
 
     setLocalPurposeDetails(value);
     updateFormData("purposeDetails", value);
-    setDetailsIsInvalid(isOtherSelected && value.length < 10);
+    setDetailsIsInvalid(isOtherSelected && value?.length < 10);
   };
 
   const handleServiceDescriptionChange = (e) => {
     const value = e.target.value;
 
     logger.debug('value', value);
-    logger.debug('condition:', value.length > 15 && !purposeIsInvalid);
+    logger.debug('condition:', value?.length > 15 && !purposeIsInvalid);
 
     setLocalServiceDescription(value);
     updateFormData("serviceDescription", value);
-    setServiceDescIsInvalid(value.length < 50);
+    setServiceDescIsInvalid(value?.length < 50);
   };
 
   const [aiHint, setAiHint] = useState(sessionData?.formData?.[stepNumber]?.aiHint || null);
@@ -103,17 +105,17 @@ const StepPurpose = ({ ref }) => {
   const [isAIAvailable, setIsAIAvailable] = useState(true);
 
   useEffect(() => {
-    if (localServiceDescription.length > 15 && !purposeIsInvalid) {
+    if (localServiceDescription?.length > 15 && !purposeIsInvalid) {
       setIsAIAvailable(true);
     } else {
       setIsAIAvailable(false);
     }
   }, [localServiceDescription, purposeIsInvalid]);
 
-  const purpose = selectedKeys ? `${selectedKeys.values().next().value}.` : 'unknown.';
+  const purpose = selectedKeys ? `${selectedKeys?.values()?.next()?.value}.` : 'unknown.';
   const purposeDetails = localPurposeDetails ? `Additional details about the service’s purpose: ${localPurposeDetails}.` : "";
   const serviceDescription = localServiceDescription ? `Some details about what I offer to my audience: ${localServiceDescription}.` : "";
-  const stepQuestion = content.questionAddition2;
+  const stepQuestion = content?.questionAddition2;
 
   const prompt = `Consider that the business goal is to ${purpose}. ${purposeDetails} The user offers: ${serviceDescription}. Refine what the user offers with a neutral description explaining, how it benefits the audience, and what challenges it solves. Keep the response informative and under 450 characters. Avoid direct marketing language or calls to action. Present the results in a clear and easy-to-read format using markdown! Do not return code!`;
 
@@ -160,7 +162,7 @@ const StepPurpose = ({ ref }) => {
       target: ".get-ai-hint-btn",
       title: "💡 Try This!",
       content:
-        "Click this button to get an AI-generated hint for this section! \n\n🚀 Even if you're unsure what to write, just type in a few words and give it a try! \n\n⚠️ If this button is disabled, make sure you've filled in the required fields first.",
+        "Click this button to get an AI-generated suggestion for this section! \n\n🚀 Even if you're unsure what to write, just type in a few words and give it a try! \n\n⚠️ If this button is disabled, make sure you've filled in the required fields first.",
     },    
     {
       target: ".why-we-ask-btn",
@@ -170,15 +172,15 @@ const StepPurpose = ({ ref }) => {
     },
     {
       target: ".check-hint-btn",
-      title: "🧐 Review & Copy AI Hints!",
+      title: "🧐 Review & Copy AI Suggestions!",
       content:
-        "If you've received an AI-generated hint, click here to review it before using it.\n\n📋 Found it useful? You can also copy it directly from this panel and paste it into your answer field for easy editing!",
+        "If you've received an AI-generated suggestion, click here to review it before using it.\n\n📋 Found it useful? You can also copy it directly from this panel and paste it into your answer field for easy editing!",
     },
     {
       target: ".paste-btn",
-      title: "📌 Paste Your Hint!",
+      title: "📌 Paste Your Suggestion!",
       content:
-        "Use this button to paste the copied hint into your answer field. \n\n📌 It will be added below any existing text, so you can refine your response with ease.",
+        "Use this button to paste the copied suggestioin into your answer field. \n\n📌 It will be added below any existing text, so you can refine your response with ease.",
     },
     {
       target: ".next-btn",
@@ -191,6 +193,11 @@ const StepPurpose = ({ ref }) => {
 
   return (
     <form ref={formRef}>
+       <ModalWithReader
+        autoPop={true}
+        content={<PurposeGuide />}
+        title="Landing Page Planning Tips"
+      />
       <StartTutorialButton
               setStartTutorial={setStartTutorial}
             />
@@ -199,26 +206,26 @@ const StepPurpose = ({ ref }) => {
               startTrigger={startTutorial}
               tutorialSteps={tutorialSteps}
             />
-      <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content.why_do_we_ask}>
+      <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content?.why_do_we_ask}>
         <StepQuestion content={content} />
         <div className='flex flex-col md:flex-row gap-4'>
           <Dropdown>
             <DropdownTrigger>
               <Button className="select-goal capitalize w-full" color={purposeIsInvalid ? "danger" : "default"} variant="bordered">
-                {Array.from(selectedKeys).join(", ").replaceAll("_", " ") || content.placeholder[0]}{content.required && <span className="text-red-500 ml-[-6px]">*</span>}
+                {Array.from(selectedKeys).join(", ").replaceAll("_", " ") || content?.placeholder[0]}{content?.required && <span className="text-red-500 ml-[-6px]">*</span>}
               </Button>
             </DropdownTrigger>
             <DropdownMenu
               disallowEmptySelection
               aria-label="Single selection example"
               color=""
-              isRequired={content.required}
+              isRequired={content?.required}
               selectedKeys={selectedKeys}
               selectionMode="single"
               variant="flat"
               onSelectionChange={handleSelectionChange}
             >
-              {content.options.map((option) => (
+              {content?.options?.map((option) => (
                 <DropdownItem key={option}>{option}</DropdownItem>
               ))}
             </DropdownMenu>
@@ -231,15 +238,15 @@ const StepPurpose = ({ ref }) => {
               inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${detailsIsInvalid ? "border-danger !bg-danger-50" : ""}`,
             }}
             isRequired={isOtherSelected}
-            label="Additional Details"
-            placeholder={`(${isOtherSelected ? "required" : "optional"}) ${content.placeholder[1]}`}
+            label="Additional Details Of Your Goals"
+            placeholder={`(${isOtherSelected ? "required" : "optional"}) ${content?.placeholder[1]}`}
             validationBehavior='aria'
             value={localPurposeDetails}
             onChange={handleAdditionalDetailsChange}
           />
         </div>
         <div className="col-span-4 flex-1 pt-8">
-        <StepQuestion content={content} question={content.questionAddition2} />
+        <StepQuestion content={content} question={content?.questionAddition2} />
         </div>
         <StepGetAiHintBtn
           content={content}
@@ -261,7 +268,7 @@ const StepPurpose = ({ ref }) => {
             isRequired={true}
             label="Service Description"
             localValue={localServiceDescription}
-            placeholder={content.placeholder[2]}
+            placeholder={content?.placeholder[2]}
           />
         </PasteButton>
       </StepWrapper>

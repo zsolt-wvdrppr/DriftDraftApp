@@ -21,22 +21,23 @@ import {
 } from "@/components/planner-layout/layout/sectionComponents";
 import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
 import LocationSearch from "@/components/planner-layout/location-search";
-
+import ModalWithReader from "@/components/planner-layout/layout/modal-with-reader";
+import CompetitorsGuide from "@/components/websitePlanner/guidances/comptetitors";
 
 const StepCompetitors = ({ ref }) => {
   const { sessionData, updateFormData, setError } = useSessionContext();
   const stepNumber = 3;
-  const content = questionsData[stepNumber];
+  const content = questionsData?.[stepNumber];
   const formRef = useRef();
   const formData = sessionData?.formData || {};
 
   useEffect(() => {
-    if (!formData[stepNumber]?.urls) {
+    if (!formData?.[stepNumber]?.urls) {
       updateFormData("urls", [""]);
     }
   }, [formData, stepNumber]);
 
-  const [urls, setUrls] = useState(formData[stepNumber]?.urls || [""]);
+  const [urls, setUrls] = useState(formData?.[stepNumber]?.urls || [""]);
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -59,17 +60,18 @@ const StepCompetitors = ({ ref }) => {
   const validateURL = (url) => {
     try {
       // Add protocol if missing to allow parsing with URL constructor
-      const urlString = url.includes('://') ? url : `https://${url}`;
-      
+      const urlString = url?.includes("://") ? url : `https://${url}`;
+
       // Use the URL constructor to validate the structure
       const urlObj = new URL(urlString);
-      
+
       // Extract the hostname for validation
-      const hostname = urlObj.hostname;
-      
+      const hostname = urlObj?.hostname;
+
       // Basic domain validation
-      const domainRegex = /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])?$/i;
-      
+      const domainRegex =
+        /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])?$/i;
+
       return domainRegex.test(hostname);
     } catch (error) {
       // If URL constructor throws an error, the URL is invalid
@@ -78,7 +80,7 @@ const StepCompetitors = ({ ref }) => {
   };
 
   const handleAddUrl = (index) => {
-    if (!validateURL(urls[index])) {
+    if (!validateURL(urls?.[index])) {
       setError("Invalid URL. Please correct it before adding a new one.");
 
       return;
@@ -91,14 +93,14 @@ const StepCompetitors = ({ ref }) => {
   };
 
   const handleRemoveUrl = (index) => {
-    const updatedUrls = urls.filter((_, i) => i !== index);
+    const updatedUrls = urls?.filter((_, i) => i !== index);
 
-    setUrls(updatedUrls.length > 0 ? updatedUrls : [""]);
+    setUrls(updatedUrls?.length > 0 ? updatedUrls : [""]);
     updateFormData("urls", updatedUrls);
   };
 
   const handleChangeUrl = (value, index) => {
-    const updatedUrls = urls.map((url, i) => (i === index ? value : url));
+    const updatedUrls = urls?.map((url, i) => (i === index ? value : url));
 
     setUrls(updatedUrls);
     updateFormData("urls", updatedUrls);
@@ -111,16 +113,17 @@ const StepCompetitors = ({ ref }) => {
   );
   const [userMsg, setUserMsg] = useState(null);
   const [location, setLocation] = useState(null);
-  const purpose = `${formData[0]?.purpose}.` || "";
-  const purposeDetails = formData[0]?.purposeDetails
-    ? ` and to ${formData[0]?.purposeDetails}\n`
+  const purpose = `${formData?.[0]?.purpose}.` || "";
+  const purposeDetails =
+    formData?.[0]?.purposeDetails ?
+      ` and to ${formData?.[0]?.purposeDetails}\n`
     : "";
-  const serviceDescription = `${formData[0]?.serviceDescription}.\n` || "";
-  const audience = ` targetning ${formData[1]?.audience}. ` || "";
+  const serviceDescription = `${formData?.[0]?.serviceDescription}.\n` || "";
+  const audience = ` targetning ${formData?.[1]?.audience}. ` || "";
   const marketing =
     `Details about the marketing strategy: ${formData?.[2]?.marketing}` || "";
 
-  const businessArea = location ? ` in ${location.address}.` : "";
+  const businessArea = location ? ` in ${location?.address}.` : "";
 
   const isAIAvailable = purpose && serviceDescription && audience;
 
@@ -131,10 +134,15 @@ const StepCompetitors = ({ ref }) => {
 
   return (
     <form ref={formRef}>
+      <ModalWithReader
+        autoPop={true}
+        content={<CompetitorsGuide />}
+        title="Website Planner Guide"
+      />
       <StepWrapper
         hint={aiHint}
         userMsg={userMsg}
-        whyDoWeAsk={content.why_do_we_ask}
+        whyDoWeAsk={content?.why_do_we_ask}
       >
         <StepQuestion content={content} />
         <StepGetAiHintBtn
@@ -156,15 +164,21 @@ const StepCompetitors = ({ ref }) => {
               logger.debug("Location selected:", place);
             }}
           />
-          <IconAlertTriangleFilled className="text-amber-600 drop-shadow-xl mt-4 ml-2 animate-pulse" id="disclaimer" size={24} />
+          <IconAlertTriangleFilled
+            className="text-amber-600 drop-shadow-xl mt-4 ml-2 animate-pulse"
+            id="disclaimer"
+            size={24}
+          />
         </div>
         <Tooltip
           anchorSelect="#disclaimer"
           className="max-w-60 md:max-w-sm relative z-50"
-          >
-            <span className="font-semibold text-lg">Experimental feature</span><br /><br />
-            {`At this step, the AI attempts to identify possible competitors using Google Search. This feature is in experimental mode, so results may be inaccurate or incomplete. Issues may arise in non-English regions or when searching within a narrow location. If no results are found, consider broadening the business area for better accuracy.`}
-          </Tooltip>
+        >
+          <span className="font-semibold text-lg">Experimental feature</span>
+          <br />
+          <br />
+          {`At this step, the AI attempts to identify possible competitors using Google Search. This feature is in experimental mode, so results may be inaccurate or incomplete. Issues may arise in non-English regions or when searching within a narrow location. If no results are found, consider broadening the business area for better accuracy.`}
+        </Tooltip>
         <Divider className="my-4" />
         <AnimatePresence initial={false}>
           {urls.map((url, index) => (
@@ -191,14 +205,14 @@ const StepCompetitors = ({ ref }) => {
                     title="Paste URL from clipboard"
                     onClick={() => {
                       // Paste URL from clipboard
-                      navigator.clipboard.readText().then((text) => {
+                      navigator?.clipboard?.readText().then((text) => {
                         handleChangeUrl(text, index);
                       });
                     }}
                   />
                 }
                 label={`Competitor URL ${index + 1}`}
-                placeholder={content.placeholder}
+                placeholder={content?.placeholder}
                 startContent={
                   <IconWorldWww className="h-5 text-primary dark:text-accentMint opacity-70 ml-[-3px]" />
                 }
@@ -228,7 +242,7 @@ const StepCompetitors = ({ ref }) => {
           title="Add Another URL to the list"
           type="button"
           variant="shadow"
-          onPress={() => handleAddUrl(urls.length - 1)}
+          onPress={() => handleAddUrl(urls?.length - 1)}
         >
           <IconRowInsertBottom className="text-secondaryPersianGreen" />
           Add Another URL
