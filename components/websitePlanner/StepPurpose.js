@@ -11,6 +11,9 @@ import {
 } from "@heroui/react";
 import { Divider } from "@heroui/react";
 
+import VideoPlayer from "../planner-layout/video-player";
+import PurposeGuide from "./guidances/purpose";
+
 import questionsData from "@/data/questions-data.json";
 import logger from "@/lib/logger";
 //import { fetchAIHint } from '@/lib/fetchAIHint';
@@ -219,56 +222,13 @@ const StepPurpose = ({ ref }) => {
     },
   ];
 
-  const simpleContent = (
-    <div className="space-y-4">
-    <h3 className="text-lg font-semibold">Getting Started with Your Website Planner</h3>
-  
-    <p>
-      To build a great website, we start with clarity. Just answer a few key questions to help us shape your plan.
-    </p>
-
-    <div className="p-4 w-full">
-    <video autoPlay loop className="object-contain -mr-10 border-2 rounded-lg" controls={false} muted={true}>
-      <source src="/guide-videos/website-planner-purpose.mp4" type="video/mp4" />
-      <track
-        label="English"
-        src="/guide-videos/captions-en.vtt"
-        srcLang="en"
-      />
-      Your browser does not support the video tag.
-    </video>
-    </div>
-  
-    <div className="bg-green-50 p-4 rounded-md">
-      <h4 className="font-medium text-green-800">Quick Overview</h4>
-      <ul className="list-disc pl-5 text-green-700 space-y-1">
-        <li><strong>Goal:</strong>{` Select your website’s main purpose.`}</li>
-        <li><strong>Extra goal details:</strong> {`Optional — unless you pick "Other".`}</li>
-        <li><strong>Service description:</strong> Tell us what you offer and how it helps your audience.</li>
-      </ul>
-    </div>
-  
-    <div className="bg-yellow-50 p-4 rounded-md">
-      <h4 className="font-medium text-yellow-800">Pro Tip</h4>
-      <p className="text-yellow-700">
-        The more detail you give, the more helpful our AI can be. Use the <strong>{`"Refine with AI"`}</strong> button to enhance your message instantly.
-      </p>
-    </div>
-  
-    <p>
-      {`First time here? After closing this guide, you’ll have the option to take a short tutorial — it's quick, helpful, and skippable anytime.`}
-    </p>
-  
-    <p><strong>{`Let’s make something amazing. You’re in control — and we’re here to help.`}</strong></p>
-  </div>
-  
-  );
+ 
 
   return (
     <form ref={formRef}>
       <ModalWithReader
         autoPop={true}
-        content={simpleContent}
+        content={<PurposeGuide />}
         title="Website Planning Tips"
       />
       <StartTutorialButton setStartTutorial={setStartTutorial} />
@@ -309,7 +269,12 @@ const StepPurpose = ({ ref }) => {
               onSelectionChange={handleSelectionChange}
             >
               {content.options.map((option) => (
-                <DropdownItem key={option} className="hover:bg-secondary hover:text-white transition-all">{option}</DropdownItem>
+                <DropdownItem
+                  key={option}
+                  className="hover:bg-secondary hover:text-white transition-all"
+                >
+                  {option}
+                </DropdownItem>
               ))}
             </DropdownMenu>
           </Dropdown>

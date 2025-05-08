@@ -185,8 +185,8 @@ export default function ModalWithReader({
     switch (speechState) {
       case "playing":
         return (
-          <div className="flex gap-2">
-            <Button color="primary" onPress={pauseReading} className="h-10">
+          <div className="flex justify-end gap-2">
+            <Button variant="bordered" onPress={pauseReading} className="h-10">
               <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-player-pause-filled" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M9 4h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h2a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2z" strokeWidth="0" fill="currentColor"></path>
@@ -194,7 +194,7 @@ export default function ModalWithReader({
               </svg>
               <span className="ml-1">Pause</span>
             </Button>
-            <Button color="danger" onPress={stopReading} className="h-10">
+            <Button variant="bordered" onPress={stopReading} className="h-10">
               <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-player-stop-filled" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M17 4h-10a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-10a3 3 0 0 0 -3 -3z" strokeWidth="0" fill="currentColor"></path>
@@ -205,15 +205,15 @@ export default function ModalWithReader({
         );
       case "paused":
         return (
-          <div className="flex gap-2">
-            <Button color="success" onPress={resumeReading} className="h-10">
+          <div className="flex justify-end gap-2">
+            <Button variant="bordered" onPress={resumeReading} className="h-10">
               <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-player-play-filled" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M6 4v16a1 1 0 0 0 1.524 .852l13 -8a1 1 0 0 0 0 -1.704l-13 -8a1 1 0 0 0 -1.524 .852z" strokeWidth="0" fill="currentColor"></path>
               </svg>
               <span className="ml-1">Resume</span>
             </Button>
-            <Button color="danger" onPress={stopReading} className="h-10">
+            <Button variant="bordered" onPress={stopReading} className="h-10">
               <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-player-stop-filled" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                 <path d="M17 4h-10a3 3 0 0 0 -3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3 -3v-10a3 3 0 0 0 -3 -3z" strokeWidth="0" fill="currentColor"></path>
@@ -225,7 +225,7 @@ export default function ModalWithReader({
       case "idle":
       default:
         return (
-          <Button color="primary" onPress={startReading} className="h-10">
+          <Button color="primary" variant="bordered" onPress={startReading} className="h-10 w-fit self-end">
             <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-volume" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
               <path d="M15 8a5 5 0 0 1 0 8"></path>
@@ -259,14 +259,16 @@ export default function ModalWithReader({
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-2">
-                  <h3 className="text-xl font-semibold">{title}</h3>
+              <ModalHeader className="flex flex-col gap-1 p-2 sm:p-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-2 mb-4 sm:mb-0">
+                  <h3 className="text-xl font-semibold self-start">{title}</h3>
                   {/* Speech controls positioned near the title */}
+                  <div className="mt-6 mr-4 self-end">
                   {typeof window !== "undefined" && window.speechSynthesis && renderSpeechControls()}
+                  </div>
                 </div>
               </ModalHeader>
-              <ModalBody>
+              <ModalBody className="p-2 sm:p-4">
                 <div ref={contentRef} className="max-h-[60vh] overflow-y-auto">
                   {typeof content === "string" ? (
                     <div dangerouslySetInnerHTML={{ __html: content }} />
@@ -275,7 +277,7 @@ export default function ModalWithReader({
                   )}
                 </div>
               </ModalBody>
-              <ModalFooter>
+              <ModalFooter className="flex justify-end p-2 sm:p-4">
                 {footerButtons.length > 0 ? (
                   footerButtons.map((btnProps, index) => (
                     <Button key={index} {...btnProps} />
@@ -283,7 +285,7 @@ export default function ModalWithReader({
                 ) : (
                   <Button
                     color="danger"
-                    variant="light"
+                    variant="bordered"
                     onPress={() => {
                       handleClose();
                       onClose();
