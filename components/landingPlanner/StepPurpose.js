@@ -13,6 +13,9 @@ import { StepGetAiHintBtn } from '@/components/planner-layout/layout/StepGetAiHi
 import Tutorial from "@/components/tutorial/tutorial-custom";
 import StartTutorialButton from "@/components/tutorial/start-tutorial-button";
 
+import ModalWithReader from "@/components/planner-layout/layout/modal-with-reader";
+import PurposeGuide from "@/components/landingPlanner/guidances/purpose";
+
 const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");
   const [localServiceDescription, setLocalServiceDescription] = useState("");
@@ -191,6 +194,11 @@ const StepPurpose = ({ ref }) => {
 
   return (
     <form ref={formRef}>
+       <ModalWithReader
+        autoPop={true}
+        content={<PurposeGuide />}
+        title="Landing Page Planning Tips"
+      />
       <StartTutorialButton
               setStartTutorial={setStartTutorial}
             />

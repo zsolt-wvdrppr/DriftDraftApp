@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { title } from "@/components/primitives";
 
 const ServiceTitle = () => {
-    const words = ["Website", "Website Blueprint", "Landing Page"];
+    const words = ["Website","Landing Page"];
     const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
     useEffect(() => {
@@ -19,14 +19,13 @@ const ServiceTitle = () => {
 
     return (
         <div className="max-w-xl text-center justify-center min-w-max">
-            <span className={`${title({ color: "violet" })}`}>Create a&nbsp;</span>
-            <span className={title()}>Strategic&nbsp;</span>
+            <span className={`${title({ color: "violet" })}`}>Create a Strategic&nbsp;</span>
             <br />
             <AnimatePresence mode="wait">
                 <motion.span
                     key={words[currentWordIndex]}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`${title({ color: "blue" })}`}
+                    className={`${title({ color: "black"})}`}
                     exit={{ opacity: 0, y: 10 }}
                     initial={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.5 }}
@@ -34,6 +33,8 @@ const ServiceTitle = () => {
                     {words[currentWordIndex]}&nbsp;
                 </motion.span>
             </AnimatePresence>
+            <br />
+            <span className={title({ color: "blue"})}>Blueprint&nbsp;</span>
         </div>
     );
 };

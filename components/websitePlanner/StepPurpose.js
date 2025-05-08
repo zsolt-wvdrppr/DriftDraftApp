@@ -11,9 +11,6 @@ import {
 } from "@heroui/react";
 import { Divider } from "@heroui/react";
 
-import VideoPlayer from "../planner-layout/video-player";
-import PurposeGuide from "./guidances/purpose";
-
 import questionsData from "@/data/questions-data.json";
 import logger from "@/lib/logger";
 //import { fetchAIHint } from '@/lib/fetchAIHint';
@@ -26,6 +23,7 @@ import {
 } from "@/components/planner-layout/layout/sectionComponents";
 import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
 import ModalWithReader from "@/components/planner-layout/layout/modal-with-reader";
+import PurposeGuide from "@/components/websitePlanner/guidances/purpose";
 import Tutorial from "@/components/tutorial/tutorial-custom";
 import StartTutorialButton from "@/components/tutorial/start-tutorial-button";
 
@@ -229,7 +227,7 @@ const StepPurpose = ({ ref }) => {
       <ModalWithReader
         autoPop={true}
         content={<PurposeGuide />}
-        title="Website Planning Tips"
+        title="Website Planning Guide"
       />
       <StartTutorialButton setStartTutorial={setStartTutorial} />
       <Tutorial
