@@ -363,12 +363,12 @@ const Result = () => {
 
             // Update the plan in the database
             await updateAiGeneratedPlanInDb(userId, sessionId, combinedResult);
-            toast.success("Website plan generated and saved successfully.");
+            toast.success("Website blueprint generated and saved successfully.");
           }
         } catch (err) {
           // Catch and handle errors during prompt execution or DB updates
           logger.error(
-            "An error occurred while generating the website plan:",
+            "An error occurred while generating the website blueprint:",
             err
           );
 
@@ -464,11 +464,11 @@ const Result = () => {
             <div className="px-8 py-8 shadow-md border rounded-3xl border-accentMint dark:border-zinc-800 max-w-screen-md mx-auto">
               <p className="text-xl font-semibold text-left text-primary">
                 {`
-          Congratulations, ${first_name}, on completing your strategic website plan!
+          Congratulations, ${first_name}, on completing your strategic website blueprint!
           `}
               </p>
               <p className="text-justify pt-4">
-                {`You’ve taken a big step toward building a well-organized website. 🎉 The result is shown below, and you can access this plan anytime under `}
+                {`You’ve taken a big step toward building a well-organized website. 🎉 The result is shown below, and you can access this blueprint anytime under `}
                 <strong>{`"My Activities."`}</strong>
               </p>
               <div className="flex flex-col justify-start items-start py-4 md:pb-4">
@@ -480,7 +480,7 @@ const Result = () => {
                 <li>{`Download it as a PDF`}</li>
                 <li>{`Request a quote`}</li>
               </ul>
-              <p className="text-justify">{`Your plan might include suggestions for missing details. Feel free to use it now or come back later to refine and update it as your vision evolves.`}</p>
+              <p className="text-justify">{`Your blueprint might include suggestions for missing details. Feel free to use it now or come back later to refine and update it as your vision evolves.`}</p>
             </div>
             <div className="w-full flex justify-center md:justify-center">
               <Button
