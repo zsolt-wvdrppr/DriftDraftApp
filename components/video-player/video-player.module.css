@@ -25,26 +25,20 @@
   padding: 0 !important;
   object-fit: cover !important;
   background-color: transparent !important;
-  /* Scale slightly to hide possible edge artifacts */
-  transform: scale(1.01) !important;
 }
 
-/* Extra force fix for YouTube player */
+/* Extra fix for YouTube player */
 .reactPlayer iframe[src*="youtube"] {
   pointer-events: none;
-  left: 50% !important;
-  top: 50% !important;
-  transform: translate(-50%, -50%) scale(1.01) !important;
+  transform: translate(-50%, -50%) !important;
   margin: 0 !important;
 }
 
-/* Container fixes */
+/* Container fixes - simplified for performance */
 .videoPlayerContainer {
   position: relative;
   width: 100%;
   overflow: hidden;
-  line-height: 0 !important; /* Prevent unexpected spacing */
-  font-size: 0 !important; /* Prevent unexpected spacing */
   background-color: transparent !important;
 }
 
@@ -54,33 +48,75 @@
   position: relative !important;
   overflow: hidden !important;
   background-color: transparent !important;
-  /* Add a tiny scale to eliminate edge pixel issues */
-  transform: scale(1.005) !important;
 }
 
-/* Transition state */
-.videoLoading .reactPlayer {
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
+/* Will-change optimizations for GPU acceleration */
+.reactPlayer video {
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
-.videoLoaded .reactPlayer {
-  opacity: 1;
+/* Skeleton loader */
+.skeleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0f0;
+  overflow: hidden;
 }
 
-/* Force repaint trick */
-.videoForceRepaint {
-  transform: translateZ(0);
+.skeleton::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.2) 20%, 
+    rgba(255, 255, 255, 0.5) 60%, 
+    rgba(255, 255, 255, 0) 100%);
+  animation: shimmer 1.5s infinite;
+  background-size: 200% 100%;
 }
 
-/* Explicit overrides for large screens */
-@media (min-width: 1024px) {
-  .videoWrapper {
-    transform: scale(1.01) !important; /* More aggressive scaling on large screens */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
   }
-  
-  .reactPlayer video,
-  .reactPlayer iframe {
-    transform: scale(1.02) !important; /* More aggressive scaling on large screens */
+  100% {
+    background-position: 200% 0;
   }
+}
+
+/* PlayButton for the skeleton */
+.playButton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.playButton::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 20px solid white;
+  margin-left: 5px;
 }
