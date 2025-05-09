@@ -33,8 +33,8 @@ export default function Home() {
 
 export async function generateMetadata() {
   return {
-    title: `Website Blueprint with DriftDraft.App`,
-    description: `DriftDraft is a strategic planner that transforms your business requirements into a comprehensive website or landing page blueprint.`,
+    title: `Your future website starts here`,
+    description: `DriftDraft.App is a strategic planner that transforms your business requirements into a comprehensive website or landing page blueprint.`,
     icons: {
       icon: '/favicon.ico',
     },
@@ -43,9 +43,9 @@ export async function generateMetadata() {
       locale: 'en_GB',
       url: 'https://driftdraft.app',
       siteName: 'DriftDraft.App',
-      title: 'Website Blueprint with DriftDraft.App',
+      title: 'Your future website starts here',
       description:
-        'DriftDraft is a strategic planner that transforms your business requirements into a comprehensive website or landing page blueprint.',
+        'DriftDraft.App is a strategic planner that transforms your business requirements into a comprehensive website or landing page blueprint.',
       images: [
         {
           url: 'https://driftdraft.app/og-image.webp',
