@@ -18,12 +18,13 @@ const ServiceSelector = () => {
     "This feature is not available yet. Please check back later.";
 
   return (
-    <div className="max-w-screen-sm w-screen">
-      <h2 className="text-2xl font-semibold text-center p-8">Select a tool</h2>
+    <div className="max-w-screen-sm w-full">
+      <h2 className="text-3xl text-primary dark:text-accent font-semibold text-center pb-8">Select a tool</h2>
       <Accordion className="w-full px-2 sm:px-8" variant="splitted">
         <AccordionItem
           key="website-planner"
           aria-label="Website Planner"
+          className="backdrop-blur-sm"
           indicator={<IconPencil />}
           startContent={<IconRuler className="w-9 h-9 text-accentMint" />}
           subtitle="Beta version available"
@@ -46,6 +47,7 @@ const ServiceSelector = () => {
         <AccordionItem
           key="landing-page-planner"
           aria-label="Landing Page Planner"
+          className="backdrop-blur-sm"
           indicator={<IconPencil />}
           startContent={<IconRuler className="w-9 h-9 text-accentMint" />}
           subtitle="Beta version available"
