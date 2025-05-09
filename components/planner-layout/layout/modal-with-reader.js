@@ -9,6 +9,7 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
+  Slider,
 } from "@heroui/react";
 
 import logger from "@/lib/logger";
@@ -177,7 +178,7 @@ export default function ModalWithReader({
         if (typeof content === "string") {
           // Create a temporary div to parse HTML content
           const tempDiv = document.createElement("div");
-          
+
           tempDiv.innerHTML = content;
           textToRead = tempDiv.innerText;
         } else if (typeof content === "object") {
@@ -326,6 +327,7 @@ export default function ModalWithReader({
       if (chunkIndex >= chunks.length) {
         // All done with chunks
         setSpeechState("idle");
+
         return;
       }
 
@@ -406,9 +408,21 @@ export default function ModalWithReader({
       selectedVoice && selectedVoice.name.toLowerCase().includes("google");
 
     return (
-      <div className="flex flex-col space-y-4 bg-gray-50 p-4 rounded-md mb-4 text-sm border">
+      <div className="absolute z-50 flex flex-col space-y-4 shadow-lg backdrop-blur-sm bg-gray-50/80 dark:bg-zinc-600/80 p-4 rounded-md mb-4 text-sm border dark:border-zinc-500">
+        <Button
+          className="w-fit absolute right-0 top-0 border-t-0 border-r-0 rounded-t-none rounded-r-none text-primary dark:text-zinc-200 bg-zinc-200 dark:bg-zinc-700 border-primary/50 dark:border-primary"
+          variant="bordered"
+          onPress={() => {
+            setShowVoiceOptions(false);
+          }}
+        >
+          Close
+        </Button>
         <div className="flex flex-col gap-2">
-          <label className="font-medium" htmlFor="voice-selector">
+          <label
+            className="font-medium text-primary dark:text-white"
+            htmlFor="voice-selector"
+          >
             Voice:
             {isGoogleVoice && (
               <span className="ml-2 text-xs text-amber-700">
@@ -421,35 +435,53 @@ export default function ModalWithReader({
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="font-medium">Speed: {rate.toFixed(1)}x</label>
-          <input
-            className="w-full"
-            max="2"
-            min="0.5"
-            step="0.1"
-            type="range"
-            value={rate}
-            onChange={(e) => setRate(parseFloat(e.target.value))}
+          <label className="font-medium text-primary dark:text-white">
+            Speed: {rate.toFixed(1)}x
+          </label>
+          <Slider
+            classNames={{
+              base: "w-full",
+              track: "bg-zinc-500 dark:bg-zinc-800",
+              filler: "bg-accent rounded-sm",
+            }}
+            defaultValue={rate}
+            fillOffset={1}
+            getValue={rate}
+            maxValue={2}
+            minValue={0.5}
+            size={"md"}
+            step={0.1}
+            onChange={(value) => setRate(parseFloat(value))}
           />
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="font-medium">Pitch: {pitch.toFixed(1)}</label>
-          <input
-            className="w-full"
-            max="1.5"
-            min="0.5"
-            step="0.1"
-            type="range"
-            value={pitch}
-            onChange={(e) => setPitch(parseFloat(e.target.value))}
+          <label className="font-medium text-primary dark:text-white">
+            Pitch: {pitch.toFixed(1)}
+          </label>
+          <Slider
+            classNames={{
+              base: "w-full",
+              track: "bg-zinc-500 dark:bg-zinc-800",
+              filler: "bg-accent rounded-sm",
+            }}
+            defaultValue={pitch}
+            fillOffset={1}
+            getValue={pitch}
+            maxValue={1.5}
+            minValue={0.5}
+            size={"md"}
+            step={0.1}
+            onChange={(value) => setPitch(parseFloat(value))}
           />
         </div>
 
-        <div className="text-xs text-gray-600 border-t pt-2 mt-2">
-          <p className="mb-1">📝 Voice Quality Tips:</p>
-          <ul className="list-disc pl-4">
-            <li>
+        <div className="text-xs border-t pt-2 mt-2">
+          <p className="mb-1 text-primary dark:text-white">
+            📝 Voice Quality Tips:
+          </p>
+          <ul className="list-disc pl-4 text-primary dark:text-white">
+            <li className="">
               Apple and Microsoft voices often work better for longer texts
             </li>
             <li>Try slowing down to 0.9x for more natural reading</li>
@@ -617,13 +649,12 @@ export default function ModalWithReader({
       default:
         return (
           <Button
-            className="h-10 w-fit self-end"
-            color="primary"
+            className="h-10 w-fit self-end border-primary dark:border-secondary"
             variant="bordered"
             onPress={startReading}
           >
             <svg
-              className="icon icon-tabler icon-tabler-volume"
+              className="icon icon-tabler icon-tabler-volume stroke-primary dark:stroke-zinc-200"
               fill="none"
               height="24"
               stroke="currentColor"
@@ -639,7 +670,7 @@ export default function ModalWithReader({
               <path d="M17.7 5a9 9 0 0 1 0 14" />
               <path d="M6 15h-2a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h2l3.5 -4.5a.8 .8 0 0 1 1.5 .5v14a.8 .8 0 0 1 -1.5 .5l-3.5 -4.5" />
             </svg>
-            <span className="ml-1">Read Aloud</span>
+            <span className="ml-1 font-semibold text-primary dark:text-zinc-200">Read Aloud</span>
           </Button>
         );
     }
@@ -674,37 +705,37 @@ export default function ModalWithReader({
                   <div className="flex flex-col gap-2 self-end">
                     <div className="flex gap-2 items-center justify-end md:mr-5">
                       {speechState === "idle" && (
-                      <Button
-                        className="h-8"
-                        size="sm"
-                        variant="light"
-                        onPress={() => setShowVoiceOptions(!showVoiceOptions)}
-                      >
-                        <svg
-                          className="icon icon-tabler icon-tabler-adjustments"
-                          fill="none"
-                          height="20"
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          viewBox="0 0 24 24"
-                          width="20"
-                          xmlns="http://www.w3.org/2000/svg"
+                        <Button
+                          className="h-8"
+                          size="sm"
+                          variant="light"
+                          onPress={() => setShowVoiceOptions(!showVoiceOptions)}
                         >
-                          <path d="M0 0h24v24H0z" fill="none" stroke="none" />
-                          <path d="M4 10a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                          <path d="M6 4v4" />
-                          <path d="M6 12v8" />
-                          <path d="M10 16a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                          <path d="M12 4v10" />
-                          <path d="M12 18v2" />
-                          <path d="M16 7a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                          <path d="M18 4v1" />
-                          <path d="M18 9v11" />
-                        </svg>
-                        <span className="ml-1 text-xs">Voice Settings</span>
-                      </Button>
+                          <svg
+                            className="icon icon-tabler icon-tabler-adjustments"
+                            fill="none"
+                            height="20"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            viewBox="0 0 24 24"
+                            width="20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M0 0h24v24H0z" fill="none" stroke="none" />
+                            <path d="M4 10a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                            <path d="M6 4v4" />
+                            <path d="M6 12v8" />
+                            <path d="M10 16a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                            <path d="M12 4v10" />
+                            <path d="M12 18v2" />
+                            <path d="M16 7a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                            <path d="M18 4v1" />
+                            <path d="M18 9v11" />
+                          </svg>
+                          <span className="ml-1 text-xs">Voice Settings</span>
+                        </Button>
                       )}
 
                       {typeof window !== "undefined" &&
@@ -712,7 +743,9 @@ export default function ModalWithReader({
                         renderSpeechControls()}
                     </div>
 
-                    {showVoiceOptions && speechState === "idle" && renderVoiceOptions()}
+                    {showVoiceOptions &&
+                      speechState === "idle" &&
+                      renderVoiceOptions()}
                   </div>
                 </div>
               </ModalHeader>

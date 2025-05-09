@@ -36,7 +36,7 @@ Use the copy icon next to each URL to quickly copy the website address to your c
       <div className="p-4 h-full -mb-1 overflow-hidden rounded-xl">
         <VideoPlayer
           loop
-          aspectRatio="1400:1080"
+          aspectRatio="1584:1080"
           className="overflow-hidden rounded-xl border"
           controls={false}
           muted={true}
@@ -46,14 +46,14 @@ Use the copy icon next to each URL to quickly copy the website address to your c
         />
       </div>
 
-      <div className="bg-blue-50 p-4 rounded-md">
-        <div className="markdown-content text-blue-700">
+    <div className="bg-blue-50 dark:bg-primary dark:text-white p-4 rounded-md border-l-2 border-blue-500 dark:border-blue-300">
+        <div className="markdown-content text-primary">
           <ReactMarkdown>{stepsText}</ReactMarkdown>
         </div>
       </div>
 
-      <div className="bg-yellow-50 p-4 rounded-md">
-        <div className="markdown-content text-yellow-700">
+     <div className="bg-yellow-50 dark:bg-yellow-800 p-4 rounded-md border-l-2 border-yellow-600 dark:border-yellow-300">
+        <div className="markdown-content text-yellow-800 dark:text-white">
           <ReactMarkdown>{proTipText}</ReactMarkdown>
         </div>
       </div>

@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 
-import styles from './video-player.module.css';
 import logger from '@/lib/logger';
+
+import styles from './video-player.module.css';
 
 type VideoPlayerProps = {
   url: string;
@@ -79,6 +80,7 @@ const VideoPlayer = ({
     observerRef.current = new IntersectionObserver(
       ([entry]) => {
         const isIntersecting = entry.isIntersecting;
+
         setIsVisible(isIntersecting);
 
         if (isIntersecting) {
@@ -169,6 +171,7 @@ const VideoPlayer = ({
     if (url.endsWith('.webm')) return 'video/webm';
     if (url.endsWith('.ogg')) return 'video/ogg';
     if (url.endsWith('.mov')) return 'video/quicktime';
+
     return 'video/mp4'; // Default
   };
 
@@ -211,9 +214,9 @@ const VideoPlayer = ({
                 }}
               >
                 <button 
+                  aria-label="Play video"
+                  className={styles.playButton} 
                   type="button"
-                  aria-label="Play video" 
-                  className={styles.playButton}
                   onClick={togglePlay}
                 />
               </div>
@@ -221,9 +224,9 @@ const VideoPlayer = ({
               showDefaultSkeleton && (
                 <div className={styles.skeleton}>
                   <button
+                    aria-label="Play video"
+                    className={styles.playButton} 
                     type="button"
-                    aria-label="Play video" 
-                    className={styles.playButton}
                     onClick={togglePlay}
                   />
                 </div>
@@ -307,9 +310,9 @@ const VideoPlayer = ({
         {/* Play/Pause Button Overlay */}
         {!controls && isLoaded && isVisible && !hasError && (
           <button 
-            type="button"
             aria-label={isPlaying ? "Pause video" : "Play video"}
             className={styles.videoOverlay}
+            type="button"
             onClick={togglePlay}
           >
             {!isPlaying && (

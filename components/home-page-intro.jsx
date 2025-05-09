@@ -11,7 +11,7 @@ const HomePageIntro = () => {
 
   return (
     <div className="p-2 w-full flex flex-col items-center justify-center gap-4 gap-y-8 md:gap-8 max-w-5xl">
-        <TextReader className="">
+        <TextReader className="backdrop-blur-sm">
       <div className="relative flex flex-col gap-y-8 md:flex-row md:gap-10 items-center justify-center w-full">
         <div className="prose text-justify max-w-xl">
           <ReactMarkdown>
@@ -38,7 +38,7 @@ const HomePageIntro = () => {
       </div>
       </TextReader>
       <Divider/>
-      <TextReader placement="justify-start md:justify-end w-full">
+      <TextReader className="backdrop-blur-sm" placement="justify-start md:justify-end w-full">
       <div className="relative flex flex-col gap-y-8 md:flex-row-reverse md:gap-10 items-center justify-center w-full">
         <div className="prose text-justify max-w-xl prose-p:mb-0">
           <ReactMarkdown>
@@ -60,7 +60,7 @@ const HomePageIntro = () => {
       </div>
       </TextReader>
       <Divider/>
-      <TextReader>
+      <TextReader className="backdrop-blur-sm">
       <div className="relative flex flex-col gap-y-8 md:flex-row md:gap-10 items-center justify-center w-full">
         <div className="prose text-justify max-w-xl prose-p:mb-0">
           <ReactMarkdown>
@@ -82,7 +82,7 @@ const HomePageIntro = () => {
       </div>
       </TextReader>
       <Divider/>
-      <TextReader placement="justify-start md:justify-end ">
+      <TextReader className="backdrop-blur-sm" placement="justify-start md:justify-end ">
       <div className="relative flex flex-col gap-y-8 md:flex-row-reverse md:gap-10 items-center justify-center w-full">
         <div className="prose text-justify max-w-xl prose-p:mb-0">
           <ReactMarkdown>
@@ -112,7 +112,7 @@ const HomePageIntro = () => {
       </div>
       </TextReader>
         <Divider/>
-      <TextReader placement="">
+      <TextReader className="backdrop-blur-sm">
       <div className="relative flex flex-col gap-y-8 md:flex-row md:gap-10 items-center justify-center w-full">
         <div className="prose text-justify max-w-xl prose-p:mb-0">
           <ReactMarkdown>

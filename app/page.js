@@ -4,10 +4,12 @@ import ServiceTitle from "@/components/ServiceTitle";
 import SignupCreditsNotice from "@/components/notifications/signup-credits";
 import HomePageIntro from "@/components/home-page-intro";
 import BetaNotice from "@/components/notifications/beta-notice";
+import BlueprintBackground from "@/components/blueprint-bg";
 
 export default function Home() {
   return (
     <>
+      <BlueprintBackground />
       <section className="relative z-10 light dark:dark">
         <HeroBackground />
         <div className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
