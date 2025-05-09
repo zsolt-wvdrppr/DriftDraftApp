@@ -257,22 +257,37 @@ const Result = () => {
         {
           prompt: `Prompt 4: Landing Page Wireframe & Final Strategic Plan - Final Output
           
-          **Objective:** Create wireframe and final strategy with headings and flat bullet points.
+          **Objective:** Create a detailed landing page wireframe with ASCII visualisations and a comprehensive strategic plan.
           
           **Task:**
           
-          **Part 1: Simple Wireframe Outline**
-          - **Output a wireframe outline using Markdown headings (h2) and flat bullet points (using '-').  Ensure bullet points are NOT nested.**
-          
-          ## Proposed Wireframe Outline (h2)
-          - Hero Section (Example Headline, Subheadline, CTA)
-          - Recipe Showcase Section
-          - Value Proposition Section
-          - Testimonials/Social Proof Section
-          - Pricing & Packages Section
-          - About Us/Our Story Section
-          - Call to Action
-          - Footer
+           **Part 1: Detailed Landing Page Wireframe**
+
+            - Create a complete landing page wireframe showing all recommended sections
+            - Include:
+              - Main sections with brief content descriptions
+              - Call-to-action placement
+            - Use ASCII drawings to visualise layout for the landing page
+            - Include mobile and desktop versions
+
+            **ASCII Drawing Example:**
+            +------------------------------------------+
+            |                HEADER                    |
+            +------------------------------------------+
+            |                                          |
+            |               HERO IMAGE                 |
+            |         [Headline Text Here]             |
+            |         [Subheadline Text]               |
+            |         [Primary CTA Button]             |
+            +------------------------------------------+
+            |                                          |
+            |            FEATURES SECTION              |
+            |  +--------+  +--------+  +--------+      |
+            |  | Feat 1 |  | Feat 2 |  | Feat 3 |      |
+            |  +--------+  +--------+  +--------+      |
+            +------------------------------------------+
+            |                FOOTER                    |
+            +------------------------------------------+
           
           **Part 2: Final Strategic Overview**
           - **Output a strategic overview using Markdown headings (h2, h3) and flat bullet points (using '-'). Ensure bullet points are NOT nested.**
@@ -300,8 +315,7 @@ const Result = () => {
           ### Outstanding Questions / Missing Information (h3)
           - Question 1: ...
           
-          - **Output MUST be structured with Markdown headings (h2, h3) and flat bullet points (using '-').  Ensure *no parentheses around headings* and *no nested lists*. Be concise and actionable. No introductory text.**
-          - **Final Output: Markdown wireframe outline and strategic blueprint document.**`,
+          - **Output MUST be structured with Markdown headings (h2, h3) and flat bullet points (using '-').  Ensure *no parentheses around headings* and *no nested lists*. Be concise and actionable. No introductory text.**`,
           dependsOn: 2,
           generateNewPrompts: false,
         },

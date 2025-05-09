@@ -284,9 +284,9 @@ const Result = () => {
                   +------------------------------------------+
                   |                                          |
                   |            FEATURES SECTION              |
-                  |  +--------+  +--------+  +--------+     |
-                  |  | Feat 1 |  | Feat 2 |  | Feat 3 |     |
-                  |  +--------+  +--------+  +--------+     |
+                  |  +--------+  +--------+  +--------+      |
+                  |  | Feat 1 |  | Feat 2 |  | Feat 3 |      |
+                  |  +--------+  +--------+  +--------+      |
                   +------------------------------------------+
                   |                FOOTER                    |
                   +------------------------------------------+
@@ -311,7 +311,7 @@ const Result = () => {
                   - List any information gaps that need clarification
                   - Recommendations for additional user research if needed
           
-                **Part 2: Final Strategic Overview**
+                **Part 3: Final Strategic Overview**
                 - **Output a strategic overview using Markdown headings (h2, h3) and flat bullet points (using '-'). Ensure bullet points are NOT nested.**
 
                 ## Final Website Strategic Overview (h2)
@@ -337,8 +337,7 @@ const Result = () => {
                 ### Outstanding Questions / Missing Information (h3)
                 - Question 1: ...
 
-                - **Output MUST be structured with Markdown headings (h2, h3) and flat bullet points (using '-'). Ensure *no parentheses around headings* and *no nested lists*. Be concise and actionable. No introductory text.**
-                - **Final Output: Detailed wireframe with ASCII drawings and strategic plan document.**`,
+                - **Output MUST be structured with Markdown headings (h2, h3) and flat bullet points (using '-'). Ensure *no parentheses around headings* and *no nested lists*. Be concise and actionable. No introductory text.**`,
           dependsOn: 2,
           generateNewPrompts: false,
         },

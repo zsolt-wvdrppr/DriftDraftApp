@@ -7,8 +7,6 @@ import {
   IconComet,
   IconSettingsBolt,
 } from "@tabler/icons-react";
-import { Button } from "@heroui/react";
-import { Link } from "@heroui/react";
 
 import RestartSessionBtn from "@/components/planner-layout/layout/RestartSessionBtn";
 
