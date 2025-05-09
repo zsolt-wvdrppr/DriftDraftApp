@@ -238,7 +238,7 @@ export default function ModalWithReader({
   // Render voice selection dropdown
   const renderVoiceSelector = () => {
     return (
-      <div className="relative inline-block text-left">
+      <div className="relative inline-block text-left w-full">
         <button
           className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
           type="button"
@@ -673,6 +673,7 @@ export default function ModalWithReader({
 
                   <div className="flex flex-col gap-2 self-end">
                     <div className="flex gap-2 items-center justify-end md:mr-5">
+                      {speechState === "idle" && (
                       <Button
                         className="h-8"
                         size="sm"
@@ -704,13 +705,14 @@ export default function ModalWithReader({
                         </svg>
                         <span className="ml-1 text-xs">Voice Settings</span>
                       </Button>
+                      )}
 
                       {typeof window !== "undefined" &&
                         window.speechSynthesis &&
                         renderSpeechControls()}
                     </div>
 
-                    {showVoiceOptions && renderVoiceOptions()}
+                    {showVoiceOptions && speechState === "idle" && renderVoiceOptions()}
                   </div>
                 </div>
               </ModalHeader>
