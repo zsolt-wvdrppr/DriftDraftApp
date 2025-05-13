@@ -37,7 +37,7 @@ const VideoPlayer = ({
   captionSrc,
   showDefaultSkeleton = true,
   controls = false,
-  autoplay = false, // Default to false for better UX
+  autoplay = true, // Default to false for better UX
   playing = false,
   loop = true,
   muted = true,
