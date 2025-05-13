@@ -688,7 +688,7 @@ export default function ModalWithReader({
         classNames={{
           wrapper: "z-[100]",
           backdrop:
-            "z-[60] bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
+            "z-[90] bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
           base: "sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl", // Responsive widths
         }}
         isOpen={isOpen}

@@ -36,7 +36,7 @@ const StepMarketing = ({ ref }) => {
       }
 
       if (localValue?.length < 50) {
-        setError("Please provide at least 50 characters.\n\nTry to Refine with AI!");
+        setError("Details are key. Please provide at least 50 characters.\n\nTry to Refine with AI!");
         setIsInputInvalid(true);
 
         return false;

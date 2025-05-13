@@ -67,7 +67,7 @@ export default function Tutorial({
       height: `${rect.height}px`,
       border: "3px solid #3b82f6",
       boxShadow: "0 0 0 9999px rgba(0, 0, 0, 0.5)",
-      zIndex: 9998,
+      zIndex: 80,
       borderRadius: "4px",
       pointerEvents: "none",
       transition: "all 0.15s ease",
@@ -421,7 +421,7 @@ export default function Tutorial({
       style={{
         top: position.y,
         left: position.x,
-        zIndex: 10000,
+        zIndex: 90,
         opacity: initialRenderComplete ? 1 : 0,
         maxWidth: "calc(100vw - 20px)",
       }}

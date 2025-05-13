@@ -2,13 +2,20 @@
 
 import { useEffect, useState, useRef, useTransition } from "react";
 import { Reorder, AnimatePresence } from "framer-motion";
-import { Button, Link, useDisclosure, Spinner, Switch, Input } from "@heroui/react";
+import {
+  Button,
+  Link,
+  useDisclosure,
+  Spinner,
+  Switch,
+  Input,
+} from "@heroui/react";
 import {
   IconReorder,
   IconTrash,
   IconEye,
   IconMessageDollar,
-  IconSquareRoundedXFilled,
+  IconX,
   IconInfoCircleFilled,
   IconPencilStar,
   IconArrowNarrowUp,
@@ -20,7 +27,6 @@ import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { useReCaptcha } from "next-recaptcha-v3";
-
 
 import EditableMarkdownModal from "../planner-layout/layout/EditableMarkdownModal";
 
@@ -119,7 +125,6 @@ export default function UserActivities() {
 
       return;
     }
-
   }, [loading, user, router]);
 
   const confirmDelete = (item) => {
@@ -163,7 +168,7 @@ export default function UserActivities() {
   const toastRef = useRef(null);
 
   const handleToast = () => {
-    startTransition(() => {
+   // startTransition(() => {
       if (toastRef.current) {
         // Dismiss the toast and reset state
         toast.dismiss(toastRef.current);
@@ -172,24 +177,27 @@ export default function UserActivities() {
 
       const newToastId = toast.custom(
         (t) => (
-          <div className="relative flex w-fit justify-center bg-yellow-100/60 shadow-md rounded-lg">
-            <div className="w-fit relative">
+          <div className="relative flex w-fit justify-center rounded-lg rounded-tr-none border dark:border-neutralDark shadow-md bg-white/95 dark-bg-zinc-800">
+            <div className="fixed top-0 left-0 w-full h-full "/>
+            <div className="w-full">
               <Button
-                className="!absolute -top-4 -left-9 p-2"
+                className="!absolute top-[-25.5px] right-[-1] p-0 pb-0 h-fit min-w-0 z-20 m-0 hover:!opacity-100 bg-white/95 border border-b-white/90 rounded-b-none rounded-t-lg overflow-hidden"
                 onPress={() => {
                   toast.dismiss(t);
                   toastRef.current = null;
                   Cookies.set("toastDismissed", true, { expires: 365 });
                 }}
               >
-                <IconSquareRoundedXFilled className="bg-white text-primary rounded-lg" />
+                <div className="relative w-full h-ful hover:scale-125 active:scale-90 transition-all">
+                <IconX className="dark:bg-zinc-800 text-highlightOrange dark:text-primary outline-2" />
+                </div>
               </Button>
               {legend()}
             </div>
           </div>
         ),
         {
-          duration: 5000,
+          duration: Infinity,//5000,
           onDismiss: () => {
             toastRef.current = null;
           },
@@ -197,7 +205,7 @@ export default function UserActivities() {
       );
 
       toastRef.current = newToastId;
-    });
+   // });
   };
 
   useEffect(() => {
@@ -208,18 +216,18 @@ export default function UserActivities() {
     }
   }, [isPdfGenerating]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     // Check if the toast has been dismissed
     const dismissed = Cookies.get("toastDismissed");
 
     if (dismissed) return;
-
+    
     const timeout = setTimeout(() => {
       handleToast();
-    }, 500); // Small delay to allow context and DOM readiness
+    }, 60000); // Small delay to allow context and DOM readiness
 
     return () => clearTimeout(timeout); // Cleanup on unmount
-  }, []);
+  }, []);*/
 
   if (isPending || loading || isFetchingInProgress) {
     return (
@@ -228,7 +236,6 @@ export default function UserActivities() {
       </div>
     );
   }
-
 
   const handleReview = (e, item) => {
     e.preventDefault();
@@ -256,9 +263,9 @@ export default function UserActivities() {
 
     try {
       const updatedItems = items.map((i) =>
-        i.session_id === item.session_id
-          ? { ...i, session_title: newTitle, isEditing: false } // Set isEditing to false after update
-          : i
+        i.session_id === item.session_id ?
+          { ...i, session_title: newTitle, isEditing: false } // Set isEditing to false after update
+        : i
       );
 
       setItems(updatedItems); // Update state immediately for UX
@@ -377,10 +384,17 @@ export default function UserActivities() {
   return (
     <div className="light dark:dark p-4  max-w-2xl xl:max-w-6xl 2xl:max-w-screen-2xl mx-auto overflow-hidden">
       <NewSessionSelectorInner />
-      <div className="w-full flex justify-end my-4 text-primary">
-        <Button onPress={() => handleToast()}>
-          <IconInfoCircleFilled className="info-icon text-secondary" />
-        </Button>
+      <div className="w-full flex justify-end my-4">
+        <button
+          className="flex items-center justify-center p-2 rounded-full hover:scale-110 transition-all active:scale-95 mr-4"
+          onClick={(e) => {
+            e.preventDefault();
+            logger.debug("Info button clicked");
+            handleToast();
+          }}
+        >
+          <IconInfoCircleFilled className="info-icon text-highlightBlue" />
+        </button>
 
         <Switch
           defaultSelected
@@ -432,11 +446,11 @@ export default function UserActivities() {
                 >
                   <div className="relative w-full">
                     <div className="absolute bg-primary/60 text-white text-sm rounded-br-lg rounded-tl-md -top-4 -left-4 py-1 px-2">
-                    <p>{item.type}</p>
+                      <p>{item.type}</p>
                     </div>
                   </div>
                   <div className="relative w-fit py-4">
-                    {item.isEditing ? (
+                    {item.isEditing ?
                       <Input
                         ref={(el) => (inputRefs.current[item.session_id] = el)} // Assign dynamic ref
                         className="border p-2 rounded-md"
@@ -446,9 +460,9 @@ export default function UserActivities() {
                         onBlur={() => handleEditTitle(item, item.session_title)} // Stop editing when blurred
                         onChange={(e) => {
                           const updatedItems = items.map((i) =>
-                            i.session_id === item.session_id
-                              ? { ...i, session_title: e.target.value }
-                              : i
+                            i.session_id === item.session_id ?
+                              { ...i, session_title: e.target.value }
+                            : i
                           );
 
                           setItems(updatedItems); // Live update in state for better UX
@@ -459,8 +473,7 @@ export default function UserActivities() {
                           }
                         }}
                       />
-                    ) : (
-                      <div>
+                    : <div>
                         <h2 className="font-semibold">{item.session_title}</h2>
                         <Link
                           className="text-primary absolute w-4 h-4 -right-4 top-2 hover:scale-125 transition-all"
@@ -474,7 +487,7 @@ export default function UserActivities() {
                           Edit Title
                         </Tooltip>
                       </div>
-                    )}
+                    }
                   </div>
 
                   <div className="flex gap-2 w-full">
