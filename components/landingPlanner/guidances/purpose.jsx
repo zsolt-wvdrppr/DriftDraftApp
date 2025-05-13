@@ -27,6 +27,8 @@ Need help? Click **"Refine with AI"** to instantly improve your descriptions.
 
   const noteText = `
 **Note:** Clicking "Next" saves your session, which you can access later under "My Activities". You can always edit these answers later.
+
+**More below the video!**
   `;
 
   return (

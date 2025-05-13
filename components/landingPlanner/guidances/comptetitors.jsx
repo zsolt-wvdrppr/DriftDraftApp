@@ -25,6 +25,8 @@ Use the copy icon next to each URL to quickly copy the website address to your c
 
   const noteText = `
 **Note:** This feature provides a starting point for competitor awareness, not comprehensive market research. The suggestions are based on your previous answers and location.
+
+**More below the video!**
   `;
 
   return (

@@ -7,6 +7,8 @@ const PurposeGuide = () => {
 ## Defining Your Purpose
 
 This section establishes the foundation of your website blueprint—a comprehensive plan you can pass to developers. Clear answers here help avoid future drawbacks like missing analytics for marketing campaigns, inadequate user flows, or security vulnerabilities. Your input shapes the entire strategy.
+
+**More below the video!**
   `;
 
   const quickGuideText = `

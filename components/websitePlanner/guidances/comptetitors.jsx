@@ -6,6 +6,8 @@ const CompetitorsGuide = () => {
 ## Competitor Analysis: Know Your Market
 
 This section helps you identify potential competitors in your industry. Seeing who else operates in your space gives you a starting point to understand the market landscape.
+
+**More below the video!**
   `;
 
   const stepsText = `

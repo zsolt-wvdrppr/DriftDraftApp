@@ -6,6 +6,8 @@ const DomainGuide = () => {
 ## Domain Research: Find Your Online Address
 
 This section helps you discover potential domain names for your website based on your previous answers. A good domain is memorable, relevant to your business, and available for registration.
+
+**More blow the video!**
   `;
 
   const stepsText = `
