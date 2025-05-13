@@ -1,4 +1,4 @@
-// REDUNDANT COMPONENT
+// DEPRECATED COMPONENT
 // This component is not used in the current version of the application
 
 "use client";
