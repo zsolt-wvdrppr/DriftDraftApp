@@ -8,17 +8,17 @@ import { Link } from "@heroui/react";
 
 const HomePageIntro = () => {
   return (
-    <div className="p-2 w-full flex flex-col items-center justify-center gap-4 gap-y-8 md:gap-8 max-w-5xl">
+    <div className="p-2.5 w-full flex flex-col items-center justify-center gap-4 gap-y-8 md:gap-8 max-w-5xl">
       <TextReader className="backdrop-blur-sm">
         <div className="relative flex flex-col gap-y-8 md:flex-row md:gap-10 items-center justify-center w-full">
-          <div className="max-w-xl prose prose-h2:font-semibold">
+          <div className="max-w-xl prose prose-h2:font-semibold text-justify md:text-lg">
             <ReactMarkdown>
               {`## Why do you need a Website Blueprint?
-If you have a business, a non-profit, or any kind of organisation, having a clear website blueprint helps you **establish a professional online presence**. Think of it like a map that shows exactly how your website should look, what it should say, and how visitors will use it—without needing any tech knowledge. This way, you **avoid common problems** like confusing designs, pages that don't lead customers anywhere, or security risks you didn't even know existed. Plus, you’ll learn easy tips along the way, helping you **make smart choices** for your website.`}
+If you have a business, non-profit, or any organisation, a website blueprint helps you easily build a **professional online presence** — no tech knowledge required. Like a clear map, it shows exactly what your website should say, how it should look, and guides your visitors smoothly, **avoiding common pitfalls** like confusing designs, pages that don't lead customers anywhere, or security risks.`}
             </ReactMarkdown>
           </div>
 
-          <div className="w-full overflow-hidden rounded-xl outline-2 outline outline-primary/20 dark:outline-primary shadow-lg">
+          <div className="w-full overflow-hidden rounded-xl">
             <VideoPlayer
               loop
               aspectRatio="400:308"
@@ -30,9 +30,9 @@ If you have a business, a non-profit, or any kind of organisation, having a clea
             />
           </div>
         </div>
-        <div className="max-w-5xl prose text-justify mx-auto mt-6">
+        <div className="max-w-5xl prose text-justify mx-auto mt-6 md:text-lg">
           <ReactMarkdown>
-            {`Whether you're a small business owner looking to build trust online or you manage clients who need professional websites, a blueprint makes your life easier. It’s something you can **show to any developer**, ensuring they **understand exactly what you want**. You can download your finished blueprint as a PDF at no cost, keep improving it, or hand it straight over to someone who’ll build your website, knowing nothing important has been missed.`}
+            {`Whether you're managing your own website or creating one for a client, a blueprint ensures developers know exactly what you want. You can download it as a PDF at no cost, refine it anytime, and confidently hand it over, knowing nothing critical is missed.`}
           </ReactMarkdown>
         </div>
       </TextReader>
@@ -42,14 +42,14 @@ If you have a business, a non-profit, or any kind of organisation, having a clea
         placement="justify-start md:justify-end w-full"
       >
         <div className="relative flex flex-col gap-y-8 md:flex-row-reverse md:gap-10 items-center justify-center w-full">
-          <div className="prose text-justify max-w-xl prose-p:mb-0 prose-h2:font-semibold">
+          <div className="prose text-justify max-w-xl prose-p:mb-0 prose-h2:font-semibold md:text-lg">
             <ReactMarkdown>
               {`## Discover Your Competition
-Our AI tool identifies potential competitors based on your business details and location. Simply enter your location and click **"Refine with AI"** to see businesses operating in your market space. Review the suggestions and copy website URLs with a single click – providing a helpful starting point to understand your competitive landscape.`}
+Enter your location and instantly discover who you're competing with. Our AI identifies local businesses in your market, giving you a quick, clear **view of your competitive landscape**. Easily copy their website URLs with one click, saving you time and effort.`}
             </ReactMarkdown>
           </div>
 
-          <div className="w-full min-w-full md:min-w-96 overflow-hidden rounded-xl outline-2 outline outline-primary/20 dark:outline-primary shadow-lg">
+          <div className="w-full min-w-full md:min-w-96 overflow-hidden rounded-xl ">
             <VideoPlayer
               loop
               aspectRatio="400:308"
@@ -65,14 +65,14 @@ Our AI tool identifies potential competitors based on your business details and 
       <Divider />
       <TextReader className="backdrop-blur-sm">
         <div className="relative flex flex-col gap-y-8 md:flex-row md:gap-10 items-center justify-center w-full">
-          <div className="prose text-justify max-w-xl prose-p:mb-0 prose-h2:font-semibold">
+          <div className="prose text-justify max-w-xl prose-p:mb-0 prose-h2:font-semibold md:text-lg">
             <ReactMarkdown>
               {`## Domain Discovery
-Our AI suggests relevant domain names based on your business information with SEO requirements in mind. Get instant availability checks and find alternatives if your preferred options are taken. Streamline your domain search process with smart recommendations tailored to your brand.`}
+Instantly find SEO-friendly domain names tailored to your business. Our AI checks availability, suggests smart alternatives if your favourites are taken, and simplifies your search for the perfect brand domain.`}
             </ReactMarkdown>
           </div>
 
-          <div className="w-full min-w-full md:min-w-96 overflow-hidden rounded-xl outline-2 outline outline-primary/20 dark:outline-primary shadow-lg">
+          <div className="w-full min-w-full md:min-w-96 overflow-hidden rounded-xl ">
             <VideoPlayer
               loop
               aspectRatio="400:308"
@@ -91,10 +91,10 @@ Our AI suggests relevant domain names based on your business information with SE
         placement="justify-start md:justify-end "
       >
         <div className="relative flex flex-col gap-y-8 md:flex-row-reverse md:gap-10 items-center justify-center w-full">
-          <div className="prose text-justify max-w-xl prose-p:mb-0">
+          <div className="prose text-justify max-w-xl prose-p:mb-0 prose-h2:font-semibold md:text-lg">
             <ReactMarkdown>
               {`## Blueprint Generation
-Once you've completed all questionnaire sections, our AI analyses your answers to generate a comprehensive website plan. This blueprint becomes available immediately for viewing or copying, and remains accessible later through the "My Activities" section. The contact details requested in the final section are only used if you specifically request a quote from Wavdropper (us) for implementation services. Your information is never shared or used for other purposes without your explicit consent.`}
+After completing the questionnaire, our AI generates your website blueprint, ready immediately to view or copy, and accessible anytime via "My Activities". Your contact details, if provided, are used only if you request a quote from Wavedropper and will never be shared without your consent.`}
             </ReactMarkdown>
             <Link
               className="hover:bg-default-2 no-underline"
@@ -106,7 +106,7 @@ Once you've completed all questionnaire sections, our AI analyses your answers t
             </Link>
           </div>
 
-          <div className="w-full overflow-hidden rounded-xl outline-2 outline outline-primary/20 dark:outline-primary shadow-lg">
+          <div className="w-full overflow-hidden rounded-xl ">
             <VideoPlayer
               loop
               aspectRatio="400:308"
@@ -118,22 +118,23 @@ Once you've completed all questionnaire sections, our AI analyses your answers t
             />
           </div>
         </div>
-        <div className="max-w-5xl prose text-justify mx-auto mt-6">
+        <div className="max-w-5xl prose text-justify mx-auto mt-6 md:text-lg">
           <ReactMarkdown>
-            {`The AI-generated blueprint is provided for guidance only and may contain inaccuracies or errors. Quality of results directly correlates with the detail and clarity of your inputs. Wavdropper makes no guarantees regarding the completeness, accuracy or suitability of the generated blueprint for specific requirements. We recommend professional review before implementation. Use of this tool does not constitute professional website development or strategic consulting services.`}
+            {`The blueprint is a starting point only; accuracy depends on the clarity of your answers. We don't guarantee completeness or suitability for specific needs, so always review professionally before implementation. Using this tool doesn't replace professional website development or strategic advice.`}
           </ReactMarkdown>
         </div>
       </TextReader>
       <Divider />
       <TextReader className="backdrop-blur-sm">
         <div className="relative flex flex-col gap-y-8 md:flex-row md:gap-10 items-center justify-center w-full">
-          <div className="prose text-justify max-w-xl prose-p:mb-0">
+          <div className="prose text-justify max-w-xl prose-p:mb-0 prose-h2:font-semibold md:text-lg">
             <ReactMarkdown>
-              {`**My Activities:** Your personal workspace allows you to manage all your website planning sessions. Start new website or landing page plans, or access your existing blueprints. For each plan, you can Review Questionnaire & Regenerate Blueprint, Delete, Download as PDF, View & Edit, or Request a Quote from Wavedropper. Easily sort your sessions by creation date and rename blueprints as needed. Note that regenerating a blueprint will overwrite the previous version completely, including any custom name you've assigned – so always save important blueprints as PDFs before regeneration.`}
+              {`## Managing Your Plans
+"My Activities" is your workspace to start, review, edit, download, or delete your website blueprints. You can regenerate plans at any time—just note this will overwrite the previous version, so save important blueprints as PDFs first. Easily rename and organise plans by date.`}
             </ReactMarkdown>
           </div>
 
-          <div className="w-full overflow-hidden rounded-xl outline-2 outline outline-primary/20 dark:outline-primary shadow-lg">
+          <div className="w-full overflow-hidden rounded-xl ">
             <VideoPlayer
               loop
               aspectRatio="1584:1080"
@@ -145,9 +146,9 @@ Once you've completed all questionnaire sections, our AI analyses your answers t
             />
           </div>
         </div>
-        <div className="max-w-5xl prose text-justify mx-auto mt-6">
+        <div className="max-w-5xl prose text-justify mx-auto mt-6 prose-h2:font-semibold md:text-lg">
           <ReactMarkdown>
-            {`**Get Started:** Begin exploring DriftDraft today with your free credits upon sign-up. Each AI refinement costs 1 credit, while generating a complete blueprint requires 4 credits. When you're ready for more, simply click on your account name and navigate to "Subscription & Credits" to top up after setting up a payment method. Your strategic website plan is just a few clicks away – start building your digital foundation now.`}
+            {`Sign up to receive free credits and start building your blueprint right away. Each AI refinement costs 1 credit; a complete blueprint is 4 credits. Need more? Click your account name, go to "Subscription & Credits", and top up easily. Start crafting your digital strategy today.`}
           </ReactMarkdown>
         </div>
       </TextReader>
