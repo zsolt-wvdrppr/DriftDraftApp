@@ -14,7 +14,7 @@ const HomePageIntro = () => {
           <div className="max-w-xl prose prose-h2:font-semibold">
             <ReactMarkdown>
               {`## Why do you need a Website Blueprint?
-If you’re starting or growing a business online, a clear website blueprint helps you **create a website that actually works for your goals**. Think of it like a map that shows exactly how your website should look, what it should say, and how visitors will use it—without needing any tech knowledge. This way, you **avoid common problems** like confusing designs, pages that don't lead customers anywhere, or security risks you didn't even know existed. Plus, you’ll learn easy tips along the way, helping you **make smart choices** for your website.`}
+If you have a business, a non-profit, or any kind of organisation, having a clear website blueprint helps you **establish a professional online presence**. Think of it like a map that shows exactly how your website should look, what it should say, and how visitors will use it—without needing any tech knowledge. This way, you **avoid common problems** like confusing designs, pages that don't lead customers anywhere, or security risks you didn't even know existed. Plus, you’ll learn easy tips along the way, helping you **make smart choices** for your website.`}
             </ReactMarkdown>
           </div>
 
