@@ -1,6 +1,6 @@
 [
     {
-      "question": "What is the primary purpose you want your landing page to achieve?",
+      "question": "What is the primary purpose you want your landing page to achieve? Select one from the list.",
       "questionAddition1": "If you selected 'Other', please specify.",
       "questionAddition2": "What do you offer, and how does it benefit your audience?",
       "isValid": false,

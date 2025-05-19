@@ -1,15 +1,27 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
-import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Button, Input } from '@heroui/react';
+import React, { useEffect, useState, useRef, useImperativeHandle } from "react";
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Button,
+  Input,
+} from "@heroui/react";
+import { IconList } from "@tabler/icons-react";
 
 import questionsData from "@/data/landing-questions-data.json";
-import logger from '@/lib/logger';
+import logger from "@/lib/logger";
 //import { fetchAIHint } from '@/lib/fetchAIHint';
 import { useSessionContext } from "@/lib/SessionProvider";
-import PasteButton from '@/components/planner-layout/layout/PasteButton';
-import { StepWrapper, StepQuestion, StepTextarea } from '@/components/planner-layout/layout/sectionComponents';
-import { StepGetAiHintBtn } from '@/components/planner-layout/layout/StepGetAiHintBtn';
+import PasteButton from "@/components/planner-layout/layout/PasteButton";
+import {
+  StepWrapper,
+  StepQuestion,
+  StepTextarea,
+} from "@/components/planner-layout/layout/sectionComponents";
+import { StepGetAiHintBtn } from "@/components/planner-layout/layout/StepGetAiHintBtn";
 import Tutorial from "@/components/tutorial/tutorial-custom";
 import StartTutorialButton from "@/components/tutorial/start-tutorial-button";
 import ModalWithReader from "@/components/planner-layout/layout/modal-with-reader";
@@ -20,28 +32,33 @@ const StepPurpose = ({ ref }) => {
   const [localServiceDescription, setLocalServiceDescription] = useState("");
   const { sessionData, updateFormData, setError } = useSessionContext();
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const [isOtherSelected, setIsOtherSelected] = useState(false); 
+  const [isOtherSelected, setIsOtherSelected] = useState(false);
   const stepNumber = 0;
   const content = questionsData[stepNumber];
   const formRef = useRef();
-  const [purposeIsInvalid, setPurposeIsInvalid] = useState(sessionData?.formData?.[stepNumber]?.purpose ? false : true);
+  const [purposeIsInvalid, setPurposeIsInvalid] = useState(
+    sessionData?.formData?.[stepNumber]?.purpose ? false : true
+  );
   const [detailsIsInvalid, setDetailsIsInvalid] = useState(false);
   const [serviceDescIsInvalid, setServiceDescIsInvalid] = useState(false);
   const formData = sessionData?.formData || {};
 
   useEffect(() => {
     setLocalPurposeDetails(formData?.[stepNumber]?.purposeDetails || "");
-    setLocalServiceDescription(formData?.[stepNumber]?.serviceDescription || "");
+    setLocalServiceDescription(
+      formData?.[stepNumber]?.serviceDescription || ""
+    );
     if (formData?.[stepNumber]?.purpose) {
       setSelectedKeys(new Set([formData[stepNumber].purpose]));
-      setIsOtherSelected(formData?.[stepNumber]?.purpose === "Other (please specify)");
+      setIsOtherSelected(
+        formData?.[stepNumber]?.purpose === "Other (please specify)"
+      );
     }
     if (!formData?.[stepNumber]?.purpose) {
       setSelectedKeys(new Set([]));
     }
-    logger.info('Child component received formData:', formData);
+    logger.info("Child component received formData:", formData);
   }, [formData, stepNumber]);
-
 
   useImperativeHandle(ref, () => ({
     validateStep: () => {
@@ -53,14 +70,19 @@ const StepPurpose = ({ ref }) => {
 
         return false;
       }
-      if (isOtherSelected && (!localPurposeDetails || localPurposeDetails?.length < 10)) {
+      if (
+        isOtherSelected &&
+        (!localPurposeDetails || localPurposeDetails?.length < 10)
+      ) {
         setError("Additional details are required. (10 characters minimum)");
         setDetailsIsInvalid(true);
 
         return false;
       }
       if (!localServiceDescription || localServiceDescription?.length < 50) {
-        setError("Details are key. Please provide a more detailed service description. Try to Refine with AI! (50 characters minimum)");
+        setError(
+          "Details are key. Please provide a more detailed service description. Try to Refine with AI! (50 characters minimum)"
+        );
         setServiceDescIsInvalid(true);
 
         return false;
@@ -92,15 +114,17 @@ const StepPurpose = ({ ref }) => {
   const handleServiceDescriptionChange = (e) => {
     const value = e.target.value;
 
-    logger.debug('value', value);
-    logger.debug('condition:', value?.length > 15 && !purposeIsInvalid);
+    logger.debug("value", value);
+    logger.debug("condition:", value?.length > 15 && !purposeIsInvalid);
 
     setLocalServiceDescription(value);
     updateFormData("serviceDescription", value);
     setServiceDescIsInvalid(value?.length < 50);
   };
 
-  const [aiHint, setAiHint] = useState(sessionData?.formData?.[stepNumber]?.aiHint || null);
+  const [aiHint, setAiHint] = useState(
+    sessionData?.formData?.[stepNumber]?.aiHint || null
+  );
   const [userMsg, setUserMsg] = useState(null);
   const [isAIAvailable, setIsAIAvailable] = useState(true);
 
@@ -112,9 +136,16 @@ const StepPurpose = ({ ref }) => {
     }
   }, [localServiceDescription, purposeIsInvalid]);
 
-  const purpose = selectedKeys ? `${selectedKeys?.values()?.next()?.value}.` : 'unknown.';
-  const purposeDetails = localPurposeDetails ? `Additional details about the service’s purpose: ${localPurposeDetails}.` : "";
-  const serviceDescription = localServiceDescription ? `Some details about what I offer to my audience: ${localServiceDescription}.` : "";
+  const purpose =
+    selectedKeys ? `${selectedKeys?.values()?.next()?.value}.` : "unknown.";
+  const purposeDetails =
+    localPurposeDetails ?
+      `Additional details about the service’s purpose: ${localPurposeDetails}.`
+    : "";
+  const serviceDescription =
+    localServiceDescription ?
+      `Some details about what I offer to my audience: ${localServiceDescription}.`
+    : "";
   const stepQuestion = content?.questionAddition2;
 
   const prompt = `Consider that the business goal is to ${purpose}. ${purposeDetails} The user offers: ${serviceDescription}. Refine what the user offers with a neutral description explaining, how it benefits the audience, and what challenges it solves. Keep the response informative and under 450 characters. Avoid direct marketing language or calls to action. Present the results in a clear and easy-to-read format using markdown! Do not return code!`;
@@ -163,7 +194,7 @@ const StepPurpose = ({ ref }) => {
       title: "💡 Try This!",
       content:
         "Click this button to get an AI-generated suggestion for this section! \n\n🚀 Even if you're unsure what to write, just type in a few words and give it a try! \n\n⚠️ If this button is disabled, make sure you've filled in the required fields first.",
-    },    
+    },
     {
       target: ".why-we-ask-btn",
       title: "👆 Click It!",
@@ -190,29 +221,41 @@ const StepPurpose = ({ ref }) => {
     },
   ];
 
-
   return (
     <form ref={formRef}>
-       <ModalWithReader
+      <ModalWithReader
         autoPop={true}
         content={<PurposeGuide />}
         title="Landing Page Planning Tips"
       />
-      <StartTutorialButton
-              setStartTutorial={setStartTutorial}
-            />
-            <Tutorial
-              localStorageId="landing-purpose"
-              startTrigger={startTutorial}
-              tutorialSteps={tutorialSteps}
-            />
-      <StepWrapper hint={aiHint} userMsg={userMsg} whyDoWeAsk={content?.why_do_we_ask}>
+      <StartTutorialButton setStartTutorial={setStartTutorial} />
+      <Tutorial
+        localStorageId="landing-purpose"
+        startTrigger={startTutorial}
+        tutorialSteps={tutorialSteps}
+      />
+      <StepWrapper
+        hint={aiHint}
+        userMsg={userMsg}
+        whyDoWeAsk={content?.why_do_we_ask}
+      >
         <StepQuestion content={content} />
-        <div className='flex flex-col md:flex-row gap-4'>
+        <div className="flex flex-col gap-4 items-end">
           <Dropdown>
             <DropdownTrigger>
-              <Button className="select-goal capitalize w-full" color={purposeIsInvalid ? "danger" : "default"} variant="bordered">
-                {Array.from(selectedKeys).join(", ").replaceAll("_", " ") || content?.placeholder[0]}{content?.required && <span className="text-red-500 ml-[-6px]">*</span>}
+              <Button
+                className="select-goal capitalize w-full max-w-sm flex"
+                color={purposeIsInvalid ? "danger" : "default"}
+                startContent={
+                  <IconList className="absolute left-3" size={20} />
+                }
+                variant="bordered"
+              >
+                {Array.from(selectedKeys).join(", ").replaceAll("_", " ") ||
+                  content?.placeholder[0]}
+                {content?.required && (
+                  <span className="text-red-500 ml-[-6px]">*</span>
+                )}
               </Button>
             </DropdownTrigger>
             <DropdownMenu
@@ -240,13 +283,16 @@ const StepPurpose = ({ ref }) => {
             isRequired={isOtherSelected}
             label="Additional Details Of Your Goals"
             placeholder={`(${isOtherSelected ? "required" : "optional"}) ${content?.placeholder[1]}`}
-            validationBehavior='aria'
+            validationBehavior="aria"
             value={localPurposeDetails}
             onChange={handleAdditionalDetailsChange}
           />
         </div>
         <div className="col-span-4 flex-1 pt-8">
-        <StepQuestion content={content} question={content?.questionAddition2} />
+          <StepQuestion
+            content={content}
+            question={content?.questionAddition2}
+          />
         </div>
         <StepGetAiHintBtn
           content={content}
@@ -260,7 +306,11 @@ const StepPurpose = ({ ref }) => {
           updateFormData={updateFormData}
         />
 
-        <PasteButton handleChange={handleServiceDescriptionChange} setError={setError} value={localServiceDescription} >
+        <PasteButton
+          handleChange={handleServiceDescriptionChange}
+          setError={setError}
+          value={localServiceDescription}
+        >
           <StepTextarea
             content={content}
             handleTextareaChange={handleServiceDescriptionChange}
@@ -276,6 +326,6 @@ const StepPurpose = ({ ref }) => {
   );
 };
 
-StepPurpose.displayName = 'StepPurpose';
+StepPurpose.displayName = "StepPurpose";
 
 export default StepPurpose;

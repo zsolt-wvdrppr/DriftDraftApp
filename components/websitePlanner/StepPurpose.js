@@ -10,6 +10,7 @@ import {
   Input,
 } from "@heroui/react";
 import { Divider } from "@heroui/react";
+import { IconList } from "@tabler/icons-react";
 
 import questionsData from "@/data/questions-data.json";
 import logger from "@/lib/logger";
@@ -26,6 +27,7 @@ import ModalWithReader from "@/components/planner-layout/layout/modal-with-reade
 import PurposeGuide from "@/components/websitePlanner/guidances/purpose";
 import Tutorial from "@/components/tutorial/tutorial-custom";
 import StartTutorialButton from "@/components/tutorial/start-tutorial-button";
+
 
 const StepPurpose = ({ ref }) => {
   const [localPurposeDetails, setLocalPurposeDetails] = useState("");
@@ -241,12 +243,13 @@ const StepPurpose = ({ ref }) => {
         whyDoWeAsk={content?.why_do_we_ask}
       >
         <StepQuestion content={content} />
-        <div className="flex flex-col md:flex-row gap-4 my-first-step">
+        <div className="flex flex-col gap-4 my-first-step items-end">
           <Dropdown>
             <DropdownTrigger>
               <Button
-                className="select-goal capitalize w-full"
+                className="select-goal capitalize w-full max-w-sm flex"
                 color={purposeIsInvalid ? "danger" : "default"}
+                startContent={<IconList className="absolute left-3" size={20} />}
                 variant="bordered"
               >
                 {Array.from(selectedKeys).join(", ").replaceAll("_", " ") ||
