@@ -122,8 +122,7 @@ const StepDomain = ({ ref }) => {
           stepNumber={stepNumber}
           updateFormData={updateFormData}
         />
-        <DomainChecker />
-        <Divider className="my-4" />
+
         <Textarea
           classNames={{
             label: "!text-primary dark:!text-accentMint",
@@ -149,12 +148,14 @@ const StepDomain = ({ ref }) => {
             />
           }
           isRequired={true}
-          label="Domain Name"
+          label="Keywords, Phrases, Domain name thoughts and ideas or the domain name you own"
           placeholder={content?.placeholder}
           validationBehavior="aria"
           value={localValue}
           onChange={handleTextareaChange}
         />
+
+        <DomainChecker />
       </StepWrapper>
     </form>
   );

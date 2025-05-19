@@ -202,8 +202,9 @@ const DomainChecker = () => {
   }, [isAvailable, suggestions, message, checkedDomain]);
 
   return (
+    <>
     <Input
-      className="pt-4"
+      className="max-w-sm py-4"
       classNames={{
         label: "!text-primary dark:!text-accentMint",
         inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border pr-0`,
@@ -224,6 +225,8 @@ const DomainChecker = () => {
       onChange={(e) => setDomain(e.target.value)}
       onKeyDown={handleKeyDown}
     />
+    <p className="text-xs"><span className="font-semibold">Note: </span>{`Not all domain endings are supported by our availability checker.`}</p>
+    </>
   );
 };
 

@@ -89,7 +89,7 @@
        "placeholder": "e.g., Calm and professional, inspiring confidence; fun and vibrant, encouraging action"
     },
     {
-      "question": "Are there any specific websites you admire or would like to use for inspiration? Please share the links.",
+      "question": "Are there any specific websites You admire or would like to use for inspiration? Please share the links.",
       "isValid": false,
       "tabName": "Inspiration",
       "type": "list",
