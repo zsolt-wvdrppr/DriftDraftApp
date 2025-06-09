@@ -5,6 +5,7 @@ import SignupCreditsNotice from "@/components/notifications/signup-credits";
 import HomePageIntro from "@/components/home-page-intro";
 import BetaNotice from "@/components/notifications/beta-notice";
 import BlueprintBackground from "@/components/blueprint-bg";
+import WaasPromo from "@/components/notifications/waas-promo";
 
 export default function Home() {
   return (
@@ -25,6 +26,7 @@ export default function Home() {
       </section>
 
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+        <WaasPromo />
         <ServiceSelector />
       </section>
     </>
