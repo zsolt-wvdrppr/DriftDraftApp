@@ -139,9 +139,9 @@ const Result = () => {
     ) {
       const prompts = [
         {
-          prompt: `Prompt 1: Landing Page Psychology & Identity Foundation
+          prompt: `Prompt 1: Strategic Foundation & Identity Positioning
 
-**Objective:** Create a conversion-focused landing page strategy using psychological triggers and identity installation techniques.
+**Objective:** Create a strategic foundation using psychological triggers and identity installation techniques for a high-converting landing page.
 
 **User Inputs:**
 - **Purpose:** "${purpose}" (Main goal?)
@@ -153,49 +153,49 @@ const Result = () => {
 - **Marketing Strategy:** "${marketing}"
 
 **Task:**
-- **Apply identity installation, emotional state creation, and conversion psychology principles.**
-- **Create a strategic foundation for high-converting landing page.**
+- **Analyze inputs and create a strategic foundation using headings and bullet points.**
+- **Apply identity installation and emotional state creation principles.**
+- **Focus on single-page conversion optimization.**
 - **Use Markdown headings and bullet points only:**
 
-## Landing Page Conversion Strategy
+## Landing Page Strategic Foundation
 
-### Primary Conversion Goal & Psychology
-- Define the main conversion action and psychological motivation behind it
-- Identify the emotional trigger that will drive immediate action
-- Map the visitor's pain point to your solution benefit
+### Primary Conversion Goal
+- Define the specific action visitors should take on this landing page
+- Identify the psychological motivation that drives this action
 
 ### Target Identity Installation
 - Create "For [specific type of person] who [situation]..." statement for instant recognition
 - Address their aspirational identity and current frustration
-- Position your solution as the bridge to their desired identity
+- Position landing page offer as bridge to desired identity
 
-### Emotional Journey Mapping
-- Current emotional state: visitor's frustration, fear, or desire
-- Desired emotional outcome: confidence, relief, excitement, empowerment
-- Emotional transformation your landing page will facilitate
+### Emotional State Mapping
+- Current emotional state: visitor's pain, fear, or desire when arriving
+- Desired emotional outcome: confidence, relief, excitement after conversion
+- Emotional transformation the landing page will facilitate
 
-### Value Proposition Psychology
-- Core benefit that addresses deepest pain point
-- Unique advantage that differentiates from alternatives
-- Risk reversal elements that overcome hesitation
+### Core Offer Positioning
+- Primary offer with psychological benefits clearly defined
+- How the offer addresses both practical and emotional needs
+- Unique value that differentiates from alternatives
 
-### Conversion Barriers & Solutions
-- Primary objections visitors will have
-- Trust signals needed to overcome skepticism
-- Urgency elements that motivate immediate action
+### Visitor Journey Psychology
+- Traffic source context and visitor mindset
+- Pre-existing emotional state based on how they arrived
+- Conversion barriers specific to landing page visitors
 
-### Missing Strategic Elements
-- Critical information gaps that could impact conversion rates
-- Additional psychological triggers needed for target audience
+### Strategic Gaps Requiring Clarification
+- Missing information that impacts conversion psychology
+- Specific details needed for stronger offer positioning
 
-**Output MUST use headings and bullet points only. Focus on conversion psychology and visitor transformation. No introductory text.**`,
-          label: "Landing Page Psychology",
+**Output MUST be structured with the above Markdown headings and bullet points only. No introductory text. Focus on single-page conversion strategy.**`,
+          label: "Strategic Foundation",
           generateNewPrompts: false,
         },
         {
-          prompt: `Prompt 2: Authority & Trust Psychology for Landing Pages
+          prompt: `Prompt 2: Authority & Trust Psychology
 
-**Objective:** Establish credibility, social proof, and competitive differentiation using psychological persuasion principles.
+**Objective:** Establish credibility, social proof, and trust signals specifically for landing page conversion psychology.
 
 **User Inputs:**
 - **Brand Guidelines:** "${brandGuidelines}"
@@ -206,7 +206,7 @@ const Result = () => {
 - **Services/Products:** "${serviceDescription}"
 
 **Task:**
-- **Apply authority establishment, social proof psychology, and contrast creation principles.**
+- **Apply authority establishment and social proof psychology for landing pages.**
 - **Use Markdown headings and bullet points to structure output:**
 
 ## Authority & Credibility Framework
@@ -214,51 +214,52 @@ const Result = () => {
 ### Expert Positioning Strategy
 - Establish credibility through specific credentials, results, or methodology
 - Position as the obvious choice through demonstrated expertise
-- Create news-style authority using data, statistics, or industry recognition
+- Create authority using data, statistics, or industry recognition
 
 ### Social Proof Architecture
-- Types of social proof most relevant to target audience
-- Testimonial strategy that addresses specific objections
-- Social proof placement for maximum psychological impact
-- Numbers and metrics that build confidence
+- Types of social proof most relevant to landing page visitors
+- Testimonial strategy that addresses specific conversion objections
+- Social proof placement for maximum psychological impact on single page
+- Numbers and metrics that build immediate confidence
+
+### Trust Signal Strategy
+- Certifications, guarantees, or badges needed for landing page trust
+- Security and reliability indicators for conversion points
+- Risk reversal offers that overcome purchase anxiety
+- Authority by association opportunities (partnerships, media mentions)
 
 ## Competitive Differentiation Psychology
 
 ### Contrast Creation Strategy
-- How competitors position themselves vs. your unique angle
+- How competitors position similar offers vs. your unique angle
 - Specific weaknesses in competitor offerings you can exploit
 - Positioning that makes alternatives seem obviously inferior
 
 ### Value Gap Demonstration
 - Quantifiable problems with conventional approaches
-- Specific advantages your solution provides
-- Opportunity costs of choosing alternatives
+- Specific advantages your solution provides over alternatives
+- Opportunity costs of choosing competitor options
 
-## Trust & Risk Reversal Elements
-
-### Trust Signal Strategy
-- Certifications, guarantees, or badges needed
-- Risk reversal offers that overcome purchase anxiety
-- Security and reliability indicators
+## Landing Page Trust Elements
 
 ### Objection Handling Framework
-- Primary hesitations your audience will have
-- Pre-emptive responses to common concerns
-- Social proof that addresses specific doubts
+- Primary hesitations landing page visitors will have
+- Pre-emptive responses to common concerns about the offer
+- Social proof that addresses specific conversion doubts
 
-## Brand Psychology Implementation
-- Visual elements that reinforce credibility and trust
-- Messaging tone that builds authority while remaining approachable
-- Color and design psychology aligned with desired emotions
+### Credibility Indicators
+- Visual elements that reinforce authority and expertise
+- Testimonial formats that build trust for this specific offer
+- Guarantee structures that remove conversion risk
 
-**Output MUST use headings and bullet points only. Focus on building unshakeable credibility and trust. No introductory text.**`,
+**Output MUST use headings and bullet points only. Focus on building unshakeable credibility for landing page conversion. No introductory text.**`,
           label: "Authority & Trust",
           generateNewPrompts: false,
         },
         {
-          prompt: `Prompt 3: Urgency Psychology & Technical Optimization
+          prompt: `Prompt 3: Urgency Psychology & Conversion Optimization
 
-**Objective:** Create legitimate urgency, optimize for conversions, and recommend technical implementation using psychological principles.
+**Objective:** Create legitimate urgency, optimize for conversions, and recommend landing page optimization using psychological principles.
 
 **User Inputs:**
 - **Marketing Strategy:** "${marketing}"
@@ -266,86 +267,184 @@ const Result = () => {
 - **Services/Products:** "${serviceDescription}"
 
 **Task:**
-- **Apply urgency psychology, FOMO elements, and conversion optimization principles.**
+- **Apply urgency psychology, FOMO elements, and landing page conversion optimization.**
 - **Structure with headings and bullet points:**
 
 ## Urgency & FOMO Psychology
 
 ### Legitimate Scarcity Creation
-- Time-based urgency that feels authentic to your audience
-- Capacity or inventory limitations that drive action
-- Seasonal or event-based urgency opportunities
+- Time-based urgency that feels authentic for the offer
+- Capacity or inventory limitations that drive immediate action
+- Seasonal or event-based urgency opportunities for landing page
 
 ### FOMO Implementation Strategy
-- What visitors fear missing out on most
-- Social proof that others are taking action
-- Countdown elements and real-time indicators
+- What visitors fear missing out on most with this specific offer
+- Social proof that others are taking action right now
+- Real-time indicators and countdown elements for urgency
 
 ### Value Acceleration Techniques
 - Bonus offers that expire to encourage quick decisions
-- Progressive disclosure that builds commitment
-- Loss aversion triggers that motivate action
+- Progressive disclosure that builds commitment throughout page
+- Loss aversion triggers that motivate immediate action
 
-## Conversion Optimization Framework
+## Landing Page Conversion Optimization
 
-### Landing Page Flow Psychology
-- Attention-grabbing headline that stops scrolling
+### Page Flow Psychology
+- Attention-grabbing headline that stops scrolling immediately
 - Logical flow that builds desire and overcomes objections
-- Strategic CTA placement throughout the page
+- Strategic CTA placement and frequency throughout single page
 
 ### Form & Friction Optimization
-- Minimal friction strategies for lead capture
-- Progressive profiling to reduce abandonment
-- Trust indicators around conversion points
+- Minimal friction strategies for lead capture or purchase
+- Trust indicators positioned around conversion points
+- Progressive commitment techniques to reduce abandonment
 
 ### Mobile Conversion Psychology
-- Mobile-specific psychological triggers
-- Touch-friendly design that encourages action
-- Simplified decision-making for smaller screens
+- Mobile-specific psychological triggers for touch interfaces
+- Simplified decision-making process for smaller screens
+- Touch-friendly design that encourages conversion action
 
 ## Technical Requirements for High Conversion
 
 ### Performance Psychology
-- Page load speed impact on conversion rates
-- Visual hierarchy that guides attention to CTAs
-- A/B testing capabilities for psychological elements
+- Page load speed impact on visitor attention and trust
+- Visual hierarchy that guides attention directly to CTAs
+- A/B testing capabilities for psychological trigger optimization
 
 ### Analytics & Optimization Setup
 - Conversion tracking for psychological trigger effectiveness
-- Heatmap analysis for user behavior insights
-- Split testing framework for continuous improvement
+- Heatmap analysis for visitor behavior and attention patterns
+- Split testing framework for continuous landing page improvement
 
-### Integration & Automation
-- CRM integration for lead nurturing psychology
-- Email automation triggered by visitor behavior
-- Retargeting pixel setup for re-engagement campaigns
+### Integration Requirements
+- CRM integration for immediate lead processing
+- Email automation triggered by landing page behavior
+- Retargeting pixel setup for visitor re-engagement campaigns
 
-## Marketing Channel Psychology
-- Channel-specific messaging that matches visitor mindset
-- Traffic source optimization for conversion alignment
+## Conversion Channel Psychology
+- Traffic source optimization and visitor mindset alignment
 - Campaign messaging that pre-frames landing page psychology
+- Channel-specific urgency elements that match visitor expectations
 
-**Output MUST use headings and bullet points only. Focus on driving immediate action through psychological triggers. No introductory text.**`,
-          label: "Urgency & Optimization",
+**Output MUST use headings and bullet points only. Focus on conversion psychology and modern technical requirements. No introductory text.**`,
+          label: "Marketing & Technical",
           generateNewPrompts: false,
         },
         {
-          prompt: `Prompt 4: Complete Landing Page Wireframe & Implementation Blueprint
+          prompt: `Prompt 4: Strategic Implementation Blueprint
 
-**Objective:** Create a detailed landing page wireframe with psychological trigger placement and comprehensive implementation plan.
+**Objective:** Create a complete strategic implementation plan with conversion psychology integration and clear action steps for landing page success.
+
+**User Inputs:** All previous prompt outputs and form data
+
+**Task:**
+- **Synthesize all strategic elements into actionable blueprint.**
+- **Apply SIGMA protocol (Simplicity, Immediacy, Guarantee, Motivation, Action) for implementation.**
+- **Use Markdown headings and bullet points only:**
+
+## Strategic Implementation Blueprint
+
+### Conversion Psychology Integration
+- Identity installation implementation across landing page sections
+- Emotional state creation journey mapped to single-page flow
+- Authority establishment elements positioned strategically
+- Trust signal placement for maximum psychological impact
+
+### Content Strategy & Messaging Hierarchy
+- Primary messages that drive conversion psychology
+- Supporting content that builds trust and overcomes objections
+- Call-to-action strategy using progressive commitment principles
+- Urgency messaging that feels authentic and compelling
+
+### Landing Page User Experience Psychology
+- Friction reduction techniques for smoother conversion paths
+- Social proof integration that reinforces offer value
+- Visual hierarchy that guides attention to conversion points
+- Mobile optimization for psychological trigger effectiveness
+
+## Technical Implementation Priorities
+
+### Conversion-Focused Architecture
+- Single-page structure optimized for psychological flow
+- Loading speed requirements for maintaining visitor engagement
+- Analytics configuration for conversion psychology measurement
+- A/B testing framework for continuous optimization
+
+### Marketing Integration Strategy
+- Traffic source alignment with landing page psychology
+- Campaign messaging that pre-frames visitor expectations
+- Retargeting setup for visitor re-engagement
+- Lead nurturing automation for post-conversion psychology
+
+### Performance & Optimization Framework
+- Conversion tracking for psychological trigger effectiveness
+- Heatmap analysis for visitor behavior patterns
+- Split testing plan for landing page elements
+- Success metrics aligned with conversion psychology goals
+
+## Launch Strategy & Optimization
+
+### Phase 1: Foundation
+- Core landing page with essential psychological triggers implemented
+- Basic conversion tracking and trust signals established
+- Primary traffic source campaigns activated
+
+### Phase 2: Optimization
+- A/B testing plan for psychological trigger effectiveness
+- Advanced personalization based on traffic source
+- Enhanced social proof and authority element testing
+
+### Phase 3: Scale
+- Multi-variant testing of psychological triggers
+- Advanced automation and follow-up sequences
+- Conversion rate optimization based on data insights
+
+## Success Metrics & Measurement
+
+### Conversion Psychology KPIs
+- Identity recognition and emotional engagement metrics
+- Trust building and authority perception measurement
+- Urgency element effectiveness tracking
+- Overall conversion rate and visitor flow analysis
+
+### Business Impact Indicators
+- Lead quality improvement and conversion optimization
+- Cost per conversion across different traffic sources
+- Lifetime value correlation with landing page psychology
+
+## Strategic Gaps & Next Steps
+- Critical missing elements that could impact conversion psychology
+- Immediate action items for strongest psychological impact
+- Long-term optimization strategies for sustained performance
+
+**IMPORTANT FORMATTING RULES:**
+- Do NOT use code blocks, backticks, or triple backticks formatting anywhere
+- Use only standard Markdown headings
+- Structure all content as bullet points using dash (-)
+- No introductory text or conclusions
+- Focus on actionable psychological implementation strategies`,
+          label: "Strategic Blueprint",
+          dependsOn: [0, 1, 2],
+          generateNewPrompts: false,
+        },
+        {
+          prompt: `Prompt 5: Landing Page Wireframe with Conversion Psychology
+
+**Objective:** Create a detailed ASCII wireframe of the landing page only, incorporating psychological triggers and conversion optimization principles.
 
 **User Inputs:** All strategic elements from previous prompts
 
 **Task:**
 - **Design landing page wireframe using ASCII visualization**
-- **Integrate all psychological triggers and conversion elements**
-- **Provide complete implementation blueprint**
+- **Integrate identity installation, emotional triggers, and conversion psychology**
+- **Include specific sections based on psychological persuasion framework**
 
 ## Landing Page Wireframe Design
 
-**MANDATORY: Create detailed ASCII wireframe showing psychological trigger placement**
+**MANDATORY: Create detailed ASCII wireframe showing layout, sections, and psychological trigger placement**
 
 ### Desktop Landing Page Layout
+
 \`\`\`
 +--------------------------------------------------------+
 |                    HEADER/NAVIGATION                   |
@@ -388,11 +487,7 @@ const Result = () => {
 +--------------------------------------------------------+
 |                                                        |
 |               BENEFITS & FEATURES                      |
-|  +------------+ +------------+ +------------+          |
-|  |  Benefit 1 | | Benefit 2  | | Benefit 3  |          |
-|  | [Emotional]| | [Practical]| | [Social]   |          |
-|  | outcome    | | advantage  | | proof      |          |
-|  +------------+ +------------+ +------------+          |
+|  ];------------+ +------------+ +------------+          |
 +--------------------------------------------------------+
 |                                                        |
 |               OBJECTION HANDLING                       |
