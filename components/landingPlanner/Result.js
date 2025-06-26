@@ -14,7 +14,6 @@ import { IconCopy } from "@tabler/icons-react";
 import { Tooltip } from "react-tooltip";
 import { useReCaptcha } from "next-recaptcha-v3";
 import { IconChevronDown } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { useSessionContext } from "@/lib/SessionProvider";
@@ -62,7 +61,7 @@ const Result = () => {
 
   const { executeRecaptcha } = useReCaptcha();
 
-  const router = useRouter();
+  const [showRetryButton, setShowRetryButton] = useState(false);
 
   const [jwt, setJwt] = useState(null);
 
@@ -77,14 +76,12 @@ const Result = () => {
   }, []);
 
   const [prompts, setPrompts] = useState([]);
-  const { copyToClipboard, isPending } = useClipboard();
+  const { copyToClipboard } = useClipboard();
 
   const {
     executePrompts,
     executedPrompts,
-    loading: promptLoading,
     error,
-    output,
     hasCredits,
   } = usePromptExecutor({
     executeRecaptcha,
@@ -100,9 +97,9 @@ const Result = () => {
   const audience = formData?.[1]?.audience;
   const marketing = formData?.[2]?.marketing || "";
   const competitors =
-    formData?.[3]?.urls?.toString() !== ""
-      ? `I have identified the following competitors: ${formData?.[3]?.urls?.toString()}.`
-      : ""; // optional
+    formData?.[3]?.urls?.toString() !== "" ?
+      `I have identified the following competitors: ${formData?.[3]?.urls?.toString()}.`
+    : ""; // optional
   const usps = formData?.[4].usps || "";
   const brandGuidelines = formData?.[5].brandGuidelines || "";
   const emotions = formData?.[6]?.emotions || "";
@@ -147,176 +144,388 @@ const Result = () => {
     ) {
       const prompts = [
         {
-          prompt: `Prompt 1: Core Landing Page Strategy
-          
-          **Objective:** Define purpose and target audience with headings.
-          
-          **User Inputs:**
-          - **Purpose:** "${purpose}" (Main goal?)
-          - **Purpose Details:** "${purposeDetails}" (Specific action?)
-          - **Services/Products:** "${serviceDescription}" (Offering?)
-          - **Target Audience:** "${audience}" (Who? Be specific.)
-          - **Unique Selling Points (USPs):** "${usps}" (No need to include the USPs themselves.)
-          - **Brand Guidelines:** "${brandGuidelines}" (No need to include the guidelines themselves.)
-          - **Marketing Strategy:** "${marketing}" (No need to include the strategy itself.)
-          
-          **Task:**
-          - **Analyze inputs and output a structured strategy overview using headings and bullet points.**
-          - **Use Markdown headings (h2 and h3) and bullet points to clearly define:**
-          
-          ## Landing Page Goal (h2)
-          -  [Bullet point defining the primary conversion goal]
-          
-          ## Key Services/Products (h2)
-          -  [Bullet point describing core offerings]
-          
-          ## Primary Target Audience (h2)
-          -  [Bullet point outlining the target audience profile]
-          
-          ## Missing Information & Why It's Important (h2)
-          -  [Bullet point listing missing details and explaining their importance for landing page success]
-          
-          - **Output MUST be structured with the above Markdown headings and bullet points only. No introductory text.**`,
-          generateNewPrompts: false,
-        },
-        {
-          prompt: `Prompt 2: Branding & Differentiation for Landing Page Design
-            
-            **Objective:** Establish design direction and competitive context with headings.
-            
-            **User Inputs:**
-            - **Brand Guidelines:** "${brandGuidelines}" (Colors, fonts, style. Doc if available. Must include exact colour codes if available.)
-            - **Desired Emotional Impact:** "${emotions}" (Visitor feelings? e.g., Trust, excitement.)
-            - **Competitors:** "${competitors}" (Competitors & landing pages.)
-            - **Unique Selling Points (USPs):** "${usps}" (Your unique advantage?)
-            - **Inspirations (Optional):** "${inspirations}" (Website style examples. Links.)
-            - **Services/Products:** "${serviceDescription}" (Offering? No need to include details.)
-            
-            **Task:**
-            - **Analyze inputs and output design direction with headings and bullet points.**
-            - **Use Markdown headings (h2) and bullet points to structure the output:**
-            
-            ## Branding & Emotional Design Direction (h2)
-            -  [Bullet points summarizing how brand guidelines and emotions influence landing page design (visuals, tone, messaging)]
-            
-            ## Competitor Design & Messaging Insights (h2)
-            -  [Bullet points identifying key design/messaging takeaways from competitor analysis]
-            
-            ## Unique Selling Points (USPs) for Differentiation (h2)
-            -  [Bullet points articulating USPs and explaining how they will be emphasized visually/verbally]
-            
-            ## Points Needing Clarification for Design (h2)
-            -  [Bullet points noting unclear/missing inputs and recommending specific clarification questions]
-            
-            - **Output MUST be structured with the above Markdown headings and bullet points only. No introductory text.**`,
-          generateNewPrompts: false,
-        },
-        {
-          prompt: `Prompt 3: Marketing & Technical Foundation for Launch
-          
-          **Objective:** Define marketing approach and *recommend* technical foundations for a modern landing page.
-          
-          **User Inputs:**
-          - **Marketing Strategy:** "${marketing}" (Marketing activities for this landing page? e.g., SEO, ads.)
-          
-          **Task (Two Parts - Headings & Bullet Points Only):**
-          
-          **Part 1: Marketing Approach (Headings & Bullet Points)**
-          - **Structure marketing output with headings and bullet points:**
-          
-          ## Marketing Strategy Approach (h2)
-          -  [Bullet points outlining the marketing approach based on inputs (SEO, content, ads, etc.)]
-          
-          ## Proposed Marketing Ideas (If No Strategy Provided) (h2)
-          -  [Bullet points suggesting 2-3 simple marketing ideas if no strategy input]
-          
-          **Part 2: Technical Requirements (Headings & Bullet Points)**
-          - **Structure technical requirements with headings and bullet points:**
-          
-          ## Essential Technical Requirements (h2)
-          ### Technically Sound Landing Page (h3)
-              - [Bullet points: Fast loading, mobile-responsive, secure, SEO-friendly]
-          ### Conversion-Focused Design (h3)
-              - [Bullet points: Clear CTAs, navigation, user-friendly forms]
-          ### Integration Readiness (h3)
-              - [Bullet points: CRM, analytics, automation integrations?]
-          ### Framework and Technology Recommendations (h3)
-              - [Bullet points *recommending* modern, performant technology approaches suitable for a one-page landing page.  Consider suggesting:]
-                  - **Static Site Generators (SSGs):** (For excellent performance, SEO, and security. Examples:  mention "modern JavaScript frameworks" or "SSG approach" without naming specific SSGs to avoid competitor mentions).
-                  - **Headless CMS (Optional, if content is dynamic):** (If the landing page needs frequent content updates, suggest a "headless CMS for content management with a decoupled frontend" to offer flexibility without sacrificing performance. Again, avoid naming specific CMSs).
-                  - **Focus on Performance & SEO:** (Emphasize the importance of choosing technologies that prioritize fast loading times, mobile-friendliness, and SEO best practices.)
-                  - **Simplicity for One-Pager:** (Suggest keeping the technology stack relatively simple and focused for a one-page landing page to avoid unnecessary complexity.)
-                  - **JavaScript Framework (Implied, but not overly specific):** (Subtly imply the use of modern JavaScript frameworks for interactivity and dynamic elements without explicitly naming them).
-                  - **Avoid Specific Competitor Tools:** (Do NOT recommend specific website builders, CMS platforms, or frameworks that are direct competitors to your potential customer's preferred stack.)
-              - [If specific frameworks/technologies ARE provided by the user, mention them here and comment on their suitability.]
-              - [If *no* technologies are specified, provide the above recommendations as default suggestions.]
-          
-          - **Output MUST be structured with the above Markdown headings and bullet points only for both parts. No introductory text.**`,
-          generateNewPrompts: false,
-        },
-        {
-          prompt: `Prompt 4: Landing Page Wireframe & Final Strategic Plan - Final Output
-          
-          **Objective:** Create a detailed landing page wireframe with ASCII visualisations and a comprehensive strategic plan.
-          
-          **Task:**
-          
-           **Part 1: Detailed Landing Page Wireframe**
+          prompt: `Prompt 1: Landing Page Psychology & Identity Foundation
 
-            - Create a complete landing page wireframe showing all recommended sections
-            - Include:
-              - Main sections with brief content descriptions
-              - Call-to-action placement
-            - Use ASCII drawings to visualise layout for the landing page
-            - Include mobile and desktop versions
+**Objective:** Create a conversion-focused landing page strategy using psychological triggers and identity installation techniques.
 
-            **ASCII Drawing Example:**
-            +------------------------------------------+
-            |                HEADER                    |
-            +------------------------------------------+
-            |                                          |
-            |               HERO IMAGE                 |
-            |         [Headline Text Here]             |
-            |         [Subheadline Text]               |
-            |         [Primary CTA Button]             |
-            +------------------------------------------+
-            |                                          |
-            |            FEATURES SECTION              |
-            |  +--------+  +--------+  +--------+      |
-            |  | Feat 1 |  | Feat 2 |  | Feat 3 |      |
-            |  +--------+  +--------+  +--------+      |
-            +------------------------------------------+
-            |                FOOTER                    |
-            +------------------------------------------+
-          
-          **Part 2: Final Strategic Overview**
-          - **Output a strategic overview using Markdown headings (h2, h3) and flat bullet points (using '-'). Ensure bullet points are NOT nested.**
-          
-          ## Final Landing Page Strategic Overview (h2)
-          
-          ### Core Purpose and Goals (h3)
-          - Primary conversion goal: ...
-          - Secondary goal: ...
-          
-          ### Target Audience Profile (h3)
-          - Characteristic 1: ...
-          - Characteristic 2: ...
-          
-          ### Brand and Design Direction (h3)
-          - Direction point 1: ...
-          - Direction point 2: ...
-          
-          ### Marketing and Promotion Plan (h3)
-          - Plan point 1: ...
-          
-          ### Key Technical Specifications (h3)
-          - Spec 1: ...
-          
-          ### Outstanding Questions / Missing Information (h3)
-          - Question 1: ...
-          
-          - **Output MUST be structured with Markdown headings (h2, h3) and flat bullet points (using '-').  Ensure *no parentheses around headings* and *no nested lists*. Be concise and actionable. No introductory text.**`,
-          dependsOn: 2,
+**User Inputs:**
+- **Purpose:** "${purpose}" (Main goal?)
+- **Purpose Details:** "${purposeDetails}" (Specific action?)
+- **Services/Products:** "${serviceDescription}" (Offering?)
+- **Target Audience:** "${audience}" (Who? Be specific.)
+- **Unique Selling Points (USPs):** "${usps}"
+- **Brand Guidelines:** "${brandGuidelines}"
+- **Marketing Strategy:** "${marketing}"
+
+**Task:**
+- **Apply identity installation, emotional state creation, and conversion psychology principles.**
+- **Create a strategic foundation for high-converting landing page.**
+- **Use Markdown headings and bullet points only:**
+
+## Landing Page Conversion Strategy
+
+### Primary Conversion Goal & Psychology
+- Define the main conversion action and psychological motivation behind it
+- Identify the emotional trigger that will drive immediate action
+- Map the visitor's pain point to your solution benefit
+
+### Target Identity Installation
+- Create "For [specific type of person] who [situation]..." statement for instant recognition
+- Address their aspirational identity and current frustration
+- Position your solution as the bridge to their desired identity
+
+### Emotional Journey Mapping
+- Current emotional state: visitor's frustration, fear, or desire
+- Desired emotional outcome: confidence, relief, excitement, empowerment
+- Emotional transformation your landing page will facilitate
+
+### Value Proposition Psychology
+- Core benefit that addresses deepest pain point
+- Unique advantage that differentiates from alternatives
+- Risk reversal elements that overcome hesitation
+
+### Conversion Barriers & Solutions
+- Primary objections visitors will have
+- Trust signals needed to overcome skepticism
+- Urgency elements that motivate immediate action
+
+### Missing Strategic Elements
+- Critical information gaps that could impact conversion rates
+- Additional psychological triggers needed for target audience
+
+**Output MUST use headings and bullet points only. Focus on conversion psychology and visitor transformation. No introductory text.**`,
+          label: "Landing Page Psychology",
+          generateNewPrompts: false,
+        },
+        {
+          prompt: `Prompt 2: Authority & Trust Psychology for Landing Pages
+
+**Objective:** Establish credibility, social proof, and competitive differentiation using psychological persuasion principles.
+
+**User Inputs:**
+- **Brand Guidelines:** "${brandGuidelines}"
+- **Desired Emotional Impact:** "${emotions}"
+- **Competitors:** "${competitors}"
+- **Unique Selling Points (USPs):** "${usps}"
+- **Inspirations (Optional):** "${inspirations}"
+- **Services/Products:** "${serviceDescription}"
+
+**Task:**
+- **Apply authority establishment, social proof psychology, and contrast creation principles.**
+- **Use Markdown headings and bullet points to structure output:**
+
+## Authority & Credibility Framework
+
+### Expert Positioning Strategy
+- Establish credibility through specific credentials, results, or methodology
+- Position as the obvious choice through demonstrated expertise
+- Create news-style authority using data, statistics, or industry recognition
+
+### Social Proof Architecture
+- Types of social proof most relevant to target audience
+- Testimonial strategy that addresses specific objections
+- Social proof placement for maximum psychological impact
+- Numbers and metrics that build confidence
+
+## Competitive Differentiation Psychology
+
+### Contrast Creation Strategy
+- How competitors position themselves vs. your unique angle
+- Specific weaknesses in competitor offerings you can exploit
+- Positioning that makes alternatives seem obviously inferior
+
+### Value Gap Demonstration
+- Quantifiable problems with conventional approaches
+- Specific advantages your solution provides
+- Opportunity costs of choosing alternatives
+
+## Trust & Risk Reversal Elements
+
+### Trust Signal Strategy
+- Certifications, guarantees, or badges needed
+- Risk reversal offers that overcome purchase anxiety
+- Security and reliability indicators
+
+### Objection Handling Framework
+- Primary hesitations your audience will have
+- Pre-emptive responses to common concerns
+- Social proof that addresses specific doubts
+
+## Brand Psychology Implementation
+- Visual elements that reinforce credibility and trust
+- Messaging tone that builds authority while remaining approachable
+- Color and design psychology aligned with desired emotions
+
+**Output MUST use headings and bullet points only. Focus on building unshakeable credibility and trust. No introductory text.**`,
+          label: "Authority & Trust",
+          generateNewPrompts: false,
+        },
+        {
+          prompt: `Prompt 3: Urgency Psychology & Technical Optimization
+
+**Objective:** Create legitimate urgency, optimize for conversions, and recommend technical implementation using psychological principles.
+
+**User Inputs:**
+- **Marketing Strategy:** "${marketing}"
+- **Target Audience:** "${audience}"
+- **Services/Products:** "${serviceDescription}"
+
+**Task:**
+- **Apply urgency psychology, FOMO elements, and conversion optimization principles.**
+- **Structure with headings and bullet points:**
+
+## Urgency & FOMO Psychology
+
+### Legitimate Scarcity Creation
+- Time-based urgency that feels authentic to your audience
+- Capacity or inventory limitations that drive action
+- Seasonal or event-based urgency opportunities
+
+### FOMO Implementation Strategy
+- What visitors fear missing out on most
+- Social proof that others are taking action
+- Countdown elements and real-time indicators
+
+### Value Acceleration Techniques
+- Bonus offers that expire to encourage quick decisions
+- Progressive disclosure that builds commitment
+- Loss aversion triggers that motivate action
+
+## Conversion Optimization Framework
+
+### Landing Page Flow Psychology
+- Attention-grabbing headline that stops scrolling
+- Logical flow that builds desire and overcomes objections
+- Strategic CTA placement throughout the page
+
+### Form & Friction Optimization
+- Minimal friction strategies for lead capture
+- Progressive profiling to reduce abandonment
+- Trust indicators around conversion points
+
+### Mobile Conversion Psychology
+- Mobile-specific psychological triggers
+- Touch-friendly design that encourages action
+- Simplified decision-making for smaller screens
+
+## Technical Requirements for High Conversion
+
+### Performance Psychology
+- Page load speed impact on conversion rates
+- Visual hierarchy that guides attention to CTAs
+- A/B testing capabilities for psychological elements
+
+### Analytics & Optimization Setup
+- Conversion tracking for psychological trigger effectiveness
+- Heatmap analysis for user behavior insights
+- Split testing framework for continuous improvement
+
+### Integration & Automation
+- CRM integration for lead nurturing psychology
+- Email automation triggered by visitor behavior
+- Retargeting pixel setup for re-engagement campaigns
+
+## Marketing Channel Psychology
+- Channel-specific messaging that matches visitor mindset
+- Traffic source optimization for conversion alignment
+- Campaign messaging that pre-frames landing page psychology
+
+**Output MUST use headings and bullet points only. Focus on driving immediate action through psychological triggers. No introductory text.**`,
+          label: "Urgency & Optimization",
+          generateNewPrompts: false,
+        },
+        {
+          prompt: `Prompt 4: Complete Landing Page Wireframe & Implementation Blueprint
+
+**Objective:** Create a detailed landing page wireframe with psychological trigger placement and comprehensive implementation plan.
+
+**User Inputs:** All strategic elements from previous prompts
+
+**Task:**
+- **Design landing page wireframe using ASCII visualization**
+- **Integrate all psychological triggers and conversion elements**
+- **Provide complete implementation blueprint**
+
+## Landing Page Wireframe Design
+
+**MANDATORY: Create detailed ASCII wireframe showing psychological trigger placement**
+
+### Desktop Landing Page Layout
+\`\`\`
++--------------------------------------------------------+
+|                    HEADER/NAVIGATION                   |
+| [Logo] [Trust Badge] [Phone] [Limited Time Offer]     |
++--------------------------------------------------------+
+|                                                        |
+|                    HERO SECTION                        |
+|              [Identity Installation Hook]              |
+|    "For [target identity] who [specific situation]"   |
+|                                                        |
+|              [Emotional Headline]                      |
+|          [Problem + Solution + Outcome]                |
+|                                                        |
+|                [Supporting Subtext]                    |
+|           [Risk reversal + social proof hint]          |
+|                                                        |
+|            [Primary CTA Button - Contrasting Color]   |
+|                [Urgency text below CTA]                |
++--------------------------------------------------------+
+|                                                        |
+|               SOCIAL PROOF SECTION                     |
+|    [Customer Logos] [Testimonial] [Stat/Number]       |
+|              "Join X+ customers who..."                |
++--------------------------------------------------------+
+|                                                        |
+|              PROBLEM AGITATION                         |
+|     [Describe current pain points vividly]            |
+|        [Cost of inaction or status quo]               |
++--------------------------------------------------------+
+|                                                        |
+|               SOLUTION OVERVIEW                        |
+|  [How your solution solves their specific problem]    |
+|     [Unique methodology or approach]                  |
+|        [Before vs After transformation]               |
++--------------------------------------------------------+
+|                                                        |
+|              AUTHORITY ESTABLISHMENT                    |
+|    [Expert credentials] [Media mentions] [Awards]     |
+|         [Founder story or expertise proof]            |
++--------------------------------------------------------+
+|                                                        |
+|               BENEFITS & FEATURES                      |
+|  +------------+ +------------+ +------------+          |
+|  |  Benefit 1 | | Benefit 2  | | Benefit 3  |          |
+|  | [Emotional]| | [Practical]| | [Social]   |          |
+|  | outcome    | | advantage  | | proof      |          |
+|  +------------+ +------------+ +------------+          |
++--------------------------------------------------------+
+|                                                        |
+|               OBJECTION HANDLING                       |
+|     [Address top 3 concerns with proof/guarantee]     |
+|              [Risk reversal offer]                     |
++--------------------------------------------------------+
+|                                                        |
+|              URGENCY & SCARCITY                        |
+|        [Limited time/quantity offer]                   |
+|         [What they miss if they wait]                  |
+|              [Social pressure element]                 |
++--------------------------------------------------------+
+|                                                        |
+|               FINAL CONVERSION ZONE                    |
+|              [Secondary CTA - Same as hero]            |
+|           [Contact info] [Security badges]            |
+|              [Final risk reversal]                     |
++--------------------------------------------------------+
+|                      FOOTER                            |
+|    [Legal] [Privacy] [Contact] [Social proof]         |
++--------------------------------------------------------+
+\`\`\`
+
+### Mobile Landing Page Layout
+\`\`\`
++------------------------+
+|    HEADER & MENU       |
+| [Logo]  [Trust Badge]  |
+| [Phone] [Offer Timer]  |
++------------------------+
+|                        |
+|     HERO SECTION       |
+|  [Identity Hook]       |
+|  [Emotional Headline]  |
+|  [Subtext with proof]  |
+|    [Primary CTA]       |
+|   [Urgency element]    |
++------------------------+
+|                        |
+|   SOCIAL PROOF         |
+| [Number/Testimonial]   |
+| [Customer logos]       |
++------------------------+
+|                        |
+|   PROBLEM SECTION      |
+|  [Current pain points] |
+|  [Cost of inaction]    |
++------------------------+
+|                        |
+|   SOLUTION             |
+|  [How you solve it]    |
+|  [Unique approach]     |
++------------------------+
+|                        |
+|     AUTHORITY          |
+|   [Expert proof]       |
+|   [Credentials]        |
++------------------------+
+|                        |
+|    BENEFITS            |
+|   [Benefit 1 Card]     |
+|   [Benefit 2 Card]     |
+|   [Benefit 3 Card]     |
++------------------------+
+|                        |
+|   OBJECTIONS           |
+|  [Address concerns]    |
+|  [Guarantee/proof]     |
++------------------------+
+|                        |
+|   URGENCY/CTA          |
+|  [Scarcity element]    |
+|  [Final CTA button]    |
++------------------------+
+|       FOOTER           |
++------------------------+
+\`\`\`
+
+### Psychological Trigger Integration
+- Identity installation in hero section targeting specific persona pain points
+- Emotional state creation through problem agitation and solution transformation
+- Authority establishment through credentials, testimonials, and social proof
+- Urgency and scarcity elements strategically placed to motivate action
+- Risk reversal and objection handling to overcome hesitation
+- Multiple conversion opportunities with consistent messaging
+
+### Conversion Flow Optimization
+- Primary path: Hero CTA → Benefits → Urgency → Final CTA
+- Secondary micro-commitments throughout (testimonial views, benefit engagement)
+- Trust building elements positioned near conversion points
+- Mobile-optimized flow with thumb-friendly CTA placement
+
+## Complete Implementation Blueprint
+
+### Phase 1: Foundation Setup
+- Core landing page structure with psychological triggers
+- Basic conversion tracking and analytics implementation
+- Trust signals and social proof elements
+- Mobile-responsive design with conversion optimization
+
+### Phase 2: Advanced Optimization
+- A/B testing framework for psychological elements
+- Advanced tracking for micro-conversions and engagement
+- Personalization based on traffic source and behavior
+- Retargeting campaign integration
+
+### Phase 3: Scaling & Refinement
+- Multi-variant testing of psychological triggers
+- Advanced automation and nurture sequences
+- Conversion rate optimization based on data insights
+- Expansion to additional landing page variations
+
+### Success Metrics & KPIs
+- Primary conversion rate (visitor to conversion)
+- Micro-conversion rates (engagement with psychological elements)
+- Traffic source conversion performance
+- Mobile vs desktop conversion analysis
+- Psychological trigger effectiveness measurement
+
+**MANDATORY REQUIREMENTS:**
+- Must include detailed ASCII wireframes for both desktop and mobile
+- Must show exact placement of psychological triggers and conversion elements
+- Must specify conversion flow and CTA positioning throughout page
+- This wireframe is for LANDING PAGE ONLY - single page focus
+
+**Output format: Use code blocks for wireframes to preserve formatting. Include comprehensive implementation guidance.**`,
+          label: "Landing Page Wireframe",
+          dependsOn: [0, 1, 2],
           generateNewPrompts: false,
         },
       ];
@@ -328,30 +537,33 @@ const Result = () => {
         try {
           logger.info("Executing prompts for landing page plan generation...");
 
-          // Execute prompts and wait for results
           const results = await executePrompts(prompts, userId);
           const combinedResult = results.join("\n\n");
 
-          logger.debug("Results:", results);
-
           if (!results || results?.length > 0) {
-            // Store the combined result in the state
             setAiResult(combinedResult);
-
-            // Update the plan in the database
             await updateAiGeneratedPlanInDb(userId, sessionId, combinedResult);
             toast.success(
               "Landing page blueprint generated and saved successfully."
             );
           }
         } catch (err) {
-          // Catch and handle errors during prompt execution or DB updates
           logger.error(
             "An error occurred while generating the landing page blueprint:",
             err
           );
 
-          setError(err.message); // Store the error message in state if needed
+          // Enhanced error handling
+          if (
+            err.message?.includes("ReCaptcha") ||
+            err.message?.includes("Security verification")
+          ) {
+            setError("Security verification failed. Please try again.");
+            setShowRetryButton(true);
+          } else {
+            setError(err.message);
+            setShowRetryButton(true);
+          }
         }
       };
 
@@ -407,12 +619,23 @@ const Result = () => {
   const aiResultWithTitle = `# ${generatedTitle}\n\n${aiResult}`;
 
   const first_name =
-  fullName?.split(" ")[0] ||
-  sessionData?.formData?.[8].firstname;
+    fullName?.split(" ")[0] || sessionData?.formData?.[8].firstname;
+
+  const handleRetry = () => {
+    setError(null);
+    setShowRetryButton(false);
+    setAiResult(null);
+    alreadyFetched.current = false; // Reset the fetch guard
+
+    // Trigger re-execution
+    if (hasCredits) {
+      generateLandingPlan();
+    }
+  };
 
   return (
     <div className=" md:mx-auto">
-      {isLoading && hasCredits ? (
+      {isLoading && hasCredits ?
         <div className="flex flex-col left-0 top-0 bottom-0 right-0 absolute w-full items-center justify-center py-10">
           <Card
             aria-label="Progress indicator"
@@ -439,8 +662,7 @@ const Result = () => {
             </CardFooter>
           </Card>
         </div>
-      ) : (
-        hasCredits && (
+      : hasCredits && (
           <>
             <div className="px-8 py-8 shadow-md border rounded-3xl border-accentMint dark:border-zinc-800 max-w-screen-md mx-auto">
               <p className="text-xl font-semibold text-left text-primary">
@@ -498,7 +720,6 @@ const Result = () => {
                 </Tooltip>
               </div>
               <ReactMarkdown
-                id="result"
                 components={{
                   code: CodeWithColor, // Apply color dots inside <code> blocks
                   li: LiWithColor, // Apply color dots inside list items
@@ -506,6 +727,7 @@ const Result = () => {
                   em: EMWithColor, // Apply color dots inside <em> tags
                   strong: StrongWithColor, // Apply color dots inside <strong> tags
                 }}
+                id="result"
               >
                 {aiResultWithTitle}
               </ReactMarkdown>
@@ -536,7 +758,7 @@ const Result = () => {
             </div>
           </>
         )
-      )}
+      }
 
       {!hasCredits && (
         <div className="flex flex-col justify-center items-center py-8">
@@ -555,6 +777,24 @@ const Result = () => {
                 </Link>
                 {` to continue generating content.`}
               </p>
+            </CardBody>
+          </Card>
+        </div>
+      )}
+
+      {error && (
+        <div className="flex flex-col justify-center items-center py-8">
+          <Card className="border-none bg-transparent shadow-none">
+            <CardBody className="justify-center items-center pb-0">
+              <p className="text-xl font-semibold text-center text-red-500">
+                Error occurred
+              </p>
+              <p className="text-center mb-4">{error}</p>
+              {showRetryButton && (
+                <Button className="mt-4" color="primary" onPress={handleRetry}>
+                  Try Again
+                </Button>
+              )}
             </CardBody>
           </Card>
         </div>

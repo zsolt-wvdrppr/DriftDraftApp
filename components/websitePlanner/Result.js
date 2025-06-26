@@ -14,7 +14,6 @@ import { IconCopy } from "@tabler/icons-react";
 import { Tooltip } from "react-tooltip";
 import { useReCaptcha } from "next-recaptcha-v3";
 import { IconChevronDown } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { useSessionContext } from "@/lib/SessionProvider";
@@ -62,9 +61,9 @@ const Result = () => {
 
   const { executeRecaptcha } = useReCaptcha();
 
-  const router = useRouter();
-
   const [jwt, setJwt] = useState(null);
+
+  const [showRetryButton, setShowRetryButton] = useState(false);
 
   useEffect(() => {
     const fetchJWT = async () => {
@@ -77,16 +76,9 @@ const Result = () => {
   }, []);
 
   const [prompts, setPrompts] = useState([]);
-  const { copyToClipboard, isPending } = useClipboard();
+  const { copyToClipboard } = useClipboard();
 
-  const {
-    executePrompts,
-    executedPrompts,
-    loading: promptLoading,
-    error,
-    output,
-    hasCredits,
-  } = usePromptExecutor({
+  const { executePrompts, executedPrompts, hasCredits } = usePromptExecutor({
     executeRecaptcha,
     pickedModel: "gemini-1.5-pro",
     jwt,
@@ -148,197 +140,432 @@ const Result = () => {
     ) {
       const prompts = [
         {
-          prompt: `Prompt 1: Core Website Strategy
-          
-          **Objective:** Define purpose and target audience with headings.
-          
-          **User Inputs:**
-          - **Purpose:** "${purpose}" (Main goal?)
-          - **Purpose Details:** "${purposeDetails}" (Specific action?)
-          - **Services/Products:** "${serviceDescription}" (Offering?)
-          - **Target Audience:** "${audience}" (Who? Be specific.)
-          - **Unique Selling Points (USPs):** "${usps}" (No need to include the USPs themselves.)
-          - **Brand Guidelines:** "${brandGuidelines}" (No need to include the guidelines themselves.)
-          - **Marketing Strategy:** "${marketing}" (No need to include the strategy itself.)
-          
-          **Task:**
-          - **Analyze inputs and output a structured strategy overview using headings and bullet points.**
-          - **Use Markdown headings (h2 and h3) and bullet points to clearly define:**
-          
-          ## Website Goal (h2)
-          -  [Bullet point defining the primary conversion goal]
-          
-          ## Key Services/Products (h2)
-          -  [Bullet point describing core offerings]
-          
-          ## Primary Target Audience (h2)
-          -  [Bullet point outlining the target audience profile]
-          
-          ## Missing Information & Why It's Important (h2)
-          -  [Bullet point listing missing details regarding only the and explaining their importance for website success]
-          
-          - **Output MUST be structured with the above Markdown headings and bullet points only. No introductory text.**`,
+          prompt: `Prompt 1: Strategic Foundation & Identity Positioning
+
+**Objective:** Create a strategic foundation using psychological triggers, SEO insights, and identity installation techniques.
+
+**User Inputs:**
+- **Purpose:** "${purpose}" (Main goal?)
+- **Purpose Details:** "${purposeDetails}" (Specific action?)
+- **Services/Products:** "${serviceDescription}" (Offering?)
+- **Target Audience:** "${audience}" (Who? Be specific.)
+- **Unique Selling Points (USPs):** "${usps}"
+- **Brand Guidelines:** "${brandGuidelines}"
+- **Marketing Strategy:** "${marketing}"
+
+**Task:**
+- **Analyze inputs and create a strategic foundation using headings and bullet points.**
+- **Apply identity installation and emotional state creation principles.**
+- **Include SEO keyword strategy based on services and audience.**
+- **Use Markdown headings and bullet points only:**
+
+## Website Strategic Foundation
+
+### Primary Conversion Goal
+- Define the main conversion action and psychological motivation behind it
+
+### Target Identity Installation
+- Create "For [specific type of person] who [situation]..." statement that creates instant recognition
+- Address their aspirational identity and current pain point
+
+### Emotional State Mapping
+- Current frustration/pain state of target audience
+- Desired emotional outcome after using service
+- Emotional transformation journey they'll experience
+
+### Core Service Positioning
+- Primary service offering with psychological benefits
+- How services address both practical and emotional needs
+
+### SEO Keyword Strategy
+- 3-5 primary keywords based on services + location/audience
+- Secondary long-tail keywords for content strategy
+- Local SEO opportunities if applicable
+
+### Strategic Gaps Requiring Clarification
+- Missing information that impacts conversion psychology
+- Specific details needed for stronger positioning
+
+**Output MUST be structured with the above Markdown headings and bullet points only. No introductory text. Focus on psychological positioning and conversion strategy.**`,
+          label: "Strategic Foundation",
           generateNewPrompts: false,
         },
         {
-          prompt: `Prompt 2: Branding & Differentiation for Website Design
-            
-            **Objective:** Establish design direction and competitive context with headings.
-            
-            **User Inputs:**
-            - **Brand Guidelines:** "${brandGuidelines}" (Include colors, fonts, style. Doc if available. Must include exact colour codes if available.)
-            - **Desired Emotional Impact:** "${emotions}" (Visitor feelings? e.g., Trust, excitement.)
-            - **Competitors:** "${competitors}" (Competitors & websites.)
-            - **Unique Selling Points (USPs):** "${usps}" (Your unique advantage?)
-            - **Inspirations (Optional):** "${inspirations}" (Website style examples. Links.)
-            - **Services/Products:** "${serviceDescription}" (Offering? No need to include details.)
-            
-            **Task:**
-            - **Analyze inputs and output design direction with headings and bullet points.**
-            - **Use Markdown headings (h2) and bullet points to structure the output:**
-            
-            ## Branding & Emotional Design Direction (h2)
-            -  [Bullet points summarizing how brand guidelines and emotions influence website design (visuals, tone, messaging)]
-            
-            ## Competitor Design & Messaging Insights (h2)
-            -  [Bullet points identifying key design/messaging takeaways from competitor analysis]
-            
-            ## Unique Selling Points (USPs) for Differentiation (h2)
-            -  [Bullet points articulating USPs and explaining how they will be emphasized visually/verbally]
-            
-            ## Points Needing Clarification for Design (h2)
-            -  [Bullet points noting unclear/missing inputs and recommending specific clarification questions]
-            
-            - **Output MUST be structured with the above Markdown headings and bullet points only. No introductory text.**`,
+          prompt: `Prompt 2: Brand Psychology & Competitive Differentiation
+
+**Objective:** Establish brand authority, group identity, and competitive contrast using psychological persuasion principles.
+
+**User Inputs:**
+- **Brand Guidelines:** "${brandGuidelines}"
+- **Desired Emotional Impact:** "${emotions}"
+- **Competitors:** "${competitors}"
+- **Unique Selling Points (USPs):** "${usps}"
+- **Inspirations (Optional):** "${inspirations}"
+- **Services/Products:** "${serviceDescription}"
+
+**Task:**
+- **Apply authority establishment, group identity reinforcement, and contrast creation principles.**
+- **Use Markdown headings and bullet points to structure output:**
+
+## Brand Authority & Trust Signals
+
+### Authority Positioning Strategy
+- Establish expert credibility through specific credentials, experience, or methodology
+- Position brand as industry thought leader with unique insights
+- Create news-style authority through data, statistics, or industry recognition
+
+### Trust & Credibility Indicators
+- Specific trust signals needed (certifications, guarantees, testimonials)
+- Authority by association opportunities (partnerships, media mentions)
+- Social proof elements that build confidence in target audience
+
+## Group Identity & Community Psychology
+
+### Target Group Definition
+- Define the "in-group" characteristics and shared values
+- Establish what progressive/forward-thinking customers do vs outdated approaches
+- Create belonging through "we/us" language and shared aspirations
+
+### Negative Dissociation Strategy
+- Contrast with conventional/outdated approaches without criticizing people
+- Position alternatives as limiting or ineffective
+- Create clear separation between leaders (target audience) and followers
+
+## Competitive Contrast & Differentiation
+
+### Competitor Analysis & Positioning
+- Analyze competitor messaging and identify differentiation opportunities
+- Highlight specific shortcomings of alternative approaches
+- Position unique approach as obviously superior
+
+### Value Gap Demonstration
+- Calculate specific costs/problems of conventional approaches
+- Show quantifiable advantages of your methodology
+- Illustrate opportunity costs of not choosing your solution
+
+## Emotional Brand Direction
+
+### Visual Psychology Strategy
+- Color psychology application based on desired emotions
+- Typography choices that reinforce brand personality and trust
+- Imagery strategy that creates aspirational group identification
+
+### Messaging Psychology Framework
+- Tone and voice that builds authority while remaining approachable
+- Language patterns that create emotional connection and urgency
+- Key phrases that trigger desired psychological responses
+
+## Brand Implementation Gaps
+- Missing brand elements needed for stronger psychological impact
+- Specific clarifications required for effective authority establishment
+- Additional competitive intelligence needed for stronger positioning
+
+**Output MUST use headings and bullet points only. Focus on psychological differentiation and authority building. No introductory text.**`,
+          label: "Brand Psychology",
           generateNewPrompts: false,
         },
         {
-          prompt: `Prompt 3: Marketing & Technical Foundation for Launch
-          
-          **Objective:** Define marketing approach and *recommend* technical foundations for a modern websites.
-          
-          **User Inputs:**
-          - **Marketing Strategy:** "${marketing}" (Marketing activities for this website? e.g., SEO, ads.)
-          - **Domain preferences:** "${domain}"
-          
-          **Task (Two Parts - Headings & Bullet Points Only):**
-          
-          **Part 1: Marketing Approach (Headings & Bullet Points)**
-          - **Structure marketing output with headings and bullet points:**
-          
-          ## Marketing Strategy Approach (h2)
-          -  [Bullet points outlining the marketing approach based on inputs (SEO, content, ads, etc.)]
-          
-          ## Proposed Marketing Ideas (If No Strategy Provided) (h2)
-          -  [Bullet points suggesting 2-3 simple marketing ideas if no strategy input]
-          
-          **Part 2: Technical Requirements (Headings & Bullet Points)**
-          - **Structure technical requirements with headings and bullet points:**
-          
-          ## Essential Technical Requirements (h2)
-          ### Technically Sound Website (h3)
-              - [Bullet points: Fast loading, mobile-responsive, secure, SEO-friendly]
-          ### Conversion-Focused Design (h3)
-              - [Bullet points: Clear CTAs, navigation, user-friendly forms]
-          ### Integration Readiness (h3)
-              - [Bullet points: CRM, analytics, automation integrations?]
-          ### Framework and Technology Recommendations (h3)
-              - [Bullet points *recommending* modern, performant technology approaches suitable for a modern website.  Consider suggesting:]
-                  - **Static Site Generators (SSGs):** (For excellent performance, SEO, and security. Examples:  mention "modern JavaScript frameworks" or "SSG approach" without naming specific SSGs to avoid competitor mentions).
-                  - **Headless CMS (Optional, if content is dynamic):** (If the website needs frequent content updates, suggest a "headless CMS for content management with a decoupled frontend" to offer flexibility without sacrificing performance. Again, avoid naming specific CMSs).
-                  - **Focus on Performance & SEO:** (Emphasize the importance of choosing technologies that prioritize fast loading times, mobile-friendliness, and SEO best practices.)
-                  - **Simplicity for modern website:** (Suggest keeping the technology stack relatively simple and focused for a modern website to avoid unnecessary complexity.)
-                  - **JavaScript Framework (Implied, but not overly specific):** (Subtly imply the use of modern JavaScript frameworks for interactivity and dynamic elements without explicitly naming them).
-                  - **Avoid Specific Competitor Tools:** (Do NOT recommend specific website builders, CMS platforms, or frameworks that are direct competitors to your potential customer's preferred stack.)
-              - [If specific frameworks/technologies ARE provided by the user, mention them here and comment on their suitability.]
-              - [If *no* technologies are specified, provide the above recommendations as default suggestions.]
-          
-          - **Output MUST be structured with the above Markdown headings and bullet points only for both parts. No introductory text.**`,
+          prompt: `Prompt 3: Marketing Psychology & Technical Foundation
+
+**Objective:** Create conversion-focused marketing strategy and recommend modern technical stack using persuasion principles.
+
+**User Inputs:**
+- **Marketing Strategy:** "${marketing}"
+- **Domain preferences:** "${domain}"
+
+**Task:**
+- **Apply urgency & value framework, FOMO elements, and conversion psychology.**
+- **Structure with headings and bullet points:**
+
+## Conversion-Focused Marketing Strategy
+
+### Traffic Generation Psychology
+- SEO strategy targeting buyer-intent keywords and emotional triggers
+- Social media approach using group identity reinforcement and social proof
+- Content marketing that establishes authority and addresses pain points
+- Paid advertising with psychological targeting and compelling ad copy
+
+### Lead Capture & Nurture Framework
+- Lead magnets that create micro-commitments and build trust
+- Email sequences using progressive commitment and value demonstration
+- Retargeting strategies that address objections and build authority
+- Community building tactics that reinforce group identity
+
+## Urgency & Value Psychology
+
+### Legitimate Urgency Creation
+- Seasonal demand patterns and natural urgency opportunities
+- Capacity-based scarcity that feels authentic
+- Time-sensitive value propositions that motivate immediate action
+
+### Value Demonstration Framework
+- ROI calculations and cost-benefit analysis for target audience
+- Risk reversal strategies and guarantee structures
+- Comparison frameworks showing value against alternatives
+
+## Technical Requirements for Conversion
+
+### Performance Psychology
+- Page load speed requirements for maintaining attention and trust
+- Mobile-first design principles for user experience optimization
+- Security features that build confidence and reduce friction
+
+### Conversion Optimization Technology
+- CRO tools and A/B testing capabilities for psychological trigger optimization
+- Analytics setup to track psychological engagement and conversion paths
+- Automation tools for nurture sequences and behavioral triggers
+
+### Modern Technology Recommendations
+- Static Site Generator approach for superior performance and SEO
+- Headless CMS integration for content flexibility and speed
+- JavaScript framework recommendations for interactive elements
+- Integration capabilities for CRM, analytics, and marketing automation
+
+## Marketing Gaps & Optimization Opportunities
+- Missing marketing elements that could enhance conversion psychology
+- Technical features needed for better user experience and trust
+- Measurement strategies for psychological trigger effectiveness
+
+**Output MUST use headings and bullet points only. Focus on conversion psychology and modern technical requirements. No introductory text.**`,
+          label: "Marketing & Technical",
           generateNewPrompts: false,
         },
         {
-          prompt: `Prompt 4: Comprehensive Website Wireframe & Strategic Plan
+          prompt: `Prompt 4: Comprehensive Strategic Blueprint & Implementation Plan
 
-                  **Objective:** Create a detailed website wireframe with ASCII visualisations and a comprehensive strategic plan.
+**Objective:** Create a complete strategic implementation plan with conversion psychology integration and clear action steps.
 
-                  **Part 1: Detailed Website Wireframe**
+**User Inputs:** All previous prompt outputs and form data
 
-                  - Create a complete website wireframe showing all recommended pages and their sections
-                  - For each page, include:
-                    - Page name and purpose
-                    - Main sections with brief content descriptions
-                    - Navigation elements
-                    - Call-to-action placement
-                  - Use ASCII drawings to visualise layout for each page (minimum 3 pages)
-                  - Include mobile and desktop versions for the homepage
+**Task:**
+- **Synthesize all strategic elements into actionable blueprint.**
+- **Apply SIGMA protocol (Simplicity, Immediacy, Guarantee, Motivation, Action) for implementation.**
+- **Use Markdown headings and bullet points only:**
 
-                  **ASCII Drawing Example:**
-                  +------------------------------------------+
-                  |                HEADER                    |
-                  +------------------------------------------+
-                  |                                          |
-                  |               HERO IMAGE                 |
-                  |         [Headline Text Here]             |
-                  |         [Subheadline Text]               |
-                  |         [Primary CTA Button]             |
-                  +------------------------------------------+
-                  |                                          |
-                  |            FEATURES SECTION              |
-                  |  +--------+  +--------+  +--------+      |
-                  |  | Feat 1 |  | Feat 2 |  | Feat 3 |      |
-                  |  +--------+  +--------+  +--------+      |
-                  +------------------------------------------+
-                  |                FOOTER                    |
-                  +------------------------------------------+
+## Strategic Implementation Blueprint
 
-                  **Part 2: Strategic Implementation Plan**
+### Conversion Psychology Integration
+- Identity installation implementation across website sections
+- Emotional state creation journey mapped to user flow
+- Authority establishment elements positioned strategically
+- Group identity reinforcement throughout customer journey
 
-                  ## Website Strategy Overview
-                  - Primary business objectives and how the website supports them
-                  - Target audience profiles and their user journeys
-                  - Content strategy and information architecture
-                  - Conversion funnels and key interaction points
-                  - Technical requirements and platform recommendations
-                  - SEO and marketing integration points
-                  - Analytics strategy and KPI tracking plan
+### Content Strategy & Messaging Hierarchy
+- Primary messages that drive conversion psychology
+- Supporting content that builds trust and overcomes objections
+- Call-to-action strategy using progressive commitment principles
 
-                  ## Implementation Timeline
-                  - Development phases with key milestones
-                  - Content creation schedule
-                  - Testing and launch plan
+### User Experience Psychology
+- Friction reduction techniques for smoother conversion paths
+- Trust signal placement for maximum psychological impact
+- Social proof integration that reinforces group identity
 
-                  ## Outstanding Questions
-                  - List any information gaps that need clarification
-                  - Recommendations for additional user research if needed
-          
-                **Part 3: Final Strategic Overview**
-                - **Output a strategic overview using Markdown headings (h2, h3) and flat bullet points (using '-'). Ensure bullet points are NOT nested.**
+## Technical Implementation Priorities
 
-                ## Final Website Strategic Overview (h2)
+### Conversion-Focused Architecture
+- Page structure optimized for psychological flow
+- Loading speed requirements for maintaining engagement
+- Mobile experience that maintains persuasion effectiveness
 
-                ### Core Purpose and Goals (h3)
-                - Primary conversion goal: ...
-                - Secondary goal: ...
+### Marketing Technology Integration
+- CRM setup for customer journey tracking and personalization
+- Analytics configuration for conversion psychology measurement
+- Automation tools for nurture sequences and behavioral triggers
 
-                ### Target Audience Profile (h3)
-                - Characteristic 1: ...
-                - Characteristic 2: ...
+### SEO & Content Framework
+- Keyword implementation strategy aligned with user psychology
+- Content calendar focusing on authority building and community engagement
+- Local SEO optimization for geographic targeting
 
-                ### Brand and Design Direction (h3)
-                - Direction point 1: ...
-                - Direction point 2: ...
+## Launch Strategy & Optimization
 
-                ### Marketing and Promotion Plan (h3)
-                - Plan point 1: ...
+### Phase 1: Foundation
+- Core pages with essential psychological triggers implemented
+- Basic conversion tracking and trust signals established
+- Primary marketing channels activated
 
-                ### Key Technical Specifications (h3)
-                - Spec 1: ...
+### Phase 2: Optimization
+- A/B testing plan for psychological trigger effectiveness
+- Advanced personalization based on user behavior
+- Community building and authority establishment expansion
 
-                ### Outstanding Questions / Missing Information (h3)
-                - Question 1: ...
+### Phase 3: Scale
+- Advanced automation and psychological nurture sequences
+- Expanded content strategy and thought leadership
+- Partnership and referral psychology implementation
 
-                - **Output MUST be structured with Markdown headings (h2, h3) and flat bullet points (using '-'). Ensure *no parentheses around headings* and *no nested lists*. Be concise and actionable. No introductory text.**`,
-          dependsOn: 2,
+## Success Metrics & Measurement
+
+### Conversion Psychology KPIs
+- Identity recognition and emotional engagement metrics
+- Trust building and authority perception measurement
+- Group identity adoption and community engagement tracking
+
+### Business Impact Indicators
+- Lead quality improvement and conversion rate optimization
+- Customer lifetime value and retention psychology effectiveness
+- Brand authority and market positioning advancement
+
+## Strategic Gaps & Next Steps
+- Critical missing elements that could impact conversion psychology
+- Immediate action items for strongest psychological impact
+- Long-term strategic considerations for sustained growth
+
+**IMPORTANT FORMATTING RULES:**
+- Do NOT use code blocks, backticks, or triple backticks formatting anywhere
+- Use only standard Markdown headings
+- Structure all content as bullet points using dash (-)
+- No introductory text or conclusions
+- Focus on actionable psychological implementation strategies`,
+          label: "Strategic Blueprint",
+          dependsOn: [0, 1, 2],
+          generateNewPrompts: false,
+        },
+        {
+          prompt: `Prompt 5: Homepage Wireframe with Conversion Psychology
+
+**Objective:** Create a detailed ASCII wireframe of the homepage only, incorporating psychological triggers and conversion optimization principles.
+
+**User Inputs:** All strategic elements from previous prompts
+
+**Task:**
+- **Design homepage wireframe using ASCII visualization**
+- **Integrate identity installation, emotional triggers, and conversion psychology**
+- **Include specific sections based on psychological persuasion framework**
+
+## Homepage Wireframe Design
+
+**MANDATORY: Create detailed ASCII wireframe showing layout, sections, and psychological trigger placement**
+
+### Desktop Homepage Layout
+
+\`\`\`
++--------------------------------------------------------+
+|                    HEADER/NAVIGATION                   |
+| [Logo] [Services] [Training] [About] [Contact] [CTA]  |
++--------------------------------------------------------+
+|                                                        |
+|                    HERO SECTION                        |
+|              [Identity Installation Area]              |
+|    "For [target identity] who [situation]..."         |
+|              [Emotional Hook Headline]                 |
+|                [Supporting Subtext]                    |
+|            [Primary CTA Button - Yellow]              |
+|                [Trust Signal/Badge]                    |
++--------------------------------------------------------+
+|                                                        |
+|               SOCIAL PROOF SECTION                     |
+|    [Customer Logos] [Testimonial] [Authority Badge]   |
++--------------------------------------------------------+
+|                                                        |
+|              GROUP IDENTITY SECTION                    |
+|     [Community Image] [In-Group Messaging]            |
+|        "Join X+ London families who..."               |
++--------------------------------------------------------+
+|                                                        |
+|               SERVICES OVERVIEW                        |
+|  +------------+ +------------+ +------------+          |
+|  |  Mobile    | | Training   | | Community  |          |
+|  |  Service   | | Programs   | | Events     |          |
+|  | [Benefit]  | | [Benefit]  | | [Benefit]  |          |
+|  +------------+ +------------+ +------------+          |
++--------------------------------------------------------+
+|                                                        |
+|              AUTHORITY ESTABLISHMENT                    |
+|    [Expert Bio] [Credentials] [Media Mentions]        |
++--------------------------------------------------------+
+|                                                        |
+|               CONTRAST CREATION                        |
+|     "Unlike traditional bike shops that..."           |
+|            [Before vs After Comparison]               |
++--------------------------------------------------------+
+|                                                        |
+|              URGENCY & VALUE SECTION                   |
+|        [Limited Availability] [ROI Calculator]        |
+|              [Risk Reversal/Guarantee]                 |
++--------------------------------------------------------+
+|                                                        |
+|               FINAL CONVERSION ZONE                    |
+|              [Secondary CTA - Yellow]                  |
+|           [Contact Info] [Trust Signals]              |
++--------------------------------------------------------+
+|                      FOOTER                            |
+|    [Links] [Social] [Contact] [Legal] [Newsletter]    |
++--------------------------------------------------------+
+\`\`\`
+
+### Mobile Homepage Layout
+\`\`\`
++------------------------+
+|    HEADER & MENU       |
+| [Logo]      [☰ Menu]   |
++------------------------+
+|                        |
+|     HERO SECTION       |
+|  [Identity Hook Text]  |
+|   [Emotional Trigger]  |
+|    [Primary CTA]       |
+|   [Trust Badge]        |
++------------------------+
+|                        |
+|   SOCIAL PROOF         |
+| [Testimonial Snippet]  |
++------------------------+
+|                        |
+|   GROUP IDENTITY       |
+|  [Community Message]   |
++------------------------+
+|                        |
+|    CORE SERVICES       |
+|   [Service 1 Card]     |
+|   [Service 2 Card]     |
+|   [Service 3 Card]     |
++------------------------+
+|                        |
+|     AUTHORITY          |
+|   [Expert Summary]     |
++------------------------+
+|                        |
+|    VALUE PROP          |
+|  [Key Differentiator]  |
++------------------------+
+|                        |
+|   CONVERSION CTA       |
+|  [Secondary Action]    |
++------------------------+
+|       FOOTER           |
++------------------------+
+\`\`\`
+
+### Psychological Trigger Integration
+- Identity installation placement in hero section with specific messaging
+- Emotional state creation through visual and textual elements
+- Authority establishment through credentials and social proof positioning
+- Group identity reinforcement via community imagery and inclusive language
+- Contrast creation showing competitive advantages
+- Urgency and value framework implementation near conversion points
+
+### Conversion Flow Optimization
+- Primary conversion path from hero to action
+- Secondary micro-commitments throughout page
+- Friction reduction techniques at decision points
+- Trust signal placement for maximum psychological impact
+
+### Content Priority Hierarchy
+- Most important psychological triggers positioned above fold
+- Supporting authority elements in middle sections
+- Final conversion reinforcement at bottom
+
+**MANDATORY REQUIREMENTS:**
+- Must include detailed ASCII wireframes for both desktop and mobile
+- Must specify exact placement of psychological triggers
+- Must show conversion flow and CTA positioning
+- Must indicate color coding (teal backgrounds, yellow CTAs, green accents)
+- This wireframe is for HOMEPAGE ONLY - not other pages
+
+**Output format: Use the exact ASCII structure shown above, customize content based on strategic elements from previous prompts. Use code blocks for wireframes to preserve formatting.**`,
+          label: "Homepage Wireframe",
+          dependsOn: [0, 1],
           generateNewPrompts: false,
         },
       ];
@@ -346,37 +573,42 @@ const Result = () => {
       setPrompts(prompts);
 
       // ✅ Execute prompts and update the session once complete
-      const generateLandingPlan = async () => {
+      const generateWebsitePlan = async () => {
         try {
           logger.info("Executing prompts for website plan generation...");
 
-          // Execute prompts and wait for results
           const results = await executePrompts(prompts, userId);
           const combinedResult = results.join("\n\n");
 
-          logger.debug("Results:", results);
-
-          if (!results || results.length > 0) {
-            // Store the combined result in the state
+          if (!results || results?.length > 0) {
             setAiResult(combinedResult);
-
-            // Update the plan in the database
             await updateAiGeneratedPlanInDb(userId, sessionId, combinedResult);
-            toast.success("Website blueprint generated and saved successfully.");
+            toast.success(
+              "Website blueprint generated and saved successfully."
+            );
           }
         } catch (err) {
-          // Catch and handle errors during prompt execution or DB updates
           logger.error(
             "An error occurred while generating the website blueprint:",
             err
           );
 
-          setError(err.message); // Store the error message in state if needed
+          // Enhanced error handling
+          if (
+            err.message?.includes("ReCaptcha") ||
+            err.message?.includes("Security verification")
+          ) {
+            setError("Security verification failed. Please try again.");
+            setShowRetryButton(true);
+          } else {
+            setError(err.message);
+            setShowRetryButton(true);
+          }
         }
       };
 
       if (hasCredits) {
-        generateLandingPlan();
+        generateWebsitePlan();
       }
     } else {
       logger.info("resetting hint");
@@ -428,6 +660,17 @@ const Result = () => {
 
   const first_name =
     fullName?.split(" ")[0] || sessionData.formData[8].firstname;
+
+  const handleRetry = () => {
+    setError(null);
+    setShowRetryButton(false);
+    setAiResult(null);
+    alreadyFetched.current = false;
+
+    if (hasCredits) {
+      generateLandingPlan();
+    }
+  };
 
   return (
     <div className=" md:mx-auto">
@@ -516,7 +759,6 @@ const Result = () => {
                 </Tooltip>
               </div>
               <ReactMarkdown
-                id="result"
                 components={{
                   code: CodeWithColor, // Apply color dots inside <code> blocks
                   li: LiWithColor, // Apply color dots inside list items
@@ -524,6 +766,7 @@ const Result = () => {
                   em: EMWithColor, // Apply color dots inside <em> tags
                   strong: StrongWithColor, // Apply color dots inside <strong> tags
                 }}
+                id="result"
               >
                 {aiResultWithTitle}
               </ReactMarkdown>
@@ -573,6 +816,24 @@ const Result = () => {
                 </Link>
                 {` to continue generating content.`}
               </p>
+            </CardBody>
+          </Card>
+        </div>
+      )}
+
+      {error && (
+        <div className="flex flex-col justify-center items-center py-8">
+          <Card className="border-none bg-transparent shadow-none">
+            <CardBody className="justify-center items-center pb-0">
+              <p className="text-xl font-semibold text-center text-red-500">
+                Error occurred
+              </p>
+              <p className="text-center mb-4">{error}</p>
+              {showRetryButton && (
+                <Button className="mt-4" color="primary" onPress={handleRetry}>
+                  Try Again
+                </Button>
+              )}
             </CardBody>
           </Card>
         </div>
