@@ -39,7 +39,7 @@ const PWithColor = withColorCode("p");
 const EMWithColor = withColorCode("em");
 const StrongWithColor = withColorCode("strong");
 
-const NewContentRenderer = ({
+const ContentRenderer = ({
   structuredSections = [],
   combinedContent = "",
   generatedTitle,
@@ -408,4 +408,4 @@ const extractSummaryInsights = (sections) => {
   return insights;
 };
 
-export default NewContentRenderer;
+export default ContentRenderer;

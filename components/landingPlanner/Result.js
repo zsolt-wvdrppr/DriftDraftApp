@@ -19,7 +19,7 @@ import useGenerateTitle from "@/lib/hooks/useGenerateTitle";
 import usePromptExecutor from "@/lib/hooks/usePromptExecutor";
 import getJWT from "@/lib/utils/getJWT";
 import { useUserProfile } from "@/lib/hooks/useProfile";
-import NewContentRenderer from "@/components/results/NewContentRenderer";
+import ContentRenderer from "@/components/results/ContentRenderer";
 
 const Result = () => {
   const {
@@ -652,7 +652,7 @@ const Result = () => {
         </div>
       : hasCredits &&
         structuredOutput.length > 0 && (
-          <NewContentRenderer
+          <ContentRenderer
             combinedContent={getLegacyCombinedOutput()} // For copy/export functions
             firstName={first_name}
             generatedTitle={generatedTitle}
