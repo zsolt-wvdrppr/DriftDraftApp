@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
-import ReactMarkdown from "react-markdown";
 import {
   Button,
   CircularProgress,
@@ -10,10 +9,7 @@ import {
   CardFooter,
   Link,
 } from "@heroui/react";
-import { IconCopy } from "@tabler/icons-react";
-import { Tooltip } from "react-tooltip";
 import { useReCaptcha } from "next-recaptcha-v3";
-import { IconChevronDown } from "@tabler/icons-react";
 import { toast } from "sonner";
 
 import { useSessionContext } from "@/lib/SessionProvider";
@@ -21,17 +17,9 @@ import logger from "@/lib/logger";
 import { useAuth } from "@/lib/AuthContext";
 import useGenerateTitle from "@/lib/hooks/useGenerateTitle";
 import usePromptExecutor from "@/lib/hooks/usePromptExecutor";
-import useClipboard from "@/lib/hooks/useClipboard";
-import MyActivitiesBtn from "@/components/nav-layout/MyActivitiesBtn";
 import getJWT from "@/lib/utils/getJWT";
-import withColorCode from "@/lib/utils/with-color-dots";
 import { useUserProfile } from "@/lib/hooks/useProfile";
-
-const CodeWithColor = withColorCode("code");
-const LiWithColor = withColorCode("li");
-const PWithColor = withColorCode("p");
-const EMWithColor = withColorCode("em");
-const StrongWithColor = withColorCode("strong");
+import NewContentRenderer from "@/components/results/NewContentRenderer";
 
 const Result = () => {
   const {
@@ -41,8 +29,6 @@ const Result = () => {
     updateSessionTitleInDb,
     setError,
   } = useSessionContext();
-  const [aiResult, setAiResult] = useState(null);
-  const aiResultRef = useRef(aiResult);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
   const userId = user?.id;
@@ -76,13 +62,15 @@ const Result = () => {
   }, []);
 
   const [prompts, setPrompts] = useState([]);
-  const { copyToClipboard } = useClipboard();
 
   const {
     executePrompts,
     executedPrompts,
-    error,
     hasCredits,
+    structuredOutput,
+    getCombinedOutputWithMarkers,
+    getLegacyCombinedOutput,
+    error,
   } = usePromptExecutor({
     executeRecaptcha,
     pickedModel: "gemini-1.5-pro",
@@ -107,29 +95,36 @@ const Result = () => {
   /* End of form data */
 
   useEffect(() => {
-    aiResultRef.current = aiResult;
+    if (structuredOutput.length > 0) {
+      // Use marked version for storage (better parsing later)
+      const combinedWithMarkers = getCombinedOutputWithMarkers();
 
-    if (aiResultRef.current !== null) {
-      // Prevent multiple updates
-      updateSessionData("aiGeneratedPlan", aiResultRef?.current);
-      updateAiGeneratedPlanInDb(userId, sessionId, aiResultRef?.current);
+      // Update session data
+      updateSessionData("aiGeneratedPlan", combinedWithMarkers);
+      updateAiGeneratedPlanInDb(userId, sessionId, combinedWithMarkers);
+
+      // Set content for title generation
       setContentForTitleGeneration(
         serviceDescription + " " + brandGuidelines + " " + emotions
       );
-      //logger.debug("Updating aiGeneratedPlan in DB:", aiResultRef.current);
     }
-  }, [aiResult]);
+  }, [structuredOutput]);
 
   useEffect(() => {
-    if (aiResult !== null && generatedTitle !== null && !titleLoading) {
+    if (
+      structuredOutput.length > 0 &&
+      generatedTitle !== null &&
+      !titleLoading
+    ) {
       setIsLoading(false);
     } else {
       setIsLoading(true);
     }
-  }, [aiResult, generatedTitle, titleLoading]);
+  }, [structuredOutput, generatedTitle, titleLoading]);
 
   useEffect(() => {
     if (alreadyFetched.current || !userId || !sessionId || !jwt) return; // Prevent second call
+
     alreadyFetched.current = true;
 
     if (
@@ -541,7 +536,6 @@ const Result = () => {
           const combinedResult = results.join("\n\n");
 
           if (!results || results?.length > 0) {
-            setAiResult(combinedResult);
             await updateAiGeneratedPlanInDb(userId, sessionId, combinedResult);
             toast.success(
               "Landing page blueprint generated and saved successfully."
@@ -570,9 +564,6 @@ const Result = () => {
       if (hasCredits) {
         generateLandingPlan();
       }
-    } else {
-      logger.info("resetting hint");
-      setAiResult(null);
     }
   }, [userId, sessionId, jwt]);
 
@@ -616,15 +607,12 @@ const Result = () => {
     logger.debug("[PROGRESS] - totalCount:", prompts?.length);
   }, [executedPrompts, prompts, isLoading]);
 
-  const aiResultWithTitle = `# ${generatedTitle}\n\n${aiResult}`;
-
   const first_name =
     fullName?.split(" ")[0] || sessionData?.formData?.[8].firstname;
 
   const handleRetry = () => {
     setError(null);
     setShowRetryButton(false);
-    setAiResult(null);
     alreadyFetched.current = false; // Reset the fetch guard
 
     // Trigger re-execution
@@ -662,101 +650,14 @@ const Result = () => {
             </CardFooter>
           </Card>
         </div>
-      : hasCredits && (
-          <>
-            <div className="px-8 py-8 shadow-md border rounded-3xl border-accentMint dark:border-zinc-800 max-w-screen-md mx-auto">
-              <p className="text-xl font-semibold text-left text-primary">
-                {`
-          Congratulations, ${first_name}, on completing your strategic landing page blueprint!
-          `}
-              </p>
-              <p className="text-justify pt-4">
-                {`You’ve taken a big step toward building a well-organized single landing page. 🎉 The result is shown below, and you can access this blueprint anytime under `}
-                <strong>{`"My Activities."`}</strong>
-              </p>
-              <div className="flex flex-col justify-start items-start py-4 md:pb-4">
-                <MyActivitiesBtn className={"text-xs border self-end mb-4"} />
-                <p>{`Here’s what you can do:`}</p>
-              </div>
-              <ul className="list-disc list-inside text-justify py-4">
-                <li>{`Review or edit your plan`}</li>
-                <li>{`Download it as a PDF`}</li>
-                <li>{`Request a quote`}</li>
-              </ul>
-              <p className="text-justify">{`Your blueprint might include suggestions for missing details. Feel free to use it now or come back later to refine and update it as your vision evolves.`}</p>
-            </div>
-            <div className="w-full flex justify-center md:justify-center">
-              <Button
-                as={Link}
-                className="text-xs flex flex-col h-full pt-12"
-                href="#result"
-              >
-                <span className=" sm:hidden">Check it out!</span>
-                <IconChevronDown className="animate-bounce text-accentMint" />
-              </Button>
-            </div>
-            <div className="prose relative lg:prose-lg prose-slate dark:prose-invert px-4 pt-8 pb-12 md:p-8 my-12 rounded-2xl bg-yellow-100/60 dark:bg-content1 max-w-screen-xl">
-              <div className="w-full flex justify-end md:justify-end">
-                <Link
-                  alt="Copy all content to clipboard"
-                  aria-label="Copy the generated content to clipboard"
-                  className="absolute top-2 right-2 text-secondary"
-                  id="copy-btn-top"
-                  variant="none"
-                  onPress={() => {
-                    copyToClipboard(aiResultWithTitle);
-                  }}
-                >
-                  <IconCopy size={20} />
-                </Link>
-                <Tooltip
-                  anchorSelect="#copy-btn-top"
-                  className="text-center"
-                  delayHide={500}
-                  delayShow={200}
-                  place="left"
-                >
-                  Copy all to clipboard
-                </Tooltip>
-              </div>
-              <ReactMarkdown
-                components={{
-                  code: CodeWithColor, // Apply color dots inside <code> blocks
-                  li: LiWithColor, // Apply color dots inside list items
-                  p: PWithColor, // Apply color dots inside paragraphs
-                  em: EMWithColor, // Apply color dots inside <em> tags
-                  strong: StrongWithColor, // Apply color dots inside <strong> tags
-                }}
-                id="result"
-              >
-                {aiResultWithTitle}
-              </ReactMarkdown>
-              <div className="w-full flex justify-end pb-4 md:pb-8 md:justify-end">
-                <Button
-                  aria-label="Copy the generated content to clipboard"
-                  className="absolute"
-                  color="secondary"
-                  id="copy-btn-bottom"
-                  variant="bordered"
-                  onPress={() => {
-                    copyToClipboard(aiResultWithTitle);
-                  }}
-                >
-                  <IconCopy size={20} />
-                  Copy
-                </Button>
-                <Tooltip
-                  anchorSelect="#copy-btn-bottom"
-                  className="text-center"
-                  delayHide={500}
-                  delayShow={200}
-                  place="top"
-                >
-                  Copy all to clipboard
-                </Tooltip>
-              </div>
-            </div>
-          </>
+      : hasCredits &&
+        structuredOutput.length > 0 && (
+          <NewContentRenderer
+            combinedContent={getLegacyCombinedOutput()} // For copy/export functions
+            firstName={first_name}
+            generatedTitle={generatedTitle}
+            structuredSections={structuredOutput}
+          />
         )
       }
 
