@@ -17,7 +17,7 @@ You can also **find competitors**, **check domain availability**, and download y
    - **Each AI hint costs 1 credit.**  
 
 3. **Generate a Strategic Plan**  
-   - A full **plan generation costs 4 credits**.  
+   - A full **plan generation costs 5 credits**.  
    - The plan includes **marketing insights**, **content recommendations**, and **structural guidance**.  
    - You can **adjust the plan after generation** to fine-tune the details.  
 
