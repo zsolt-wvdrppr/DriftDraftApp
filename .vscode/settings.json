@@ -1,3 +1,7 @@
 {
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "geminicodeassist.enableTelemetry": false,
+  "geminicodeassist.rules": "Alaways must apply best coding practices, and up to date libraries. Must use British English.",
+  "geminicodeassist.updateChannel": "Insiders",
+  "github.copilot.nextEditSuggestions.enabled": true
 }
