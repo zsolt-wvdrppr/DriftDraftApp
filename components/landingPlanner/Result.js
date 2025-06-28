@@ -146,16 +146,16 @@ const Result = () => {
 **User Inputs:**
 - **Purpose:** "${purpose}" (Main goal?)
 - **Purpose Details:** "${purposeDetails}" (Specific action?)
-- **Services/Products:** "${serviceDescription}" (Offering?)
+- **Services/Products:** "${serviceDescription}" (What's on offer?)
 - **Target Audience:** "${audience}" (Who? Be specific.)
 - **Unique Selling Points (USPs):** "${usps}"
 - **Brand Guidelines:** "${brandGuidelines}"
 - **Marketing Strategy:** "${marketing}"
 
 **Task:**
-- **Analyze inputs and create a strategic foundation using headings and bullet points.**
+- **Analyse inputs and create a strategic foundation using headings and bullet points.**
 - **Apply identity installation and emotional state creation principles.**
-- **Focus on single-page conversion optimization.**
+- **Focus on single-page conversion optimisation.**
 - **Use Markdown headings and bullet points only:**
 
 ## Landing Page Strategic Foundation
@@ -187,6 +187,11 @@ const Result = () => {
 ### Strategic Gaps Requiring Clarification
 - Missing information that impacts conversion psychology
 - Specific details needed for stronger offer positioning
+
+**Language Requirements:**
+- Use British English spelling, grammar, and terminology throughout
+- Employ British business language and expressions
+- Apply UK market context and consumer behaviour patterns
 
 **Output MUST be structured with the above Markdown headings and bullet points only. No introductory text. Focus on single-page conversion strategy.**`,
           label: "Strategic Foundation",
@@ -231,7 +236,7 @@ const Result = () => {
 ## Competitive Differentiation Psychology
 
 ### Contrast Creation Strategy
-- How competitors position similar offers vs. your unique angle
+- How competitors position similar offers versus your unique angle
 - Specific weaknesses in competitor offerings you can exploit
 - Positioning that makes alternatives seem obviously inferior
 
@@ -252,14 +257,19 @@ const Result = () => {
 - Testimonial formats that build trust for this specific offer
 - Guarantee structures that remove conversion risk
 
+**Language Requirements:**
+- Use British English spelling, grammar, and terminology throughout
+- Apply British cultural values and communication styles
+- Use UK-appropriate authority signals and trust indicators
+
 **Output MUST use headings and bullet points only. Focus on building unshakeable credibility for landing page conversion. No introductory text.**`,
           label: "Authority & Trust",
           generateNewPrompts: false,
         },
         {
-          prompt: `Prompt 3: Urgency Psychology & Conversion Optimization
+          prompt: `Prompt 3: Urgency Psychology & Conversion Optimisation
 
-**Objective:** Create legitimate urgency, optimize for conversions, and recommend landing page optimization using psychological principles.
+**Objective:** Create legitimate urgency, optimise for conversions, and recommend landing page optimisation using psychological principles.
 
 **User Inputs:**
 - **Marketing Strategy:** "${marketing}"
@@ -267,7 +277,7 @@ const Result = () => {
 - **Services/Products:** "${serviceDescription}"
 
 **Task:**
-- **Apply urgency psychology, FOMO elements, and landing page conversion optimization.**
+- **Apply urgency psychology, FOMO elements, and landing page conversion optimisation.**
 - **Structure with headings and bullet points:**
 
 ## Urgency & FOMO Psychology
@@ -287,14 +297,14 @@ const Result = () => {
 - Progressive disclosure that builds commitment throughout page
 - Loss aversion triggers that motivate immediate action
 
-## Landing Page Conversion Optimization
+## Landing Page Conversion Optimisation
 
 ### Page Flow Psychology
 - Attention-grabbing headline that stops scrolling immediately
 - Logical flow that builds desire and overcomes objections
 - Strategic CTA placement and frequency throughout single page
 
-### Form & Friction Optimization
+### Form & Friction Optimisation
 - Minimal friction strategies for lead capture or purchase
 - Trust indicators positioned around conversion points
 - Progressive commitment techniques to reduce abandonment
@@ -309,22 +319,27 @@ const Result = () => {
 ### Performance Psychology
 - Page load speed impact on visitor attention and trust
 - Visual hierarchy that guides attention directly to CTAs
-- A/B testing capabilities for psychological trigger optimization
+- A/B testing capabilities for psychological trigger optimisation
 
-### Analytics & Optimization Setup
+### Analytics & Optimisation Setup
 - Conversion tracking for psychological trigger effectiveness
-- Heatmap analysis for visitor behavior and attention patterns
+- Heatmap analysis for visitor behaviour and attention patterns
 - Split testing framework for continuous landing page improvement
 
 ### Integration Requirements
 - CRM integration for immediate lead processing
-- Email automation triggered by landing page behavior
+- Email automation triggered by landing page behaviour
 - Retargeting pixel setup for visitor re-engagement campaigns
 
 ## Conversion Channel Psychology
-- Traffic source optimization and visitor mindset alignment
+- Traffic source optimisation and visitor mindset alignment
 - Campaign messaging that pre-frames landing page psychology
 - Channel-specific urgency elements that match visitor expectations
+
+**Language Requirements:**
+- Use British English spelling, grammar, and terminology throughout
+- Apply UK-specific marketing channels and regulations context
+- Use British terminology for technical recommendations
 
 **Output MUST use headings and bullet points only. Focus on conversion psychology and modern technical requirements. No introductory text.**`,
           label: "Marketing & Technical",
@@ -338,7 +353,7 @@ const Result = () => {
 **User Inputs:** All previous prompt outputs and form data
 
 **Task:**
-- **Synthesize all strategic elements into actionable blueprint.**
+- **Synthesise all strategic elements into actionable blueprint.**
 - **Apply SIGMA protocol (Simplicity, Immediacy, Guarantee, Motivation, Action) for implementation.**
 - **Use Markdown headings and bullet points only:**
 
@@ -360,15 +375,15 @@ const Result = () => {
 - Friction reduction techniques for smoother conversion paths
 - Social proof integration that reinforces offer value
 - Visual hierarchy that guides attention to conversion points
-- Mobile optimization for psychological trigger effectiveness
+- Mobile optimisation for psychological trigger effectiveness
 
 ## Technical Implementation Priorities
 
 ### Conversion-Focused Architecture
-- Single-page structure optimized for psychological flow
+- Single-page structure optimised for psychological flow
 - Loading speed requirements for maintaining visitor engagement
 - Analytics configuration for conversion psychology measurement
-- A/B testing framework for continuous optimization
+- A/B testing framework for continuous optimisation
 
 ### Marketing Integration Strategy
 - Traffic source alignment with landing page psychology
@@ -376,28 +391,28 @@ const Result = () => {
 - Retargeting setup for visitor re-engagement
 - Lead nurturing automation for post-conversion psychology
 
-### Performance & Optimization Framework
+### Performance & Optimisation Framework
 - Conversion tracking for psychological trigger effectiveness
-- Heatmap analysis for visitor behavior patterns
+- Heatmap analysis for visitor behaviour patterns
 - Split testing plan for landing page elements
 - Success metrics aligned with conversion psychology goals
 
-## Launch Strategy & Optimization
+## Launch Strategy & Optimisation
 
 ### Phase 1: Foundation
 - Core landing page with essential psychological triggers implemented
 - Basic conversion tracking and trust signals established
 - Primary traffic source campaigns activated
 
-### Phase 2: Optimization
+### Phase 2: Optimisation
 - A/B testing plan for psychological trigger effectiveness
-- Advanced personalization based on traffic source
+- Advanced personalisation based on traffic source
 - Enhanced social proof and authority element testing
 
 ### Phase 3: Scale
 - Multi-variant testing of psychological triggers
 - Advanced automation and follow-up sequences
-- Conversion rate optimization based on data insights
+- Conversion rate optimisation based on data insights
 
 ## Success Metrics & Measurement
 
@@ -408,14 +423,19 @@ const Result = () => {
 - Overall conversion rate and visitor flow analysis
 
 ### Business Impact Indicators
-- Lead quality improvement and conversion optimization
+- Lead quality improvement and conversion optimisation
 - Cost per conversion across different traffic sources
 - Lifetime value correlation with landing page psychology
 
 ## Strategic Gaps & Next Steps
 - Critical missing elements that could impact conversion psychology
 - Immediate action items for strongest psychological impact
-- Long-term optimization strategies for sustained performance
+- Long-term optimisation strategies for sustained performance
+
+**Language Requirements:**
+- Use British English spelling, grammar, and terminology throughout
+- Apply UK market context and cultural considerations
+- Ensure messaging aligns with British business communication norms
 
 **IMPORTANT FORMATTING RULES:**
 - Do NOT use code blocks, backticks, or triple backticks formatting anywhere
@@ -430,12 +450,12 @@ const Result = () => {
         {
           prompt: `Prompt 5: Landing Page Wireframe with Conversion Psychology
 
-**Objective:** Create a detailed ASCII wireframe of the landing page only, incorporating psychological triggers and conversion optimization principles.
+**Objective:** Create a detailed ASCII wireframe of the landing page only, incorporating psychological triggers and conversion optimisation principles.
 
 **User Inputs:** All strategic elements from previous prompts
 
 **Task:**
-- **Design landing page wireframe using ASCII visualization**
+- **Design landing page wireframe using ASCII visualisation**
 - **Integrate identity installation, emotional triggers, and conversion psychology**
 - **Include specific sections based on psychological persuasion framework**
 
@@ -461,7 +481,7 @@ const Result = () => {
 |                [Supporting Subtext]                    |
 |           [Risk reversal + social proof hint]          |
 |                                                        |
-|            [Primary CTA Button - Contrasting Color]   |
+|            [Primary CTA Button - Contrasting Colour]  |
 |                [Urgency text below CTA]                |
 +--------------------------------------------------------+
 |                                                        |
@@ -487,7 +507,11 @@ const Result = () => {
 +--------------------------------------------------------+
 |                                                        |
 |               BENEFITS & FEATURES                      |
-|  ];------------+ +------------+ +------------+          |
+|  +------------+ +------------+ +------------+          |
+|  |  Benefit 1 | |  Benefit 2 | |  Benefit 3 |          |
+|  | [Outcome]  | | [Outcome]  | | [Outcome]  |          |
+|  | [Proof]    | | [Proof]    | | [Proof]    |          |
+|  +------------+ +------------+ +------------+          |
 +--------------------------------------------------------+
 |                                                        |
 |               OBJECTION HANDLING                       |
@@ -574,11 +598,11 @@ const Result = () => {
 - Risk reversal and objection handling to overcome hesitation
 - Multiple conversion opportunities with consistent messaging
 
-### Conversion Flow Optimization
+### Conversion Flow Optimisation
 - Primary path: Hero CTA → Benefits → Urgency → Final CTA
 - Secondary micro-commitments throughout (testimonial views, benefit engagement)
 - Trust building elements positioned near conversion points
-- Mobile-optimized flow with thumb-friendly CTA placement
+- Mobile-optimised flow with thumb-friendly CTA placement
 
 ## Complete Implementation Blueprint
 
@@ -586,26 +610,31 @@ const Result = () => {
 - Core landing page structure with psychological triggers
 - Basic conversion tracking and analytics implementation
 - Trust signals and social proof elements
-- Mobile-responsive design with conversion optimization
+- Mobile-responsive design with conversion optimisation
 
-### Phase 2: Advanced Optimization
+### Phase 2: Advanced Optimisation
 - A/B testing framework for psychological elements
 - Advanced tracking for micro-conversions and engagement
-- Personalization based on traffic source and behavior
+- Personalisation based on traffic source and behaviour
 - Retargeting campaign integration
 
 ### Phase 3: Scaling & Refinement
 - Multi-variant testing of psychological triggers
 - Advanced automation and nurture sequences
-- Conversion rate optimization based on data insights
+- Conversion rate optimisation based on data insights
 - Expansion to additional landing page variations
 
 ### Success Metrics & KPIs
 - Primary conversion rate (visitor to conversion)
 - Micro-conversion rates (engagement with psychological elements)
 - Traffic source conversion performance
-- Mobile vs desktop conversion analysis
+- Mobile versus desktop conversion analysis
 - Psychological trigger effectiveness measurement
+
+**Language Requirements:**
+- All copy suggestions and content examples must be in British English
+- Use UK-appropriate business terminology and expressions
+- Avoid American spellings and cultural references
 
 **MANDATORY REQUIREMENTS:**
 - Must include detailed ASCII wireframes for both desktop and mobile

@@ -149,14 +149,14 @@ const Result = () => {
 **User Inputs:**
 - **Purpose:** "${purpose}" (Main goal?)
 - **Purpose Details:** "${purposeDetails}" (Specific action?)
-- **Services/Products:** "${serviceDescription}" (Offering?)
+- **Services/Products:** "${serviceDescription}" (What's on offer?)
 - **Target Audience:** "${audience}" (Who? Be specific.)
 - **Unique Selling Points (USPs):** "${usps}"
 - **Brand Guidelines:** "${brandGuidelines}"
 - **Marketing Strategy:** "${marketing}"
 
 **Task:**
-- **Analyze inputs and create a strategic foundation using headings and bullet points.**
+- **Analyse inputs and create a strategic foundation using headings and bullet points.**
 - **Apply identity installation and emotional state creation principles.**
 - **Include SEO keyword strategy based on services and audience.**
 - **Use Markdown headings and bullet points only:**
@@ -187,6 +187,11 @@ const Result = () => {
 ### Strategic Gaps Requiring Clarification
 - Missing information that impacts conversion psychology
 - Specific details needed for stronger positioning
+
+**Language Requirements:**
+- Use British English spelling, grammar, and terminology throughout
+- Employ British business language and expressions
+- Apply UK market context and consumer behaviour patterns
 
 **Output MUST be structured with the above Markdown headings and bullet points only. No introductory text. Focus on psychological positioning and conversion strategy.**`,
           label: "Strategic Foundation",
@@ -225,18 +230,18 @@ const Result = () => {
 
 ### Target Group Definition
 - Define the "in-group" characteristics and shared values
-- Establish what progressive/forward-thinking customers do vs outdated approaches
+- Establish what progressive/forward-thinking customers do versus outdated approaches
 - Create belonging through "we/us" language and shared aspirations
 
 ### Negative Dissociation Strategy
-- Contrast with conventional/outdated approaches without criticizing people
+- Contrast with conventional/outdated approaches without criticising people
 - Position alternatives as limiting or ineffective
 - Create clear separation between leaders (target audience) and followers
 
 ## Competitive Contrast & Differentiation
 
 ### Competitor Analysis & Positioning
-- Analyze competitor messaging and identify differentiation opportunities
+- Analyse competitor messaging and identify differentiation opportunities
 - Highlight specific shortcomings of alternative approaches
 - Position unique approach as obviously superior
 
@@ -248,12 +253,12 @@ const Result = () => {
 ## Emotional Brand Direction
 
 ### Visual Psychology Strategy
-- Color psychology application based on desired emotions
+- Colour psychology application based on desired emotions
 - Typography choices that reinforce brand personality and trust
 - Imagery strategy that creates aspirational group identification
 
 ### Messaging Psychology Framework
-- Tone and voice that builds authority while remaining approachable
+- Tone and voice that builds authority whilst remaining approachable
 - Language patterns that create emotional connection and urgency
 - Key phrases that trigger desired psychological responses
 
@@ -261,6 +266,11 @@ const Result = () => {
 - Missing brand elements needed for stronger psychological impact
 - Specific clarifications required for effective authority establishment
 - Additional competitive intelligence needed for stronger positioning
+
+**Language Requirements:**
+- Use British English spelling, grammar, and terminology throughout
+- Apply British cultural values and communication styles
+- Use UK-appropriate authority signals and trust indicators
 
 **Output MUST use headings and bullet points only. Focus on psychological differentiation and authority building. No introductory text.**`,
           label: "Brand Psychology",
@@ -309,13 +319,13 @@ const Result = () => {
 
 ### Performance Psychology
 - Page load speed requirements for maintaining attention and trust
-- Mobile-first design principles for user experience optimization
+- Mobile-first design principles for user experience optimisation
 - Security features that build confidence and reduce friction
 
-### Conversion Optimization Technology
-- CRO tools and A/B testing capabilities for psychological trigger optimization
+### Conversion Optimisation Technology
+- CRO tools and A/B testing capabilities for psychological trigger optimisation
 - Analytics setup to track psychological engagement and conversion paths
-- Automation tools for nurture sequences and behavioral triggers
+- Automation tools for nurture sequences and behavioural triggers
 
 ### Modern Technology Recommendations
 - Static Site Generator approach for superior performance and SEO
@@ -323,10 +333,15 @@ const Result = () => {
 - JavaScript framework recommendations for interactive elements
 - Integration capabilities for CRM, analytics, and marketing automation
 
-## Marketing Gaps & Optimization Opportunities
+## Marketing Gaps & Optimisation Opportunities
 - Missing marketing elements that could enhance conversion psychology
 - Technical features needed for better user experience and trust
 - Measurement strategies for psychological trigger effectiveness
+
+**Language Requirements:**
+- Use British English spelling, grammar, and terminology throughout
+- Apply UK-specific marketing channels and regulations context
+- Use British terminology for technical recommendations
 
 **Output MUST use headings and bullet points only. Focus on conversion psychology and modern technical requirements. No introductory text.**`,
           label: "Marketing & Technical",
@@ -340,7 +355,7 @@ const Result = () => {
 **User Inputs:** All previous prompt outputs and form data
 
 **Task:**
-- **Synthesize all strategic elements into actionable blueprint.**
+- **Synthesise all strategic elements into actionable blueprint.**
 - **Apply SIGMA protocol (Simplicity, Immediacy, Guarantee, Motivation, Action) for implementation.**
 - **Use Markdown headings and bullet points only:**
 
@@ -365,30 +380,30 @@ const Result = () => {
 ## Technical Implementation Priorities
 
 ### Conversion-Focused Architecture
-- Page structure optimized for psychological flow
+- Page structure optimised for psychological flow
 - Loading speed requirements for maintaining engagement
 - Mobile experience that maintains persuasion effectiveness
 
 ### Marketing Technology Integration
-- CRM setup for customer journey tracking and personalization
+- CRM setup for customer journey tracking and personalisation
 - Analytics configuration for conversion psychology measurement
-- Automation tools for nurture sequences and behavioral triggers
+- Automation tools for nurture sequences and behavioural triggers
 
 ### SEO & Content Framework
 - Keyword implementation strategy aligned with user psychology
 - Content calendar focusing on authority building and community engagement
-- Local SEO optimization for geographic targeting
+- Local SEO optimisation for geographic targeting
 
-## Launch Strategy & Optimization
+## Launch Strategy & Optimisation
 
 ### Phase 1: Foundation
 - Core pages with essential psychological triggers implemented
 - Basic conversion tracking and trust signals established
 - Primary marketing channels activated
 
-### Phase 2: Optimization
+### Phase 2: Optimisation
 - A/B testing plan for psychological trigger effectiveness
-- Advanced personalization based on user behavior
+- Advanced personalisation based on user behaviour
 - Community building and authority establishment expansion
 
 ### Phase 3: Scale
@@ -404,7 +419,7 @@ const Result = () => {
 - Group identity adoption and community engagement tracking
 
 ### Business Impact Indicators
-- Lead quality improvement and conversion rate optimization
+- Lead quality improvement and conversion rate optimisation
 - Customer lifetime value and retention psychology effectiveness
 - Brand authority and market positioning advancement
 
@@ -412,6 +427,11 @@ const Result = () => {
 - Critical missing elements that could impact conversion psychology
 - Immediate action items for strongest psychological impact
 - Long-term strategic considerations for sustained growth
+
+**Language Requirements:**
+- Use British English spelling, grammar, and terminology throughout
+- Apply UK market context and cultural considerations
+- Ensure messaging aligns with British business communication norms
 
 **IMPORTANT FORMATTING RULES:**
 - Do NOT use code blocks, backticks, or triple backticks formatting anywhere
@@ -426,12 +446,12 @@ const Result = () => {
         {
           prompt: `Prompt 5: Homepage Wireframe with Conversion Psychology
 
-**Objective:** Create a detailed ASCII wireframe of the homepage only, incorporating psychological triggers and conversion optimization principles.
+**Objective:** Create a detailed ASCII wireframe of the homepage only, incorporating psychological triggers and conversion optimisation principles.
 
 **User Inputs:** All strategic elements from previous prompts
 
 **Task:**
-- **Design homepage wireframe using ASCII visualization**
+- **Design homepage wireframe using ASCII visualisation**
 - **Integrate identity installation, emotional triggers, and conversion psychology**
 - **Include specific sections based on psychological persuasion framework**
 
@@ -468,7 +488,7 @@ const Result = () => {
 |               SERVICES OVERVIEW                        |
 |  +------------+ +------------+ +------------+          |
 |  |  Mobile    | | Training   | | Community  |          |
-|  |  Service   | | Programs   | | Events     |          |
+|  |  Service   | | Programmes | | Events     |          |
 |  | [Benefit]  | | [Benefit]  | | [Benefit]  |          |
 |  +------------+ +------------+ +------------+          |
 +--------------------------------------------------------+
@@ -547,7 +567,7 @@ const Result = () => {
 - Contrast creation showing competitive advantages
 - Urgency and value framework implementation near conversion points
 
-### Conversion Flow Optimization
+### Conversion Flow Optimisation
 - Primary conversion path from hero to action
 - Secondary micro-commitments throughout page
 - Friction reduction techniques at decision points
@@ -558,14 +578,19 @@ const Result = () => {
 - Supporting authority elements in middle sections
 - Final conversion reinforcement at bottom
 
+**Language Requirements:**
+- All copy suggestions and content examples must be in British English
+- Use UK-appropriate business terminology and expressions
+- Avoid American spellings and cultural references
+
 **MANDATORY REQUIREMENTS:**
 - Must include detailed ASCII wireframes for both desktop and mobile
 - Must specify exact placement of psychological triggers
 - Must show conversion flow and CTA positioning
-- Must indicate color coding (teal backgrounds, yellow CTAs, green accents)
+- Must indicate colour coding (teal backgrounds, yellow CTAs, green accents)
 - This wireframe is for HOMEPAGE ONLY - not other pages
 
-**Output format: Use the exact ASCII structure shown above, customize content based on strategic elements from previous prompts. Use code blocks for wireframes to preserve formatting.**`,
+**Output format: Use the exact ASCII structure shown above, customise content based on strategic elements from previous prompts. Use code blocks for wireframes to preserve formatting.**`,
           label: "Homepage Wireframe",
           dependsOn: [0, 1],
           generateNewPrompts: false,
