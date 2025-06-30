@@ -121,14 +121,14 @@ export const sortItemsByDate = (items: any, isAcending = false) => {
   if (isAcending) {
     const sortedItems = [...items].sort(
       (a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
     );
 
     return sortedItems;
   } else {
     const sortedItems = [...items].sort(
       (a, b) =>
-        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        new Date(a.updated_at).getTime() - new Date(b.updated_at).getTime()
     );
 
     return sortedItems;
