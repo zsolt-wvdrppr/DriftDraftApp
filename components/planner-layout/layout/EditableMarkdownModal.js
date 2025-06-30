@@ -7,7 +7,6 @@ import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
-import { marked } from "marked";
 import {
   Modal,
   ModalContent,
@@ -21,6 +20,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { toast } from "sonner";
 import { IconEye, IconEdit } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown from "react-markdown";
 
 import logger from "@/lib/logger";
 import ToolbarPlugin from "@/lib/plugins/lexical/ToolbarPlugin";
@@ -29,16 +29,18 @@ import useLoadContent from "@/lib/plugins/lexical/useLoadContent";
 import useEditorChangeListener from "@/lib/plugins/lexical/useEditorChangeListener";
 import { useSessionContext } from "@/lib/SessionProvider";
 import { useAuth } from "@/lib/AuthContext";
-
-import ReactMarkdown from "react-markdown";
 import withColorCode from "@/lib/utils/with-color-dots";
+import TableOfContents from "@/components/table-of-contents";
+import {
+  stripSectionMarkers,
+  generateTableOfContents,
+} from "@/lib/utils/markdownUtils";
 
 const CodeWithColor = withColorCode("code");
 const LiWithColor = withColorCode("li");
 const PWithColor = withColorCode("p");
 const EMWithColor = withColorCode("em");
 const StrongWithColor = withColorCode("strong");
-
 
 export const EditableMarkdownModal = ({
   item,
@@ -57,9 +59,15 @@ export const EditableMarkdownModal = ({
   const [isSaved, setIsSaved] = useState(true);
   const [isSaveLoding, setIsSaveLoading] = useState(false);
 
+  const [tableOfContents, setTableOfContents] = useState([]);
+
   //const markdownRef = useRef(null);
 
-  useLoadContent(editor, markdownContent, item?.session_id);
+  useLoadContent(
+    editor,
+    stripSectionMarkers(markdownContent),
+    item?.session_id
+  );
 
   useEditorChangeListener(() => {
     if (editor) {
@@ -109,8 +117,15 @@ export const EditableMarkdownModal = ({
       setPreviewMode(true);
       setPreviousSessionId(item?.session_id);
     }
-  }),
-    [item?.session_id];
+  }, [item?.session_id]);
+
+  useEffect(() => {
+    if (markdownContent && previewMode) {
+      const toc = generateTableOfContents(markdownContent);
+
+      setTableOfContents(toc);
+    }
+  }, [markdownContent, previewMode]);
 
   return (
     <Modal
@@ -135,23 +150,24 @@ export const EditableMarkdownModal = ({
                 isDisabled={markdownContent === "No content available."}
                 onPress={() => setPreviewMode((p) => !p)}
               >
-                {previewMode ? <IconEdit /> : <IconEye />}
+                {previewMode ?
+                  <IconEdit />
+                : <IconEye />}
               </Button>
             </div>
 
             {/* Modal Body - Now Scrollable */}
             <ModalBody className="relative flex-1 pt-0 overflow-y-auto min-h-0 max-h-[calc(90vh-10rem)]">
-              {isLoading ? (
+              {isLoading ?
                 <div className="flex justify-center items-center h-full">
                   <Spinner color="primary" />
                 </div>
-              ) : (
-                <div>
+              : <div>
                   <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
                   <HistoryPlugin />
 
                   <AnimatePresence mode="wait">
-                    {previewMode ? (
+                    {previewMode ?
                       <motion.div
                         /*dangerouslySetInnerHTML={{
                                                     __html: marked(markdownContent),
@@ -163,20 +179,60 @@ export const EditableMarkdownModal = ({
                         initial={{ opacity: 0, x: 0 }}
                         transition={{ duration: 0.3, ease: "easeInOut" }}
                       >
-                        <ReactMarkdown
-                          components={{
-                            code: CodeWithColor, // Apply color dots inside <code> blocks
-                            li: LiWithColor, // Apply color dots inside list items
-                            p: PWithColor, // Apply color dots inside paragraphs
-                            em: EMWithColor, // Apply color dots inside <em> tags
-                            strong: StrongWithColor, // Apply color dots inside <strong> tags
-                          }}
-                        >
-                          {markdownContent}
-                        </ReactMarkdown>
+                        <div>
+                          {tableOfContents.length > 0 && (
+                            <TableOfContents
+                              className="bg-slate-100 dark:bg-zinc-800"
+                              headers={tableOfContents}
+                              title="Table of Contents"
+                              variant="bordered"
+                            />
+                          )}
+                          <ReactMarkdown
+                            components={{
+                              code: CodeWithColor,
+                              li: LiWithColor,
+                              p: PWithColor,
+                              em: EMWithColor,
+                              strong: StrongWithColor,
+                              // Add header components with IDs for anchor linking
+                              h1: ({ children, ...props }) => {
+                                const id = children
+                                  ?.toString()
+                                  ?.toLowerCase()
+                                  ?.replace(/[^\w\s-]/g, "")
+                                  ?.replace(/\s+/g, "-")
+                                  ?.replace(/-+/g, "-")
+                                  ?.trim();
+
+                                return (
+                                  <h1 id={id} {...props}>
+                                    {children}
+                                  </h1>
+                                );
+                              },
+                              h2: ({ children, ...props }) => {
+                                const id = children
+                                  ?.toString()
+                                  ?.toLowerCase()
+                                  ?.replace(/[^\w\s-]/g, "")
+                                  ?.replace(/\s+/g, "-")
+                                  ?.replace(/-+/g, "-")
+                                  ?.trim();
+
+                                return (
+                                  <h2 id={id} {...props}>
+                                    {children}
+                                  </h2>
+                                );
+                              },
+                            }}
+                          >
+                            {stripSectionMarkers(markdownContent)}
+                          </ReactMarkdown>
+                        </div>
                       </motion.div>
-                    ) : (
-                      <motion.div
+                    : <motion.div
                         key="editor"
                         animate={{ opacity: 1, x: 0 }}
                         className="prose min-w-full"
@@ -201,10 +257,10 @@ export const EditableMarkdownModal = ({
                           }
                         />
                       </motion.div>
-                    )}
+                    }
                   </AnimatePresence>
                 </div>
-              )}
+              }
             </ModalBody>
 
             {/* Footer Stays Fixed */}
@@ -218,17 +274,16 @@ export const EditableMarkdownModal = ({
                 isDisabled={markdownContent === "No content available."}
                 onPress={() => setPreviewMode((p) => !p)}
               >
-                {previewMode ? (
+                {previewMode ?
                   <>
                     <span className="font-semibold">Edit Mode</span>
                     <IconEdit />
                   </>
-                ) : (
-                  <>
+                : <>
                     <span className="font-semibold">Preview Mode</span>
                     <IconEye />
                   </>
-                )}
+                }
               </Button>
               <SaveButtonPlugin onSave={handleSave} />
             </ModalFooter>
