@@ -9,7 +9,7 @@ import logger from "@/lib/logger";
 
 export async function POST(req) {
   try {
-    const { markdownContent, title } = await req.json();
+    const { markdownContent, title, tocData } = await req.json();
 
     // Load styles and logo
     const cssPath = path.resolve("./styles/pdfStyles.css");
@@ -22,27 +22,122 @@ export async function POST(req) {
     const styles = fs.readFileSync(cssPath, "utf-8");
     const logoBase64 = fs.readFileSync(logoPath, "base64");
 
+    // Generate TOC HTML if tocData is provided
+    const generateTocHtml = (tocData) => {
+      if (!tocData || tocData.length === 0) return "";
+
+      return `
+        <div class="toc-page" style="page-break-after: always;">
+          <h2 style="margin-bottom: 30px; color: #05668d;">Table of Contents</h2>
+          <div class="toc-list">
+            ${tocData
+              .map(
+                (header) => `
+              <div class="toc-item toc-level-${header.level}">
+                <a href="#${header.id}" style="text-decoration: none; color: inherit; display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dotted #ccc;">
+                  <span style="${header.level === 1 ? "font-weight: bold; color: #1f2937;" : "color: #4b5563; margin-left: 20px;"}">${header.title}</span>
+                </a>
+              </div>
+            `
+              )
+              .join("")}
+          </div>
+        </div>
+      `;
+    };
+
+    // Enhanced markdown processing to add anchor IDs
+    const processMarkdownWithAnchors = (markdown) => {
+      return markdown.replace(/^(#{1,2})\s+(.+)$/gm, (match, hashes, title) => {
+        const id = title
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-")
+          .trim();
+
+        return `${hashes} <span id="${id}">${title}</span>`;
+      });
+    };
+
     // Convert Markdown to HTML
     const marked = (await import("marked")).marked;
+    const processedMarkdown = processMarkdownWithAnchors(markdownContent);
+
+    const tocHtml = generateTocHtml(tocData);
+
     const htmlContent = `
     <html>
       <head>
-        <style>${styles}</style>
+        <style>
+          ${styles}
+          
+          /* TOC Specific Styles */
+          .toc-page {
+            padding: 0px 0;
+          }
+          
+          .toc-list {
+            margin-top: 20px;
+          }
+          
+          .toc-item {
+            margin: 0;
+          }
+          
+          .toc-item a {
+            display: block;
+            padding: 8px 0;
+            text-decoration: none;
+            color: inherit;
+            border-bottom: 1px dotted #ccc;
+          }
+          
+          .toc-item a:hover {
+            background-color: #f3f4f6;
+            padding-left: 8px;
+            transition: all 0.2s ease;
+          }
+          
+          .toc-level-1 {
+            font-weight: bold;
+            font-size: 16px;
+            color: #1f2937;
+          }
+          
+          .toc-level-2 {
+            font-size: 14px;
+            color: #4b5563;
+            margin-left: 20px;
+          }
+          
+          /* Ensure proper spacing after TOC */
+          .content-start {
+            page-break-before: always;
+          }
+          
+          /* Style for anchor targets */
+          h1, h2 {
+            scroll-margin-top: 20px;
+          }
+          
+          /* Add some space before main headings */
+          h1:not(:first-child) {
+            page-break-before: auto;
+            margin-top: 40px;
+          }
+        </style>
       </head>
       <body>
         <main>
-          <h1>${title}</h1>
-          ${marked(markdownContent)}
+          <h1 style="margin-bottom: 40px;">${title}</h1>
+          ${tocHtml}
+          <div class="content-start">
+            ${marked(processedMarkdown)}
+          </div>
         </main>
       </body>
     </html>`;
-
-    // Use CHROME_PATH from the Netlify Chrome plugin
-    //const chromePath = process.env.CHROME_PATH;
-
-    /*if (!chromePath) {
-      throw new Error("CHROME_PATH environment variable is not set.");
-    }*/
 
     const isDev = process.env.NODE_ENV === "development";
     const devPath = process.env.CHROME_PATH;
@@ -76,6 +171,8 @@ export async function POST(req) {
         </div>
       `,
       margin: { top: "40mm", bottom: "30mm" },
+      // Enable PDF bookmarks and navigation
+      tagged: true,
     });
 
     await browser.close();
