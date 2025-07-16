@@ -63,8 +63,8 @@ export async function POST(req) {
     logger.debug(`[RATE LIMITER API]: Client data: ${JSON.stringify(clientData)}`);
     logger.info('[RATE LIMITER API]: Picked model:', pickedModel);
 
-     // Step 1: Validate reCAPTCHA Token
-     const isHuman = await verifyReCaptcha(token);
+     // Step 1: Validate reCAPTCHA Token - Removed due to recurring issues with reCAPTCHA during plan generation
+     /*const isHuman = await verifyReCaptcha(token);
 
      if (!isHuman) {
        logger.warn(`[RATE LIMITER API]: ReCaptcha validation failed for user (${userId || ip}).`);
@@ -73,7 +73,7 @@ export async function POST(req) {
          JSON.stringify({ message: "ReCaptcha verification failed. Are you a bot?" }),
          { status: 403, headers: { "Content-Type": "application/json" } }
        );
-     }
+     }*/
 
 
     // Check rate limits
