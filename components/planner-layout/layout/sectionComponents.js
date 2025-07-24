@@ -1,6 +1,7 @@
 import React from 'react';
 import { Textarea } from '@heroui/react';
 
+// eslint-disable-next-line import/order
 import { cn } from '@/lib/utils/utils';
 
 export const StepOuterWrapper = ({ className = '', children }) => {
@@ -52,14 +53,14 @@ export const StepQuestion = ({ content, question, className = '' }) => {
   )
 }
 
-export const StepTextarea = ({ content, label, localValue, handleTextareaChange, isRequired, isInputInvalid, placeholder }) => {
+export const StepTextarea = ({ content, label, localValue, handleTextareaChange, isRequired, isInputInvalid, placeholder, className = '' }) => {
   return (
     <Textarea
-      className="service-description"
+      className={cn("p-1", className)}
       classNames={{
         label: "!text-primary dark:!text-accentMint",
         input: "resize-none pt-2",
-        base: "",
+        base: "w-full",
         inputWrapper: `dark:bg-content1 focus-within:!bg-content1 pt-6 border ${isInputInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
       }}
       isClearable={true}

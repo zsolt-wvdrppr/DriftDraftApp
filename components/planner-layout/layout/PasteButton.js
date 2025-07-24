@@ -37,7 +37,7 @@ const PasteButton = ({ value, handleChange, setError, children }) => {
   return (
     <div className="relative">
       <Link
-        className="paste-btn absolute z-10 right-10 text-secondary dark:text-neutralSnow p-2"
+        className="paste-btn absolute z-20 right-10 text-secondary dark:text-neutralSnow p-2"
         id="paste-btn"
         variant="none"
         onPress={handlePaste}
@@ -47,7 +47,7 @@ const PasteButton = ({ value, handleChange, setError, children }) => {
       {children}
       <Tooltip
         anchorSelect=".paste-btn"
-        className="text-center"
+        className="text-center z-20"
         delayHide={500}
         delayShow={200}
         place="bottom"

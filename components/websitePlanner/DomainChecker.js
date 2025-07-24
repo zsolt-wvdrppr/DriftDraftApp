@@ -206,6 +206,7 @@ const DomainChecker = () => {
     <Input
       className="max-w-sm py-4"
       classNames={{
+        base: "p-1",
         label: "!text-primary dark:!text-accentMint",
         inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border pr-0`,
       }}

@@ -184,6 +184,7 @@ const StepCompetitors = ({ ref }) => {
             >
               <Input
                 classNames={{
+                  base: "p-1",
                   label: "!text-primary dark:!text-accentMint",
                   input: ``,
                   inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${!validateURL(url) && url ? "border-danger" : ""}`,
@@ -230,7 +231,7 @@ const StepCompetitors = ({ ref }) => {
         </AnimatePresence>
         <Button
           aria-label="Add Another URL"
-          className="mt-4 border hover:scale-105 transition-all focus-within:shadow-none"
+          className="m-1 mt-4 border hover:scale-105 transition-all focus-within:shadow-none"
           title="Add Another URL to the list"
           type="button"
           variant="shadow"

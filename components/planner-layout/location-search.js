@@ -43,6 +43,7 @@ const LocationSearch = ({ onSelect }) => {
           isClearable
           aria-label="Business area"
           classNames={{
+            base: "p-1",
             label: "!text-primary dark:!text-accentMint",
             inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border`,
           }}

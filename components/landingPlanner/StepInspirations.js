@@ -148,6 +148,7 @@ const StepInspirations = ({ ref }) => {
             >
               <Input
                 classNames={{
+                  base: "p-1",
                   label: "!text-primary dark:!text-accentMint",
                   input: ``,
                   inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${!validateURL(url) && url ? "border-danger" : ""}`,
@@ -175,6 +176,7 @@ const StepInspirations = ({ ref }) => {
               )}
               <Textarea
                 classNames={{
+                  base: "p-1",
                   label: "!text-primary dark:!text-accentMint",
                   input: "",
                   inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border`,
@@ -190,7 +192,7 @@ const StepInspirations = ({ ref }) => {
           ))}
         </AnimatePresence>
         <Button
-          className="mt-4 border hover:scale-105 transition-all focus-within:shadow-none"
+          className="m-1 mt-4 border hover:scale-105 transition-all focus-within:shadow-none"
           type="button"
           variant="shadow"
           onPress={() => handleAddUrl(urls.length - 1)}

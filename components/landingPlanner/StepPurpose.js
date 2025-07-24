@@ -274,7 +274,7 @@ const StepPurpose = ({ ref }) => {
             </DropdownMenu>
           </Dropdown>
           <Input
-            className="additional-details"
+            className="additional-details p-1"
             classNames={{
               label: "!text-primary dark:!text-accentMint",
               input: "dark:!text-white",
@@ -312,6 +312,7 @@ const StepPurpose = ({ ref }) => {
           value={localServiceDescription}
         >
           <StepTextarea
+            className="service-description"
             content={content}
             handleTextareaChange={handleServiceDescriptionChange}
             isInputInvalid={serviceDescIsInvalid}

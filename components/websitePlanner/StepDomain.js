@@ -125,6 +125,7 @@ const StepDomain = ({ ref }) => {
 
         <Textarea
           classNames={{
+            base: "p-1",
             label: "!text-primary dark:!text-accentMint",
             input: "",
             inputWrapper: `dark:bg-content1 focus-within:!bg-content1 border ${isInputInvalid ? "!bg-red-50 border-danger dark:!bg-content1" : ""}`,
