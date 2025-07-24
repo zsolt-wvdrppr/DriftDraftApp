@@ -37,7 +37,7 @@ const Pricing = () => {
     <div className="max-w-5xl mx-auto px-4 py-12">
       {/* Header */}
       <div className="text-center mb-16">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-4xl font-bold text-primary mb-4">
           Simple, Credit-Based Pricing
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
@@ -45,8 +45,8 @@ const Pricing = () => {
         </p>
 
         {/* CTA Section */}
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8 mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+        <div className="bg-gradient-to-r from-blue-50 dark:from-zinc-900 to-purple-50 dark:to-zinc-800 rounded-xl p-8 mb-12">
+          <h2 className="text-2xl font-bold text-neutralDark mb-4">
             Get Started for Free
           </h2>
           <p className="text-gray-600 mb-6 max-w-xl mx-auto">
@@ -68,14 +68,14 @@ const Pricing = () => {
 
       {/* How Credits Work */}
       <div className="mb-16 w-full">
-        <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
+        <h2 className="text-2xl font-bold text-center text-primary mb-8">
           How Credits Work
         </h2>
         <div className="flex flex-col gap-8">
           {features.map((feature, index) => (
             <div
               key={index}
-              className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow"
+              className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 p-6 shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 p-2 bg-gray-50 rounded-lg">
@@ -83,10 +83,10 @@ const Pricing = () => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-xl font-semibold text-gray-900">
+                    <h3 className="text-xl font-semibold text-neutralDark">
                       {feature.title}
                     </h3>
-                    <span className="text-sm font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                    <span className="text-sm font-medium text-gray-500 dark:text-white bg-gray-100 dark:bg-zinc-800 px-2 py-1 rounded">
                       {feature.cost}
                     </span>
                   </div>
@@ -95,7 +95,7 @@ const Pricing = () => {
                     {feature.details.map((detail, detailIndex) => (
                       <li
                         key={detailIndex}
-                        className="flex items-center gap-2 text-sm text-gray-600"
+                        className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
                       >
                         <LuCheck className="w-4 h-4 text-green-500 flex-shrink-0" />
                         {detail}
@@ -110,9 +110,9 @@ const Pricing = () => {
       </div>
 
       {/* Value Proposition */}
-      <div className="bg-gray-50 rounded-xl p-8 mb-16">
+      <div className="bg-gray-50 dark:bg-zinc-900 rounded-xl p-8 mb-16">
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl font-bold text-primary mb-4">
             Why Choose Credit-Based Pricing?
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
@@ -162,8 +162,8 @@ const Pricing = () => {
       </div>
 
       {/* FAQ Section */}
-      <div className="bg-white rounded-xl border border-gray-200 p-8">
-        <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
+      <div className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-200 dark:border-zinc-800 p-8">
+        <h2 className="text-2xl font-bold text-center text-primary mb-8">
           Frequently Asked Questions
         </h2>
         <div className="grid md:grid-cols-2 gap-8">
