@@ -162,6 +162,7 @@ export default function LogIn() {
             autoComplete="email"
             classNames ={{ input: "text-sm" }}
             label="Email Address"
+            labelPlacement="outside-top"
             name="email"
             placeholder="Enter your email"
             type="email"
@@ -195,6 +196,7 @@ export default function LogIn() {
               </Button>
             }
             label="Password"
+            labelPlacement="outside-top"
             name="password"
             placeholder="Enter your password"
             type={passwordVisible ? "text" : "password"}

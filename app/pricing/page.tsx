@@ -1,17 +1,36 @@
-import { title } from "@/components/primitives";
+import Pricing from "@/components/pricing";
 
 export default function PricingPage() {
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-y-10">
-      <h1 className={`${title()}`}>Pricing</h1>
-      <p className="italic text-primary">{`Detailed pricing's coming soon`}</p>
-      <div className="text-lg">
-        <span>DriftDraft.App operates on a credit-based system:</span><br /><br />
-        <ul className="list-disc list-inside text-left">
-        <li><strong>AI Suggestion:</strong> 1 credit per AI suggestion.</li>
-        <li><strong>Plan Generation:</strong> 5 credits per full plan.</li>
-        </ul>
-      </div>
-    </div>
+    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+      <Pricing />
+    </section>
   );
+}
+
+export async function generateMetadata() {
+  return {
+    title: `Your future website starts here`,
+    description: `DriftDraft.App is a strategic planner that transforms your business requirements into a comprehensive website or landing page blueprint.`,
+    icons: {
+      icon: '/favicon.ico',
+    },
+    openGraph: {
+      type: 'website',
+      locale: 'en_GB',
+      url: 'https://driftdraft.app',
+      siteName: 'DriftDraft.App',
+      title: 'Your future website starts here',
+      description:
+        'DriftDraft.App is a strategic planner that transforms your business requirements into a comprehensive website or landing page blueprint.',
+      images: [
+        {
+          url: 'https://driftdraft.app/og-image.webp',
+          width: 1200,
+          height: 630,
+          alt: 'The Website Blueprint Creator App',
+        },
+      ],
+    },
+  };
 }

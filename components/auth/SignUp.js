@@ -165,6 +165,7 @@ export default function SignUp() {
           <Input
             isRequired
             label="Full Name"
+            labelPlacement="outside-top"
             name="name"
             placeholder="Enter your full name"
             type="text"
@@ -175,6 +176,7 @@ export default function SignUp() {
           <Input
             isRequired
             label="Email"
+            labelPlacement="outside-top"
             name="email"
             placeholder="Enter your email"
             type="email"
@@ -189,8 +191,8 @@ export default function SignUp() {
             }}
             endContent={
               <Button
-                type="button"
                 className="min-w-0"
+                type="button"
                 onPress={toggleVisibility}
               >
                 {isVisible ? (
@@ -207,6 +209,7 @@ export default function SignUp() {
               </Button>
             }
             label="Password"
+            labelPlacement="outside-top"
             name="password"
             placeholder="Enter your password"
             type={isVisible ? "text" : "password"}
