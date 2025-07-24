@@ -160,6 +160,7 @@ export default function LogIn() {
           {/*error && <p className="text-red-500">{error}</p>} {/* Show error */}
           <Input
             autoComplete="email"
+            classNames ={{ input: "text-sm" }}
             label="Email Address"
             name="email"
             placeholder="Enter your email"

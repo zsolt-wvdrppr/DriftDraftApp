@@ -54,3 +54,12 @@ input:-webkit-autofill {
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out;
 }
+
+/* In your global CSS */
+input[type="text"], 
+input[type="email"], 
+input[type="password"], 
+textarea, 
+select {
+  font-size: 16px !important;
+}
