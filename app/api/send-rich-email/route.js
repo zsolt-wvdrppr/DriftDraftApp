@@ -21,7 +21,7 @@ export async function POST(request) {
     logger.debug("Template Model:", templateModel);
 
     const response = await client.sendEmailWithTemplate({
-      From: `${senderName} <invite@driftdraft.app>`, // Verified sender email
+      From: `${senderName} <hello@driftdraft.app>`, // Verified sender email
       To: email,
       ReplyTo: "support@wavedropper.com",
       TemplateId: TemplateId,
