@@ -1,7 +1,6 @@
 export const blogPosts = [
-{
+  {
     id: "blog-post-h9jx59pwxs-4e2j4p3u",
-    tags: [],
     title: "The Ultimate Guide to Strategic Website Planning",
     content: `# The Ultimate Guide to Strategic Website Planning
 
@@ -52,25 +51,18 @@ Create clear paths for different user types:
 The best websites begin with asking the right questions. Whether you're planning a simple brochure site or a complex e-commerce platform, take time to map out your strategy before diving into design.
 
 *Ready to plan your strategic website? Start by clearly defining what success looks like for your business online.*`,
-    categories: [],
-    publishDate: "",
-    featuredImage: {
-      id: "fdb348bb-78ed-4c57-903e-dace1a386de0",
-      alt: "",
-      src: `https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753439250116-2150689404.webp`,
-      mediaId: "fdb348bb-78ed-4c57-903e-dace1a386de0"
-    },
-    publishSchedule: null
+    featuredImage: "",
+    publishSchedule: null,
   },
-{
+  {
     id: "blog-post-h9jx8mz0gg-556j4r6l",
     tags: [
       {
-        type: "asdf"
+        type: "asdf",
       },
       {
-        type: "asdffffds"
-      }
+        type: "asdffffds",
+      },
     ],
     title: "Maximising Performance with Next.js 15 and React 19",
     content: `# Maximising Performance with Next.js 15 and React 19
@@ -89,7 +81,7 @@ React 19's Server Components fundamentally change how we think about application
 ### Implementation Strategy:
 Start by identifying components that don't need client-side interactivity. Forms, content displays, and data presentations are excellent candidates for Server Components.
 
-\\`\\`\\`jsx
+\`\`\`jsx
 // Server Component example
 export default async function ProductList() {
   const products = await fetchProducts();
@@ -102,7 +94,7 @@ export default async function ProductList() {
     </div>
   );
 }
-\\`\\`\\`
+\`\`\`
 
 ## Form Handling with Actions
 
@@ -114,7 +106,7 @@ Multiple useState hooks, loading states, error handling, and submission logic sc
 ### After (Using Actions):
 Clean, declarative forms with built-in loading and error states.
 
-\\`\\`\\`jsx
+\`\`\`jsx
 import { useActionState } from 'react';
 
 function ContactForm() {
@@ -133,7 +125,7 @@ function ContactForm() {
     </form>
   );
 }
-\\`\\`\\`
+\`\`\`
 
 ## Performance Optimisation Strategies
 
@@ -177,24 +169,20 @@ The learning curve is manageable, and the performance benefits make it worthwhil
 *These technologies represent a significant step forward for React applications. The key is understanding when and how to use each feature effectively.*`,
     categories: [
       {
-        type: "asdf"
+        type: "asdf",
       },
-      {
-        type: "SEO"
-      }
     ],
     publishDate: "2025-07-25",
     featuredImage: {
       id: "f119f5a4-f6d6-4cf7-8069-e8241491de06",
       alt: "",
       src: `https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753439163027-waterman.webp`,
-      mediaId: "f119f5a4-f6d6-4cf7-8069-e8241491de06"
+      mediaId: "f119f5a4-f6d6-4cf7-8069-e8241491de06",
     },
-    publishSchedule: null
+    publishSchedule: null,
   },
-{
+  {
     id: "blog-post-h9jx7py5x8-263fh115",
-    tags: [],
     title: "How AI is Transforming Web Development in 2025",
     content: `# How AI is Transforming Web Development in 2025
 
@@ -250,16 +238,9 @@ Here's how we're integrating AI into our development workflow:
 The key is finding the right balance. AI excels at handling repetitive tasks and providing intelligent suggestions, but human creativity and strategic thinking remain irreplaceable.
 
 *The most successful development teams in 2025 will be those that thoughtfully integrate AI tools whilst maintaining focus on user needs and business objectives.*`,
-    categories: [],
-    publishDate: "",
-    featuredImage: {
-      id: "a6080fb6-5bf8-4506-9026-748ad6ca056a",
-      alt: "",
-      src: `https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753469728568-realistic-water-drop-with-ecosystem-world-water-day.webp`,
-      mediaId: "a6080fb6-5bf8-4506-9026-748ad6ca056a"
-    },
-    publishSchedule: null
-  }
+    featuredImage: "",
+    publishSchedule: null,
+  },
 ];
 
 export const blogPostsSchema = {
