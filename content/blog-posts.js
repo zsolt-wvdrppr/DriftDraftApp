@@ -1,5 +1,5 @@
 export const blogPosts = [
-  {
+{
     id: "blog-post-h9jx59pwxs-4e2j4p3u",
     title: "The Ultimate Guide to Strategic Website Planning",
     content: `# The Ultimate Guide to Strategic Website Planning
@@ -54,68 +54,16 @@ The best websites begin with asking the right questions. Whether you're planning
     featuredImage: "",
     publishSchedule: null,
   },
-  {
-    id: "blog-post-h9jx7py5x8-263fh115",
-    title: "How AI is Transforming Web Development in 2025",
-    content: `# How AI is Transforming Web Development in 2025
-
-The web development landscape has changed dramatically over the past year. AI tools are no longer just helpful assistants—they're becoming integral parts of the development process, changing how we approach everything from planning to deployment.
-
-## AI in the Planning Phase
-
-One of the most exciting developments is AI-powered requirement gathering. Tools that can analyse business needs and generate comprehensive development specifications are becoming increasingly sophisticated.
-
-**Benefits we're seeing:**
-- More thorough requirement documentation
-- Reduced miscommunication between clients and developers
-- Faster project kickoff times
-- Better scope definition
-
-## Code Generation and Assistance
-
-Modern AI coding assistants have evolved beyond simple autocomplete:
-
-### What's Working Well:
-- **Component generation:** Creating reusable React components from descriptions
-- **API integration:** Automatically generating client-side code for API endpoints
-- **Testing assistance:** Writing comprehensive test suites
-- **Documentation:** Keeping code documentation current and accurate
-
-### What Still Needs Human Oversight:
-- Architecture decisions
-- Performance optimisation
-- Security considerations
-- Complex business logic
-
-## The User Experience Revolution
-
-AI is particularly powerful in UX/UI design:
-
-**Personalisation at scale:** Websites that adapt content and layout based on user behaviour patterns.
-
-**Accessibility improvements:** Automated alt-text generation, colour contrast checking, and screen reader optimisation.
-
-**Content optimisation:** AI analysing user engagement to suggest content improvements.
-
-## Real-World Implementation
-
-Here's how we're integrating AI into our development workflow:
-
-1. **Requirements gathering:** AI-powered forms that educate clients whilst collecting detailed specifications
-2. **Prototyping:** Rapid wireframe and mockup generation
-3. **Development:** Code assistance and automated testing
-4. **Optimisation:** Performance monitoring and improvement suggestions
-
-## Looking Ahead
-
-The key is finding the right balance. AI excels at handling repetitive tasks and providing intelligent suggestions, but human creativity and strategic thinking remain irreplaceable.
-
-*The most successful development teams in 2025 will be those that thoughtfully integrate AI tools whilst maintaining focus on user needs and business objectives.*`,
-    featuredImage: "",
-    publishSchedule: null,
-  },
-  {
+{
     id: "blog-post-h9jx8mz0gg-556j4r6l",
+    tags: [
+      {
+        type: "ai"
+      },
+      {
+        type: "nextjs"
+      }
+    ],
     title: "Maximising Performance with Next.js 15 and React 19",
     content: `# Maximising Performance with Next.js 15 and React 19
 
@@ -133,7 +81,7 @@ React 19's Server Components fundamentally change how we think about application
 ### Implementation Strategy:
 Start by identifying components that don't need client-side interactivity. Forms, content displays, and data presentations are excellent candidates for Server Components.
 
-\`\`\`jsx
+\\`\\`\\`jsx
 // Server Component example
 export default async function ProductList() {
   const products = await fetchProducts();
@@ -146,7 +94,7 @@ export default async function ProductList() {
     </div>
   );
 }
-\`\`\`
+\\`\\`\\`
 
 ## Form Handling with Actions
 
@@ -158,7 +106,7 @@ Multiple useState hooks, loading states, error handling, and submission logic sc
 ### After (Using Actions):
 Clean, declarative forms with built-in loading and error states.
 
-\`\`\`jsx
+\\`\\`\\`jsx
 import { useActionState } from 'react';
 
 function ContactForm() {
@@ -177,7 +125,7 @@ function ContactForm() {
     </form>
   );
 }
-\`\`\`
+\\`\\`\\`
 
 ## Performance Optimisation Strategies
 
@@ -219,10 +167,20 @@ If you're planning to upgrade, start small:
 The learning curve is manageable, and the performance benefits make it worthwhile for most applications.
 
 *These technologies represent a significant step forward for React applications. The key is understanding when and how to use each feature effectively.*`,
+    categories: [
+      {
+        type: "it"
+      }
+    ],
     publishDate: "2025-07-25",
-    featuredImage: "",
-    publishSchedule: null,
-  },
+    featuredImage: {
+      id: "a6080fb6-5bf8-4506-9026-748ad6ca056a",
+      alt: "",
+      src: `https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753469728568-realistic-water-drop-with-ecosystem-world-water-day.webp`,
+      mediaId: "a6080fb6-5bf8-4506-9026-748ad6ca056a"
+    },
+    publishSchedule: null
+  }
 ];
 
 export const blogPostsSchema = {
