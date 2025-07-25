@@ -1,3 +1,4 @@
+// wave-cms-manifest.js
 export default {
   contentCollections: [
     {
