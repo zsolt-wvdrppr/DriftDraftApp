@@ -1,53 +1,50 @@
 // content/blog-posts.js
 export const blogPosts = [
-  {
+{
     id: "strategic-website-planning-guide",
     title: "The Ultimate Guide to Strategic Website Planning",
-    publishSchedule: {
-      scheduledDate: "2025-07-10T09:00:00Z",
-      status: "published",
-      scheduledBy: "admin",
-    },
-    featuredImage: {
-      alt: "Illustration showing different field types",
-      src: "/images/field-types-banner.jpg",
-      caption: "Field types visualization",
-    },
     content: `# The Ultimate Guide to Strategic Website Planning
 
-Creating a successful website isn't just about making something that looks good—it's about building a strategic tool that drives your business forward. After years of helping businesses transform their online presence, I've learnt that the most successful websites start with proper planning.
+Creating a successful website isn't just about making something that looks good — it's about building a strategic tool that drives your business forward. After years of helping businesses transform their online presence, I've learnt that the most successful websites start with proper planning.
 
 ## Why Strategic Planning Matters
 
 Think of your website like a physical shop. You wouldn't just throw products randomly on shelves and hope customers find what they need. Similarly, your website needs a clear structure that guides visitors towards your goals.
 
 **Key benefits of strategic planning:**
-- Improved user experience and navigation
-- Higher conversion rates
-- Better search engine rankings
-- Reduced development costs and time
-- Clear alignment with business objectives
+
+* Improved user experience and navigation
+* Higher conversion rates
+* Better search engine rankings
+* Reduced development costs and time
+* Clear alignment with business objectives
 
 ## The Planning Process
 
 ### 1. Define Your Goals
+
 Before touching any design software, ask yourself:
-- What do you want visitors to do on your site?
-- How does this website support your business objectives?
-- What success looks like to you?
+
+* What do you want visitors to do on your site?
+* How does this website support your business objectives?
+* What success looks like to you?
 
 ### 2. Understand Your Audience
+
 Research your target users thoroughly:
-- Demographics and preferences
-- Pain points and challenges
-- How they currently find solutions
-- Their journey from awareness to purchase
+
+* Demographics and preferences
+* Pain points and challenges
+* How they currently find solutions
+* Their journey from awareness to purchase
 
 ### 3. Map User Journeys
+
 Create clear paths for different user types:
-- First-time visitors seeking information
-- Returning customers looking for specific services
-- Prospects ready to make a decision
+
+* First-time visitors seeking information
+* Returning customers looking for specific services
+* Prospects ready to make a decision
 
 ## Common Planning Mistakes
 
@@ -62,8 +59,19 @@ Create clear paths for different user types:
 The best websites begin with asking the right questions. Whether you're planning a simple brochure site or a complex e-commerce platform, take time to map out your strategy before diving into design.
 
 *Ready to plan your strategic website? Start by clearly defining what success looks like for your business online.*`,
+    featuredImage: {
+      alt: "Illustration showing different field types",
+      src: "/images/field-types-banner.jpg",
+      caption: "Field types visualization"
+    },
+    publishSchedule: {
+      timezone: "",
+      scheduled_by: "",
+      scheduled_date: null,
+      user_timezone_display: ""
+    }
   },
-  {
+{
     id: "ai-web-development-trends",
     title: "How AI is Transforming Web Development in 2025",
     publishSchedule: {
