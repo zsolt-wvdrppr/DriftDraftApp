@@ -107,8 +107,10 @@ const Blog: React.FC = () => {
   // Filter published posts only
   const publishedPosts = blogPosts.filter((post) => {
     const publishDate =
+      post.publishDate ||
       post.publishSchedule?.scheduledDate ||
-      post.publishSchedule?.scheduled_date;
+      post.publishSchedule?.scheduled_date ||
+      "";
 
     if (!publishDate) return true; // Show posts without schedule
 
