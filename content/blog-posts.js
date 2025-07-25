@@ -1,5 +1,5 @@
 export const blogPosts = [
-  {
+{
     id: "blog-post-h9jx59pwxs-4e2j4p3u",
     title: "The Ultimate Guide to Strategic Website Planning",
     content: `# The Ultimate Guide to Strategic Website Planning
@@ -54,15 +54,15 @@ The best websites begin with asking the right questions. Whether you're planning
     featuredImage: "",
     publishSchedule: null,
   },
-  {
+{
     id: "blog-post-h9jx8mz0gg-556j4r6l",
     tags: [
       {
-        type: "asdf",
+        type: "asdf"
       },
       {
-        type: "asdffffds",
-      },
+        type: "asdffffds"
+      }
     ],
     title: "Maximising Performance with Next.js 15 and React 19",
     content: `# Maximising Performance with Next.js 15 and React 19
@@ -169,19 +169,22 @@ The learning curve is manageable, and the performance benefits make it worthwhil
 *These technologies represent a significant step forward for React applications. The key is understanding when and how to use each feature effectively.*`,
     categories: [
       {
-        type: "asdf",
+        type: "asdf"
       },
+      {
+        type: "seo"
+      }
     ],
     publishDate: "2025-07-25",
     featuredImage: {
       id: "f119f5a4-f6d6-4cf7-8069-e8241491de06",
       alt: "",
-      src: `https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753439163027-waterman.webp`,
-      mediaId: "f119f5a4-f6d6-4cf7-8069-e8241491de06",
+      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753439163027-waterman.webp",
+      mediaId: "f119f5a4-f6d6-4cf7-8069-e8241491de06"
     },
-    publishSchedule: null,
+    publishSchedule: null
   },
-  {
+{
     id: "blog-post-h9jx7py5x8-263fh115",
     title: "How AI is Transforming Web Development in 2025",
     content: `# How AI is Transforming Web Development in 2025
@@ -240,7 +243,7 @@ The key is finding the right balance. AI excels at handling repetitive tasks and
 *The most successful development teams in 2025 will be those that thoughtfully integrate AI tools whilst maintaining focus on user needs and business objectives.*`,
     featuredImage: "",
     publishSchedule: null,
-  },
+  }
 ];
 
 export const blogPostsSchema = {
