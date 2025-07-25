@@ -1,6 +1,7 @@
 export const blogPosts = [
 {
     id: "blog-post-h9jx59pwxs-4e2j4p3u",
+    tags: [],
     title: "The Ultimate Guide to Strategic Website Planning",
     content: `# The Ultimate Guide to Strategic Website Planning
 
@@ -51,8 +52,15 @@ Create clear paths for different user types:
 The best websites begin with asking the right questions. Whether you're planning a simple brochure site or a complex e-commerce platform, take time to map out your strategy before diving into design.
 
 *Ready to plan your strategic website? Start by clearly defining what success looks like for your business online.*`,
-    featuredImage: "",
-    publishSchedule: null,
+    categories: [],
+    publishDate: "",
+    featuredImage: {
+      id: "a6080fb6-5bf8-4506-9026-748ad6ca056a",
+      alt: "",
+      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753469728568-realistic-water-drop-with-ecosystem-world-water-day.webp",
+      mediaId: "a6080fb6-5bf8-4506-9026-748ad6ca056a"
+    },
+    publishSchedule: null
   },
 {
     id: "blog-post-h9jx8mz0gg-556j4r6l",
@@ -186,6 +194,7 @@ The learning curve is manageable, and the performance benefits make it worthwhil
   },
 {
     id: "blog-post-h9jx7py5x8-263fh115",
+    tags: [],
     title: "How AI is Transforming Web Development in 2025",
     content: `# How AI is Transforming Web Development in 2025
 
@@ -241,8 +250,15 @@ Here's how we're integrating AI into our development workflow:
 The key is finding the right balance. AI excels at handling repetitive tasks and providing intelligent suggestions, but human creativity and strategic thinking remain irreplaceable.
 
 *The most successful development teams in 2025 will be those that thoughtfully integrate AI tools whilst maintaining focus on user needs and business objectives.*`,
-    featuredImage: "",
-    publishSchedule: null,
+    categories: [],
+    publishDate: "",
+    featuredImage: {
+      id: "fdb348bb-78ed-4c57-903e-dace1a386de0",
+      alt: "",
+      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753439250116-2150689404.webp",
+      mediaId: "fdb348bb-78ed-4c57-903e-dace1a386de0"
+    },
+    publishSchedule: null
   }
 ];
 
