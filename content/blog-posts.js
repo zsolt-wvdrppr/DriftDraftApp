@@ -261,13 +261,13 @@ export const blogPostsSchema = {
       type: "array",
       items: { type: "string" },
       max_items: 5,
-      label: "Benefits List",
+      label: "Tags",
     },
     categories: {
       type: "array",
       items: { type: "string" },
       max_items: 5,
-      label: "Benefits List",
+      label: "Categories",
     },
   },
 };
