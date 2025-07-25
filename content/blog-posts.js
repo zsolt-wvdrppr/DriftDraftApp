@@ -186,7 +186,7 @@ The learning curve is manageable, and the performance benefits make it worthwhil
     publishDate: "2025-07-25",
     featuredImage: {
       id: "f119f5a4-f6d6-4cf7-8069-e8241491de06",
-      alt: "",
+      alt: "g",
       src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753439163027-waterman.webp",
       mediaId: "f119f5a4-f6d6-4cf7-8069-e8241491de06"
     },
@@ -204,27 +204,46 @@ The web development landscape has changed dramatically over the past year. AI to
 
 One of the most exciting developments is AI-powered requirement gathering. Tools that can analyse business needs and generate comprehensive development specifications are becoming increasingly sophisticated.
 
-**Benefits we're seeing:**
-- More thorough requirement documentation
-- Reduced miscommunication between clients and developers
-- Faster project kickoff times
-- Better scope definition
+**Benefits we're seeing:asfasefasdf**
+
+
+
+
+
+```javascript
+```
+
+sdfsdfsadf
+
+
+
+```javascript
+```
+
+
+
+* More thorough requirement documentationasdfasdf
+* Reduced miscommunication between clients and developers
+* Faster project kickoff times
+* Better scope definition
 
 ## Code Generation and Assistance
 
 Modern AI coding assistants have evolved beyond simple autocomplete:
 
 ### What's Working Well:
-- **Component generation:** Creating reusable React components from descriptions
-- **API integration:** Automatically generating client-side code for API endpoints
-- **Testing assistance:** Writing comprehensive test suites
-- **Documentation:** Keeping code documentation current and accurate
+
+* **Component generation:** Creating reusable React components from descriptions
+* **API integration:** Automatically generating client-side code for API endpoints
+* **Testing assistance:** Writing comprehensive test suites
+* **Documentation:** Keeping code documentation current and accurate
 
 ### What Still Needs Human Oversight:
-- Architecture decisions
-- Performance optimisation
-- Security considerations
-- Complex business logic
+
+* Architecture decisions
+* Performance optimisation
+* Security considerations
+* Complex business logic
 
 ## The User Experience Revolution
 
