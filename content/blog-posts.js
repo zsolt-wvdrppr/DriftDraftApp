@@ -1,11 +1,11 @@
 // content/blog-posts.js
 export const blogPosts = [
-  {
+{
     id: "strategic-website-planning-guide",
     title: "The Ultimate Guide to Strategic Website Planning",
     content: `# The Ultimate Guide to Strategic Website Planning
 
-Creating a successful website isn't just about making something that looks good. It's about building a strategic tool that drives your business forward. After years of helping businesses transform their online presence, I've learnt that the most successful websites start with proper planning.
+Creating a successful website isn't just about making something that looks good, it's about building a strategic tool that drives your business forward. After years of helping businesses transform their online presence, I've learnt that the most successful websites start with proper planning.
 
 ## Why Strategic Planning Matters
 
@@ -63,16 +63,16 @@ The best websites begin with asking the right questions. Whether you're planning
       id: "f119f5a4-f6d6-4cf7-8069-e8241491de06",
       alt: "Illustration showing different field types",
       src: `https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753439163027-waterman.webp`,
-      mediaId: "f119f5a4-f6d6-4cf7-8069-e8241491de06",
+      mediaId: "f119f5a4-f6d6-4cf7-8069-e8241491de06"
     },
     publishSchedule: {
       timezone: "",
       scheduled_by: "",
       scheduled_date: null,
-      user_timezone_display: "",
-    },
+      user_timezone_display: ""
+    }
   },
-  {
+{
     id: "ai-web-development-trends",
     title: "How AI is Transforming Web Development in 2025",
     content: `# How AI is Transforming Web Development in 2025
