@@ -60,10 +60,10 @@ The best websites begin with asking the right questions. Whether you're planning
 
 *Ready to plan your strategic website? Start by clearly defining what success looks like for your business online.*`,
     featuredImage: {
-      id: "f119f5a4-f6d6-4cf7-8069-e8241491de06",
+      id: "fdb348bb-78ed-4c57-903e-dace1a386de0",
       alt: "Illustration showing different field types",
-      src: `https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753439163027-waterman.webp`,
-      mediaId: "f119f5a4-f6d6-4cf7-8069-e8241491de06"
+      src: `https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753439250116-2150689404.webp`,
+      mediaId: "fdb348bb-78ed-4c57-903e-dace1a386de0"
     },
     publishSchedule: {
       timezone: "",
