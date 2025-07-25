@@ -1,7 +1,11 @@
-export default function PricingLayout({
+export default function BlogLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="flex justify-center">{children}</div>;
+  return (
+    <div className="w-full">
+      {children}
+    </div>
+  );
 }
