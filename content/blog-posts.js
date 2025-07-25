@@ -5,6 +5,84 @@ export const blogPosts = [
     title: "Maximising Performance with Next.js 15 and React 19",
     content: `## Maximising Performance with Next.js 15 and React 19
 
+The latest versions of Next.js and React bring significant performance improvements and developer experience enhancements. Having spent the last few months working with these technologies on production projects, here are the key insights for getting the most out of them.
+
+\## Server Components: The Game Changer
+
+React 19's Server Components fundamentally change how we think about application architecture.
+
+\### Key Benefits:
+
+\- \*\*Reduced bundle size:\*\* Server-side rendering means less JavaScript shipped to clients
+
+\- \*\*Improved SEO:\*\* Content rendered on the server is immediately available to search engines
+
+\- \*\*Better performance:\*\* Especially noticeable on slower devices and connections
+
+\### Implementation Strategy:
+
+Start by identifying components that don't need client-side interactivity. Forms, content displays, and data presentations are excellent candidates for Server Components.
+
+\`\`\`javascript
+jsx
+// Server Component example
+export default async function ProductList() {
+  const products = await fetchProducts();
+  
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {products.map(product => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  );
+}
+\`\`\`
+
+\## Form Handling with Actionsssdf
+
+React 19's form Actions eliminate much of the complexity around form state management.
+
+\### Before (Complex state management):
+
+Multiple useState hooks, loading states, error handling, and submission logic scattered throughout components.
+
+\### After (Using Actions):
+
+Clean, declarative forms with built-in loading and error states.
+
+\`\`\`javascript
+jsx
+import { useActionState } from 'react';
+
+function ContactForm() {
+  const [state, submitAction, isPending] = useActionState(
+    submitContactForm,
+    { message: '', errors: {} }
+  );
+  
+  return (
+    <form action={submitAction}>
+      <input name="email" type="email" required />
+      <button disabled={isPending}>
+        {isPending ? 'Submitting...' : 'Submit'}
+      </button>
+      {state.errors.email && <span>{state.errors.email}</span>}
+    </form>
+  );
+}
+\`\`\``,
+    categories: [],
+    publishDate: "",
+    featuredImage: "",
+    publishSchedule: null
+  },
+{
+    id: "blog-post-h9jzo51zsc-5c24404d",
+    tags: [],
+    title: "Maximising Performance with Next.js 15 and React 19",
+    content: `## Maximising Performance with Next.js 15 and React 19
+
 
 
 
