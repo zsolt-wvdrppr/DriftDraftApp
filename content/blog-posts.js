@@ -258,14 +258,14 @@ export const blogPostsSchema = {
       required: true,
     },
     tags: {
-      type: "array",
-      items: { type: "string" },
+      type: "repeater",
+      fields: { type: "string" },
       max_items: 5,
       label: "Tags",
     },
     categories: {
-      type: "array",
-      items: { type: "string" },
+      type: "repeater",
+      fields: { type: "string" },
       max_items: 5,
       label: "Categories",
     },
