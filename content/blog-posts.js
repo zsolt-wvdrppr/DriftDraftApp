@@ -17,6 +17,7 @@ export const blogPosts = [
     id: "blog-post-h9jx8mz0gg-556j4r6l",
     title: "Maximising Performance with Next.js 15 and React 19",
     content: "turd",
+    publishDate: "2025-07-25",
     featuredImage: "",
     publishSchedule: null
   }
