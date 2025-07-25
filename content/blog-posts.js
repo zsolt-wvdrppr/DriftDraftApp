@@ -38,6 +38,9 @@ export const blogPostsSchema = {
       required: false,
       includeAuthor: true,
     },
+    publishDate: {
+      type: "date",
+    },
     featuredImage: {
       type: "image",
       description: "Post thumbnail and featured image",
