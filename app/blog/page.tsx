@@ -1,8 +1,11 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 import { blogPosts } from "@/content/blog-posts";
+import BlogFilters from "@/components/blog/blog-filter";
 
 // Helper function to extract excerpt from markdown content
 const getExcerpt = (content: string, maxLength: number = 160): string => {
@@ -77,6 +80,25 @@ const BlogCard: React.FC<{ post: any }> = ({ post }) => {
           {excerpt}
         </p>
 
+        {/* Tags */}
+        {post.tags && post.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-4">
+            {post.tags.slice(0, 3).map((tag: { type: string }, index: number) => (
+              <span
+                key={index}
+                className="px-2 py-1 text-xs bg-neutralCream dark:bg-slate-700 text-neutralGray dark:text-slate-300 rounded-full"
+              >
+                {tag.type}
+              </span>
+            ))}
+            {post.tags.length > 3 && (
+              <span className="px-2 py-1 text-xs text-neutralGray dark:text-slate-400">
+                +{post.tags.length - 3} more
+              </span>
+            )}
+          </div>
+        )}
+
         {/* Read More Link */}
         <Link
           className="inline-flex items-center text-primary dark:text-accent font-semibold hover:text-secondary dark:hover:text-accentMint transition-colors duration-200"
@@ -104,16 +126,21 @@ const BlogCard: React.FC<{ post: any }> = ({ post }) => {
 
 // Main Blog Component
 const Blog: React.FC = () => {
-  // Filter published posts only
-  const publishedPosts = blogPosts.filter((post) => {
-    const publishDate =
-      post.publishDate ||
-      "";
+  const [filteredPosts, setFilteredPosts] = useState(blogPosts);
+
+  // Filter published posts from the filtered results
+  const publishedFilteredPosts = filteredPosts.filter((post) => {
+    const publishDate = post.publishDate || "";
 
     if (!publishDate) return true; // Show posts without schedule
 
     return new Date(publishDate) <= new Date(); // Show only past dates
   });
+
+  // Handle filtered results from BlogFilters component
+  const handleFilteredResults = (results: typeof blogPosts) => {
+    setFilteredPosts(results);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral via-neutralCream/30 to-neutral dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
@@ -134,14 +161,27 @@ const Blog: React.FC = () => {
           </div>
         </header>
 
+        {/* Blog Filters */}
+        <div className="mb-12">
+          <BlogFilters
+            className="" // Add any additional CSS classes if needed
+            collapsible={false}
+            layout="horizontal" // or "vertical"
+            posts={blogPosts}
+            showResultsCount={true}
+            onFilteredResults={handleFilteredResults}
+          />
+        </div>
+
         {/* Blog Posts Grid */}
-        {publishedPosts.length > 0 ?
+        {publishedFilteredPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {publishedPosts.map((post) => (
+            {publishedFilteredPosts.map((post) => (
               <BlogCard key={post.id} post={post} />
             ))}
           </div>
-        : <div className="text-center py-16">
+        ) : (
+          <div className="text-center py-16">
             <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-neutralCream dark:bg-slate-700 flex items-center justify-center">
               <svg
                 className="w-12 h-12 text-neutralGray dark:text-slate-400"
@@ -158,13 +198,13 @@ const Blog: React.FC = () => {
               </svg>
             </div>
             <h3 className="text-xl font-semibold text-neutralDark dark:text-neutral mb-2">
-              No posts available
+              No posts found
             </h3>
             <p className="text-neutralGray dark:text-slate-300">
-              Check back soon for new content!
+              Try adjusting your search or filter criteria.
             </p>
           </div>
-        }
+        )}
 
         {/* Newsletter CTA */}
         <section className="mt-20 bg-gradient-to-r from-primary via-secondary to-secondaryTeal rounded-3xl p-8 md:p-12 text-center">
