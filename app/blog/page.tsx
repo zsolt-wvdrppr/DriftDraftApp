@@ -41,9 +41,10 @@ const formatDate = (dateString: string): string => {
 };
 
 // BlogCard Component
-const BlogCard: React.FC<{ post: any }> = ({ post }) => {
+const BlogCard: React.FC<{ post: any, index: number }> = ({ post, index }) => {
   const excerpt = getExcerpt(post.content);
   const publishDate =
+    post.publishDate ||
     post.publishSchedule?.scheduledDate || post.publishSchedule?.scheduled_date;
 
   return (
@@ -55,6 +56,9 @@ const BlogCard: React.FC<{ post: any }> = ({ post }) => {
             fill
             alt={post.featuredImage.alt || post.title}
             className="object-cover transition-transform duration-300 group-hover:scale-105"
+            priority={index < 3} // Load first 3 images eagerly
+            quality={80}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             src={post.featuredImage.src}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
@@ -176,8 +180,8 @@ const Blog: React.FC = () => {
         {/* Blog Posts Grid */}
         {publishedFilteredPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {publishedFilteredPosts.map((post) => (
-              <BlogCard key={post.id} post={post} />
+            {publishedFilteredPosts.map((post, index) => (
+              <BlogCard key={post.id} index={index} post={post} />
             ))}
           </div>
         ) : (

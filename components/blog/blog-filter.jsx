@@ -34,10 +34,11 @@ export default function BlogFilters({
 }) {
   // Filter states
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedTags, setSelectedTags] = useState([]);
   const [tagLogic, setTagLogic] = useState("or"); // "or" or "and"
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState(new Set());
+  const [isOpen, setIsOpen] = useState(false);
 
   // Extract unique categories and tags from posts
   const { categories, tags } = useMemo(() => {
@@ -81,9 +82,13 @@ export default function BlogFilters({
       }
 
       // Category filter
-      if (selectedCategory !== "all") {
-        const postCategories = post.categories?.map((cat) => cat.type) || [];
-        if (!postCategories.includes(selectedCategory)) {
+      if (selectedCategories.size > 0) {
+        const postCategories =
+          post.categories?.map((cat) => cat.type.toLowerCase()) || [];
+        const hasMatchingCategory = Array.from(selectedCategories).some(
+          (selectedCat) => postCategories.includes(selectedCat)
+        );
+        if (!hasMatchingCategory) {
           return false;
         }
       }
@@ -107,7 +112,7 @@ export default function BlogFilters({
 
       return true;
     });
-  }, [posts, searchTerm, selectedCategory, selectedTags, tagLogic]);
+  }, [posts, searchTerm, selectedCategories, selectedTags, tagLogic]);
 
   // Notify parent of filtered results
   useEffect(() => {
@@ -128,13 +133,13 @@ export default function BlogFilters({
   // Clear all filters
   const clearAllFilters = () => {
     setSearchTerm("");
-    setSelectedCategory("all");
+    setSelectedCategories(new Set());
     setSelectedTags([]);
   };
 
   // Check if any filters are active
   const hasActiveFilters =
-    searchTerm.trim() || selectedCategory !== "all" || selectedTags.length > 0;
+    searchTerm.trim() || selectedCategories.size > 0 || selectedTags.length > 0;
 
   // Render filter content
   const renderFilterContent = () => (
@@ -144,6 +149,8 @@ export default function BlogFilters({
       {/* Search Input */}
       <div className={layout === "horizontal" ? "lg:flex-1" : ""}>
         <Input
+          type="search"
+          aria-label="Search postss"
           placeholder="Search posts..."
           value={searchTerm}
           onValueChange={setSearchTerm}
@@ -153,33 +160,12 @@ export default function BlogFilters({
           classNames={{
             base: "w-full",
             inputWrapper: "bg-white dark:bg-neutralDark",
+            input: "text-[16px] focus-visible:outline-none",
           }}
         />
       </div>
 
-      {/* Category Filter */}
-      <div className={layout === "horizontal" ? "lg:w-48" : ""}>
-        <Select
-          placeholder="All categories"
-          selectedKeys={selectedCategory !== "all" ? [selectedCategory] : []}
-          onSelectionChange={(keys) => {
-            const selected = Array.from(keys)[0];
-            setSelectedCategory(selected || "all");
-          }}
-          classNames={{
-            trigger: "bg-white dark:bg-neutralDark",
-          }}
-        >
-          <SelectItem key="all">All categories</SelectItem>
-          {categories.map((category) => (
-            <SelectItem key={category} value={category}>
-              {category}
-            </SelectItem>
-          ))}
-        </Select>
-      </div>
-
-      {/* Clear Filters Button */}
+         {/* Clear Filters Button */}
       {hasActiveFilters && (
         <div className={layout === "horizontal" ? "lg:w-auto" : ""}>
           <Button
@@ -187,12 +173,35 @@ export default function BlogFilters({
             color="default"
             onPress={clearAllFilters}
             startContent={<TbX size={16} />}
-            className="w-full lg:w-auto"
+            className=""
           >
             Clear filters
           </Button>
         </div>
       )}
+
+      {/* Category Filter */}
+      <div className={layout === "horizontal" ? "lg:w-48" : ""}>
+        <Select
+          aria-label="Select categories"
+          //isClearable={true}
+          className="w-full"
+          placeholder="All categories"
+          selectedKeys={selectedCategories}
+          selectionMode="multiple"
+          onSelectionChange={setSelectedCategories}
+          placement="bottom-start"
+          offset={8}
+          classNames={{
+            trigger: "bg-white dark:bg-neutralDark",
+            popoverContent: "bg-zinc-200 dark:bg-neutralDark",
+          }}
+        >
+          {categories.map((category) => (
+            <SelectItem key={category.toLowerCase()}>{category}</SelectItem>
+          ))}
+        </Select>
+      </div>
     </div>
   );
 
