@@ -120,7 +120,7 @@ export default function BlogLayoutWithSidebar({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Top Filter Button - All screen sizes */}
         {showMobileToggle && (
-          <div className="mb-6 mr-28 sm:mr-40">
+          <div className="mb-6 pr-28 sm:pr-40 w-full">
             <Button
               aria-label="Toggle filters"
               className="w-full"
@@ -194,7 +194,7 @@ export default function BlogLayoutWithSidebar({
               <BlogFilters
                 className="border-0 shadow-none bg-transparent"
                 collapsible={false}
-                compact={true}
+                compact={false}
                 layout="vertical"
                 posts={posts}
                 showResultsCount={true}
@@ -286,7 +286,7 @@ export function useBlogSidebar(posts: Post[]): UseBlogSidebarReturn {
   const FilterToggle = (): ReactElement => (
     <>
       {/* Top button */}
-      <div className="mb-6">
+      <div className="mb-6 pr-28 sm:pr-40">
         <Button
           aria-label="Toggle filters"
           className="w-full"

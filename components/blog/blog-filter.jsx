@@ -312,7 +312,7 @@ export default function BlogFilters({
           </div>
 
           {/* Compact Filter Content */}
-          <div className="space-y-3">
+          <div className="space-y-4 flex flex-col justify-end items-end h-full">
             {/* Search */}
             <Input
               aria-label="Search posts"

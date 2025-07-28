@@ -77,7 +77,7 @@ function BlogPostCard({ post, index }) {
         )}
       </CardHeader>
 
-      <CardBody className="p-6 flex flex-col h-full">
+      <CardBody className="px-4 pb-0 pt-4 flex flex-col h-full">
         {/* Categories */}
         {post.categories && post.categories.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
@@ -108,7 +108,7 @@ function BlogPostCard({ post, index }) {
         )}
         {/* Tags */}
         {post.tags && post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-3 pt-3 h-12">
+          <div className="flex flex-wrap gap-1 h-12 pt-3 sm:pt-2">
             {post.tags.slice(0, 3).map((tag, index) => (
               <Chip
                 key={index}
@@ -279,12 +279,7 @@ export default function BlogPostGrid({
   // Grid layout (default)
   return (
     <div
-      className={`relative grid gap-6 md:gap-8 ${
-        sortedPosts.length === 1 ? "grid-cols-1 max-w-2xl mx-auto"
-        : sortedPosts.length === 2 ?
-          "grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto"
-        : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
-      } ${className}`}
+      className={`relative grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 ${className}`}
     >
       {/* Sort button */}
       <BlogSortButton
