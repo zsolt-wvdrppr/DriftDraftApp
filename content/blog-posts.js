@@ -65,6 +65,7 @@ The best websites begin with asking the right questions. Whether you're planning
   },
 {
     id: "blog-post-h9jx8mz0gg-556j4r6l",
+    pinned: true,
     tags: [
       {
         type: "asdf",

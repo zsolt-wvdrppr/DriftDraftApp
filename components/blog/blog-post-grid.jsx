@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Card, CardBody, CardHeader, CardFooter, Chip } from "@heroui/react";
-import { TbCalendar, TbUser, TbArrowRight } from "react-icons/tb";
+import { TbCalendar, TbUser, TbArrowRight, TbStarFilled } from "react-icons/tb";
 import logger from "@/lib/logger";
 import BlogSortButton from "@/components/blog/blog-sort-button";
 import { useBlogPostSort } from "@/lib/hooks/blog/useBlogPostSort";
@@ -45,9 +45,21 @@ function BlogPostCard({ post, index }) {
     post.publishSchedule?.scheduledDate ||
     post.publishSchedule?.scheduled_date;
   const excerpt = getExcerpt(post.content);
+  const isPinned = Boolean(post.pinned);
 
   return (
     <Card className="h-full hover:shadow-lg transition-all duration-300 group border border-neutralGray/20 dark:border-slate-700">
+      {isPinned && (
+        <div className="absolute top-3 right-3 z-20">
+          <Chip
+            size="sm"
+            variant="solid"
+            className="text-xs font-medium bg-highlightYellow text-white"
+          >
+            <TbStarFilled size={16} />
+          </Chip>
+        </div>
+      )}
       <CardHeader className="p-0">
         {/* Featured Image */}
         {post.featuredImage?.src && (
@@ -274,14 +286,14 @@ export default function BlogPostGrid({
         : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
       } ${className}`}
     >
-          {/* Sort button */}
-        <BlogSortButton
-          className="absolute -top-6 h-10 right-0 transform -translate-y-full rounded-xl"
-          sortOrder={sortOrder}
-          onToggleSort={toggleSort}
-          variant="bordered"
-          size="sm"
-        />
+      {/* Sort button */}
+      <BlogSortButton
+        className="absolute -top-6 h-10 right-0 transform -translate-y-full rounded-xl"
+        sortOrder={sortOrder}
+        onToggleSort={toggleSort}
+        variant="bordered"
+        size="sm"
+      />
       {sortedPosts.map((post, index) => (
         <BlogPostCard key={post.id} post={post} index={index} />
       ))}

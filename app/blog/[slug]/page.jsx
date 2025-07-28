@@ -49,7 +49,7 @@ export default function BlogPost({ params }) {
   const publishDate = post.publishSchedule?.scheduledDate || post.publishSchedule?.scheduled_date;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral via-neutralCream/30 to-neutral dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <div className="min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back to Blog Link */}
         <Link 
@@ -178,6 +178,11 @@ export default function BlogPost({ params }) {
                   <em className="italic text-neutralDark dark:text-slate-300">
                     {children}
                   </em>
+                ),
+                pre: ({ children }) => (
+                  <pre className="bg-neutralDark dark:bg-slate-800 text-neutral p-4 rounded-lg overflow-x-auto font-mono text-sm">
+                    {children}
+                  </pre>
                 ),
               }}
             >
