@@ -3,6 +3,7 @@ export const blogPosts = [
     id: "blog-post-h9jx59pwxs-4e2j4p3u",
     tags: [],
     title: "The Ultimate Guide to Strategic Website Planning",
+    pinned: true,
     content: `# The Ultimate Guide to Strategic Website Planning
 
 Creating a successful website isn't just about making something that looks good—it's about building a strategic tool that drives your business forward. After years of helping businesses transform their online presence, I've learnt that the most successful websites start with proper planning.
