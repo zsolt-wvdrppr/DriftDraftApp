@@ -53,7 +53,7 @@ The best websites begin with asking the right questions. Whether you're planning
 
 *Ready to plan your strategic website? Start by clearly defining what success looks like for your business online.*`,
     categories: [],
-    publishDate: "",
+    publishDate: "2025-07-21",
     featuredImage: {
       id: "fdb348bb-78ed-4c57-903e-dace1a386de0",
       alt: "",
@@ -69,7 +69,22 @@ The best websites begin with asking the right questions. Whether you're planning
         type: "asdf",
       },
       {
-        type: "asdffffds",
+        type: "asdfffffds",
+      },
+      {
+        type: "asdfsfffds",
+      },
+      {
+        type: "as6dffffds",
+      },
+      {
+        type: "asdf5fffds",
+      },
+      {
+        type: "asdff4ffds",
+      },
+      {
+        type: "asdf9fffds",
       },
     ],
     title: "Maximising Performance with Next.js 15 and React 19",
@@ -256,7 +271,7 @@ The key is finding the right balance. AI excels at handling repetitive tasks and
         type: "Coding"
       }
     ],
-    publishDate: "",
+    publishDate: "2025-07-28",
     featuredImage: {
       id: "a6080fb6-5bf8-4506-9026-748ad6ca056a",
       alt: "",
@@ -285,6 +300,10 @@ export const blogPostsSchema = {
     },
     publishDate: {
       type: "date",
+    },
+    pinned: {
+      type: "boolean",
+      label: "Pinned Post",
     },
     featuredImage: {
       type: "image",
