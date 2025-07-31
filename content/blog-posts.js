@@ -96,10 +96,10 @@ Your business deserves a website that works as hard as you do. The question isn'
         type: "Website Strategy"
       },
       {
-        type: "Website Strategy"
+        type: "Business Growth"
       },
       {
-        type: "Website Strategy"
+        type: "Marketing Psychology"
       }
     ],
     publishDate: "2025-07-31",
