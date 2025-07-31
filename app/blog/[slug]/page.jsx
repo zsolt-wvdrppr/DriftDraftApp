@@ -64,7 +64,9 @@ export default async function BlogPost({ params }) {
   }
 
   const publishDate =
-    post.publishSchedule?.scheduledDate || post.publishSchedule?.scheduled_date;
+    post.publishDate ||
+    post.publishSchedule?.scheduledDate ||
+    post.publishSchedule?.scheduled_date;
 
   return (
     <div className="min-h-screen">
@@ -107,7 +109,7 @@ export default async function BlogPost({ params }) {
           )}
 
           {/* Meta Info */}
-          {publishDate && (
+          {true && (
             <time className="text-sm text-secondary dark:text-accent font-medium">
               {formatDate(publishDate)}
             </time>
