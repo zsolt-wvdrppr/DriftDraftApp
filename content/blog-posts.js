@@ -88,18 +88,9 @@ Your business deserves a website that works as hard as you do. The question isn'
 
 ***
 
-**Ready to move beyond "cheap and minimal"?** \[Try DriftDraft's strategic planner] and discover what your website could achieve with proper psychological planning behind it.
+**Ready to move beyond "cheap and minimal"?** Try DriftDraft's strategic  planner and discover what your website could achieve with proper psychological planning behind it.
 
-***
-
-## Related Blog Topics to Explore:
-
-1. **"The Psychology Behind Website Colours: Why Your Brand Palette Is Costing You Sales"** - Deep dive into emotional colour theory and cultural psychology
-2. **"5 Trust Signals Your Competitors Use (That You're Probably Missing)"** - Authority establishment and social proof strategies
-3. **"How to Research Your Competitors Without Looking Desperate"** - Strategic competitor analysis for positioning
-4. **"The Hidden Psychology of Navigation: Why Users Abandon Well-Designed Websites"** - User flow and conversion psychology
-5. **"What Your Target Audience Actually Thinks (And How to Find Out)"** - Audience research and persona development beyond demographics
-6. **"The 6-Second Website Test: Does Your Homepage Pass?"** - First impression psychology and identity installation techniques`,
+***`,
     categories: [
       {
         type: "Website Strategy"
