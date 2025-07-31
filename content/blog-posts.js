@@ -1,4 +1,21 @@
-export const blogPosts = [];
+export const blogPosts = [
+{
+    id: "blog-post-h9qitp8ztn-1p51263v",
+    tags: [],
+    title: "The \"Cheap and Minimal\" Website Trap: Why Smart Business Owners Think Differently",
+    pinned: false,
+    content: "s",
+    categories: [],
+    publishDate: "",
+    featuredImage: {
+      id: "ab4a4c29-db42-496a-b757-f17bd24bd352",
+      alt: "Well oiled cricket bat shoots into the digital world",
+      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753989620980-cricketbatdigital.webp",
+      mediaId: "ab4a4c29-db42-496a-b757-f17bd24bd352"
+    },
+    publishSchedule: null
+  }
+];
 
 export const blogPostsSchema = {
   name: "Blog Post",
