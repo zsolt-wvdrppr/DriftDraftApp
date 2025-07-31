@@ -4,6 +4,7 @@ import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import { blogPosts } from "@/content/blog-posts";
 import ShareSection from "@/components/blog/share-section";
+import { slugify } from "@/lib/utils/utils";
 
 // Helper function to format date
 const formatDate = (dateString) => {
@@ -18,7 +19,7 @@ const formatDate = (dateString) => {
 // Generate static params for all blog posts
 export async function generateStaticParams() {
   return blogPosts.map((post) => ({
-    slug: post.id,
+    slug: slugify(post.title, post.id), // ✅ Use slugified version
   }));
 }
 
@@ -26,7 +27,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }) {
   const _params = await params;
 
-  const post = blogPosts.find((post) => post.id === _params.slug);
+  const post = blogPosts.find(
+    (post) => slugify(post.title, post.id) === _params.slug
+  );
 
   if (!post) {
     return {
@@ -47,7 +50,9 @@ export async function generateMetadata({ params }) {
 export default async function BlogPost({ params }) {
   const _params = await params;
 
-  const post = blogPosts.find((post) => post.id === _params.slug);
+  const post = blogPosts.find(
+    (post) => slugify(post.title, post.id) === _params.slug
+  );
 
   if (!post) {
     notFound();

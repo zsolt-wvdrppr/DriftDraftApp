@@ -9,6 +9,7 @@ import BlogSortButton from "@/components/blog/blog-sort-button";
 import BlogPagination from "@/components/blog/blog-pagination";
 import { useBlogPostSort } from "@/lib/hooks/blog/useBlogPostSort";
 import { useBlogPagination } from "@/lib/hooks/blog/useBlogPagination";
+import { slugify } from "@/lib/utils/utils";
 
 // Helper functions
 const formatDate = (dateString) => {
@@ -119,13 +120,15 @@ const AnimatedBlogPostCard = ({ post, index }) => {
           )}
 
           {/* Title */}
-          <h3 className="text-xl font-bold text-neutralDark dark:text-neutral mb-3 line-clamp-2 group-hover:text-primary dark:group-hover:text-accent transition-colors">
-            <Link href={`/blog/${post.id}`}>{post.title}</Link>
+          <h3 className="text-xl font-bold text-neutralDark dark:text-neutralGray mb-3 line-clamp-2 group-hover:text-primary dark:group-hover:text-accent transition-colors">
+            <Link href={`/blog/${slugify(post.title, post.id)}`}>
+              {post.title}
+            </Link>
           </h3>
 
           {/* Excerpt */}
           {excerpt && (
-            <p className="text-neutralGray dark:text-slate-400 text-sm leading-relaxed mb-4 flex-grow hidden md:block">
+            <p className="text-neutralDark dark:text-neutralLight text-sm leading-relaxed mb-4 flex-grow hidden md:block">
               {excerpt}
             </p>
           )}
@@ -161,7 +164,7 @@ const AnimatedBlogPostCard = ({ post, index }) => {
 
         <CardFooter className="min-h-16 flex flex-col justify-between items-stretch">
           <div className="flex items-center justify-between pt-4 border-t border-neutralGray/20 dark:border-slate-700">
-            <div className="flex items-center gap-4 text-xs text-neutralGray dark:text-slate-400">
+            <div className="flex items-center gap-4 text-xs text-zinc-500 dark:text-slate-400">
               {publishDate && (
                 <div className="flex items-center gap-1">
                   <TbCalendar size={14} />
@@ -175,7 +178,7 @@ const AnimatedBlogPostCard = ({ post, index }) => {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <Link
-                href={`/blog/${post.id}`}
+                href={`/blog/${slugify(post.title, post.id)}`}
                 className="flex items-center gap-1 text-primary dark:text-accent hover:gap-2 transition-all duration-200 text-sm font-medium"
               >
                 Read more
@@ -281,7 +284,7 @@ const AnimatedBlogPostList = ({ posts }) => {
 
                   <h3 className="text-xl font-bold text-neutralDark dark:text-neutral mb-2">
                     <Link
-                      href={`/blog/${post.id}`}
+                      href={`/blog/${slugify(post.title, post.id)}`}
                       className="hover:text-primary dark:hover:text-accent transition-colors hover:no-underline"
                     >
                       {post.title}
@@ -311,7 +314,7 @@ const AnimatedBlogPostList = ({ posts }) => {
                     transition={{ type: "spring", stiffness: 300 }}
                   >
                     <Link
-                      href={`/blog/${post.id}`}
+                      href={`/blog/${slugify(post.title, post.id)}`}
                       className="flex items-center gap-1 text-primary dark:text-accent hover:gap-2 transition-all duration-200 text-sm font-medium"
                     >
                       Read more <TbArrowRight size={14} />
@@ -327,6 +330,17 @@ const AnimatedBlogPostList = ({ posts }) => {
   );
 };
 
+const CARD_HEIGHT = 534; // Approximate card height in pixels
+const GAP_SIZE = 24; // Gap between cards (gap-6 = 24px)
+const CARDS_PER_ROW = { sm: 1, md: 2, xl: 3 }; // Responsive breakpoints
+
+// Helper to calculate expected grid height
+const calculateGridHeight = (postCount, screenSize = "xl") => {
+  const cardsPerRow = CARDS_PER_ROW[screenSize];
+  const rows = Math.ceil(postCount / cardsPerRow);
+  return rows * CARD_HEIGHT + (rows - 1) * GAP_SIZE;
+};
+
 /**
  * Main Animated Blog Post Grid Component
  */
@@ -339,15 +353,38 @@ export default function AnimatedBlogPostGrid({
   paginationProps = {},
 }) {
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [canShowNewCards, setCanShowNewCards] = useState(true);
+  const [gridHeight, setGridHeight] = useState("auto");
   const { sortedPosts, sortOrder, toggleSort } = useBlogPostSort(posts);
   const paginationData = useBlogPagination(sortedPosts, pageSize, true);
   const { currentPosts, isPaginationNeeded, currentPage } = paginationData;
 
   // Handle page transitions
+  // Enhanced page transition handling
   useEffect(() => {
-    setIsTransitioning(true);
-    const timer = setTimeout(() => setIsTransitioning(false), 100);
-    return () => clearTimeout(timer);
+    if (currentPage || sortedPosts.length) {
+      setIsTransitioning(true);
+      setCanShowNewCards(false);
+
+      // Calculate and set grid height before transition
+      const expectedHeight = calculateGridHeight(currentPosts.length);
+      setGridHeight(expectedHeight);
+
+      // Sequential timing: exit → pause → enter
+      const exitTimer = setTimeout(() => {
+        setCanShowNewCards(true);
+      }, 300); // After cards exit (0.3s)
+
+      const completeTimer = setTimeout(() => {
+        setIsTransitioning(false);
+        setGridHeight("auto"); // Reset to auto after transition
+      }, 700); // After cards enter (0.3s exit + 0.1s pause + 0.3s enter)
+
+      return () => {
+        clearTimeout(exitTimer);
+        clearTimeout(completeTimer);
+      };
+    }
   }, [currentPage, sortedPosts.length]);
 
   // Debug logging
@@ -451,31 +488,43 @@ export default function AnimatedBlogPostGrid({
           <motion.div
             className="grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
             layout
+            style={{
+              minHeight: isTransitioning ? gridHeight : "auto",
+              transition: "min-height 0.3s ease-in-out",
+            }}
           >
-            <AnimatePresence mode="popLayout">
-              {currentPosts.map((post, index) => (
-                <motion.div
-                  key={`${post.id}-${currentPage}`} // Include page in key for page transitions
-                  layout
-                  initial={{ opacity: 0, y: 60, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -60, scale: 0.9 }}
-                  transition={{
-                    duration: 0.5,
-                    delay: index * 0.1,
-                    type: "spring",
-                    stiffness: 100,
-                    damping: 12,
-                  }}
-                  whileHover={{
-                    y: -2,
-                    scale: 1.01,
-                    transition: { duration: 0.2 },
-                  }}
-                >
-                  <AnimatedBlogPostCard post={post} index={index} />
-                </motion.div>
-              ))}
+            <AnimatePresence
+              mode="wait"
+              onExitComplete={() => {
+                // Ensure cards can enter after exit completes
+                setTimeout(() => setCanShowNewCards(true), 100);
+              }}
+            >
+              {canShowNewCards &&
+                currentPosts.map((post, index) => (
+                  <motion.div
+                    key={`${post.id}-${currentPage}`}
+                    layout
+                    layoutId={`card-${post.id}`} // Add layoutId for smoother transitions
+                    initial={{ opacity: 0, y: 60, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -30, scale: 0.95 }} // Faster, less dramatic exit
+                    transition={{
+                      duration: 0.4,
+                      delay: canShowNewCards ? index * 0.05 : 0, // Reduced stagger delay
+                      type: "spring",
+                      stiffness: 120,
+                      damping: 15,
+                    }}
+                    whileHover={{
+                      y: -2,
+                      scale: 1.01,
+                      transition: { duration: 0.2 },
+                    }}
+                  >
+                    <AnimatedBlogPostCard post={post} index={index} />
+                  </motion.div>
+                ))}
             </AnimatePresence>
           </motion.div>
         </div>
@@ -485,8 +534,14 @@ export default function AnimatedBlogPostGrid({
       {showPagination && isPaginationNeeded && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0 }}
+          animate={{
+            opacity: isTransitioning ? 0.7 : 1,
+            y: 0,
+          }}
+          transition={{
+            delay: isTransitioning ? 0 : 0.5, // Delay until after cards settle
+            duration: 0.3,
+          }}
           layout
         >
           <BlogPagination

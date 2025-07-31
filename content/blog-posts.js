@@ -1059,6 +1059,238 @@ The key is finding the right balance. AI excels at handling repetitive tasks and
     },
     publishSchedule: null
   },
+  // Add more blog posts as needed
+   {
+    id: "blog-post-h9jx7py5x8-263fh1153s1",
+    tags: [
+      {
+        type: "Code"
+      }
+    ],
+    title: "How AI is Transforming Web Development in 2025",
+    content: `The web development landscape has changed dramatically over the past year. AI tools are no longer just helpful assistants—they're becoming integral parts of the development process, changing how we approach everything from planning to deployment.
+
+## AI in the Planning Phase
+
+One of the most exciting developments is AI-powered requirement gathering. Tools that can analyse business needs and generate comprehensive development specifications are becoming increasingly sophisticated.
+
+**Benefits we're seeing:**
+- More thorough requirement documentation
+- Reduced miscommunication between clients and developers
+- Faster project kickoff times
+- Better scope definition
+
+## Code Generation and Assistance
+
+Modern AI coding assistants have evolved beyond simple autocomplete:
+
+### What's Working Well:
+- **Component generation:** Creating reusable React components from descriptions
+- **API integration:** Automatically generating client-side code for API endpoints
+- **Testing assistance:** Writing comprehensive test suites
+- **Documentation:** Keeping code documentation current and accurate
+
+### What Still Needs Human Oversight:
+- Architecture decisions
+- Performance optimisation
+- Security considerations
+- Complex business logic
+
+## The User Experience Revolution
+
+AI is particularly powerful in UX/UI design:
+
+**Personalisation at scale:** Websites that adapt content and layout based on user behaviour patterns.
+
+**Accessibility improvements:** Automated alt-text generation, colour contrast checking, and screen reader optimisation.
+
+**Content optimisation:** AI analysing user engagement to suggest content improvements.
+
+## Real-World Implementation
+
+Here's how we're integrating AI into our development workflow:
+
+1. **Requirements gathering:** AI-powered forms that educate clients whilst collecting detailed specifications
+2. **Prototyping:** Rapid wireframe and mockup generation
+3. **Development:** Code assistance and automated testing
+4. **Optimisation:** Performance monitoring and improvement suggestions
+
+## Looking Ahead
+
+The key is finding the right balance. AI excels at handling repetitive tasks and providing intelligent suggestions, but human creativity and strategic thinking remain irreplaceable.
+
+*The most successful development teams in 2025 will be those that thoughtfully integrate AI tools whilst maintaining focus on user needs and business objectives.*`,
+    categories: [
+      {
+        type: "Coding"
+      },
+      {
+        type: "Strategy"
+      }
+    ],
+    publishDate: "2025-07-28",
+    featuredImage: {
+      id: "a6080fb6-5bf8-4506-9026-748ad6ca056a",
+      alt: "",
+      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753469728568-realistic-water-drop-with-ecosystem-world-water-day.webp",
+      mediaId: "a6080fb6-5bf8-4506-9026-748ad6ca056a"
+    },
+    publishSchedule: null
+  },
+   {
+    id: "blog-post-h9jx7py5x8-263fh1153s2",
+    tags: [
+      {
+        type: "Code"
+      }
+    ],
+    title: "How AI is Transforming Web Development in 2025",
+    content: `The web development landscape has changed dramatically over the past year. AI tools are no longer just helpful assistants—they're becoming integral parts of the development process, changing how we approach everything from planning to deployment.
+
+## AI in the Planning Phase
+
+One of the most exciting developments is AI-powered requirement gathering. Tools that can analyse business needs and generate comprehensive development specifications are becoming increasingly sophisticated.
+
+**Benefits we're seeing:**
+- More thorough requirement documentation
+- Reduced miscommunication between clients and developers
+- Faster project kickoff times
+- Better scope definition
+
+## Code Generation and Assistance
+
+Modern AI coding assistants have evolved beyond simple autocomplete:
+
+### What's Working Well:
+- **Component generation:** Creating reusable React components from descriptions
+- **API integration:** Automatically generating client-side code for API endpoints
+- **Testing assistance:** Writing comprehensive test suites
+- **Documentation:** Keeping code documentation current and accurate
+
+### What Still Needs Human Oversight:
+- Architecture decisions
+- Performance optimisation
+- Security considerations
+- Complex business logic
+
+## The User Experience Revolution
+
+AI is particularly powerful in UX/UI design:
+
+**Personalisation at scale:** Websites that adapt content and layout based on user behaviour patterns.
+
+**Accessibility improvements:** Automated alt-text generation, colour contrast checking, and screen reader optimisation.
+
+**Content optimisation:** AI analysing user engagement to suggest content improvements.
+
+## Real-World Implementation
+
+Here's how we're integrating AI into our development workflow:
+
+1. **Requirements gathering:** AI-powered forms that educate clients whilst collecting detailed specifications
+2. **Prototyping:** Rapid wireframe and mockup generation
+3. **Development:** Code assistance and automated testing
+4. **Optimisation:** Performance monitoring and improvement suggestions
+
+## Looking Ahead
+
+The key is finding the right balance. AI excels at handling repetitive tasks and providing intelligent suggestions, but human creativity and strategic thinking remain irreplaceable.
+
+*The most successful development teams in 2025 will be those that thoughtfully integrate AI tools whilst maintaining focus on user needs and business objectives.*`,
+    categories: [
+      {
+        type: "Coding"
+      },
+      {
+        type: "Strategy"
+      }
+    ],
+    publishDate: "2025-07-28",
+    featuredImage: {
+      id: "a6080fb6-5bf8-4506-9026-748ad6ca056a",
+      alt: "",
+      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753469728568-realistic-water-drop-with-ecosystem-world-water-day.webp",
+      mediaId: "a6080fb6-5bf8-4506-9026-748ad6ca056a"
+    },
+    publishSchedule: null
+  },
+   {
+    id: "blog-post-h9jx7py5x8-263fh1153s3",
+    tags: [
+      {
+        type: "Code"
+      }
+    ],
+    title: "How AI is Transforming Web Development in 2025",
+    content: `The web development landscape has changed dramatically over the past year. AI tools are no longer just helpful assistants—they're becoming integral parts of the development process, changing how we approach everything from planning to deployment.
+
+## AI in the Planning Phase
+
+One of the most exciting developments is AI-powered requirement gathering. Tools that can analyse business needs and generate comprehensive development specifications are becoming increasingly sophisticated.
+
+**Benefits we're seeing:**
+- More thorough requirement documentation
+- Reduced miscommunication between clients and developers
+- Faster project kickoff times
+- Better scope definition
+
+## Code Generation and Assistance
+
+Modern AI coding assistants have evolved beyond simple autocomplete:
+
+### What's Working Well:
+- **Component generation:** Creating reusable React components from descriptions
+- **API integration:** Automatically generating client-side code for API endpoints
+- **Testing assistance:** Writing comprehensive test suites
+- **Documentation:** Keeping code documentation current and accurate
+
+### What Still Needs Human Oversight:
+- Architecture decisions
+- Performance optimisation
+- Security considerations
+- Complex business logic
+
+## The User Experience Revolution
+
+AI is particularly powerful in UX/UI design:
+
+**Personalisation at scale:** Websites that adapt content and layout based on user behaviour patterns.
+
+**Accessibility improvements:** Automated alt-text generation, colour contrast checking, and screen reader optimisation.
+
+**Content optimisation:** AI analysing user engagement to suggest content improvements.
+
+## Real-World Implementation
+
+Here's how we're integrating AI into our development workflow:
+
+1. **Requirements gathering:** AI-powered forms that educate clients whilst collecting detailed specifications
+2. **Prototyping:** Rapid wireframe and mockup generation
+3. **Development:** Code assistance and automated testing
+4. **Optimisation:** Performance monitoring and improvement suggestions
+
+## Looking Ahead
+
+The key is finding the right balance. AI excels at handling repetitive tasks and providing intelligent suggestions, but human creativity and strategic thinking remain irreplaceable.
+
+*The most successful development teams in 2025 will be those that thoughtfully integrate AI tools whilst maintaining focus on user needs and business objectives.*`,
+    categories: [
+      {
+        type: "Coding"
+      },
+      {
+        type: "Strategy"
+      }
+    ],
+    publishDate: "2025-07-28",
+    featuredImage: {
+      id: "a6080fb6-5bf8-4506-9026-748ad6ca056a",
+      alt: "",
+      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753469728568-realistic-water-drop-with-ecosystem-world-water-day.webp",
+      mediaId: "a6080fb6-5bf8-4506-9026-748ad6ca056a"
+    },
+    publishSchedule: null
+  },
 ];
 
 export const blogPostsSchema = {

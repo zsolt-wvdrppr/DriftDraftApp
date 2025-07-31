@@ -163,12 +163,12 @@ export function getPlannerTypeFromPath(pathname: string) {
 
 /**
  * Saves a user preference while respecting their consent choices.
- * 
+ *
  * This function checks if the user has granted preferences consent before
  * saving data persistently to localStorage. If preferences consent has not
  * been granted, it falls back to sessionStorage which is cleared when the
  * browser session ends, ensuring compliance with privacy regulations.
- * 
+ *
  * @param {string} key - The key to store the preference under
  * @param {T} value - The preference value to store
  * @returns {void}
@@ -181,17 +181,16 @@ export const saveUserPreference = <T>(key: string, value: T): void => {
     marketing?: boolean;
     preferences?: boolean;
   }
-  
+
   // Get current consent status
   const storedConsent: ConsentSettings = JSON.parse(
     localStorage.getItem("cookieConsent") || "{}"
   );
-  
+
   // Convert value to string appropriately
-  const valueToStore = typeof value === 'string' 
-    ? value 
-    : JSON.stringify(value);
-  
+  const valueToStore =
+    typeof value === "string" ? value : JSON.stringify(value);
+
   if (storedConsent.preferences === true) {
     // User has given preference consent, store persistently
     localStorage.setItem(key, valueToStore);
@@ -248,7 +247,7 @@ export const COUNTRIES = [
 
 // Helper function to check if a country is in the EU
 export const isEUCountry = (countryCode: string) => {
-  const country = COUNTRIES.find(c => c.value === countryCode);
+  const country = COUNTRIES.find((c) => c.value === countryCode);
 
   return country ? country.isEU : false;
 };
@@ -256,9 +255,53 @@ export const isEUCountry = (countryCode: string) => {
 // VAT number validation
 export const validateVatNumber = (vatNumber: string, countryCode: any) => {
   if (!vatNumber || !countryCode) return false;
-  
+
   // Basic format: 2-letter country code followed by 8-12 alphanumeric characters
   const vatRegex = new RegExp(`^${countryCode}[0-9A-Za-z]{8,12}$`);
 
   return vatRegex.test(vatNumber);
+};
+
+/**
+ * Converts a blog post title and ID into a SEO-friendly slug
+ * @param {string} title - The blog post title
+ * @param {string} id - The unique post ID
+ * @returns {string} - SEO-friendly slug in format: "title-words-shortid"
+ */
+/**
+ * Converts a blog post title and ID into a SEO-friendly slug
+ * @param title - The blog post title
+ * @param id - The unique post ID
+ * @returns SEO-friendly slug in format: "title-words-shortid"
+ */
+export const slugify = (title: string, id: string): string => {
+  if (!title || !id) {
+    throw new Error("Both title and id are required");
+  }
+
+  // Extract a more unique portion of the ID
+  // Remove 'blog-post-' prefix if it exists, then take last 12 chars for better uniqueness
+  const cleanId = id.replace(/^blog-post-/, "");
+  const shortId = cleanId.slice(-12);
+
+  // Process the title
+  const titleSlug = title
+    .toLowerCase()
+    .trim()
+    // Remove common stop words for cleaner URLs
+    .replace(/\b(the|and|or|but|in|on|at|to|for|of|with|by|a|an)\b/g, "")
+    // Replace spaces and special characters with hyphens
+    .replace(/[^a-z0-9]+/g, "-")
+    // Remove multiple consecutive hyphens
+    .replace(/-+/g, "-")
+    // Remove leading/trailing hyphens
+    .replace(/^-|-$/g, "")
+    // Limit to first 5-6 meaningful words (roughly 50 chars)
+    .split("-")
+    .filter((word: string) => word.length > 0)
+    .slice(0, 6)
+    .join("-");
+
+  // Combine title slug with short ID
+  return `${titleSlug}-${shortId}`;
 };
