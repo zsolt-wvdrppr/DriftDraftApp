@@ -6,7 +6,8 @@
 		"dev": "next dev --turbo",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint . --ext .ts,.tsx --fix --config eslint.config.mjs"
+		"lint": "next lint . --ext .ts,.tsx --fix --config eslint.config.mjs",
+		"postbuild": "next-sitemap"
 	},
 	"dependencies": {
 		"@google/generative-ai": "^0.24.0",
@@ -33,7 +34,7 @@
 		"@tailwindcss/typography": "^0.5.16",
 		"clsx": "2.1.1",
 		"crypto-js": "^4.2.0",
-		"framer-motion": "~12.19.1",
+		"framer-motion": "~12.23.9",
 		"fs": "0.0.1-security",
 		"intl-messageformat": "^10.7.15",
 		"js-cookie": "^3.0.5",
@@ -42,6 +43,7 @@
 		"netlify-plugin-chromium": "^1.1.4",
 		"next": "15.1.5",
 		"next-recaptcha-v3": "^1.5.2",
+		"next-sitemap": "^4.2.3",
 		"next-themes": "^0.4.4",
 		"path": "^0.12.7",
 		"postmark": "^4.0.5",

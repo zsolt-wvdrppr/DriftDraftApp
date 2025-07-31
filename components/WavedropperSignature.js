@@ -85,7 +85,7 @@ font-weight: bold;
     >
       <Logo />
       <div className="flex flex-col items-start justify-center pl-4">
-        <p className="text-neutralDark dark:text-slate-300 text-xs m-0">Created & Powered by</p>
+        <p className="text-neutralDark dark:text-slate-300 text-xs m-0">Created by</p>
         <p className="text-neutralDark dark:text-slate-300 text-sm m-0">Wavedropper</p>
       </div>
     </Link>
