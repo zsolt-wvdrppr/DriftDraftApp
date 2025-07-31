@@ -2,7 +2,6 @@
 
 import BlogPostGrid from "@/components/blog/blog-post-grid";
 import { blogPosts } from "@/content/blog-posts";
-
 import BlogLayoutWithSidebar from "@/components/blog/blog-layout-with-sidebar";
 
 // Main Blog Component
