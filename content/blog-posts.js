@@ -1,12 +1,26 @@
 export const blogPosts = [
 {
     id: "blog-post-h9qitp8ztn-1p51263v",
-    tags: [],
+    tags: [
+      {
+        type: "website planning"
+      },
+      {
+        type: "business strategy"
+      },
+      {
+        type: "conversion psychology"
+      },
+      {
+        type: "cheap websites"
+      },
+      {
+        type: "cheap websites"
+      }
+    ],
     title: "The \"Cheap and Minimal\" Website Trap: Why Smart Business Owners Think Differently",
     pinned: false,
-    content: `# The "Cheap and Minimal" Website Trap: Why Smart Business Owners Think Differently
-
-You're a business owner who started your company to make real money, not to blend into the background with a website that screams "budget constraints."
+    content: `You're a business owner who started your company to make real money, not to blend into the background with a website that screams "budget constraints."
 
 Yet here's what happens: successful entrepreneurs walk into web design conversations saying "I want something cheap and minimal" – completely unaware they're about to sabotage their own success.
 
@@ -20,19 +34,20 @@ There's a world of difference between strategic minimalism and cutting corners. 
 
 ## Why Your Website Needs to Work Like a Well-Oiled Cricket Bat
 
-Your website is your 24/7 salesperson. Would you hire the cheapest salesperson available? 
+Your website is your 24/7 salesperson. Would you hire the cheapest salesperson available?
 
 A cricket bat needs to perform flawlessly when it matters – that crucial moment when the ball comes flying. Your website faces the same pressure when prospects are deciding whether to trust you with their money.
 
 Every element should serve a purpose:
-- **Colour psychology** that guides emotions
-- **Trust signals** that reduce anxiety  
-- **User flow** that feels natural, not confusing
-- **Persuasion triggers** that address real concerns
+
+* **Colour psychology** that guides emotions
+* **Trust signals** that reduce anxiety
+* **User flow** that feels natural, not confusing
+* **Persuasion triggers** that address real concerns
 
 ## The Hidden Cost of "Minimal Investment"
 
-While you're saving £500 on "unnecessary" features, your competitors with strategic websites are stealing customers. 
+While you're saving £500 on "unnecessary" features, your competitors with strategic websites are stealing customers.
 
 That "minimal" contact form missing trust badges? It's costing you conversions. That stripped-back design without social proof? Visitors are clicking away to competitors who look more established.
 
@@ -43,10 +58,11 @@ The brutal truth: cheap websites signal to customers that you don't invest in yo
 Smart business owners understand that website investment isn't an expense – it's their most valuable marketing asset working around the clock.
 
 They ask different questions:
-- How do we guide visitors emotionally from interest to purchase?
-- What psychological triggers does our audience respond to?
-- Which trust signals eliminate buying hesitation?
-- How do we position against competitors without looking desperate?
+
+* How do we guide visitors emotionally from interest to purchase?
+* What psychological triggers does our audience respond to?
+* Which trust signals eliminate buying hesitation?
+* How do we position against competitors without looking desperate?
 
 This is where **strategic planning** becomes crucial. You don't need to be a marketer to get this right – but you do need to think beyond budget constraints.
 
@@ -54,11 +70,11 @@ This is where **strategic planning** becomes crucial. You don't need to be a mar
 
 This is precisely why we built DriftDraft. Instead of guessing what your business needs, our strategic planner guides you through proven psychological frameworks:
 
-- **Identity positioning** that makes visitors think "this is for me"
-- **Emotional mapping** that guides feelings throughout the user journey
-- **Authority establishment** that builds trust before the sale
-- **Competitor analysis** that positions you strategically
-- **Conversion psychology** that turns visits into customers
+* **Identity positioning** that makes visitors think "this is for me"
+* **Emotional mapping** that guides feelings throughout the user journey
+* **Authority establishment** that builds trust before the sale
+* **Competitor analysis** that positions you strategically
+* **Conversion psychology** that turns visits into customers
 
 You don't need marketing expertise – DriftDraft translates your business knowledge into strategic website requirements that actually convert.
 
@@ -70,27 +86,32 @@ Strategic websites feel effortless because every element has been planned with p
 
 Your business deserves a website that works as hard as you do. The question isn't whether you can afford strategic planning – it's whether you can afford not to have it.
 
----
+***
 
-**Ready to move beyond "cheap and minimal"?** [Try DriftDraft's strategic planner] and discover what your website could achieve with proper psychological planning behind it.
+**Ready to move beyond "cheap and minimal"?** \[Try DriftDraft's strategic planner] and discover what your website could achieve with proper psychological planning behind it.
 
----
+***
 
 ## Related Blog Topics to Explore:
 
 1. **"The Psychology Behind Website Colours: Why Your Brand Palette Is Costing You Sales"** - Deep dive into emotional colour theory and cultural psychology
-
 2. **"5 Trust Signals Your Competitors Use (That You're Probably Missing)"** - Authority establishment and social proof strategies
-
 3. **"How to Research Your Competitors Without Looking Desperate"** - Strategic competitor analysis for positioning
-
 4. **"The Hidden Psychology of Navigation: Why Users Abandon Well-Designed Websites"** - User flow and conversion psychology
-
 5. **"What Your Target Audience Actually Thinks (And How to Find Out)"** - Audience research and persona development beyond demographics
-
 6. **"The 6-Second Website Test: Does Your Homepage Pass?"** - First impression psychology and identity installation techniques`,
-    categories: [],
-    publishDate: "",
+    categories: [
+      {
+        type: "Website Strategy"
+      },
+      {
+        type: "Website Strategy"
+      },
+      {
+        type: "Website Strategy"
+      }
+    ],
+    publishDate: "2025-07-31",
     featuredImage: {
       id: "ab4a4c29-db42-496a-b757-f17bd24bd352",
       alt: "Well oiled cricket bat shoots into the digital world",
