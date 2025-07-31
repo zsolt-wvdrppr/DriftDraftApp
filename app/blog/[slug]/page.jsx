@@ -150,14 +150,19 @@ export default async function BlogPost({ params }) {
                 ),
                 // Custom list styles
                 ul: ({ children }) => (
-                  <ul className="list-disc list-inside text-neutralDark dark:text-slate-300 mb-4 space-y-2">
+                  <ul className="list-disc list-inside text-neutralDark dark:text-slate-300 mb-4 pl-0 space-y-2">
                     {children}
                   </ul>
                 ),
                 ol: ({ children }) => (
-                  <ol className="list-decimal list-inside text-neutralDark dark:text-slate-300 mb-4 space-y-2">
+                  <ol className="list-decimal list-inside text-neutralDark dark:text-slate-300 mb-4 pl-0 space-y-2">
                     {children}
                   </ol>
+                ),
+                li: ({ children }) => (
+                  <li className="text-neutralDark dark:text-slate-300 leading-snug">
+                    {children}
+                  </li>
                 ),
                 // Custom code styles
                 code: ({ children, className }) => {
@@ -198,7 +203,7 @@ export default async function BlogPost({ params }) {
                 ),
                 // Custom strong/bold styles
                 strong: ({ children }) => (
-                  <strong className="font-bold text-neutralDark dark:text-neutral">
+                  <strong className="font-semibold text-neutralDark dark:text-neutral">
                     {children}
                   </strong>
                 ),
