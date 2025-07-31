@@ -5,16 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { blogPosts } from "@/content/blog-posts";
 import ShareSection from "@/components/blog/share-section";
 import { slugify } from "@/lib/utils/utils";
-
-// Helper function to format date
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-GB", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
+import { formatDate } from "@/lib/utils/utils";
 
 // Generate static params for all blog posts
 export async function generateStaticParams() {
@@ -37,12 +28,26 @@ export async function generateMetadata({ params }) {
     };
   }
 
+  const description = post.content
+    .substring(0, 160)
+    .replace(/#{1,6}\s+/g, "")
+    .replace(/\*\*(.*?)\*\*/g, "$1");
+
   return {
     title: post.title,
-    description: post.content
-      .substring(0, 160)
-      .replace(/#{1,6}\s+/g, "")
-      .replace(/\*\*(.*?)\*\*/g, "$1"),
+    description: description,
+    openGraph: {
+      title: post.title,
+      description: description,
+      ...(post.featuredImage?.src && {
+        images: [
+          {
+            url: post.featuredImage.src,
+            alt: post.featuredImage.alt || post.title,
+          },
+        ],
+      }),
+    },
   };
 }
 

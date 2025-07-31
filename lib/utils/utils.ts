@@ -32,6 +32,17 @@ export const formatDateToLocal = (timestampz: any) => {
   });
 };
 
+// Helper function to format date
+export const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+
+  return date.toLocaleDateString("en-GB", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
 export const formatTimeToLocalAMPM = (timestampz: any) => {
   if (!timestampz) return "N/A"; // Handle missing or invalid timestampz
 
@@ -304,4 +315,19 @@ export const slugify = (title: string, id: string): string => {
 
   // Combine title slug with short ID
   return `${titleSlug}-${shortId}`;
+};
+
+export const getExcerpt = (content: string, maxLength = 150) => {
+  if (!content) return "";
+  const plainText = content
+    .replace(/#{1,6}\s+/g, "")
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .replace(/\[(.*?)\]\(.*?\)/g, "$1")
+    .replace(/`(.*?)`/g, "$1")
+    .trim();
+
+  return plainText.length > maxLength ?
+      plainText.substring(0, maxLength) + "..."
+    : plainText;
 };

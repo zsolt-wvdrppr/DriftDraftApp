@@ -10,32 +10,8 @@ import BlogPagination from "@/components/blog/blog-pagination";
 import { useBlogPostSort } from "@/lib/hooks/blog/useBlogPostSort";
 import { useBlogPagination } from "@/lib/hooks/blog/useBlogPagination";
 import { slugify } from "@/lib/utils/utils";
-
-// Helper functions
-const formatDate = (dateString) => {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-GB", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
-
-const getExcerpt = (content, maxLength = 150) => {
-  if (!content) return "";
-  const plainText = content
-    .replace(/#{1,6}\s+/g, "")
-    .replace(/\*\*(.*?)\*\*/g, "$1")
-    .replace(/\*(.*?)\*/g, "$1")
-    .replace(/\[(.*?)\]\(.*?\)/g, "$1")
-    .replace(/`(.*?)`/g, "$1")
-    .trim();
-
-  return plainText.length > maxLength ?
-      plainText.substring(0, maxLength) + "..."
-    : plainText;
-};
+import { formatDate } from "@/lib/utils/utils";
+import { getExcerpt } from "@/lib/utils/utils";
 
 /**
  * Animated Blog Post Card with Framer Motion
