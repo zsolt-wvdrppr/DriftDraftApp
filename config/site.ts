@@ -2,7 +2,8 @@ export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
   name: "DriftDraft.App - Strategic Website Planner",
-  description: "DriftDraft.App is a strategic website planner that helps you plan your website content and structure.",
+  description:
+    "DriftDraft.App is a strategic website planner that helps you plan your website content and structure.",
   navItems: [
     {
       label: "Home",
@@ -11,6 +12,10 @@ export const siteConfig = {
     {
       label: "Pricing",
       href: "/pricing",
+    },
+    {
+      label: "Blog",
+      href: "/blog",
     },
     {
       label: "Docs",
