@@ -1,157 +1,153 @@
+// Updated component using the content object
 "use client";
 
 import VideoPlayer from "@/components/video-player/video-player";
 import ReactMarkdown from "react-markdown";
 import TextReader from "@/components/text-reader";
-import { Divider } from "@heroui/react";
-import { Link } from "@heroui/react";
+import { Divider, Link } from "@heroui/react";
+import CalloutText from "@/components/callout-text";
+//import { homePageContent } from "./homePageContent"; // Import the content
+
+// Content object for DriftDraft homepage - concise psychological framework
+export const homePageContent = {
+  hero: {
+    identity:
+      "For business owners who know their website should convert—but don't know why it doesn't.",
+    headline: "Get the strategic blueprint that turns visitors into customers.",
+    cta: "Get Your Blueprint",
+    socialProof: "Start with free credits — no commitment required",
+  },
+
+  sections: [
+    {
+      id: "website-blueprint",
+      title: "Strategic Website Blueprint",
+      content: `Get the **psychological framework** that professional brands use to convert visitors. Shows exactly what your website should say and how to guide visitors towards taking action—**avoiding costly mistakes** that lose customers.`,
+      followUp: `Download as PDF, refine endlessly, brief developers confidently. The competitive edge you've been missing.`,
+      videoUrl: "/guide-videos/website-planner-purpose.mp4",
+      placement: "left",
+    },
+    {
+      id: "competition-discovery",
+      title: "Competition Discovery",
+      content: `Instantly discover who you're competing against locally. Clear **competitive positioning** analysis with one-click research—saving hours of manual work.`,
+      videoUrl: "/guide-videos/competitors-guide.mp4",
+      placement: "right",
+    },
+    {
+      id: "domain-discovery",
+      title: "Strategic Domain Names",
+      content: `Find domains that reinforce your brand authority. Smart alternatives suggested automatically—your domain works as hard as your marketing.`,
+      videoUrl: "/guide-videos/domain-guide.mp4",
+      placement: "left",
+    },
+    {
+      id: "blueprint-generation",
+      title: "Blueprint Generation",
+      content: `Complete the strategic questionnaire, get your comprehensive blueprint immediately. Access anytime via "My Activities".`,
+      exampleLink: {
+        text: "Example blueprint",
+        url: "/khalsa2pedal_mobile_bike_service.pdf",
+      },
+      followUp: `Based on proven conversion psychology. Professional consultation recommended for implementation.`,
+      videoUrl: "/guide-videos/generation-guide.mp4",
+      placement: "right",
+    },
+    {
+      id: "plan-management",
+      title: "Plan Management",
+      content: `Your strategic workspace—review, edit, download, or regenerate blueprints. Easy organisation and PDF export for important versions.`,
+      followUp: `Start with free credits. Complete blueprint: 5 credits. Top up via "Subscription & Credits" in your account.`,
+      videoUrl: "/guide-videos/activities-guide.mp4",
+      placement: "left",
+    },
+  ],
+
+  // Simplified authority messaging
+  authority: {
+    contrast:
+      "Whilst competitors guess at what works, you'll have proven conversion psychology.",
+    value:
+      "£4 delivers what consultants charge £2,000+ for—strategic advantage in minutes, not months.",
+  },
+};
 
 const HomePageIntro = () => {
+  const { hero, sections, authority, value } = homePageContent;
+
   return (
     <div className="p-2.5 w-full flex flex-col items-center justify-center gap-4 gap-y-8 md:gap-8 max-w-5xl">
-      <TextReader className="backdrop-blur-sm">
-        <div className="relative flex flex-col gap-y-8 md:flex-row md:gap-10 items-center justify-center w-full">
-          <div className="max-w-xl prose prose-h2:font-semibold text-justify md:text-lg">
-            <ReactMarkdown>
-              {`## Why do you need a Website Blueprint?
-If you have a business, non-profit, or any organisation, a website blueprint helps you easily build a **professional online presence** — no tech knowledge required. Like a clear map, it shows exactly what your website should say, how it should look, and guides your visitors smoothly, **avoiding common pitfalls** like confusing designs, pages that don't lead customers anywhere, or security risks.`}
-            </ReactMarkdown>
-          </div>
+      {/* Hero Section */}
+      <div className="text-center max-w-4xl mb-8">
+      
+        <p className="text-[16px] backdrop-blur-sm mb-4 text-primary font-semibold">
+          {hero.identity}
+        </p>
+        <p className="text-sm text-muted-foreground capitalize">{hero.socialProof}</p>
+      </div>
 
-          <div className="w-full overflow-hidden rounded-xl">
-            <VideoPlayer
-              loop
-              aspectRatio="400:308"
-              className="h-full w-full overflow-hidden"
-              controls={false}
-              muted={true}
-              playing={true}
-              url="/guide-videos/website-planner-purpose.mp4"
-            />
-          </div>
-        </div>
-        <div className="max-w-5xl prose text-justify mx-auto mt-6 md:text-lg">
-          <ReactMarkdown>
-            {`Whether you're managing your own website or creating one for a client, a blueprint ensures developers know exactly what you want. You can download it as a PDF at no cost, refine it anytime, and confidently hand it over, knowing nothing critical is missed.`}
-          </ReactMarkdown>
-        </div>
-      </TextReader>
-      <Divider />
-      <TextReader
-        className="backdrop-blur-sm"
-        placement="justify-start md:justify-end w-full"
-      >
-        <div className="relative flex flex-col gap-y-8 md:flex-row-reverse md:gap-10 items-center justify-center w-full">
-          <div className="prose text-justify max-w-xl prose-p:mb-0 prose-h2:font-semibold md:text-lg">
-            <ReactMarkdown>
-              {`## Discover Your Competition
-Enter your location and instantly discover who you're competing with. Our AI identifies local businesses in your market, giving you a quick, clear **view of your competitive landscape**. Easily copy their website URLs with one click, saving you time and effort.`}
-            </ReactMarkdown>
-          </div>
-
-          <div className="w-full min-w-full md:min-w-96 overflow-hidden rounded-xl ">
-            <VideoPlayer
-              loop
-              aspectRatio="400:308"
-              className="h-full w-full overflow-hidden"
-              controls={false}
-              muted={true}
-              playing={true}
-              url="/guide-videos/competitors-guide.mp4"
-            />
-          </div>
-        </div>
-      </TextReader>
-      <Divider />
-      <TextReader className="backdrop-blur-sm">
-        <div className="relative flex flex-col gap-y-8 md:flex-row md:gap-10 items-center justify-center w-full">
-          <div className="prose text-justify max-w-xl prose-p:mb-0 prose-h2:font-semibold md:text-lg">
-            <ReactMarkdown>
-              {`## Domain Discovery
-Instantly find SEO-friendly domain names tailored to your business. Our AI checks availability, suggests smart alternatives if your favourites are taken, and simplifies your search for the perfect brand domain.`}
-            </ReactMarkdown>
-          </div>
-
-          <div className="w-full min-w-full md:min-w-96 overflow-hidden rounded-xl ">
-            <VideoPlayer
-              loop
-              aspectRatio="400:308"
-              className="h-full w-full overflow-hidden"
-              controls={false}
-              muted={true}
-              playing={true}
-              url="/guide-videos/domain-guide.mp4"
-            />
-          </div>
-        </div>
-      </TextReader>
-      <Divider />
-      <TextReader
-        className="backdrop-blur-sm"
-        placement="justify-start md:justify-end "
-      >
-        <div className="relative flex flex-col gap-y-8 md:flex-row-reverse md:gap-10 items-center justify-center w-full">
-          <div className="prose text-justify max-w-xl prose-p:mb-0 prose-h2:font-semibold md:text-lg">
-            <ReactMarkdown>
-              {`## Blueprint Generation
-After completing the questionnaire, our AI generates your website blueprint, ready immediately to view or copy, and accessible anytime via "My Activities". Your contact details, if provided, are used only if you request a quote from Wavedropper and will never be shared without your consent.`}
-            </ReactMarkdown>
-            <Link
-              className="hover:bg-default-2 no-underline"
-              underline="hover"
-              href="/easy_meal_solutions.pdf"
-              target="_blank"
+      {/* Dynamic Sections */}
+      {sections.map((section, index) => (
+        <div key={section.id} className="w-full max-w-5xl">
+          <TextReader className="backdrop-blur-sm w-full">
+            <div
+              className={`relative flex flex-col gap-y-8 md:gap-10 items-center justify-center w-full ${
+                section.placement === "right" ?
+                  "md:flex-row-reverse"
+                : "md:flex-row"
+              }`}
             >
-              An example of a generated blueprint
-            </Link>
-          </div>
+              <div className="max-w-xl prose prose-h2:font-semibold text-justify md:text-lg">
+                <ReactMarkdown>
+                  {`## ${section.title}\n${section.content}`}
+                </ReactMarkdown>
 
-          <div className="w-full overflow-hidden rounded-xl ">
-            <VideoPlayer
-              loop
-              aspectRatio="400:308"
-              className="h-full w-full overflow-hidden"
-              controls={false}
-              muted={true}
-              playing={true}
-              url="/guide-videos/generation-guide.mp4"
-            />
-          </div>
+                {section.exampleLink && (
+                  <Link
+                    className="hover:bg-default-2 no-underline"
+                    underline="hover"
+                    href={section.exampleLink.url}
+                    target="_blank"
+                  >
+                    {section.exampleLink.text}
+                  </Link>
+                )}
+              </div>
+
+              <div className="w-full overflow-hidden rounded-xl">
+                <VideoPlayer
+                  loop
+                  aspectRatio={
+                    section.id === "plan-management" ? "1584:1080" : "400:308"
+                  }
+                  className="h-full w-full overflow-hidden"
+                  controls={false}
+                  muted={true}
+                  playing={true}
+                  url={section.videoUrl}
+                />
+              </div>
+            </div>
+
+            {section.followUp && (
+              <div className="max-w-5xl prose text-justify mx-auto mt-6 md:text-lg">
+                <ReactMarkdown>{section.followUp}</ReactMarkdown>
+              </div>
+            )}
+          </TextReader>
+
+          {index < sections.length - 1 && <Divider />}
         </div>
-        <div className="max-w-5xl prose text-justify mx-auto mt-6 md:text-lg">
-          <ReactMarkdown>
-            {`The blueprint is a starting point only; accuracy depends on the clarity of your answers. We don't guarantee completeness or suitability for specific needs, so always review professionally before implementation. Using this tool doesn't replace professional website development or strategic advice.`}
-          </ReactMarkdown>
-        </div>
-      </TextReader>
+      ))}
+
+      {/* Authority & Value Section */}
       <Divider />
-      <TextReader className="backdrop-blur-sm">
-        <div className="relative flex flex-col gap-y-8 md:flex-row md:gap-10 items-center justify-center w-full">
-          <div className="prose text-justify max-w-xl prose-p:mb-0 prose-h2:font-semibold md:text-lg">
-            <ReactMarkdown>
-              {`## Managing Your Plans
-"My Activities" is your workspace to start, review, edit, download, or delete your website blueprints. You can regenerate plans at any time—just note this will overwrite the previous version, so save important blueprints as PDFs first. Easily rename and organise plans by date.`}
-            </ReactMarkdown>
-          </div>
-
-          <div className="w-full overflow-hidden rounded-xl ">
-            <VideoPlayer
-              loop
-              aspectRatio="1584:1080"
-              className="h-full w-full overflow-hidden"
-              controls={false}
-              muted={true}
-              playing={true}
-              url="/guide-videos/activities-guide.mp4"
-            />
-          </div>
-        </div>
-        <div className="max-w-5xl prose text-justify mx-auto mt-6 prose-h2:font-semibold md:text-lg">
-          <ReactMarkdown>
-            {`Sign up to receive free credits and start building your blueprint right away. Each AI refinement costs 1 credit; a complete blueprint is 4 credits. Need more? Click your account name, go to "Subscription & Credits", and top up easily. Start crafting your digital strategy today.`}
-          </ReactMarkdown>
-        </div>
-      </TextReader>
+      <div className="max-w-4xl text-center mx-auto">
+        <p className="text-lg md:text-xl mb-4">{authority.contrast}</p>
+        <p className="text-xl md:text-2xl font-semibold text-primary">
+          {authority.value}
+        </p>
+      </div>
     </div>
   );
 };
