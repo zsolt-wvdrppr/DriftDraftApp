@@ -11,6 +11,25 @@ export const blogPostsMeta = blogPosts.map(post => ({
 
 export const blogPosts = [
 {
+    id: "blog-post-h9xw3ljbv4-283e4j56",
+    tags: [
+      {
+        type: "SEO"
+      }
+    ],
+    title: "Another post",
+    pinned: false,
+    content: "Will be another post",
+    categories: [
+      {
+        type: ""
+      }
+    ],
+    publishDate: "2025-08-07",
+    featuredImage: "",
+    publishSchedule: null
+  },
+{
     id: "blog-post-h9qitp8ztn-1p51263v",
     tags: [
       {
