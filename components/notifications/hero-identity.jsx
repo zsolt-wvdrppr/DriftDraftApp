@@ -2,19 +2,16 @@
 
 import { useAuth } from "@/lib/AuthContext";
 
-const SignupCreditsNotice = () => {
+const HeroIdentity = () => {
   const { user } = useAuth();
 
   if (user) return null;
 
   return (
     <div className="relative mx-2 backdrop-blur-sm bg-slate-100/20 border-l-4 border-accent/60 text-primary dark:bg-content1/20 p-4 rounded-xl text-sm max-w-xl self-center mt-6">
-      <p className="font-semibold">Start with free credits, no commitment</p>
-      <p className="text-justify">
-        {`Join today and get 14 free credits to start your website or landing page plan.`}
-      </p>
+      <p className="font-semibold text-justify">For business owners who know their website should convert, but don't know why it doesn't.</p>
     </div>
   );
 };
 
-export default SignupCreditsNotice;
+export default HeroIdentity;

@@ -3,7 +3,7 @@ import { tv } from "tailwind-variants";
 //export const title = () => "static-title-class"; // This is a static class
 
 export const title = tv({
-  base: "tracking-tight inline font-semibold",
+  base: "tracking-loose inline font-semibold",
   variants: {
     color: {
       violet: "from-[#FF1CF7] to-[#b249f8]",

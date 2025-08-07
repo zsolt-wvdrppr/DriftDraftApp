@@ -6,6 +6,8 @@ import HomePageIntro from "@/components/home-page-intro";
 import BetaNotice from "@/components/notifications/beta-notice";
 import BlueprintBackground from "@/components/blueprint-bg";
 import WaasPromo from "@/components/notifications/waas-promo";
+import HeroIdentity from "@/components/notifications/hero-identity";
+import IntroEffect from "@/components/intro-effect";
 
 export default function Home() {
   return (
@@ -15,9 +17,12 @@ export default function Home() {
         <HeroBackground />
         <div className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
           <ServiceTitle />
-
-          <BetaNotice />
+          <IntroEffect type="slideRight">
+            <HeroIdentity />
+          </IntroEffect>
+           <IntroEffect type="slideLeft">
           <SignupCreditsNotice />
+          </IntroEffect>
         </div>
       </section>
 
@@ -25,9 +30,13 @@ export default function Home() {
         <HomePageIntro />
       </section>
 
-      <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+      <section
+        className="flex flex-col items-center justify-center gap-4 py-8 md:py-10"
+        id="service-selector"
+      >
         <WaasPromo />
         <ServiceSelector />
+        <BetaNotice />
       </section>
     </>
   );
@@ -38,22 +47,22 @@ export async function generateMetadata() {
     title: `Your future website starts here`,
     description: `DriftDraft.App is a strategic planner that transforms your business requirements into a comprehensive website or landing page blueprint.`,
     icons: {
-      icon: '/favicon.ico',
+      icon: "/favicon.ico",
     },
     openGraph: {
-      type: 'website',
-      locale: 'en_GB',
-      url: 'https://driftdraft.app',
-      siteName: 'DriftDraft.App',
-      title: 'Your future website starts here',
+      type: "website",
+      locale: "en_GB",
+      url: "https://driftdraft.app",
+      siteName: "DriftDraft.App",
+      title: "Your future website starts here",
       description:
-        'DriftDraft.App is a strategic planner that transforms your business requirements into a comprehensive website or landing page blueprint.',
+        "DriftDraft.App is a strategic planner that transforms your business requirements into a comprehensive website or landing page blueprint.",
       images: [
         {
-          url: 'https://driftdraft.app/og-image.webp',
+          url: "https://driftdraft.app/og-image.webp",
           width: 1200,
           height: 630,
-          alt: 'The Website Blueprint Creator App',
+          alt: "The Website Blueprint Creator App",
         },
       ],
     },
