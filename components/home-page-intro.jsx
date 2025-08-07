@@ -77,14 +77,6 @@ const HomePageIntro = () => {
 
   return (
     <div className="p-2.5 w-full flex flex-col items-center justify-center gap-4 ga-p-y8 md:gap-8 max-w-5xl">
-      {/* Hero Section */}
-      <div className="text-center max-w-4xl">
-      
-        <p className="text-[16px] backdrop-blur-sm mb-4 text-primary font-semibold">
-          {hero.identity}
-        </p>
-      </div>
-
       {/* Dynamic Sections */}
       {sections.map((section, index) => (
         <div key={section.id} className="w-full max-w-5xl">

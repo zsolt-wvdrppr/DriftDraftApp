@@ -1,54 +1,25 @@
-// Auto-generated metadata for efficient listing
-export const blogPostsMeta = blogPosts.map(post => ({
-  id: post.id,
-  title: post.title,
-  publishDate: post.publishDate,
-  categories: post.categories,
-  tags: post.tags,
-  featuredImage: post.featuredImage,
-  excerpt: post.content ? post.content.substring(0, 200).replace(/[#*`]/g, '').trim() + '...' : ''
-}));
-
 export const blogPosts = [
-{
-    id: "blog-post-h9xw3ljbv4-283e4j56",
-    tags: [
-      {
-        type: "SEO"
-      }
-    ],
-    title: "Another post",
-    pinned: false,
-    content: "Will be another post",
-    categories: [
-      {
-        type: ""
-      }
-    ],
-    publishDate: "2025-08-07",
-    featuredImage: "",
-    publishSchedule: null
-  },
-{
+  {
     id: "blog-post-h9qitp8ztn-1p51263v",
     tags: [
       {
-        type: "website planning"
+        type: "website planning",
       },
       {
-        type: "business strategy"
+        type: "business strategy",
       },
       {
-        type: "conversion psychology"
+        type: "conversion psychology",
       },
       {
-        type: "cheap websites"
+        type: "cheap websites",
       },
       {
-        type: "cheap websites"
-      }
+        type: "cheap websites",
+      },
     ],
-    title: "The \"Cheap and Minimal\" Website Trap: Why Smart Business Owners Think Differently",
+    title:
+      'The "Cheap and Minimal" Website Trap: Why Smart Business Owners Think Differently',
     pinned: false,
     content: `You're a business owner who started your company to make real money, not to blend into the background with a website that screams "budget constraints."
 
@@ -123,25 +94,40 @@ Your business deserves a website that works as hard as you do. The question isn'
 ***`,
     categories: [
       {
-        type: "Website Strategy"
+        type: "Website Strategy",
       },
       {
-        type: "Business Growth"
+        type: "Business Growth",
       },
       {
-        type: "Marketing Psychology"
-      }
+        type: "Marketing Psychology",
+      },
     ],
     publishDate: "2025-07-31",
+    show: true,
     featuredImage: {
       id: "ab4a4c29-db42-496a-b757-f17bd24bd352",
       alt: "Well oiled cricket bat shoots into the digital world",
       src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753989620980-cricketbatdigital.webp",
-      mediaId: "ab4a4c29-db42-496a-b757-f17bd24bd352"
+      mediaId: "ab4a4c29-db42-496a-b757-f17bd24bd352",
     },
-    publishSchedule: null
-  }
+    publishSchedule: null,
+  },
 ];
+
+// Auto-generated metadata for efficient listing
+export const blogPostsMeta = blogPosts.map((post) => ({
+  id: post.id,
+  title: post.title,
+  publishDate: post.publishDate,
+  categories: post.categories,
+  tags: post.tags,
+  featuredImage: post.featuredImage,
+  excerpt:
+    post.content ?
+      post.content.substring(0, 200).replace(/[#*`]/g, "").trim() + "..."
+    : "",
+}));
 
 export const blogPostsSchema = {
   name: "Blog Post",
@@ -161,6 +147,12 @@ export const blogPostsSchema = {
     },
     publishDate: {
       type: "date",
+    },
+    show: {
+      type: "boolean",
+      label: "Show on Blog",
+      description: "Whether this post should be visible on the blog page",
+      default: true,
     },
     pinned: {
       type: "boolean",

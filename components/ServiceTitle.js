@@ -20,8 +20,8 @@ const ServiceTitle = () => {
   }, []);
 
   return (
-    <div className="max-w-sm text-left justify-start min-w-max rounded-xl backdrop-blur-sm flex flex-col items-start gap-y-1">
-      <span className={`${title({ color: "violet" })} pb-1.5`}>
+    <div className="max-w-sm text-left justify-start min-w-max rounded-xl flex flex-col items-start sm:gap-y-1">
+      <span className={`${title({ color: "violet" })} p-0 sm:pb-1.5`}>
         Get a Strategic&nbsp;
       </span>
 
@@ -29,7 +29,7 @@ const ServiceTitle = () => {
         <motion.span
           key={words[currentWordIndex]}
           animate={{ opacity: 1, y: 0 }}
-          className={`${title({ color: "blue" })} pb-1.5`}
+          className={`${title({ color: "blue" })} p-0 sm:pb-1.5`}
           exit={{ opacity: 0, y: 10 }}
           initial={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.5 }}
@@ -40,7 +40,7 @@ const ServiceTitle = () => {
       <span className={`${title({ color: "blue" })}`}>Blueprint&nbsp;</span>
       <CalloutText
         classNames={{
-          wrapper: "pt-3 -ml-3",
+          wrapper: "pt-2 sm:pt-3 -ml-3.5",
           base: "text-sm bg-opacity-80 from-brandPink via-highlightPurple to-transparent",
           text: `text-zinc-500 text-lg sm:text-xl md:text-2xl lg:text-2xl font-semibold`,
         }}
