@@ -76,14 +76,13 @@ const HomePageIntro = () => {
   const { hero, sections, authority, value } = homePageContent;
 
   return (
-    <div className="p-2.5 w-full flex flex-col items-center justify-center gap-4 gap-y-8 md:gap-8 max-w-5xl">
+    <div className="p-2.5 w-full flex flex-col items-center justify-center gap-4 ga-p-y8 md:gap-8 max-w-5xl">
       {/* Hero Section */}
-      <div className="text-center max-w-4xl mb-8">
+      <div className="text-center max-w-4xl">
       
         <p className="text-[16px] backdrop-blur-sm mb-4 text-primary font-semibold">
           {hero.identity}
         </p>
-        <p className="text-sm text-muted-foreground capitalize">{hero.socialProof}</p>
       </div>
 
       {/* Dynamic Sections */}
@@ -97,7 +96,7 @@ const HomePageIntro = () => {
                 : "md:flex-row"
               }`}
             >
-              <div className="max-w-xl prose prose-h2:font-semibold text-justify md:text-lg">
+              <div className="max-w-xl text-neutralDark prose prose-h2:font-semibold prose-h2:text-neutralDark prose-strong:text-neutralDark text-justify md:text-lg">
                 <ReactMarkdown>
                   {`## ${section.title}\n${section.content}`}
                 </ReactMarkdown>
@@ -114,7 +113,7 @@ const HomePageIntro = () => {
                 )}
               </div>
 
-              <div className="w-full overflow-hidden rounded-xl">
+              <div className="w-full overflow-hidden rounded-xl mb-4">
                 <VideoPlayer
                   loop
                   aspectRatio={
@@ -130,13 +129,13 @@ const HomePageIntro = () => {
             </div>
 
             {section.followUp && (
-              <div className="max-w-5xl prose text-justify mx-auto mt-6 md:text-lg">
+              <div className="max-w-5xl prose text-justify mt-6 md:text-lg text-neutralDark py-2">
                 <ReactMarkdown>{section.followUp}</ReactMarkdown>
               </div>
             )}
           </TextReader>
 
-          {index < sections.length - 1 && <Divider />}
+          {index < sections.length - 1 && <Divider className="my-8" />}
         </div>
       ))}
 

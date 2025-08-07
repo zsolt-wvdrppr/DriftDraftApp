@@ -10,7 +10,7 @@ const WaasPromo = () => {
 
   return (
     <div className="relative">
-      <div className="relative overflow-hidden mx-2 backdrop-blur-sm bg-yellow-100/20 border-l-4 border-yellow-400/60 text-yellow-800 dark:bg-yellow-800/20 dark:text-yellow-100 p-4 rounded-xl text-sm max-w-3xl self-center mt-6">
+      <div className="relative overflow-hidden mx-2 backdrop-blur-sm bg-yellow-100/20 border-l-4 border-yellow-400/60 text-yellow-800 dark:bg-yellow-800/20 dark:text-yellow-100 p-4 rounded-xl text-sm max-w-3xl self-center">
         <Button
           className="absolute top-0 -right-1 min-w-0 px-2 min-h-0 h-6 bg-yellow-400 text-yellow-800 rounded-t-none rounded-br-none"
           onPress={() => setIsVisible(false)}

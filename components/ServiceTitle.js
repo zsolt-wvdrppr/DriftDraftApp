@@ -20,7 +20,7 @@ const ServiceTitle = () => {
   }, []);
 
   return (
-    <div className="max-w-sm text-center justify-center min-w-max rounded-xl backdrop-blur-sm flex flex-col items-center gap-y-1">
+    <div className="max-w-sm text-left justify-start min-w-max rounded-xl backdrop-blur-sm flex flex-col items-start gap-y-1">
       <span className={`${title({ color: "violet" })} pb-1.5`}>
         Get a Strategic&nbsp;
       </span>
@@ -40,11 +40,11 @@ const ServiceTitle = () => {
       <span className={`${title({ color: "blue" })}`}>Blueprint&nbsp;</span>
       <CalloutText
         classNames={{
-          wrapper: "pt-2",
-          base: "text-lg bg-opacity-80 from-brandPink via-highlightPurple to-transparent",
-          text: `text-zinc-500 text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold`,
+          wrapper: "pt-3 -ml-3",
+          base: "text-sm bg-opacity-80 from-brandPink via-highlightPurple to-transparent",
+          text: `text-zinc-500 text-lg sm:text-xl md:text-2xl lg:text-2xl font-semibold`,
         }}
-        text={"that turns visitors into customers"}
+        text={"That Turns Visitors into Customers"}
       />
     </div>
   );

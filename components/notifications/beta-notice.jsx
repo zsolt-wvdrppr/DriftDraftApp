@@ -21,11 +21,10 @@ const BetaNotice = () => {
         </Button>
         <p className="font-semibold">Beta Notice</p>
         <p>
-          {`This app is currently in beta, so you might encounter minor bugs or
-          unfinished features. We’re working hard to improve it!`}
+          {`This app is currently in beta.`}
         </p>
         <p className="mt-2">
-          {`Spotted something odd? Feel free to use the feedback form — it’ll automatically attach a screenshot of the page you’re on.`}
+          {`Spotted something odd? Feel free to use the feedback form.`}
         </p>
       </div>
     </div>
