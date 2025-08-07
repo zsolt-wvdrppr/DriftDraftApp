@@ -118,7 +118,7 @@ Your business deserves a website that works as hard as you do. The question isn'
 
 ***
 
-**Ready to move beyond "cheap and minimal"?** Try DriftDraft's strategic  planner and discover what your website could achieve with proper psychological planning behind it.
+**Ready to move beyond "cheap and minimal"?** Try [DriftDraft's strategic planner](/#tool-selector) and discover what your website could achieve with proper psychological planning behind it.
 
 ***`,
     categories: [
