@@ -1,3 +1,14 @@
+// Auto-generated metadata for efficient listing
+export const blogPostsMeta = blogPosts.map(post => ({
+  id: post.id,
+  title: post.title,
+  publishDate: post.publishDate,
+  categories: post.categories,
+  tags: post.tags,
+  featuredImage: post.featuredImage,
+  excerpt: post.content ? post.content.substring(0, 200).replace(/[#*`]/g, '').trim() + '...' : ''
+}));
+
 export const blogPosts = [
 {
     id: "blog-post-h9qitp8ztn-1p51263v",

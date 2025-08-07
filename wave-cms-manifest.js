@@ -4,7 +4,9 @@ export default {
     {
       path: "content/blog-posts.js",
       contentExport: "blogPosts",
-      schemaExport: "blogPostsSchema"
+      schemaExport: "blogPostsSchema",
+      largeCollection: true,
+      metadataExport: "blogPostsMeta"
     },
   ],
 }
