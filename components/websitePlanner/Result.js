@@ -54,6 +54,9 @@ const Result = () => {
 
   const [showRetryButton, setShowRetryButton] = useState(false);
 
+  const [displayProgress, setDisplayProgress] = useState(0); // Smooth animated progress
+  const [targetProgress, setTargetProgress] = useState(0); // Actual calculated progress
+
   useEffect(() => {
     const fetchJWT = async () => {
       const jwt = await getJWT();
@@ -76,7 +79,7 @@ const Result = () => {
     error,
   } = usePromptExecutor({
     executeRecaptcha,
-    pickedModel: "gemini-1.5-pro",
+    pickedModel: "default",
     jwt,
   });
 
@@ -657,8 +660,17 @@ const Result = () => {
     "Formulating a strategy...",
     "Establishing brand psychology...",
     "Generating website recommendations...",
-    "Finalizing content...",
+    "Finalising content...",
   ];
+
+  useEffect(() => {
+    if (isLoading && prompts?.length > 0) {
+      const progressPercentage = displayProgress;
+      const stepIndex = Math.floor((progressPercentage / 100) * steps.length);
+
+      setCurrentStep(Math.min(stepIndex, steps.length - 1));
+    }
+  }, [displayProgress, steps?.length, isLoading]);
 
   useEffect(() => {
     if (isLoading && prompts.length > 0) {
@@ -666,19 +678,76 @@ const Result = () => {
       const totalCount = prompts.length;
       const calculatedProgress = (completedCount / totalCount) * 100;
 
-      setProgress(calculatedProgress);
-      setCurrentStep(Math.floor((completedCount / totalCount) * steps.length));
+      // Set target progress immediately
+      setTargetProgress(calculatedProgress);
 
       // Ensure the progress bar completes only when all prompts finish
       if (completedCount === totalCount) {
-        setProgress(100);
+        setTargetProgress(100);
       }
+
+      logger.debug("[PROGRESS] - Calculated progress:", calculatedProgress);
+      logger.debug("[PROGRESS] - completedCount:", executedPrompts);
+      logger.debug("[PROGRESS] - totalCount:", prompts?.length);
+    }
+  }, [executedPrompts, prompts, isLoading]);
+
+  useEffect(() => {
+    let animationFrame;
+    let startTime;
+    const duration = 2000; // Animation duration in milliseconds
+
+    const animateProgress = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Smooth easing function (ease-out)
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+
+      const currentProgress = displayProgress;
+      const difference = targetProgress - currentProgress;
+      const newProgress = currentProgress + difference * easeOut;
+
+      setDisplayProgress(newProgress);
+
+      // Continue animation if not close enough to target
+      if (Math.abs(newProgress - targetProgress) > 0.5) {
+        animationFrame = requestAnimationFrame(animateProgress);
+      } else {
+        setDisplayProgress(targetProgress); // Snap to exact target
+      }
+    };
+
+    if (targetProgress !== displayProgress) {
+      animationFrame = requestAnimationFrame(animateProgress);
     }
 
-    logger.debug("[PROGRESS] - Calculated progress:", progress);
-    logger.debug("[PROGRESS] - completedCount:", executedPrompts);
-    logger.debug("[PROGRESS] - totalCount:", prompts.length);
-  }, [executedPrompts, prompts, isLoading]);
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [targetProgress, displayProgress]);
+
+  // Initial progress simulation when loading starts
+  useEffect(() => {
+    if (isLoading && prompts?.length > 0 && displayProgress === 0) {
+      // Start with immediate small progress to show activity
+      setDisplayProgress(2);
+
+      // Simulate gradual progress before actual execution
+      const intervals = [];
+
+      // Progress very slowly over first 4 seconds
+      intervals.push(setTimeout(() => setTargetProgress(3), 500));
+      intervals.push(setTimeout(() => setTargetProgress(5), 1500));
+      intervals.push(setTimeout(() => setTargetProgress(7), 3000));
+      intervals.push(setTimeout(() => setTargetProgress(9), 4500));
+
+      return () => intervals.forEach(clearTimeout);
+    }
+  }, [isLoading, prompts?.length]);
 
   const first_name =
     fullName?.split(" ")[0] || sessionData.formData[8].firstname;
@@ -708,11 +777,11 @@ const Result = () => {
                   svg: "w-36 h-36",
                   indicator: "stroke-neutralDark dark:stroke-white",
                   value:
-                    "text-3xl font-semibold text-neutralDark dark:text-white",
+                    "text-3xl font-semibold text-neutralDark dark:text-white select-none",
                 }}
                 showValueLabel={true}
                 strokeWidth={4}
-                value={progress}
+                value={Math.round(displayProgress)} // Use displayProgress instead of progress
               />
             </CardBody>
             <CardFooter className="justify-center h-11 items-center pt-4">

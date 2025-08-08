@@ -31,18 +31,6 @@ import {
 import { useRouter, usePathname } from "next/navigation";
 import { Spinner } from "@heroui/react";
 
-import ProgressBar from "./ProgressBar";
-import StepPurpose from "./StepPurpose";
-import StepAudience from "./StepAudience";
-import StepMarketing from "./StepMarketing";
-import StepCompetitors from "./StepCompetitors";
-import StepUSPs from "./StepUSPs";
-import StepBrandGuidelines from "./StepBrandGuidelines";
-import StepEmotions from "./StepEmotions";
-import StepInspirations from "./StepInspirations";
-import StepContactInfo from "./StepContactInfo";
-import Result from "./Result";
-
 import {
   PreviousButton,
   NextButton,
@@ -63,6 +51,19 @@ import {
 } from "@/lib/plannerFormNavigation";
 import { useAuth } from "@/lib/AuthContext";
 import logger from "@/lib/logger";
+
+import ProgressBar from "./ProgressBar";
+import StepPurpose from "./StepPurpose";
+import StepAudience from "./StepAudience";
+import StepMarketing from "./StepMarketing";
+import StepCompetitors from "./StepCompetitors";
+import StepUSPs from "./StepUSPs";
+import StepBrandGuidelines from "./StepBrandGuidelines";
+import StepEmotions from "./StepEmotions";
+import StepInspirations from "./StepInspirations";
+import StepContactInfo from "./StepContactInfo";
+import Result from "./Result";
+
 
 // Step definitions
 const steps = [
