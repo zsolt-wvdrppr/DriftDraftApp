@@ -22,7 +22,7 @@ export const homePageContent = {
     {
       id: "website-blueprint",
       title: "Strategic Website Blueprint",
-      content: `Get the **psychological framework** that professional brands use to convert visitors. Shows exactly what your website should say and how to guide visitors towards taking action—**avoiding costly mistakes** that lose customers.`,
+      content: `Get the **psychological framework** that professional brands use to convert visitors. Shows exactly what your website should say and how to guide visitors towards taking action, **avoiding costly mistakes** that lose customers.`,
       followUp: `Download as PDF, refine endlessly, brief developers confidently. The competitive edge you've been missing.`,
       videoUrl: "/guide-videos/website-planner-purpose.mp4",
       placement: "left",
@@ -37,7 +37,7 @@ export const homePageContent = {
     {
       id: "domain-discovery",
       title: "Strategic Domain Names",
-      content: `Find domains that reinforce your brand authority. Smart alternatives suggested automatically—your domain works as hard as your marketing.`,
+      content: `Find domains that reinforce your brand authority. Smart alternatives suggested automatically, your domain works as hard as your marketing.`,
       videoUrl: "/guide-videos/domain-guide.mp4",
       placement: "left",
     },

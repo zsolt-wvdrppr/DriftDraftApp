@@ -9,9 +9,11 @@ import { formatDate } from "@/lib/utils/utils";
 
 // Generate static params for all blog posts
 export async function generateStaticParams() {
-  return blogPosts.map((post) => ({
-    slug: slugify(post.title, post.id), // ✅ Use slugified version
-  }));
+  return blogPosts
+    .filter((post) => post.show != false)
+    .map((post) => ({
+      slug: slugify(post.title, post.id), // ✅ Use slugified version
+    }));
 }
 
 // Generate metadata for each blog post
@@ -22,7 +24,7 @@ export async function generateMetadata({ params }) {
     (post) => slugify(post.title, post.id) === _params.slug
   );
 
-  if (!post) {
+  if (!post || !post.show) {
     return {
       title: "Post Not Found",
     };
@@ -59,7 +61,7 @@ export default async function BlogPost({ params }) {
     (post) => slugify(post.title, post.id) === _params.slug
   );
 
-  if (!post) {
+  if (!post || !post.show) {
     notFound();
   }
 

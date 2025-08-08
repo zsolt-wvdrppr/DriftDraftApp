@@ -21,7 +21,7 @@ const AnimatedBlogPostCard = ({ post, index }) => {
     post.publishDate ||
     post.publishSchedule?.scheduledDate ||
     post.publishSchedule?.scheduled_date;
-  const excerpt = getExcerpt(post.content);
+  const excerpt = getExcerpt(post.excerpt);
   const isPinned = Boolean(post.pinned);
 
   return (
@@ -448,9 +448,9 @@ export default function AnimatedBlogPostGrid({
       transition={{ duration: 0.3 }}
     >
       <LayoutGroup>
-        <div className="relative">
+        <div className="">
           {/* Sort button */}
-          <div className="absolute -top-6 h-10 right-0 transform -translate-y-full">
+          <div className="absolute -top-14 -right-14 transform -translate-y-full">
             <BlogSortButton
               className="rounded-xl"
               sortOrder={sortOrder}

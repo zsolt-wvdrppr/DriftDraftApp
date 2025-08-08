@@ -123,6 +123,7 @@ export const blogPostsMeta = blogPosts.map((post) => ({
   categories: post.categories,
   tags: post.tags,
   featuredImage: post.featuredImage,
+  show: post.show,
   excerpt:
     post.content ?
       post.content.substring(0, 200).replace(/[#*`]/g, "").trim() + "..."

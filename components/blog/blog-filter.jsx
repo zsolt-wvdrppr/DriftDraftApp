@@ -53,21 +53,23 @@ export default function BlogFilters({
     const categorySet = new Set();
     const tagSet = new Set();
 
-    posts.forEach((post) => {
-      // Handle categories
-      if (post.categories && Array.isArray(post.categories)) {
-        post.categories.forEach((cat) => {
-          if (cat.type) categorySet.add(cat.type);
-        });
-      }
+    posts
+      .filter((post) => post.show !== false)
+      .forEach((post) => {
+        // Handle categories
+        if (post.categories && Array.isArray(post.categories)) {
+          post.categories.forEach((cat) => {
+            if (cat.type) categorySet.add(cat.type);
+          });
+        }
 
-      // Handle tags
-      if (post.tags && Array.isArray(post.tags)) {
-        post.tags.forEach((tag) => {
-          if (tag.type) tagSet.add(tag.type);
-        });
-      }
-    });
+        // Handle tags
+        if (post.tags && Array.isArray(post.tags)) {
+          post.tags.forEach((tag) => {
+            if (tag.type) tagSet.add(tag.type);
+          });
+        }
+      });
 
     return {
       categories: Array.from(categorySet).sort(),
@@ -77,49 +79,53 @@ export default function BlogFilters({
 
   // Filter posts based on current filter states
   const filteredPosts = useMemo(() => {
-    return posts.filter((post) => {
-      // Search filter (title and content)
-      if (searchTerm.trim()) {
-        const searchLower = searchTerm.toLowerCase();
-        const titleMatch = post.title?.toLowerCase().includes(searchLower);
-        const contentMatch = post.content?.toLowerCase().includes(searchLower);
+    return posts
+      .filter((post) => post.show !== false)
+      .filter((post) => {
+        // Search filter (title and content)
+        if (searchTerm.trim()) {
+          const searchLower = searchTerm.toLowerCase();
+          const titleMatch = post.title?.toLowerCase().includes(searchLower);
+          const contentMatch = post.content
+            ?.toLowerCase()
+            .includes(searchLower);
 
-        if (!titleMatch && !contentMatch) {
-          return false;
-        }
-      }
-
-      // Category filter
-      if (selectedCategories.size > 0) {
-        const postCategories =
-          post.categories?.map((cat) => cat.type.toLowerCase()) || [];
-        const hasMatchingCategory = Array.from(selectedCategories).some(
-          (selectedCat) => postCategories.includes(selectedCat)
-        );
-        if (!hasMatchingCategory) {
-          return false;
-        }
-      }
-
-      // Tag filter
-      if (selectedTags.length > 0) {
-        const postTags = post.tags?.map((tag) => tag.type) || [];
-
-        if (tagLogic === "and") {
-          // All selected tags must be present
-          if (!selectedTags.every((tag) => postTags.includes(tag))) {
-            return false;
-          }
-        } else {
-          // At least one selected tag must be present
-          if (!selectedTags.some((tag) => postTags.includes(tag))) {
+          if (!titleMatch && !contentMatch) {
             return false;
           }
         }
-      }
 
-      return true;
-    });
+        // Category filter
+        if (selectedCategories.size > 0) {
+          const postCategories =
+            post.categories?.map((cat) => cat.type.toLowerCase()) || [];
+          const hasMatchingCategory = Array.from(selectedCategories).some(
+            (selectedCat) => postCategories.includes(selectedCat)
+          );
+          if (!hasMatchingCategory) {
+            return false;
+          }
+        }
+
+        // Tag filter
+        if (selectedTags.length > 0) {
+          const postTags = post.tags?.map((tag) => tag.type) || [];
+
+          if (tagLogic === "and") {
+            // All selected tags must be present
+            if (!selectedTags.every((tag) => postTags.includes(tag))) {
+              return false;
+            }
+          } else {
+            // At least one selected tag must be present
+            if (!selectedTags.some((tag) => postTags.includes(tag))) {
+              return false;
+            }
+          }
+        }
+
+        return true;
+      });
   }, [posts, searchTerm, selectedCategories, selectedTags, tagLogic]);
 
   // Notify parent of filtered results

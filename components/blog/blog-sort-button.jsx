@@ -29,10 +29,10 @@ export default function BlogSortButton({
     <Button
       variant={variant}
       size={size}
-      startContent={<TbCalendar size={16} />}
-      endContent={<SortIcon size={16} />}
+      startContent={<TbCalendar size={20} />}
+      endContent={<SortIcon size={20} />}
       onPress={onToggleSort}
-      className={`text-neutralGray dark:text-slate-400 hover:text-neutralDark dark:hover:text-neutral transition-colors ${className}`}
+      className={`text-neutralGray dark:text-slate-400 hover:text-neutralDark dark:hover:text-neutral transition-colors h-11 ${className}`}
       aria-label={ariaLabel}
       title={ariaLabel}
     >

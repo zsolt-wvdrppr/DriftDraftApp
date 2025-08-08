@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, ReactElement } from "react";
+import React, {
+  useState,
+  ReactElement,
+  useMemo,
+  useCallback,
+  useEffect,
+} from "react";
 import { Button } from "@heroui/react";
 import { TbFilter, TbX } from "react-icons/tb";
 
@@ -28,7 +34,7 @@ interface Post {
 interface BlogLayoutWithSidebarProps {
   posts?: any[]; // You can make this more specific with your BlogPost type
   children: React.ReactNode;
-  sidebarPosition?: 'left' | 'right'; // Add this prop
+  sidebarPosition?: "left" | "right"; // Add this prop
   showMobileToggle?: boolean;
   className?: string;
 }
@@ -61,20 +67,33 @@ export default function BlogLayoutWithSidebar({
   showMobileToggle = true,
   className = "",
 }: BlogLayoutWithSidebarProps): ReactElement {
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>(posts);
+  const visiblePosts = useMemo(() => {
+    return posts.filter((post) => post.show !== false);
+  }, [posts]);
+
+  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+
+  // Initialize filteredPosts with visiblePosts
+  useEffect(() => {
+    setFilteredPosts(visiblePosts);
+  }, [visiblePosts]);
+
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [activeFilterCount, setActiveFilterCount] = useState<number>(0);
 
   // Filter handler
-  const handleFilteredResults: FilteredResultsHandler = (filtered: Post[]) => {
-    logger.debug("🔥 handleFilteredResults called with:", filtered.length);
-    setFilteredPosts(filtered);
+  const handleFilteredResults: FilteredResultsHandler = useCallback(
+    (filtered: Post[]) => {
+      logger.debug("🔥 handleFilteredResults called with:", filtered.length);
+      setFilteredPosts(filtered);
 
-    // Simple filter detection
-    const hasActiveFilters: boolean = filtered.length !== posts.length;
+      // Simple filter detection
+      const hasActiveFilters: boolean = filtered.length !== visiblePosts.length;
 
-    setActiveFilterCount(hasActiveFilters ? 1 : 0);
-  };
+      setActiveFilterCount(hasActiveFilters ? 1 : 0);
+    },
+    [visiblePosts.length]
+  );
 
   // Clone children and pass filtered posts
   const childrenWithProps = React.Children.map(children, (child) => {
@@ -84,7 +103,9 @@ export default function BlogLayoutWithSidebar({
         filteredPosts.length
       );
 
-      return React.cloneElement(child as ChildWithPosts, { posts: filteredPosts });
+      return React.cloneElement(child as ChildWithPosts, {
+        posts: filteredPosts,
+      });
     }
 
     return child;
@@ -117,7 +138,7 @@ export default function BlogLayoutWithSidebar({
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
         {/* Top Filter Button - All screen sizes */}
         {showMobileToggle && (
           <div className="mb-6 pr-32 sm:pr-44 w-full">
@@ -196,7 +217,7 @@ export default function BlogLayoutWithSidebar({
                 collapsible={false}
                 compact={false}
                 layout="vertical"
-                posts={posts}
+                posts={visiblePosts}
                 showResultsCount={true}
                 onFilteredResults={handleFilteredResults}
               />
@@ -212,16 +233,25 @@ export default function BlogLayoutWithSidebar({
  * Simplified hook version
  */
 export function useBlogSidebar(posts: Post[]): UseBlogSidebarReturn {
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>(posts);
+  const visiblePosts = useMemo(() => {
+    return posts.filter((post) => post.show !== false);
+  }, [posts]);
+
+  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    setFilteredPosts(visiblePosts);
+  }, [visiblePosts]);
+
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [activeFilterCount, setActiveFilterCount] = useState<number>(0);
 
-  const handleFilteredResults: FilteredResultsHandler = (filtered: Post[]) => {
+  const handleFilteredResults: FilteredResultsHandler = useCallback((filtered: Post[]) => {
     setFilteredPosts(filtered);
-    const hasActiveFilters: boolean = filtered.length !== posts.length;
+    const hasActiveFilters: boolean = filtered.length !== visiblePosts.length;
 
     setActiveFilterCount(hasActiveFilters ? 1 : 0);
-  };
+  }, [visiblePosts.length]);
 
   const FilterDrawer = (): ReactElement => (
     <div
@@ -247,7 +277,7 @@ export function useBlogSidebar(posts: Post[]): UseBlogSidebarReturn {
           }
         }}
       />
-      
+
       <div
         className={`absolute inset-y-0 left-0 w-80 max-w-[90vw] lg:w-96 bg-white dark:bg-neutralDark shadow-2xl transform transition-transform duration-300 ease-out ${
           isFilterOpen ? "translate-x-0" : "-translate-x-full"
@@ -273,7 +303,7 @@ export function useBlogSidebar(posts: Post[]): UseBlogSidebarReturn {
               collapsible={false}
               compact={true}
               layout="vertical"
-              posts={posts}
+              posts={visiblePosts}
               showResultsCount={true}
               onFilteredResults={handleFilteredResults}
             />
