@@ -12,6 +12,7 @@ import { useBlogPagination } from "@/lib/hooks/blog/useBlogPagination";
 import { slugify } from "@/lib/utils/utils";
 import { formatDate } from "@/lib/utils/utils";
 import { getExcerpt } from "@/lib/utils/utils";
+import { Tooltip } from "react-tooltip";
 
 /**
  * Animated Blog Post Card with Framer Motion
@@ -26,7 +27,7 @@ const AnimatedBlogPostCard = ({ post, index }) => {
 
   return (
     <motion.div
-      className="relative h-full"
+      className="relative h-full select-none"
       whileHover={{
         y: -1,
         scale: 1.01,
@@ -112,7 +113,7 @@ const AnimatedBlogPostCard = ({ post, index }) => {
           {/* Tags */}
           {post.tags && post.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 h-12 pt-3 sm:pt-2">
-              {post.tags.slice(0, 3).map((tag, tagIndex) => (
+              {post.tags.slice(0, 2).map((tag, tagIndex) => (
                 <div key={tagIndex}>
                   <Chip
                     size="sm"
@@ -123,22 +124,33 @@ const AnimatedBlogPostCard = ({ post, index }) => {
                   </Chip>
                 </div>
               ))}
-              {post.tags.length > 3 && (
+              {post.tags.length > 2 && (
                 <div>
                   <Chip
                     size="sm"
                     variant="bordered"
-                    className="text-xs opacity-50"
+                    className="text-xs opacity-50 cursor-help"
+                    data-tooltip-id={`tags-tooltip-${post.id}`}
+                    data-tooltip-html={post.tags
+                      .slice(2)
+                      .map((tag) => `#${tag.type.toUpperCase()}`)
+                      .join("<br />")}
                   >
-                    +{post.tags.length - 3}
+                    +{post.tags.length - 2}
                   </Chip>
+                  <Tooltip
+                    id={`tags-tooltip-${post.id}`}
+                    place="top"
+                    className="!bg-neutralDark !text-white !text-xs !py-1 !px-2 !rounded-md !opacity-90"
+                    style={{ zIndex: 9999 }}
+                  />
                 </div>
               )}
             </div>
           )}
         </CardBody>
 
-        <CardFooter className="min-h-16 flex flex-col justify-between items-stretch">
+        <CardFooter className="min-h-16 flex flex-col justify-between items-stretch mt-3">
           <div className="flex items-center justify-between pt-4 border-t border-neutralGray/20 dark:border-slate-700">
             <div className="flex items-center gap-4 text-xs text-zinc-500 dark:text-slate-400">
               {publishDate && (
@@ -442,68 +454,65 @@ export default function AnimatedBlogPostGrid({
   // Grid layout with Framer Motion
   return (
     <motion.div
-      className={`space-y-8 ${className}`}
+      className={`${className}`}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
       <LayoutGroup>
-        <div className="">
-          {/* Sort button */}
-          <div className="absolute -top-14 -right-14 transform -translate-y-full">
-            <BlogSortButton
-              className="rounded-xl"
-              sortOrder={sortOrder}
-              onToggleSort={toggleSort}
-              variant="bordered"
-              size="md"
-            />
-          </div>
-
-          {/* Grid container */}
-          <motion.div
-            className="grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
-            layout
-            style={{
-              minHeight: isTransitioning ? gridHeight : "auto",
-              transition: "min-height 0.3s ease-in-out",
+        {/* Sort button */}
+        <div >
+          <BlogSortButton
+            className="rounded-xl absolute top-[-140px] h-[53.4px] -right-4 md:top-[-117px] md:-right-12"
+            sortOrder={sortOrder}
+            onToggleSort={toggleSort}
+            variant="bordered"
+            size="lg"
+          />
+        </div>
+        {/* Grid container */}
+        <motion.div
+          className="grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+          layout
+          style={{
+            minHeight: isTransitioning ? gridHeight : "auto",
+            transition: "min-height 0.3s ease-in-out",
+          }}
+        >
+          <AnimatePresence
+            mode="wait"
+            onExitComplete={() => {
+              // Ensure cards can enter after exit completes
+              setTimeout(() => setCanShowNewCards(true), 100);
             }}
           >
-            <AnimatePresence
-              mode="wait"
-              onExitComplete={() => {
-                // Ensure cards can enter after exit completes
-                setTimeout(() => setCanShowNewCards(true), 100);
-              }}
-            >
-              {canShowNewCards &&
-                currentPosts.map((post, index) => (
-                  <motion.div
-                    key={`${post.id}-${currentPage}`}
-                    layout
-                    layoutId={`card-${post.id}`} // Add layoutId for smoother transitions
-                    initial={{ opacity: 0, y: 60, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -30, scale: 0.95 }} // Faster, less dramatic exit
-                    transition={{
-                      duration: 0.4,
-                      delay: canShowNewCards ? index * 0.05 : 0, // Reduced stagger delay
-                      type: "spring",
-                      stiffness: 120,
-                      damping: 15,
-                    }}
-                    whileHover={{
-                      y: -2,
-                      scale: 1.01,
-                      transition: { duration: 0.2 },
-                    }}
-                  >
-                    <AnimatedBlogPostCard post={post} index={index} />
-                  </motion.div>
-                ))}
-            </AnimatePresence>
-          </motion.div>
-        </div>
+            {canShowNewCards &&
+              currentPosts.map((post, index) => (
+                <motion.div
+                  key={`${post.id}-${currentPage}`}
+                  layout
+                  layoutId={`card-${post.id}`} // Add layoutId for smoother transitions
+                  initial={{ opacity: 0, y: 60, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -30, scale: 0.95 }} // Faster, less dramatic exit
+                  transition={{
+                    duration: 0.4,
+                    delay: canShowNewCards ? index * 0.05 : 0, // Reduced stagger delay
+                    type: "spring",
+                    stiffness: 120,
+                    damping: 15,
+                  }}
+                  whileHover={{
+                    y: -2,
+                    scale: 1.01,
+                    transition: { duration: 0.2 },
+                  }}
+                >
+                  <AnimatedBlogPostCard post={post} index={index} />
+                </motion.div>
+              ))}
+          </AnimatePresence>
+        </motion.div>
       </LayoutGroup>
 
       {/* Pagination */}

@@ -169,9 +169,6 @@ You get the full depth of a professional planning process — without becoming y
       {
         type: "cheap websites",
       },
-      {
-        type: "cheap websites",
-      },
     ],
     title:
       'The "Cheap and Minimal" Website Trap: Why Smart Business Owners Think Differently',

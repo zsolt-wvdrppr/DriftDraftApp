@@ -112,39 +112,39 @@ export default function BlogLayoutWithSidebar({
   });
 
   return (
-    <div className={` ${className}`}>
-      {/* Floating Filter Button - All screen sizes */}
-      {showMobileToggle && (
-        <div className="fixed bottom-16 right-6 z-40">
-          <div className="relative">
-            <Button
-              isIconOnly
-              aria-label="Open filter drawer"
-              className="shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-              color="primary"
-              size="lg"
-              onPress={() => setIsFilterOpen(true)}
-            >
-              <TbFilter size={24} />
-            </Button>
+    <div className={className}>
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-8 relative">
+        {/* Floating Filter Button - All screen sizes */}
+        {showMobileToggle && (
+          <div className="fixed bottom-16 right-6 z-40">
+            <div className="relative">
+              <Button
+                isIconOnly
+                aria-label="Open filter drawer"
+                className="shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                color="primary"
+                size="lg"
+                onPress={() => setIsFilterOpen(true)}
+              >
+                <TbFilter size={24} />
+              </Button>
 
-            {/* Active filters count badge */}
-            {activeFilterCount > 0 && (
-              <div className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-full min-w-[22px] h-6 flex items-center justify-center px-1.5 shadow-lg ring-2 ring-white dark:ring-neutralDark animate-pulse">
-                {activeFilterCount}
-              </div>
-            )}
+              {/* Active filters count badge */}
+              {activeFilterCount > 0 && (
+                <div className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-full min-w-[22px] h-6 flex items-center justify-center px-1.5 shadow-lg ring-2 ring-white dark:ring-neutralDark animate-pulse">
+                  {activeFilterCount}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      )}
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
+        )}
         {/* Top Filter Button - All screen sizes */}
         {showMobileToggle && (
-          <div className="mb-6 pr-32 sm:pr-44 w-full">
+          <div className="mb-8">
             <Button
               aria-label="Toggle filters"
-              className="w-full"
+              className="w-fit md:min-w-52 rounded-xl"
+              size="lg"
               startContent={<TbFilter size={18} />}
               variant="bordered"
               onPress={() => setIsFilterOpen(true)}
@@ -157,7 +157,7 @@ export default function BlogLayoutWithSidebar({
         )}
 
         {/* Main Content */}
-        <main>{childrenWithProps}</main>
+        {childrenWithProps}
       </div>
 
       {/* Custom Drawer with persistent BlogFilters */}
@@ -246,12 +246,15 @@ export function useBlogSidebar(posts: Post[]): UseBlogSidebarReturn {
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [activeFilterCount, setActiveFilterCount] = useState<number>(0);
 
-  const handleFilteredResults: FilteredResultsHandler = useCallback((filtered: Post[]) => {
-    setFilteredPosts(filtered);
-    const hasActiveFilters: boolean = filtered.length !== visiblePosts.length;
+  const handleFilteredResults: FilteredResultsHandler = useCallback(
+    (filtered: Post[]) => {
+      setFilteredPosts(filtered);
+      const hasActiveFilters: boolean = filtered.length !== visiblePosts.length;
 
-    setActiveFilterCount(hasActiveFilters ? 1 : 0);
-  }, [visiblePosts.length]);
+      setActiveFilterCount(hasActiveFilters ? 1 : 0);
+    },
+    [visiblePosts.length]
+  );
 
   const FilterDrawer = (): ReactElement => (
     <div
@@ -316,7 +319,7 @@ export function useBlogSidebar(posts: Post[]): UseBlogSidebarReturn {
   const FilterToggle = (): ReactElement => (
     <>
       {/* Top button */}
-      <div className="mb-6 pr-28 sm:pr-44">
+      <div className="mb-2 pr-28 sm:pr-44">
         <Button
           aria-label="Toggle filters"
           className="w-full"
