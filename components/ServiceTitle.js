@@ -20,7 +20,7 @@ const ServiceTitle = () => {
   }, []);
 
   return (
-    <div className="max-w-sm text-left justify-start min-w-max rounded-xl flex flex-col items-start sm:gap-y-1">
+    <div className="relative max-w-sm text-left justify-start min-w-max rounded-xl flex flex-col items-start sm:gap-y-1 -z-10">
       <span className={`${title({ color: "violet" })} p-0 sm:pb-1.5`}>
         Get a Strategic&nbsp;
       </span>

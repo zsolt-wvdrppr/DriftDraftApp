@@ -22,7 +22,7 @@ export const homePageContent = {
     {
       id: "website-blueprint",
       title: "Strategic Website Blueprint",
-      content: `Get the **psychological framework** that professional brands use to convert visitors. Shows exactly what your website should say and how to guide visitors towards taking action, **avoiding costly mistakes** that lose customers.`,
+      content: `Get the **psychological framework** that professional brands use to convert visitors. Shows exactly what your website should say and how to guide visitors towards taking action, **avoiding costly mistakes** that lose customers. Generated in minutes using AI to apply proven website planning principles to your business.`,
       followUp: `Download as PDF, refine endlessly, brief developers confidently. The competitive edge you've been missing.`,
       videoUrl: "/guide-videos/website-planner-purpose.mp4",
       placement: "left",
@@ -30,21 +30,21 @@ export const homePageContent = {
     {
       id: "competition-discovery",
       title: "Competition Discovery",
-      content: `Instantly discover who you're competing against locally. Clear **competitive positioning** analysis with one-click research—saving hours of manual work.`,
+      content: `Instantly discover who you're competing against locally. Clear **competitive positioning** analysis with one-click research—saving hours of manual work. AI pinpoints relevant competitors instantly, so you see the real landscape without endless searching.`,
       videoUrl: "/guide-videos/competitors-guide.mp4",
       placement: "right",
     },
     {
       id: "domain-discovery",
       title: "Strategic Domain Names",
-      content: `Find domains that reinforce your brand authority. Smart alternatives suggested automatically, your domain works as hard as your marketing.`,
+      content: `Find domains that reinforce your brand authority. Smart alternatives suggested automatically, your domain works as hard as your marketing. AI suggests brand-friendly domains you might not think of yourself.`,
       videoUrl: "/guide-videos/domain-guide.mp4",
       placement: "left",
     },
     {
       id: "blueprint-generation",
       title: "Blueprint Generation",
-      content: `Complete the strategic questionnaire, get your comprehensive blueprint immediately. Access anytime via "My Activities".`,
+      content: `Complete the strategic questionnaire, get your comprehensive blueprint immediately. Access anytime via "My Activities". AI processes your answers to deliver tailored recommendations without the guesswork.`,
       exampleLink: {
         text: "Example blueprint",
         url: "/khalsa2pedal_mobile_bike_service.pdf",
@@ -56,7 +56,7 @@ export const homePageContent = {
     {
       id: "plan-management",
       title: "Plan Management",
-      content: `Your strategic workspace—review, edit, download, or regenerate blueprints. Easy organisation and PDF export for important versions.`,
+      content: `Your strategic workspace—review, edit, download, or regenerate blueprints. Easy organisation and PDF export for important versions. Regenerate updated versions instantly as your needs change — AI handles the heavy lifting.`,
       followUp: `Start with free credits. Complete blueprint: 5 credits. Top up via "Subscription & Credits" in your account.`,
       videoUrl: "/guide-videos/activities-guide.mp4",
       placement: "left",
