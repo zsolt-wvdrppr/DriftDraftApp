@@ -199,7 +199,7 @@ export default async function BlogPost({ params }) {
                 ),
                 // Custom link styles
                 a: ({ href, children }) => (
-                  <a
+                  <Link
                     href={href}
                     className="text-primary dark:text-accent hover:text-secondary dark:hover:text-accentMint underline transition-colors duration-200"
                     target={href?.startsWith("http") ? "_blank" : undefined}
@@ -210,7 +210,7 @@ export default async function BlogPost({ params }) {
                     }
                   >
                     {children}
-                  </a>
+                  </Link>
                 ),
                 // Custom strong/bold styles
                 strong: ({ children }) => (

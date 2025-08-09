@@ -3,7 +3,6 @@ import HeroBackground from "@/components/hero-bg";
 import ServiceTitle from "@/components/ServiceTitle";
 import SignupCreditsNotice from "@/components/notifications/signup-credits";
 import HomePageIntro from "@/components/home-page-intro";
-import BetaNotice from "@/components/notifications/beta-notice";
 import BlueprintBackground from "@/components/blueprint-bg";
 import WaasPromo from "@/components/notifications/waas-promo";
 import HeroIdentity from "@/components/notifications/hero-identity";
@@ -20,8 +19,8 @@ export default function Home() {
           <IntroEffect type="slideRight">
             <HeroIdentity />
           </IntroEffect>
-           <IntroEffect type="slideLeft">
-          <SignupCreditsNotice />
+          <IntroEffect type="slideLeft">
+            <SignupCreditsNotice />
           </IntroEffect>
         </div>
       </section>
@@ -43,6 +42,9 @@ export default function Home() {
 
 export async function generateMetadata() {
   return {
+    metadataBase: new URL(
+      process.env.NEXT_PUBLIC_SITE_URL || "https://driftdraft.app"
+    ),
     title: `Your future website starts here`,
     description: `DriftDraft.App is a strategic planner that transforms your business requirements into a comprehensive website or landing page blueprint.`,
     icons: {
@@ -58,7 +60,7 @@ export async function generateMetadata() {
         "DriftDraft.App is a strategic planner that transforms your business requirements into a comprehensive website or landing page blueprint.",
       images: [
         {
-          url: "https://driftdraft.app/og-image.webp",
+          url: "/og-image.webp", // Remove the full URL, just use relative path
           width: 1200,
           height: 630,
           alt: "The Website Blueprint Creator App",

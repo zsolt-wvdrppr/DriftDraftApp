@@ -21,6 +21,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "https://driftdraft.app"
+  ),
   title: {
     default: siteConfig.name,
     template: `%s - ${siteConfig.name}`,
@@ -129,7 +132,10 @@ export default function RootLayout({
     <html suppressHydrationWarning lang="en">
       <head>
         {/* Structured Data for AI agents */}
-        <StructuredData page="home" title="Home - DriftDraft, where your future website begins" />
+        <StructuredData
+          page="home"
+          title="Home - DriftDraft, where your future website begins"
+        />
 
         {/* Insert consent script before GTM loads */}
         <script
