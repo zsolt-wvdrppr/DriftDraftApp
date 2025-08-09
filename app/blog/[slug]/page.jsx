@@ -6,6 +6,8 @@ import { blogPosts } from "@/content/blog-posts";
 import ShareSection from "@/components/blog/share-section";
 import { slugify } from "@/lib/utils/utils";
 import { formatDate } from "@/lib/utils/utils";
+import BlogStructuredData from "@/components/seo/BlogStructuredData";
+
 
 // Generate static params for all blog posts
 export async function generateStaticParams() {
@@ -72,6 +74,13 @@ export default async function BlogPost({ params }) {
 
   return (
     <div className="min-h-screen">
+      <BlogStructuredData
+        title={post.title}
+        content={post.content}
+        slug={_params.slug}
+        publishDate={publishDate}
+        featuredImage={post.featuredImage}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Back to Blog Link */}
         <Link
