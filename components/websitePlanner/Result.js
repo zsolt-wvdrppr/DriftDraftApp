@@ -11,6 +11,7 @@ import {
   CardBody,
   CardFooter,
   Link,
+  form,
 } from "@heroui/react";
 import { useReCaptcha } from "next-recaptcha-v3";
 import { toast } from "sonner";
@@ -57,6 +58,8 @@ const Result = () => {
   const [displayProgress, setDisplayProgress] = useState(0); // Smooth animated progress
   const [targetProgress, setTargetProgress] = useState(0); // Actual calculated progress
 
+  const [generateWebsitePlan, setGenerateWebsitePlan] = useState(null);
+
   useEffect(() => {
     const fetchJWT = async () => {
       const jwt = await getJWT();
@@ -84,22 +87,42 @@ const Result = () => {
   });
 
   /* Form data */
-  const formData = sessionData.formData;
-  const purpose = formData[0].purpose;
-  const purposeDetails = formData[0]?.purposeDetails || ""; // optional
-  const serviceDescription = formData[0].serviceDescription;
-  const audience = formData[1].audience;
-  const marketing = formData[2].marketing || "";
+  const formData = sessionData?.formData;
+  const purpose = formData?.[0]?.purpose;
+  const purposeDetails = formData?.[0]?.purposeDetails || ""; // optional
+  const serviceDescription = formData?.[0]?.serviceDescription;
+  const audience = formData?.[1]?.audience;
+  const marketing = formData?.[2]?.marketing || "";
   const competitors =
     formData[3]?.urls?.toString() !== "" ?
       `I have identified the following competitors: ${formData[3].urls.toString()}.`
     : ""; // optional
-  const usps = formData[4].usps || "";
-  const domain = formData[5].domain || "";
-  const brandGuidelines = formData[6].brandGuidelines || "";
-  const emotions = formData[7].emotions || "";
-  const inspirations = formData[8]?.inspirations?.toString() || ""; // optional
+  const location = formData?.[3]?.location?.address || "global";
+  const usps = formData?.[4]?.usps || "";
+  const domain = formData?.[5]?.domain || "";
+  const brandGuidelines = formData?.[6]?.brandGuidelines || "";
+  const emotions = formData?.[7]?.emotions || "";
+  const inspirations = formData?.[8]?.inspirations?.toString() || ""; // optional
+
+  const domainText = formData?.[5]?.domain || "";
+  const domains = domainText
+    .split(",")
+    .map((d) => d.trim())
+    .filter((d) => d);
+
+  let domainInstruction;
+
+  if (domains?.length === 0) {
+    domainInstruction =
+      "Use placeholder [YourDomain.com] for any domain references";
+  } else if (domains.length === 1) {
+    domainInstruction = `Use the domain name '${domains[0]}' consistently throughout`;
+  } else {
+    domainInstruction = `Domain options being considered: ${domains.join(", ")}. Use the first option '${domains[0]}' as the primary example, but mention it's one of several being evaluated`;
+  }
   /* End of form data */
+
+  logger.debug("Location:", location);
 
   useEffect(() => {
     if (structuredOutput.length > 0) {
@@ -130,7 +153,8 @@ const Result = () => {
   }, [structuredOutput, generatedTitle, titleLoading]);
 
   useEffect(() => {
-    if (alreadyFetched.current || !userId || !sessionId || !jwt) return; // Prevent second call
+    if (!formData || alreadyFetched.current || !userId || !sessionId || !jwt)
+      return; // Prevent second call
     alreadyFetched.current = true;
 
     if (
@@ -157,6 +181,7 @@ const Result = () => {
 - **Unique Selling Points (USPs):** "${usps}"
 - **Brand Guidelines:** "${brandGuidelines}"
 - **Marketing Strategy:** "${marketing}"
+- **Location:** "${location}"
 
 **Task:**
 - **Analyse inputs and create a strategic foundation using headings and bullet points.**
@@ -183,18 +208,17 @@ const Result = () => {
 - How services address both practical and emotional needs
 
 ### SEO Keyword Strategy
-- 3-5 primary keywords based on services + location/audience
+- 3–5 primary keywords based on services + audience (+ location if provided)
 - Secondary long-tail keywords for content strategy
-- Local SEO opportunities if applicable
+- Location-specific SEO opportunities where relevant (use provided regions/markets)
 
 ### Strategic Gaps Requiring Clarification
 - Missing information that impacts conversion psychology
 - Specific details needed for stronger positioning
 
 **Language Requirements:**
-- Use British English spelling, grammar, and terminology throughout
-- Employ British business language and expressions
-- Apply UK market context and consumer behaviour patterns
+- Use British English spelling and grammar throughout, but adapt all examples and references to the provided location: ${location}
+- Keep examples and references internationally neutral
 
 **Output MUST be structured with the above Markdown headings and bullet points only. No introductory text. Focus on psychological positioning and conversion strategy.**`,
           label: "Strategic Foundation",
@@ -226,7 +250,7 @@ const Result = () => {
 
 ### Trust & Credibility Indicators
 - Specific trust signals needed (certifications, guarantees, testimonials)
-- Authority by association opportunities (partnerships, media mentions)
+- Authority by association opportunities (partnerships, media mentions) across relevant local, regional, and global outlets
 - Social proof elements that build confidence in target audience
 
 ## Group Identity & Community Psychology
@@ -271,9 +295,8 @@ const Result = () => {
 - Additional competitive intelligence needed for stronger positioning
 
 **Language Requirements:**
-- Use British English spelling, grammar, and terminology throughout
-- Apply British cultural values and communication styles
-- Use UK-appropriate authority signals and trust indicators
+- Use British English spelling and grammar throughout, but adapt all examples and references to the provided location: ${location}
+- Keep examples and references internationally neutral
 
 **Output MUST use headings and bullet points only. Focus on psychological differentiation and authority building. No introductory text.**`,
           label: "Brand Psychology",
@@ -287,6 +310,9 @@ const Result = () => {
 **User Inputs:**
 - **Marketing Strategy:** "${marketing}"
 - **Domain preferences:** "${domain}"
+- **Location:** "${location}"
+
+- **DOMAIN USAGE: ${domainInstruction}**
 
 **Task:**
 - **Apply urgency & value framework, FOMO elements, and conversion psychology.**
@@ -296,6 +322,7 @@ const Result = () => {
 
 ### Traffic Generation Psychology
 - SEO strategy targeting buyer-intent keywords and emotional triggers
+- Adjust geographic targeting based on provided locations/markets; default to global targeting if none supplied.
 - Social media approach using group identity reinforcement and social proof
 - Content marketing that establishes authority and addresses pain points
 - Paid advertising with psychological targeting and compelling ad copy
@@ -309,7 +336,7 @@ const Result = () => {
 ## Urgency & Value Psychology
 
 ### Legitimate Urgency Creation
-- Seasonal demand patterns and natural urgency opportunities
+- Seasonal demand patterns (by hemisphere/region as applicable) and natural urgency opportunities
 - Capacity-based scarcity that feels authentic
 - Time-sensitive value propositions that motivate immediate action
 
@@ -342,9 +369,7 @@ const Result = () => {
 - Measurement strategies for psychological trigger effectiveness
 
 **Language Requirements:**
-- Use British English spelling, grammar, and terminology throughout
-- Apply UK-specific marketing channels and regulations context
-- Use British terminology for technical recommendations
+- Use British English, but adapt all examples and references to the provided location: ${location}. Keep stack and vendor examples globally applicable
 
 **Output MUST use headings and bullet points only. Focus on conversion psychology and modern technical requirements. No introductory text.**`,
           label: "Marketing & Technical",
@@ -362,7 +387,7 @@ const Result = () => {
 - **Apply SIGMA protocol (Simplicity, Immediacy, Guarantee, Motivation, Action) for implementation.**
 - **Use Markdown headings and bullet points only:**
 
-## Strategic Implementation Blueprint
+## Strategic Implementation
 
 ### Conversion Psychology Integration
 - Identity installation implementation across website sections
@@ -395,7 +420,7 @@ const Result = () => {
 ### SEO & Content Framework
 - Keyword implementation strategy aligned with user psychology
 - Content calendar focusing on authority building and community engagement
-- Local SEO optimisation for geographic targeting
+- Location-specific SEO optimisation based on provided location: ${location}
 
 ## Launch Strategy & Optimisation
 
@@ -432,9 +457,7 @@ const Result = () => {
 - Long-term strategic considerations for sustained growth
 
 **Language Requirements:**
-- Use British English spelling, grammar, and terminology throughout
-- Apply UK market context and cultural considerations
-- Ensure messaging aligns with British business communication norms
+- Use British English, but adapt all examples and references to the provided location: ${location}
 
 **IMPORTANT FORMATTING RULES:**
 - Do NOT use code blocks, backticks, or triple backticks formatting anywhere
@@ -453,6 +476,8 @@ const Result = () => {
 
 **User Inputs:** All strategic elements from previous prompts
 
+**DOMAIN USAGE: ${domainInstruction}**
+
 **Task:**
 - **Design homepage wireframe using ASCII visualisation**
 - **Integrate identity installation, emotional triggers, and conversion psychology**
@@ -461,6 +486,23 @@ const Result = () => {
 ## Homepage Wireframe Design
 
 **MANDATORY: Create detailed ASCII wireframe showing layout, sections, and psychological trigger placement**
+
+**CRITICAL: Choose one consistent box width and ensure ALL content fits within those boundaries. 
+No text should extend beyond the ASCII box edges. Break long text into multiple lines that fit cleanly.**
+
+FORMATTING RULE: 
+- Indicate background colours only ONCE per section in the section header
+- Do NOT repeat background colour tags on every line
+- Use format: "SECTION NAME (Background Colour)" 
+- Keep lines clean without repetitive colour tags
+
+Example:
++-----------------------------------------------------------------------+
+|                    HERO SECTION (Teal Background)                     |
+|                                                                       |
+| For ambitious Budapest business owners feeling overwhelmed            |
+| by complex web development & tech jargon...                           |
++-----------------------------------------------------------------------+
 
 ### Desktop Homepage Layout
 
@@ -484,8 +526,8 @@ const Result = () => {
 +--------------------------------------------------------+
 |                                                        |
 |              GROUP IDENTITY SECTION                    |
-|     [Community Image] [In-Group Messaging]            |
-|        "Join X+ London families who..."               |
+|     [Community Image] [In-Group Messaging]             |
+|"Join X+ [customers in ${location} or globally] who..." |
 +--------------------------------------------------------+
 |                                                        |
 |               SERVICES OVERVIEW                        |
@@ -501,8 +543,8 @@ const Result = () => {
 +--------------------------------------------------------+
 |                                                        |
 |               CONTRAST CREATION                        |
-|     "Unlike traditional bike shops that..."           |
-|            [Before vs After Comparison]               |
+|     "Unlike traditional providers that..."             |
+|            [Before vs After Comparison]                |
 +--------------------------------------------------------+
 |                                                        |
 |              URGENCY & VALUE SECTION                   |
@@ -582,9 +624,7 @@ const Result = () => {
 - Final conversion reinforcement at bottom
 
 **Language Requirements:**
-- All copy suggestions and content examples must be in British English
-- Use UK-appropriate business terminology and expressions
-- Avoid American spellings and cultural references
+- Use British English. Keep cultural references globally understandable but adapt all examples and references to the provided location: ${location}
 
 **MANDATORY REQUIREMENTS:**
 - Must include detailed ASCII wireframes for both desktop and mobile
@@ -592,6 +632,7 @@ const Result = () => {
 - Must show conversion flow and CTA positioning
 - Must indicate colour coding (teal backgrounds, yellow CTAs, green accents)
 - This wireframe is for HOMEPAGE ONLY - not other pages
+- If a location is provided, reflect it generically (city/region/country). If none is provided, use globally neutral phrasing
 
 **Output format: Use the exact ASCII structure shown above, customise content based on strategic elements from previous prompts. Use code blocks for wireframes to preserve formatting.**`,
           label: "Homepage Wireframe",
@@ -603,7 +644,7 @@ const Result = () => {
       setPrompts(prompts);
 
       // ✅ Execute prompts and update the session once complete
-      const generateWebsitePlan = async () => {
+      const executeWebsitePlan = async () => {
         try {
           logger.info("Executing prompts for website plan generation...");
 
@@ -636,8 +677,10 @@ const Result = () => {
         }
       };
 
+       setGenerateWebsitePlan(() => executeWebsitePlan);
+
       if (hasCredits) {
-        generateWebsitePlan();
+        executeWebsitePlan();
       }
     }
   }, [userId, sessionId, jwt]);
@@ -652,8 +695,6 @@ const Result = () => {
   }, []);
 
   const [currentStep, setCurrentStep] = useState(0);
-
-  const [progress, setProgress] = useState(0);
 
   const steps = [
     "Analyzing your inputs...",
@@ -758,7 +799,7 @@ const Result = () => {
     alreadyFetched.current = false;
 
     if (hasCredits) {
-      generateLandingPlan();
+      generateWebsitePlan();
     }
   };
 
@@ -770,7 +811,7 @@ const Result = () => {
             aria-label="Progress indicator"
             className="h-60 max-w-96 border-none bg-transparent shadow-none"
           >
-            <CardBody className="justify-center items-center pb-0">
+            <CardBody className="justify-center items-center pb-0 select-none">
               <CircularProgress
                 aria-label="Generating content progress"
                 classNames={{
@@ -784,7 +825,7 @@ const Result = () => {
                 value={Math.round(displayProgress)} // Use displayProgress instead of progress
               />
             </CardBody>
-            <CardFooter className="justify-center h-11 items-center pt-4">
+            <CardFooter className="justify-center h-11 items-center pt-4 select-none">
               <p className="text-neutralDark dark:text-white text-md font-semibold text-center tracking-wider">
                 {steps[currentStep]}
               </p>
@@ -794,7 +835,7 @@ const Result = () => {
       : hasCredits &&
         structuredOutput.length > 0 && (
           <ContentRenderer
-            combinedContent={getLegacyCombinedOutput()} // For copy/export functions
+            combinedContent={getCombinedOutputWithMarkers()} // For copy/export functions
             firstName={first_name}
             generatedTitle={generatedTitle}
             structuredSections={structuredOutput}
