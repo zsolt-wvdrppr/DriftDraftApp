@@ -52,6 +52,8 @@ const Result = () => {
   const [displayProgress, setDisplayProgress] = useState(0); // Smooth animated progress
   const [targetProgress, setTargetProgress] = useState(0); // Actual calculated progress
 
+  const [generateLandingPlan, setGenerateLandingPlan] = useState(null);
+
   const [jwt, setJwt] = useState(null);
 
   useEffect(() => {
@@ -91,14 +93,17 @@ const Result = () => {
     formData?.[3]?.urls?.toString() !== "" ?
       `I have identified the following competitors: ${formData?.[3]?.urls?.toString()}.`
     : ""; // optional
+  const location = formData[3]?.location?.address || "global";
   const usps = formData?.[4].usps || "";
   const brandGuidelines = formData?.[5].brandGuidelines || "";
   const emotions = formData?.[6]?.emotions || "";
   const inspirations = formData?.[7]?.inspirations?.toString() || ""; // optional
   /* End of form data */
 
+  logger.debug("Location:", location || "Not specified");
+
   useEffect(() => {
-    if (structuredOutput.length > 0) {
+    if (structuredOutput?.length > 0) {
       // Use marked version for storage (better parsing later)
       const combinedWithMarkers = getCombinedOutputWithMarkers();
 
@@ -126,7 +131,8 @@ const Result = () => {
   }, [structuredOutput, generatedTitle, titleLoading]);
 
   useEffect(() => {
-    if (alreadyFetched.current || !userId || !sessionId || !jwt) return; // Prevent second call
+    if (!formData || alreadyFetched.current || !userId || !sessionId || !jwt)
+      return; // Prevent second call
 
     alreadyFetched.current = true;
 
@@ -154,6 +160,7 @@ const Result = () => {
 - **Unique Selling Points (USPs):** "${usps}"
 - **Brand Guidelines:** "${brandGuidelines}"
 - **Marketing Strategy:** "${marketing}"
+- **Location:** "${location}"
 
 **Task:**
 - **Analyse inputs and create a strategic foundation using headings and bullet points.**
@@ -182,6 +189,11 @@ const Result = () => {
 - How the offer addresses both practical and emotional needs
 - Unique value that differentiates from alternatives
 
+### SEO Keyword Strategy
+- 3–5 primary keywords based on services + audience (+ location if provided)
+- Secondary long-tail keywords for content strategy
+- Location-specific SEO opportunities where relevant (use provided regions/markets)
+
 ### Visitor Journey Psychology
 - Traffic source context and visitor mindset
 - Pre-existing emotional state based on how they arrived
@@ -192,9 +204,8 @@ const Result = () => {
 - Specific details needed for stronger offer positioning
 
 **Language Requirements:**
-- Use British English spelling, grammar, and terminology throughout
-- Employ British business language and expressions
-- Apply UK market context and consumer behaviour patterns
+- Use British English spelling and grammar throughout, but adapt all examples and references to the provided location: ${location}
+- Keep examples and references internationally neutral
 
 **Output MUST be structured with the above Markdown headings and bullet points only. No introductory text. Focus on single-page conversion strategy.**`,
           label: "Strategic Foundation",
@@ -234,7 +245,7 @@ const Result = () => {
 - Certifications, guarantees, or badges needed for landing page trust
 - Security and reliability indicators for conversion points
 - Risk reversal offers that overcome purchase anxiety
-- Authority by association opportunities (partnerships, media mentions)
+- Authority by association opportunities (partnerships, media mentions) across relevant local, regional, and global outlets
 
 ## Competitive Differentiation Psychology
 
@@ -261,9 +272,8 @@ const Result = () => {
 - Guarantee structures that remove conversion risk
 
 **Language Requirements:**
-- Use British English spelling, grammar, and terminology throughout
-- Apply British cultural values and communication styles
-- Use UK-appropriate authority signals and trust indicators
+- Use British English spelling and grammar throughout, but adapt all examples and references to the provided location: ${location}
+- Keep examples and references internationally neutral
 
 **Output MUST use headings and bullet points only. Focus on building unshakeable credibility for landing page conversion. No introductory text.**`,
           label: "Authority & Trust",
@@ -278,6 +288,7 @@ const Result = () => {
 - **Marketing Strategy:** "${marketing}"
 - **Target Audience:** "${audience}"
 - **Services/Products:** "${serviceDescription}"
+- **Location:** "${location}"
 
 **Task:**
 - **Apply urgency psychology, FOMO elements, and landing page conversion optimisation.**
@@ -340,9 +351,7 @@ const Result = () => {
 - Channel-specific urgency elements that match visitor expectations
 
 **Language Requirements:**
-- Use British English spelling, grammar, and terminology throughout
-- Apply UK-specific marketing channels and regulations context
-- Use British terminology for technical recommendations
+- Use British English, but adapt all examples and references to the provided location: ${location}. Keep stack and vendor examples globally applicable
 
 **Output MUST use headings and bullet points only. Focus on conversion psychology and modern technical requirements. No introductory text.**`,
           label: "Marketing & Technical",
@@ -360,7 +369,7 @@ const Result = () => {
 - **Apply SIGMA protocol (Simplicity, Immediacy, Guarantee, Motivation, Action) for implementation.**
 - **Use Markdown headings and bullet points only:**
 
-## Strategic Implementation Blueprint
+## Strategic Implementation
 
 ### Conversion Psychology Integration
 - Identity installation implementation across landing page sections
@@ -393,6 +402,11 @@ const Result = () => {
 - Campaign messaging that pre-frames visitor expectations
 - Retargeting setup for visitor re-engagement
 - Lead nurturing automation for post-conversion psychology
+
+### SEO & Content Framework
+- Keyword implementation strategy aligned with user psychology
+- Content calendar focusing on authority building and community engagement
+- Location-specific SEO optimisation based on provided location: ${location}
 
 ### Performance & Optimisation Framework
 - Conversion tracking for psychological trigger effectiveness
@@ -436,9 +450,7 @@ const Result = () => {
 - Long-term optimisation strategies for sustained performance
 
 **Language Requirements:**
-- Use British English spelling, grammar, and terminology throughout
-- Apply UK market context and cultural considerations
-- Ensure messaging aligns with British business communication norms
+- Use British English, but adapt all examples and references to the provided location: ${location}
 
 **IMPORTANT FORMATTING RULES:**
 - Do NOT use code blocks, backticks, or triple backticks formatting anywhere
@@ -466,6 +478,15 @@ const Result = () => {
 
 **MANDATORY: Create detailed ASCII wireframe showing layout, sections, and psychological trigger placement**
 
+**CRITICAL: Choose one consistent box width and ensure ALL content fits within those boundaries. 
+No text should extend beyond the ASCII box edges. Break long text into multiple lines that fit cleanly.**
+
+FORMATTING RULE: 
+- Indicate background colours only ONCE per section in the section header
+- Do NOT repeat background colour tags on every line
+- Use format: "SECTION NAME (Background Colour)" 
+- Keep lines clean without repetitive colour tags
+
 ### Desktop Landing Page Layout
 
 \`\`\`
@@ -489,8 +510,8 @@ const Result = () => {
 +--------------------------------------------------------+
 |                                                        |
 |               SOCIAL PROOF SECTION                     |
-|    [Customer Logos] [Testimonial] [Stat/Number]       |
-|              "Join X+ customers who..."                |
+|    [Customer Logos] [Testimonial] [Stat/Number]        |
+| Join X+ [customers in ${location} or globally] who...  |
 +--------------------------------------------------------+
 |                                                        |
 |              PROBLEM AGITATION                         |
@@ -635,15 +656,15 @@ const Result = () => {
 - Psychological trigger effectiveness measurement
 
 **Language Requirements:**
-- All copy suggestions and content examples must be in British English
-- Use UK-appropriate business terminology and expressions
-- Avoid American spellings and cultural references
+- Use British English. Keep cultural references globally understandable but adapt all examples and references to the provided location: ${location}
 
 **MANDATORY REQUIREMENTS:**
 - Must include detailed ASCII wireframes for both desktop and mobile
-- Must show exact placement of psychological triggers and conversion elements
-- Must specify conversion flow and CTA positioning throughout page
-- This wireframe is for LANDING PAGE ONLY - single page focus
+- Must specify exact placement of psychological triggers
+- Must show conversion flow and CTA positioning
+- Must indicate colour coding (teal backgrounds, yellow CTAs, green accents)
+- This wireframe is for HOMEPAGE ONLY - not other pages
+- If a location is provided, reflect it generically (city/region/country). If none is provided, use globally neutral phrasing
 
 **Output format: Use code blocks for wireframes to preserve formatting. Include comprehensive implementation guidance.**`,
           label: "Landing Page Wireframe",
@@ -652,10 +673,8 @@ const Result = () => {
         },
       ];
 
-      setPrompts(prompts);
-
       // ✅ Execute prompts and update the session once complete
-      const generateLandingPlan = async () => {
+      const executeLandingPlan = async () => {
         try {
           logger.info("Executing prompts for landing page plan generation...");
 
@@ -688,8 +707,12 @@ const Result = () => {
         }
       };
 
+      setPrompts(prompts);
+
+      setGenerateLandingPlan(() => executeLandingPlan);
+
       if (hasCredits) {
-        generateLandingPlan();
+        executeLandingPlan();
       }
     }
   }, [userId, sessionId, jwt]);
@@ -704,8 +727,6 @@ const Result = () => {
   }, []);
 
   const [currentStep, setCurrentStep] = useState(0);
-
-  const [progress, setProgress] = useState(0);
 
   const steps = [
     "Analyzing your inputs...",
@@ -846,7 +867,7 @@ const Result = () => {
       : hasCredits &&
         structuredOutput.length > 0 && (
           <ContentRenderer
-            combinedContent={getLegacyCombinedOutput()} // For copy/export functions
+            combinedContent={getCombinedOutputWithMarkers()} // For copy/export functions
             firstName={first_name}
             generatedTitle={generatedTitle}
             structuredSections={structuredOutput}

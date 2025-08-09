@@ -5,9 +5,9 @@ import { Autocomplete } from "@react-google-maps/api";
 import { Input } from "@heroui/react";
 import { IconMapPin } from "@tabler/icons-react";
 
-const LocationSearch = ({ onSelect }) => {
+const LocationSearch = ({ onSelect, defaultValue = "" }) => {
   const [autocomplete, setAutocomplete] = useState(null);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(defaultValue);
 
   const handleLoad = (auto) => {
     setAutocomplete(auto);
@@ -21,13 +21,33 @@ const LocationSearch = ({ onSelect }) => {
     if (place?.formatted_address) {
       setQuery(place.formatted_address);
 
-      // Extract necessary details, replacing utc_offset with utc_offset_minutes
+      // Extract necessary details
       const locationData = {
         address: place.formatted_address,
       };
 
       onSelect?.(locationData);
     }
+  };
+
+  const handleClear = () => {
+    setQuery("");
+    // Update form data to global when location is cleared
+    const globalLocationData = {
+      address: "global",
+    };
+
+    onSelect?.(globalLocationData);
+  };
+
+  const handleFocus = () => {
+    setQuery("");
+    // Update form data to global when user focuses to select new location
+    const globalLocationData = {
+      address: "global",
+    };
+
+    onSelect?.(globalLocationData);
   };
 
   return (
@@ -55,8 +75,8 @@ const LocationSearch = ({ onSelect }) => {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onClear={() => setQuery("")} // Reset query when clear button is clicked
-          onFocus={() => setQuery("")} // Allow selecting a new location without manually clearing
+          onClear={handleClear}
+          onFocus={handleFocus}
         />
       </Autocomplete>
     </div>

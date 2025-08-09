@@ -60,17 +60,18 @@ const StepCompetitors = ({ ref }) => {
   const validateURL = (url) => {
     try {
       // Add protocol if missing to allow parsing with URL constructor
-      const urlString = url?.includes('://') ? url : `https://${url}`;
-      
+      const urlString = url?.includes("://") ? url : `https://${url}`;
+
       // Use the URL constructor to validate the structure
       const urlObj = new URL(urlString);
-      
+
       // Extract the hostname for validation
       const hostname = urlObj?.hostname;
-      
+
       // Basic domain validation
-      const domainRegex = /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])?$/i;
-      
+      const domainRegex =
+        /^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z0-9]([a-z0-9-]*[a-z0-9])?$/i;
+
       return domainRegex?.test(hostname);
     } catch (error) {
       // If URL constructor throws an error, the URL is invalid
@@ -111,10 +112,13 @@ const StepCompetitors = ({ ref }) => {
     sessionData?.formData?.[stepNumber]?.aiHint || null
   );
   const [userMsg, setUserMsg] = useState(null);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState(
+    formData?.[stepNumber]?.location || null
+  );
   const purpose = `${formData?.[0]?.purpose}.` || "";
-  const purposeDetails = formData?.[0]?.purposeDetails
-    ? ` and to ${formData?.[0]?.purposeDetails}\n`
+  const purposeDetails =
+    formData?.[0]?.purposeDetails ?
+      ` and to ${formData?.[0]?.purposeDetails}\n`
     : "";
   const serviceDescription = `${formData?.[0]?.serviceDescription}.\n` || "";
   const audience = ` targetning ${formData?.[1]?.audience}. ` || "";
@@ -125,18 +129,23 @@ const StepCompetitors = ({ ref }) => {
 
   const isAIAvailable = purpose && serviceDescription && audience;
 
-  //const prompt = `[SEARCH-GROUNDING]What is the population of Budapest in 2022 according to the latest estimates?`;
+  // log location when avaliable or changes
+  useEffect(() => {
+    if (location) {
+      logger.debug("Location updated:", location);
+    }
+  }, [location]);
 
   const prompt = `[SEARCH-GROUNDING]Using possible search queries that my audience would use, identify possible competitors offering ${serviceDescription}${businessArea}? Grouped by search query Provide a list of competitor names, along with clickable website URLs, and a concise description of their core offering in one sentence. The aim is to ${purpose}${purposeDetails}. Present the results in a clear and easy-to-read format. If cannot find any, then broadn the search query or try in local language. Do not ask to user to change or broaden search query. No extra text (no greetings, no conclusions, no disclaimers) only the final result. Do not include the steps you took to get the result. Present the results in a clear and easy-to-read format using markdown! Do not return code!
   `;
 
   return (
     <form ref={formRef}>
-        <ModalWithReader
-              autoPop={true}
-              content={<CompetitorsGuide />}
-              title="Landing Page Planner Guide"
-            />
+      <ModalWithReader
+        autoPop={true}
+        content={<CompetitorsGuide />}
+        title="Landing Page Planner Guide"
+      />
       <StepWrapper
         hint={aiHint}
         userMsg={userMsg}
@@ -157,20 +166,28 @@ const StepCompetitors = ({ ref }) => {
         {/* Input field to business location or service area */}
         <div className="relative flex flex-row pt-4">
           <LocationSearch
+            defaultValue={location?.address}
             onSelect={(place) => {
               setLocation(place);
+              updateFormData("location", place);
               logger.debug("Location selected:", place);
             }}
           />
-          <IconAlertTriangleFilled className="text-amber-600 drop-shadow-xl mt-4 ml-2 animate-pulse" id="disclaimer" size={24} />
+          <IconAlertTriangleFilled
+            className="text-amber-600 drop-shadow-xl mt-4 ml-2 animate-pulse"
+            id="disclaimer"
+            size={24}
+          />
         </div>
         <Tooltip
           anchorSelect="#disclaimer"
           className="max-w-60 md:max-w-sm relative z-50"
-          >
-            <span className="font-semibold text-lg">Experimental feature</span><br /><br />
-            {`At this step, the AI attempts to identify possible competitors using Google Search. This feature is in experimental mode, so results may be inaccurate or incomplete. Issues may arise in non-English regions or when searching within a narrow location. If no results are found, consider broadening the business area for better accuracy.`}
-          </Tooltip>
+        >
+          <span className="font-semibold text-lg">Experimental feature</span>
+          <br />
+          <br />
+          {`At this step, the AI attempts to identify possible competitors using Google Search. This feature is in experimental mode, so results may be inaccurate or incomplete. Issues may arise in non-English regions or when searching within a narrow location. If no results are found, consider broadening the business area for better accuracy.`}
+        </Tooltip>
         <Divider className="my-4" />
         <AnimatePresence initial={false}>
           {urls.map((url, index) => (
