@@ -1,5 +1,160 @@
 export const blogPosts = [
-  {
+{
+    id: "blog-post-ha08ilp7e0-29282w1r",
+    show: true,
+    tags: [
+      {
+        type: "website planning"
+      },
+      {
+        type: "conversion optimisation"
+      },
+      {
+        type: "competitor analysis"
+      },
+      {
+        type: "user journey"
+      },
+      {
+        type: "DriftDraft"
+      }
+    ],
+    title: "The 7-Step Website Planning Guide for Smart Business Owners",
+    pinned: false,
+    content: `For the business owner who wants a website that works as hard as they do — and realises “just getting a designer” isn’t enough.
+
+***
+
+### **Step 1: Define Your Visitor’s Identity**
+
+You can’t build a website for “everyone.” You need one clear, specific visitor profile.
+
+* **Pinpoint their starting point:** What’s frustrating them right now?
+* **Define their aspiration:** Who do they want to be after solving this problem?
+* **Craft your hook:** A headline that instantly says *“This is for me”*.
+
+💡 **Smart Tip:** Create a **mini persona board** with a photo, key quotes, and emotional triggers. Keep it in front of you while planning — it stops you from drifting into “design for me” instead of “design for them.”
+
+***
+
+### **Step 2: Map the Emotional Journey**
+
+Strategic websites are built around *feelings* — because emotions drive action.
+Your visitor’s journey might look like:
+
+1. **Understood** → You “get” their problem
+2. **Hopeful** → There’s a clear way forward
+3. **Confident** → You have proof and credibility
+4. **Compelled** → Now is the time to act
+
+💡 **Smart Tip:** Make a **content map** where each section of your site is tagged with the emotion it should trigger — then match the copy, images, and calls-to-action to that emotion.
+
+***
+
+### **Step 3: Build Trust Signals Into the Design**
+
+Trust isn’t earned in a paragraph — it’s earned in *moments*.
+Include:
+
+* Testimonials relevant to the visitor’s situation
+* Certifications or industry memberships
+* Case studies with real numbers
+* Security badges and guarantees near conversion points
+
+💡 **Smart Tip:** Don’t dump all testimonials on one page — scatter them where objections are most likely to pop up.
+
+***
+
+### **Step 4: Analyse Your Competitors**
+
+Not to copy them — to position yourself differently.
+
+* What do they promise?
+* What’s missing in their messaging or offer?
+* Where do they create friction you could remove?
+
+💡 **Smart Tip:** Make a **side-by-side positioning grid** with 3–5 competitors and score them on trust, clarity, and differentiation. You’ll see where you can win.
+
+***
+
+### **Step 5: Plan the Conversion Flow**
+
+Every page should lead to one clear action.
+
+* Choose the *one* thing you want each page to achieve
+* Remove competing calls-to-action
+* Place persuasion triggers (social proof, urgency, guarantees) before decision points
+* Design for mobile-first
+
+💡 **Smart Tip:** Use **wireframes** before you touch design — even just hand-drawn boxes. They’ll save you endless revisions later.
+
+***
+
+### **Step 6: Align Design with Psychology**
+
+Every visual choice should be deliberate:
+
+* **Colours:** Pick to trigger the right emotions (blue = trust, orange = energy, etc.)
+* **Fonts:** Match your audience’s expectations for professionalism or playfulness
+* **White space:** Makes your content feel premium and easy to digest
+* **Images:** Show your visitor’s *aspirational identity*, not just product shots
+
+💡 **Smart Tip:** Make a **mood board** in Pinterest or Canva. Include colours, typography, imagery, and even textures that reflect your brand’s psychology.
+
+***
+
+### **Step 7: Translate Into a Developer-Ready Plan**
+
+Your plan should leave no room for guesswork:
+
+* Final copy matched to each wireframe section
+* Technical brief with performance and SEO requirements
+* Notes on animations, transitions, and interactive elements
+* A checklist of trust signals and psychological triggers to implement
+
+💡 **Smart Tip:** Create a “handover pack” — it makes developers faster, happier, and less likely to miss critical details.
+
+***
+
+### **Reality Check**
+
+Doing all this properly is **dozens of hours** of strategy work — before you write a single line of code.
+Most business owners skip steps (or don’t know they exist), which is why so many sites look fine but fail to convert.
+
+***
+
+### **The Shortcut Without Cutting Corners**
+
+DriftDraft compresses this entire process into a guided tool:
+
+* Asks the right questions about your business and audience
+* Builds your identity profile, emotional map, trust plan, competitor positioning, and conversion flow
+* Produces a developer-ready strategic blueprint in minutes
+
+You get the full depth of a professional planning process — without becoming your own web strategist.
+
+[Start your free strategic website plan](/#tool-selector)`,
+    categories: [
+      {
+        type: "Website Strategy"
+      },
+      {
+        type: "Conversion Psychology"
+      },
+      {
+        type: "Business Growth"
+      }
+    ],
+    publishDate: "2025-08-09",
+    featuredImage: {
+      id: "c8838f09-a551-4ca6-80c2-2f1563d953eb",
+      alt: "Mood board on the left and website on the right",
+      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1754750939492-moodboard-to-website.webp",
+      mediaId: "c8838f09-a551-4ca6-80c2-2f1563d953eb"
+    },
+    publishSchedule: null
+  },
+{
     id: "blog-post-h9qitp8ztn-1p51263v",
     tags: [
       {
@@ -112,7 +267,7 @@ Your business deserves a website that works as hard as you do. The question isn'
       mediaId: "ab4a4c29-db42-496a-b757-f17bd24bd352",
     },
     publishSchedule: null,
-  },
+  }
 ];
 
 // Auto-generated metadata for efficient listing
