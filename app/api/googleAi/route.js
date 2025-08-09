@@ -31,7 +31,7 @@ export async function POST(req) {
 
     // Initialise the Google Generative AI client
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: pickedModel !== null ? pickedModel : "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: pickedModel !== null ? "gemini-2.5-flash" : "gemini-2.5-flash" });
    
     logger.info(`[GOOGLE AI] Using model: ${model.model}`);
 
