@@ -49,7 +49,7 @@ export const homePageContent = {
         text: "Example blueprint",
         url: "/khalsa2pedal_mobile_bike_service.pdf",
       },
-      followUp: `Based on proven conversion psychology. Professional consultation recommended for implementation.`,
+      followUp: `Based on conversion psychology. Professional consultation recommended for implementation.`,
       videoUrl: "/guide-videos/generation-guide.mp4",
       placement: "right",
     },
@@ -66,7 +66,7 @@ export const homePageContent = {
   // Simplified authority messaging
   authority: {
     contrast:
-      "Whilst competitors guess at what works, you'll have proven conversion psychology.",
+      "Whilst competitors guess at what works, you'll have working conversion psychology.",
     value:
       "£4 delivers what consultants charge £2,000+ for—strategic advantage in minutes, not months.",
   },
