@@ -64,7 +64,7 @@ export const Navbar = () => {
       position="sticky"
       onMenuOpenChange={setIsMenuOpen}
     >
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
+      <NavbarContent className="basis-1/5 sm:basis-full select-none" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink
             aria-label="Home"

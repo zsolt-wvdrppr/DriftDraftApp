@@ -18,25 +18,54 @@ const HeroBackground = () => {
 
       {/* Beta Chip with react-tooltip */}
       <div className="absolute top-4 right-4 z-50">
-        <div 
+        <div
           data-tooltip-id="beta-tooltip"
-          data-tooltip-html={"<strong>This app is currently in beta.</strong><br /> Spotted something odd? Feel free to use the feedback form."}
+          data-tooltip-html={
+            "<strong>This app is currently in beta.</strong><br /><br />Spotted something odd? Feel free to use the feedback form."
+          }
           className="select-none bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider shadow-lg backdrop-blur-sm border border-white/20 cursor-default"
         >
           Beta
         </div>
-        
+
         <Tooltip
           id="beta-tooltip"
           place="bottom-end"
           style={{
-            backgroundColor: '#1f2937',
-            color: '#ffffff',
-            borderRadius: '8px',
-            padding: '12px',
-            fontSize: '14px',
-            maxWidth: '250px',
-            lineHeight: '1.4'
+            backgroundColor: "#1f2937",
+            color: "#ffffff",
+            borderRadius: "8px",
+            padding: "12px",
+            fontSize: "14px",
+            maxWidth: "250px",
+            lineHeight: "1.4",
+          }}
+        />
+      </div>
+
+      {/* AI-Powered Chip */}
+      <div className="absolute top-4 left-4 z-50">
+        <div
+          data-tooltip-id="ai-tooltip"
+          data-tooltip-html={
+            "<strong>AI guides you through strategic thinking.</strong><br /><br />Walks you through the planning questions most business owners never consider—audience psychology, positioning, trust signals, and more."
+          }
+          className="select-none bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider shadow-lg backdrop-blur-sm border border-white/20 cursor-default"
+        >
+          AI-Powered
+        </div>
+
+        <Tooltip
+          id="ai-tooltip"
+          place="bottom-end"
+          style={{
+            backgroundColor: "#1f2937",
+            color: "#ffffff",
+            borderRadius: "8px",
+            padding: "12px",
+            fontSize: "14px",
+            maxWidth: "280px",
+            lineHeight: "1.4",
           }}
         />
       </div>

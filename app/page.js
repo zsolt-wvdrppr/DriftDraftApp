@@ -14,18 +14,18 @@ export default function Home() {
       <BlueprintBackground />
       <section className="relative z-10 light dark:dark">
         <HeroBackground />
-        <div className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+        <div className="flex flex-col items-center justify-center gap-1 md:gap-4 py-16 min-h-screen md:min-h-fit md:py-16">
           <ServiceTitle />
-          <IntroEffect type="slideRight">
-            <HeroIdentity />
-          </IntroEffect>
           <IntroEffect type="slideLeft">
             <SignupCreditsNotice />
           </IntroEffect>
         </div>
       </section>
 
-      <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+      <section className="flex flex-col items-center justify-center gap-10 py-8 md:py-10 mt-4">
+        <IntroEffect type="slideRight">
+          <HeroIdentity />
+        </IntroEffect>
         <HomePageIntro />
       </section>
 

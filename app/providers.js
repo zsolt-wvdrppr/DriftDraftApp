@@ -5,34 +5,41 @@ import { HeroUIProvider as NextUIProvider } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ReCaptchaProvider } from "next-recaptcha-v3";
-import { LoadScript } from "@react-google-maps/api";
 
 import { AuthProvider } from "@/lib/AuthContext";
 import { SessionProvider } from "@/lib/SessionProvider";
 
 export function Providers({ children, themeProps }) {
   const reCaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-
   const router = useRouter();
+  const [mounted, setMounted] = React.useState(false);
 
-  const libraries = ["places"];
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  return (
-    <>
+  if (!mounted) {
+    // Return a static version during SSR
+    return (
       <ReCaptchaProvider reCaptchaKey={reCaptchaKey} useRecaptchaNet={true}>
         <AuthProvider>
           <NextUIProvider navigate={router.push}>
-            <NextThemesProvider {...themeProps}>
-              <LoadScript
-                googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-                libraries={libraries}
-              >
-                <SessionProvider>{children}</SessionProvider>
-              </LoadScript>
-            </NextThemesProvider>
+            {children}
           </NextUIProvider>
         </AuthProvider>
       </ReCaptchaProvider>
-    </>
+    );
+  }
+
+  return (
+    <ReCaptchaProvider reCaptchaKey={reCaptchaKey} useRecaptchaNet={true}>
+      <AuthProvider>
+        <NextUIProvider navigate={router.push}>
+          <NextThemesProvider {...themeProps}>
+            <SessionProvider>{children}</SessionProvider>
+          </NextThemesProvider>
+        </NextUIProvider>
+      </AuthProvider>
+    </ReCaptchaProvider>
   );
 }

@@ -1,15 +1,22 @@
 'use client';
 
-import { useAuth } from "@/lib/AuthContext";
+//import { useAuth } from "@/lib/AuthContext";
+
+import { homePageContent } from "../home-page-intro";
+import ReactMarkdown from "react-markdown";
 
 const HeroIdentity = () => {
-  const { user } = useAuth();
+  //const { user } = useAuth();
 
-  if (user) return null;
+  //if (user) return null;
 
   return (
-    <div className="relative mx-2 backdrop-blur-sm bg-slate-100/20 border-l-4 border-accent/60 text-primary dark:bg-content1/20 p-4 rounded-xl text-sm max-w-xl self-center mt-6">
-      <p className="font-semibold text-justify">For business owners who know their website should convert, but don't know why it doesn't.</p>
+    <div className="relative mx-2 backdrop-blur-sm bg-slate-100/20 text-primary dark:bg-content1/20 p-4 rounded-xl text-lg self-center">
+      <div className="text-justify">
+        <ReactMarkdown>
+        {homePageContent.hero.identity}
+        </ReactMarkdown>
+        </div>
     </div>
   );
 };

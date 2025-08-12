@@ -41,10 +41,10 @@ const ServiceTitle = () => {
       <CalloutText
         classNames={{
           wrapper: "pt-2 sm:pt-3 -ml-3.5",
-          base: "text-sm bg-opacity-80 from-brandPink via-highlightPurple to-transparent",
-          text: `text-zinc-500 text-lg sm:text-xl md:text-2xl lg:text-2xl font-semibold`,
+          base: "bg-opacity-80 from-brandPink via-highlightPurple to-transparent",
+          text: `text-medium text-zinc-500 text-lg sm:text-xl md:text-2xl lg:text-2xl font-semibold`,
         }}
-        text={"That Turns Visitors into Customers"}
+        text={"That Actually Works for Your Business"}
       />
     </div>
   );
