@@ -2,9 +2,6 @@ import { Suspense } from "react";
 
 import Activities from "@/components/activities/Activities";
 
-// Disable static generation for this page
-export const dynamic = "force-dynamic";
-
 const Page = () => {
   return (
     <div>
