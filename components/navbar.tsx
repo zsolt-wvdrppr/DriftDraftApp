@@ -220,7 +220,7 @@ export const Navbar = () => {
       {isReferralModalOpen && (
         <ConfirmationModal
           isOpen={isReferralModalOpen}
-          message={modalMessage(referralName?.toString() || "")}
+          message={modalMessage(referralName || "")}
           placement="center"
           title="Confirm Referral"
           onClose={() => {
