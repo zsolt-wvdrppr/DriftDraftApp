@@ -28,14 +28,6 @@ import Cookies from "js-cookie";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { useReCaptcha } from "next-recaptcha-v3";
 
-import EditableMarkdownModal from "../planner-layout/layout/EditableMarkdownModal";
-
-import { initialConfig } from "./lexical_config";
-import { legend } from "./utils";
-import sendSessionToPlanfix from "./sendSessionToPlanfix";
-import ConfirmationModal from "./ConfirmationModal";
-import NewSessionSelectorInner from "./startNewSessionSelectorInner";
-
 import { useGeneratePdf } from "@/lib/hooks/useGeneratePdf";
 import {
   formatDateToLocalBasic,
@@ -46,7 +38,17 @@ import { useSessionContext } from "@/lib/SessionProvider";
 import { useAuth } from "@/lib/AuthContext";
 import logger from "@/lib/logger";
 
+import EditableMarkdownModal from "../planner-layout/layout/EditableMarkdownModal";
+
+import { initialConfig } from "./lexical_config";
+import { legend } from "./utils";
+import sendSessionToPlanfix from "./sendSessionToPlanfix";
+import ConfirmationModal from "./ConfirmationModal";
+import NewSessionSelectorInner from "./startNewSessionSelectorInner";
+
 export default function UserActivities() {
+  const sessionContext = useSessionContext();
+
   const {
     fetchAllSessionsFromDb,
     fetchSessionFromDb,
@@ -54,7 +56,8 @@ export default function UserActivities() {
     initSessionFromDb,
     fetchAiGeneratedPlanFromDb,
     updateSessionTitleInDb,
-  } = useSessionContext();
+  } = sessionContext || {};
+
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const {
@@ -168,44 +171,44 @@ export default function UserActivities() {
   const toastRef = useRef(null);
 
   const handleToast = () => {
-   // startTransition(() => {
-      if (toastRef.current) {
-        // Dismiss the toast and reset state
-        toast.dismiss(toastRef.current);
-        toastRef.current = null;
-      }
+    // startTransition(() => {
+    if (toastRef.current) {
+      // Dismiss the toast and reset state
+      toast.dismiss(toastRef.current);
+      toastRef.current = null;
+    }
 
-      const newToastId = toast.custom(
-        (t) => (
-          <div className="relative flex w-fit justify-center rounded-lg rounded-tr-none border dark:border-neutralDark shadow-md bg-white/95 dark-bg-zinc-800">
-            <div className="fixed top-0 left-0 w-full h-full "/>
-            <div className="w-full">
-              <Button
-                className="!absolute top-[-25.5px] right-[-1] p-0 pb-0 h-fit min-w-0 z-20 m-0 hover:!opacity-100 bg-white/95 border border-b-white/90 rounded-b-none rounded-t-lg overflow-hidden"
-                onPress={() => {
-                  toast.dismiss(t);
-                  toastRef.current = null;
-                  Cookies.set("toastDismissed", true, { expires: 365 });
-                }}
-              >
-                <div className="relative w-full h-ful hover:scale-125 active:scale-90 transition-all">
+    const newToastId = toast.custom(
+      (t) => (
+        <div className="relative flex w-fit justify-center rounded-lg rounded-tr-none border dark:border-neutralDark shadow-md bg-white/95 dark-bg-zinc-800">
+          <div className="fixed top-0 left-0 w-full h-full " />
+          <div className="w-full">
+            <Button
+              className="!absolute top-[-25.5px] right-[-1] p-0 pb-0 h-fit min-w-0 z-20 m-0 hover:!opacity-100 bg-white/95 border border-b-white/90 rounded-b-none rounded-t-lg overflow-hidden"
+              onPress={() => {
+                toast.dismiss(t);
+                toastRef.current = null;
+                Cookies.set("toastDismissed", true, { expires: 365 });
+              }}
+            >
+              <div className="relative w-full h-ful hover:scale-125 active:scale-90 transition-all">
                 <IconX className="dark:bg-zinc-800 text-highlightOrange dark:text-primary outline-2" />
-                </div>
-              </Button>
-              {legend()}
-            </div>
+              </div>
+            </Button>
+            {legend()}
           </div>
-        ),
-        {
-          duration: Infinity,//5000,
-          onDismiss: () => {
-            toastRef.current = null;
-          },
-        }
-      );
+        </div>
+      ),
+      {
+        duration: Infinity, //5000,
+        onDismiss: () => {
+          toastRef.current = null;
+        },
+      }
+    );
 
-      toastRef.current = newToastId;
-   // });
+    toastRef.current = newToastId;
+    // });
   };
 
   useEffect(() => {
@@ -215,6 +218,14 @@ export default function UserActivities() {
       logger.debug("PDF generation complete.");
     }
   }, [isPdfGenerating]);
+
+  if (!sessionContext) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner color="primary" />
+      </div>
+    );
+  }
 
   /*useEffect(() => {
     // Check if the toast has been dismissed
