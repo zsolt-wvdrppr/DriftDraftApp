@@ -4,7 +4,6 @@ import { Metadata, Viewport } from "next";
 import clsx from "clsx";
 import { Toaster } from "sonner";
 import { Poppins } from "next/font/google";
-import { Suspense } from "react";
 import { GoogleTagManager } from "@next/third-parties/google";
 
 import { siteConfig } from "@/config/site";
@@ -152,9 +151,7 @@ export default function RootLayout({
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "system" }}>
           <div className="relative flex flex-col h-screen">
-            <Suspense fallback={<div>Loading navbar...</div>}>
               <Navbar />
-            </Suspense>
             <main className="container mx-auto max-w-7xl md:pt-16 md:px-6 flex-grow">
               {children}
               <Toaster />
