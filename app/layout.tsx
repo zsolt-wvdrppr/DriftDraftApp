@@ -5,12 +5,15 @@ import clsx from "clsx";
 import { Toaster } from "sonner";
 import { Poppins } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
+import { Skeleton } from "@heroui/skeleton";
+import { Suspense } from "react";
 
 import { siteConfig } from "@/config/site";
 import { Navbar } from "@/components/navbar";
 import Footer from "@/components/footer";
 import CookieConsent from "@/components/cookie-consent";
 import StructuredData from "@/components/seo/StructuredData";
+
 
 import { Providers } from "./providers";
 
@@ -122,6 +125,40 @@ gtag('set', 'ads_data_redaction', true);
 gtag('set', 'url_passthrough', true);
 `;
 
+const NavbarSkeleton = () => (
+  <div className="sticky top-0 z-40 w-full h-16 border-b border-divider bg-background/70 backdrop-blur-md backdrop-saturate-150">
+    <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+      {/* Logo skeleton */}
+      <div className="flex items-center gap-3">
+        <Skeleton className="w-8 h-8 rounded-full" />
+        <Skeleton className="w-32 h-6 rounded-lg" />
+      </div>
+
+      {/* Desktop navigation skeleton */}
+      <div className="hidden lg:flex gap-4 ml-2">
+        <Skeleton className="w-16 h-6 rounded-lg" />
+        <Skeleton className="w-20 h-6 rounded-lg" />
+        <Skeleton className="w-24 h-6 rounded-lg" />
+      </div>
+
+      {/* Right side actions skeleton */}
+      <div className="flex items-center gap-4">
+        {/* Theme switch skeleton */}
+        <Skeleton className="w-8 h-8 rounded-full hidden md:block" />
+
+        {/* Action buttons skeleton */}
+        <div className="hidden md:flex gap-2">
+          <Skeleton className="w-24 h-9 rounded-lg" />
+          <Skeleton className="w-20 h-9 rounded-lg" />
+        </div>
+
+        {/* Mobile menu toggle skeleton */}
+        <Skeleton className="w-8 h-8 rounded md:hidden" />
+      </div>
+    </div>
+  </div>
+);
+
 export default function RootLayout({
   children,
 }: {
@@ -151,7 +188,9 @@ export default function RootLayout({
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "system" }}>
           <div className="relative flex flex-col h-screen">
+            <Suspense fallback={<NavbarSkeleton />}>
               <Navbar />
+            </Suspense>
             <main className="container mx-auto max-w-7xl md:pt-16 md:px-6 flex-grow">
               {children}
               <Toaster />
