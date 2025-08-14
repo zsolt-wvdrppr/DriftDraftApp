@@ -18,12 +18,29 @@ const HintButton = ({
 }) => {
   const { sessionData, updateFormData } = useSessionContext();
   const searchParams = useSearchParams();
-  const stepNumber = searchParams.get("step") || "unknown";
+  const [mounted, setMounted] = useState(false);
+  const [stepNumber, setStepNumber] = useState("unknown");
+
   const [newHintAvailable, setNewHintAvailable] = useState(false); // Track if new hint is available
-  const [lastHint, setLastHint] = useState(
-    sessionData?.formData?.[stepNumber]?.lastHint || ""
-  ); // Last known hints
+  const [lastHint, setLastHint] = useState(""); // Last known hints
   const playSound = useToastSound();
+
+  // Track mounting state
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Only access searchParams after mounting
+  useEffect(() => {
+    if (mounted && typeof window !== "undefined") {
+      const step = searchParams.get("step") || "unknown";
+      setStepNumber(step);
+
+      // Set lastHint from sessionData
+      const savedLastHint = sessionData?.formData?.[step]?.lastHint || "";
+      setLastHint(savedLastHint);
+    }
+  }, [mounted, searchParams, sessionData]);
 
   const hintsChanged = useMemo(() => {
     logger.debug(`HintButton: hints=${hint}, lastHints=${lastHint}`);
@@ -71,7 +88,12 @@ const HintButton = ({
         }}
       >
         <span className="relative transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-full group-hover:bg-transparent group-hover:dark:bg-transparent flex">
-          <NewHintNotifierIcon className={"p-1 md:px-2.5 md:py-2.5 text-brandPink transition-colors duration-200 group-hover:text-white"} trigger={newHintAvailable} />
+          <NewHintNotifierIcon
+            className={
+              "p-1 md:px-2.5 md:py-2.5 text-brandPink transition-colors duration-200 group-hover:text-white"
+            }
+            trigger={newHintAvailable}
+          />
         </span>
       </button>
       <span className="hidden md:block text-sm mt-2 text-primary dark:text-slate-200">

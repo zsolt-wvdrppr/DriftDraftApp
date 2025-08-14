@@ -64,7 +64,6 @@ import StepInspirations from "./StepInspirations";
 import StepContactInfo from "./StepContactInfo";
 import Result from "./Result";
 
-
 // Step definitions
 const steps = [
   { id: 0, label: "Purpose", icon: <IconPlant />, component: StepPurpose },
@@ -210,7 +209,6 @@ export default function LandingWizardContainer({}) {
 
   // Validate the current step and move to the next one
   const handleNext = () => {
-
     goToNextStep(
       currentStep,
       steps,
@@ -219,8 +217,7 @@ export default function LandingWizardContainer({}) {
       formData,
       handleFormDataUpdate,
       setCurrentStep,
-      updateUrlParams,
-
+      updateUrlParams
     );
     if (user?.id && sessionData) {
       logger.debug("[WIZZ] updating session data");
@@ -280,7 +277,6 @@ export default function LandingWizardContainer({}) {
   };
 
   const validateStep = () => {
-
     const exceptionsArr = [7];
 
     return handleValidation(
@@ -370,7 +366,11 @@ export default function LandingWizardContainer({}) {
           </div>
           {/* Step Content with Loading Placeholder */}
           <Suspense
-            fallback={<div className="text-center p-4">Loading...</div>}
+            fallback={
+              <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+              </div>
+            }
           >
             <AnimatePresence mode="wait">
               {CurrentStepComponent ?

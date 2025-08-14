@@ -24,9 +24,14 @@ export default function LogIn() {
   const [referral, setReferral] = useState(null);
   const [redirect, setRedirect] = useState(null);
   const [buttonLogin, setButtonLogin] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && typeof window !== "undefined") {
       const urlRedirect = searchParams.get("redirect");
       const urlReferral = searchParams.get("ref");
 
@@ -38,7 +43,7 @@ export default function LogIn() {
         setRedirect(urlRedirect);
       }
     }
-  }, []);
+  }, [mounted, searchParams]);
 
   useEffect(() => {
     if (user && referral !== undefined && referral && !buttonLogin) {
@@ -104,8 +109,9 @@ export default function LogIn() {
         "redirect"
       );
 
-      const redirectUrl = redirectParameter
-        ? decodeURIComponent(redirectParameter)
+      const redirectUrl =
+        redirectParameter ?
+          decodeURIComponent(redirectParameter)
         : "/activities";
 
       logger.debug("Redirecting to:", redirectUrl);
@@ -160,7 +166,7 @@ export default function LogIn() {
           {/*error && <p className="text-red-500">{error}</p>} {/* Show error */}
           <Input
             autoComplete="email"
-            classNames ={{ input: "text-sm" }}
+            classNames={{ input: "text-sm" }}
             label="Email Address"
             labelPlacement="outside-top"
             name="email"
@@ -182,17 +188,16 @@ export default function LogIn() {
                 onPress={() => setPasswordVisible(!passwordVisible)}
                 onSuccess={() => setPasswordVisible(!passwordVisible)}
               >
-                {passwordVisible ? (
+                {passwordVisible ?
                   <Icon
                     className="pointer-events-none text-2xl text-default-400"
                     icon="solar:eye-closed-linear"
                   />
-                ) : (
-                  <Icon
+                : <Icon
                     className="pointer-events-none text-2xl text-default-400"
                     icon="solar:eye-bold"
                   />
-                )}
+                }
               </Button>
             }
             label="Password"
@@ -217,9 +222,9 @@ export default function LogIn() {
           </Button>
           <Link
             href={
-              redirect
-                ? `/signup?redirect=${encodeURIComponent(redirect)}`
-                : "/signup"
+              redirect ?
+                `/signup?redirect=${encodeURIComponent(redirect)}`
+              : "/signup"
             }
           >
             <span className="text-center text-sm m-auto">

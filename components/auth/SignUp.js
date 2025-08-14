@@ -25,12 +25,17 @@ export default function SignUp() {
   const searchParams = useSearchParams();
   const [referral, setReferral] = useState(null);
   const [redirect, setRedirect] = useState(null);
+  const [mounted, setMounted] = useState(false);
 
   const toggleVisibility = () => setIsVisible(!isVisible);
   const play = useToastSound();
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && typeof window !== "undefined") {
       const urlRedirect = searchParams.get("redirect");
       const urlReferral = searchParams.get("ref");
 
@@ -42,7 +47,7 @@ export default function SignUp() {
         setRedirect(urlRedirect);
       }
     }
-  }, []);
+  }, [mounted, searchParams]);
 
   useEffect(() => {
     if (user && referral !== undefined) {
@@ -110,9 +115,8 @@ export default function SignUp() {
       const redirectParam = new URLSearchParams(window.location.search).get(
         "redirect"
       );
-      const redirectPath = redirectParam
-        ? `?redirect=${redirectParam}`
-        : "/activities";
+      const redirectPath =
+        redirectParam ? `?redirect=${redirectParam}` : "/activities";
 
       logger.info(`${window.location.origin}${redirectPath}`);
 
@@ -195,17 +199,16 @@ export default function SignUp() {
                 type="button"
                 onPress={toggleVisibility}
               >
-                {isVisible ? (
+                {isVisible ?
                   <Icon
                     className="pointer-events-none text-2xl text-default-400"
                     icon="solar:eye-closed-linear"
                   />
-                ) : (
-                  <Icon
+                : <Icon
                     className="pointer-events-none text-2xl text-default-400"
                     icon="solar:eye-bold"
                   />
-                )}
+                }
               </Button>
             }
             label="Password"
@@ -238,9 +241,9 @@ export default function SignUp() {
           <p className="text-center text-small">
             <Link
               href={
-                redirect
-                  ? `/login?redirect=${encodeURIComponent(redirect)}`
-                  : "/login"
+                redirect ?
+                  `/login?redirect=${encodeURIComponent(redirect)}`
+                : "/login"
               }
               size="sm"
             >

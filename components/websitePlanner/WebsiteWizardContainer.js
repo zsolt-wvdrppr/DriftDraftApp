@@ -214,7 +214,6 @@ export default function WebsiteWizardContainer({}) {
 
   // Validate the current step and move to the next one
   const handleNext = () => {
-
     goToNextStep(
       currentStep,
       steps,
@@ -223,7 +222,7 @@ export default function WebsiteWizardContainer({}) {
       formData,
       handleFormDataUpdate,
       setCurrentStep,
-      updateUrlParams,
+      updateUrlParams
     );
     if (user?.id && sessionData) {
       logger.debug("[WIZZ] updating session data");
@@ -283,7 +282,6 @@ export default function WebsiteWizardContainer({}) {
   };
 
   const validateStep = () => {
-
     const exceptionsArr = [8];
 
     return handleValidation(
@@ -372,7 +370,11 @@ export default function WebsiteWizardContainer({}) {
           </div>
           {/* Step Content with Loading Placeholder */}
           <Suspense
-            fallback={<div className="text-center p-4">Loading...</div>}
+            fallback={
+              <div className="flex items-center justify-center min-h-screen">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+              </div>
+            }
           >
             <AnimatePresence mode="wait">
               {CurrentStepComponent ?
