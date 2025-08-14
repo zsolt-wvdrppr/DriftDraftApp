@@ -10,11 +10,17 @@ import logger from "@/lib/logger";
 
 export const LogInBtn = ({ onChange, className, noTitle = false }) => {
   const [redirect, setRedirect] = useState(null);
+  const [mounted, setMounted] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // Only access searchParams after component is mounted
+    if (mounted && typeof window !== "undefined") {
       const urlRedirect = searchParams.get("redirect");
       const urlReferral = searchParams.get("ref");
 
@@ -24,13 +30,13 @@ export const LogInBtn = ({ onChange, className, noTitle = false }) => {
         setRedirect(urlRedirect);
       }
     }
-  }, []);
+  }, [mounted, searchParams]);
 
   const handleClick = async () => {
     logger.info("Logging in...");
     router.push(redirect ? `/login?redirect=${redirect}` : "/login");
     await onChange();
-  }
+  };
 
   return (
     <Button className={className} onPress={handleClick}>
@@ -68,17 +74,15 @@ export const LogInOutBtn = ({
   labelClassName = "",
   noTitle = false,
 }) => {
-  return user ? (
-    <LogOutBtn
-      className={className}
-      labelClassName={labelClassName}
-      noTitle={noTitle}
-      user={user}
-      onChange={onLogOut}
-    />
-  ) : (
-    <LogInBtn className={className} noTitle={noTitle} onChange={onLogIn} />
-  );
+  return user ?
+      <LogOutBtn
+        className={className}
+        labelClassName={labelClassName}
+        noTitle={noTitle}
+        user={user}
+        onChange={onLogOut}
+      />
+    : <LogInBtn className={className} noTitle={noTitle} onChange={onLogIn} />;
 };
 
 export default LogInOutBtn;
