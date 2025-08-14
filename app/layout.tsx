@@ -150,19 +150,29 @@ export default function RootLayout({
           poppins.className
         )}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "system" }}>
-          <div className="relative flex flex-col h-screen">
-            <Suspense fallback={<div>Loading navbar...</div>}>
-              <Navbar />
-            </Suspense>
-            <main className="container mx-auto max-w-7xl md:pt-16 md:px-6 flex-grow">
-              {children}
-              <Toaster />
-            </main>
-            <Footer />
-          </div>
-          <CookieConsent />
-        </Providers>
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center min-h-screen">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+            </div>
+          }
+        >
+          <Providers
+            themeProps={{ attribute: "class", defaultTheme: "system" }}
+          >
+            <div className="relative flex flex-col h-screen">
+              <Suspense fallback={<div>Loading navbar...</div>}>
+                <Navbar />
+              </Suspense>
+              <main className="container mx-auto max-w-7xl md:pt-16 md:px-6 flex-grow">
+                {children}
+                <Toaster />
+              </main>
+              <Footer />
+            </div>
+            <CookieConsent />
+          </Providers>
+        </Suspense>
         {/* Load GTM after consent is initialized */}
         <GoogleTagManager gtmId="GTM-MRQ8RLMC" />
       </body>
