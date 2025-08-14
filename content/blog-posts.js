@@ -1,7 +1,7 @@
 export const blogPosts = [
 {
     id: "blog-post-ha5qu6x03k-h3i123x5",
-    show: false,
+    show: true,
     tags: [
       {
         type: "website planning"
