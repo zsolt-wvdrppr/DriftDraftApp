@@ -14,7 +14,6 @@ import Footer from "@/components/footer";
 import CookieConsent from "@/components/cookie-consent";
 import StructuredData from "@/components/seo/StructuredData";
 
-
 import { Providers } from "./providers";
 
 const poppins = Poppins({
@@ -191,10 +190,11 @@ export default function RootLayout({
             <Suspense fallback={<NavbarSkeleton />}>
               <Navbar />
             </Suspense>
-            <main className="container mx-auto max-w-7xl md:pt-16 md:px-6 flex-grow">
-              {children}
-              <Toaster />
-            </main>
+            
+              <main className="container mx-auto max-w-7xl md:pt-16 md:px-6 flex-grow">
+                {children}
+                <Toaster />
+              </main>
             <Footer />
           </div>
           <CookieConsent />

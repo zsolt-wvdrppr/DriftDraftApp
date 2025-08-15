@@ -8,6 +8,7 @@ import { ReCaptchaProvider } from "next-recaptcha-v3";
 
 import { AuthProvider } from "@/lib/AuthContext";
 import { SessionProvider } from "@/lib/SessionProvider";
+import GoogleMapsProvider from "@/lib/GoogleMapsProvider";
 
 export function Providers({ children, themeProps }) {
   const reCaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
@@ -23,9 +24,7 @@ export function Providers({ children, themeProps }) {
     return (
       <ReCaptchaProvider reCaptchaKey={reCaptchaKey} useRecaptchaNet={true}>
         <AuthProvider>
-          <NextUIProvider navigate={router.push}>
-            {children}
-          </NextUIProvider>
+          <NextUIProvider navigate={router.push}>{children}</NextUIProvider>
         </AuthProvider>
       </ReCaptchaProvider>
     );
@@ -36,7 +35,9 @@ export function Providers({ children, themeProps }) {
       <AuthProvider>
         <NextUIProvider navigate={router.push}>
           <NextThemesProvider {...themeProps}>
-            <SessionProvider>{children}</SessionProvider>
+            <SessionProvider>
+             {children}
+            </SessionProvider>
           </NextThemesProvider>
         </NextUIProvider>
       </AuthProvider>
