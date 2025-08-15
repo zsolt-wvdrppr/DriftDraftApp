@@ -1,5 +1,5 @@
 /** ⚠️ WARNING! This API route bypasses request limiter */
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 
 import logger from "@/lib/logger";
@@ -29,19 +29,22 @@ export async function POST(req) {
       );
     }
 
-    // Initialise the Google Generative AI client
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: pickedModel !== null ? "gemini-2.5-flash" : "gemini-2.5-flash" });
+    // Initialize the Google GenAI client
+    const ai = new GoogleGenAI({ apiKey });
+    const modelName = "gemini-2.0-flash";
    
-    logger.info(`[GOOGLE AI] Using model: ${model.model}`);
+    logger.info(`[GOOGLE AI] Using model for naming: ${modelName}`);
 
     try {
       // Generate content from the API
-      const result = await model.generateContent(prompt);
+      const response = await ai.models.generateContent({
+        model: modelName,
+        contents: prompt
+      });
 
       // Validate the response structure
-      if (!result || !result.response || typeof result.response.text !== "function") {
-        logger.error("Unexpected API response structure:", result);
+      if (!response || !response.text) {
+        logger.error("Unexpected API response structure:", response);
 
         return NextResponse.json(
           { error: "Unexpected response from the Generative AI service." },
@@ -50,7 +53,7 @@ export async function POST(req) {
       }
 
       // Return the generated content
-      return NextResponse.json({ content: result.response.text() });
+      return NextResponse.json({ content: response.text });
     } catch (apiError) {
       // Handle API-specific errors, such as rate limits or other service issues
       logger.error("Google Generative AI API error:", apiError.message || apiError);
