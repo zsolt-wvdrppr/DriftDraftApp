@@ -119,7 +119,7 @@ export const BecomeAgentInput = () => {
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.5 }}
           >
-            <Spinner />
+            <Spinner className="select-none"/>
           </motion.div>
         )}
         {isAgentMode && !isEligible && !loadingCheck && (

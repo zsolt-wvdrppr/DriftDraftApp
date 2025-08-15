@@ -115,7 +115,7 @@ const SubscriptionAndTopup = () => {
     <div className="pt-4 pb-8 mx-auto flex flex-col w-full gap-y-4 items-center overflow-hidden">
       {/* paymentMethodLoading spinner*/}
       {paymentMethodLoading && (
-        <Spinner color="primary" size="sm" className="justify-self-center" />
+        <Spinner color="primary" size="sm" className="justify-self-center select-none" />
       )}
       {!paymentMethodLoading && !paymentMethod && (
         <p className="text-danger text-center mb-4">
@@ -235,7 +235,7 @@ const SubscriptionAndTopup = () => {
                     <Spinner
                       color="primary"
                       size="sm"
-                      className="justify-self-end"
+                      className="justify-self-end select-none"
                     />
                   )}
                 </span>

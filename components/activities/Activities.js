@@ -221,7 +221,7 @@ export default function UserActivities() {
 
   if (!sessionContext) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen select-none">
         <Spinner color="primary" />
       </div>
     );
@@ -242,7 +242,7 @@ export default function UserActivities() {
 
   if (isPending || loading || isFetchingInProgress) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen select-none">
         <Spinner color="primary" />
       </div>
     );

@@ -290,7 +290,7 @@ export default function LandingWizardContainer({}) {
 
   if (loading || isPending || !isInitialised) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen select-none">
         <Spinner color="primary" size="large" />
       </div>
     );
