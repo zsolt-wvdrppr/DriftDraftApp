@@ -20,7 +20,7 @@ const SignupCreditsNotice = () => {
         )}
         {!user && (
           <>
-            <span className="font-semibold">Sign Up today</span> and <span className="font-semibold">get 14 free credits</span> to start your website or landing page plan.
+            <span className="font-semibold">{" Sign Up today"}</span> and <span className="font-semibold">get 14 free credits</span> to start your website or landing page plan.
           </>
         )}
       </p>
