@@ -32,19 +32,6 @@ import {
 import { useRouter, usePathname } from "next/navigation";
 import { Spinner } from "@heroui/react";
 
-import ProgressBar from "./ProgressBar";
-import StepPurpose from "./StepPurpose";
-import StepAudience from "./StepAudience";
-import StepMarketing from "./StepMarketing";
-import StepCompetitors from "./StepCompetitors";
-import StepUSPs from "./StepUSPs";
-import StepDomain from "./StepDomain";
-import StepBrandGuidelines from "./StepBrandGuidelines";
-import StepEmotions from "./StepEmotions";
-import StepInspirations from "./StepInspirations";
-import StepContactInfo from "./StepContactInfo";
-import Result from "./Result";
-
 import RestartSessionBtn from "@/components/planner-layout/layout/RestartSessionBtn";
 import {
   PreviousButton,
@@ -65,6 +52,20 @@ import {
 } from "@/lib/plannerFormNavigation";
 import { useAuth } from "@/lib/AuthContext";
 import logger from "@/lib/logger";
+
+import ProgressBar from "./ProgressBar";
+import StepPurpose from "./StepPurpose";
+import StepAudience from "./StepAudience";
+import StepMarketing from "./StepMarketing";
+import StepCompetitors from "./StepCompetitors";
+import StepUSPs from "./StepUSPs";
+import StepDomain from "./StepDomain";
+import StepBrandGuidelines from "./StepBrandGuidelines";
+import StepEmotions from "./StepEmotions";
+import StepInspirations from "./StepInspirations";
+import StepContactInfo from "./StepContactInfo";
+import Result from "./Result";
+
 
 // Step definitions
 const steps = [
@@ -394,7 +395,7 @@ export default function WebsiteWizardContainer({}) {
             </AnimatePresence>
           </Suspense>
           {/* Navigation Buttons */}
-          <div className="fixed z-50 bottom-0 backdrop-blur-sm bg-white/50 dark:bg-content1/50 md:backdrop-blur-none md:relative navigation-buttons w-full flex gap-2 justify-between md:justify-evenly pt-1 md:py-8">
+          <div className="fixed z-50 bottom-0 backdrop-blur-sm md:backdrop-blur-none md:relative navigation-buttons w-full flex gap-2 justify-between md:justify-evenly pt-1 md:py-8">
             <PreviousButton
               disabled={currentStep <= 0}
               onPress={handlePrevious}

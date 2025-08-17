@@ -47,7 +47,7 @@ export const StepQuestion = ({ content, question, className = '' }) => {
   const _className = " " + className;
 
   return (
-    <h2 className={cn("text-sm md:text-medium lg:text-lg font-semibold mb-4 text-primary dark:text-accentMint whitespace-break-spaces" + _className)}>
+    <h2 className={cn("text-sm md:text-medium lg:text-lg font-semibold mb-4 text-primary dark:text-zinc-200 whitespace-break-spaces" + _className)}>
       {question ? question : content?.question} {content?.required && <span className="text-red-500">*</span>}
     </h2>
   )

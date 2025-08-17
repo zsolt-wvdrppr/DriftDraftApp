@@ -390,7 +390,7 @@ export default function LandingWizardContainer({}) {
             </AnimatePresence>
           </Suspense>
           {/* Navigation Buttons */}
-          <div className="fixed z-50 bottom-0 backdrop-blur-sm bg-white/50 dark:bg-content1/50 md:backdrop-blur-none md:relative navigation-buttons w-full flex gap-2 justify-between md:justify-evenly pt-1 md:py-8">
+          <div className="fixed z-50 rounded-xl bottom-0 backdrop-blur-sm bg-white/50 dark:bg-content1/50 md:backdrop-blur-none md:relative navigation-buttons w-full flex gap-2 justify-between md:justify-evenly pt-1 md:py-8">
             <PreviousButton
               disabled={currentStep <= 0}
               onPress={handlePrevious}
