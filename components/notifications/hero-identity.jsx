@@ -2,7 +2,7 @@
 
 //import { useAuth } from "@/lib/AuthContext";
 
-import { homePageContent } from "../home-page-intro";
+import { homePageContent } from "@/content/pages/homePageContent";
 import ReactMarkdown from "react-markdown";
 
 const HeroIdentity = () => {

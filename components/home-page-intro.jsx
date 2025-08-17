@@ -4,82 +4,21 @@ import VideoPlayer from "@/components/video-player/video-player";
 import ReactMarkdown from "react-markdown";
 import TextReader from "@/components/text-reader";
 import { Divider, Link } from "@heroui/react";
+import References from "@/components/ui/references";
+import { homePageContent } from "@/content/pages/homePageContent";
 
 // Content object for DriftDraft homepage - concise psychological framework
-export const homePageContent = {
-  hero: {
-    identity:
-      "**For business owners** who know their **website** should **work harder**, but don't know what it's missing.",
-    headline: "Get the strategic blueprint that turns visitors into customers.",
-    cta: "Get Your Blueprint",
-    socialProof: "Start with free credits — no commitment required",
-  },
 
-  sections: [
-    {
-      id: "website-blueprint",
-      title: "Complete Strategic Blueprint",
-      content: `Most people build websites by copying competitors or guessing what looks good. This guides you through proper strategic thinking, target audience psychology, colour emotions, brand positioning, conversion flows. All the stuff marketing consultants charge thousands for, broken down into questions you can actually answer.`,
-      followUp: `~27 page strategic blueprint generated in minutes. Download as PDF, brief developers confidently.`,
-      videoUrl: "/guide-videos/website-planner-purpose.mp4",
-      placement: "left",
-    },
-    {
-      id: "competition-discovery",
-      title: "Find Your Competition",
-      content: `Who are you actually competing with? Most business owners guess wrong. This finds your real competition automatically—the ones your audience compares you to right now. **One-click research** saves hours of manual hunting.`,
-      followUp: `See the real landscape without endless searching.`,
-      videoUrl: "/guide-videos/competitors-guide.mp4",
-      placement: "right",
-    },
-    {
-      id: "domain-discovery",
-      title: "Strategic Domain Names",
-      content: `Your domain name works harder than you think. AI suggests **brand-friendly alternatives** that reinforce authority and help you stand out in your space. Smart options you might not think of yourself.`,
-      followUp: `Your domain should work as hard as your marketing.`,
-      videoUrl: "/guide-videos/domain-guide.mp4",
-      placement: "left",
-    },
-    {
-      id: "blueprint-generation",
-      title: "Blueprint Generation",
-      content: `Complete the strategic questionnaire, get your comprehensive blueprint immediately. Access anytime via "My Activities". AI processes your answers to deliver tailored recommendations without the guesswork.`,
-      exampleLink: {
-        text: "Example blueprint",
-        url: "/khalsa2pedal_mobile_bike_service.pdf",
-      },
-      followUp: `Based on conversion psychology. Professional consultation recommended for implementation.`,
-      videoUrl: "/guide-videos/generation-guide.mp4",
-      placement: "right",
-    },
-    {
-      id: "plan-management",
-      title: "Your Strategic Workspace",
-      content: `Review, edit, download, or regenerate blueprints. Easy organisation and PDF export for important versions. Regenerate updated versions instantly as your business evolves—AI handles the heavy lifting.`,
-      followUp: `Start with free credits. Complete blueprint: 5 credits. Top up via "Subscription & Credits" in your account.`,
-      videoUrl: "/guide-videos/activities-guide.mp4",
-      placement: "left",
-    },
-  ],
-
-  // Simplified authority messaging
-  authority: {
-    contrast:
-      "Whilst competitors guess at what works, you'll have working conversion psychology.",
-    value:
-      "£4 delivers what consultants charge £2,000+ for—strategic advantage in minutes, not months.",
-  },
-};
 
 const HomePageIntro = () => {
   const { hero, sections, authority, value } = homePageContent;
 
   return (
-    <div className="p-2.5 w-full flex flex-col items-center justify-center gap-4 ga-p-y8 md:gap-8 max-w-5xl">
+    <div className="p-2.5 w-full flex flex-col items-center justify-center gap-4 ga-p-y8 md:gap-8 max-w-5xl select-none">
       {/* Dynamic Sections */}
       {sections.map((section, index) => (
         <div key={section.id} className="w-full max-w-5xl">
-          <TextReader className="backdrop-blur-sm w-full">
+          <TextReader className="backdrop-blur-sm w-full" placement={section.placement}>
             <div
               className={`relative flex flex-col gap-y-8 md:gap-10 items-center justify-center w-full ${
                 section.placement === "right" ?
@@ -102,6 +41,11 @@ const HomePageIntro = () => {
                     {section.exampleLink.text}
                   </Link>
                 )}
+
+                {/* Add References component */}
+                {section.references && (
+                  <References contentList={section.references} />
+                )}
               </div>
 
               <div className="w-full overflow-hidden rounded-xl mb-4">
@@ -120,7 +64,7 @@ const HomePageIntro = () => {
             </div>
 
             {section.followUp && (
-              <div className="max-w-5xl prose text-justify mt-6 md:text-lg text-neutralDark py-2">
+              <div className="max-w-5xl prose w-full text-justify md:text-center mt-6 md:text-lg text-neutralDark py-2">
                 <ReactMarkdown>{section.followUp}</ReactMarkdown>
               </div>
             )}

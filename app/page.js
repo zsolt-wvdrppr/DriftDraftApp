@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <>
       <BlueprintBackground />
-      <section className="relative z-10 light dark:dark">
+      <section className="relative z-10 light dark:dark select-none">
         <HeroBackground />
         <div className="flex flex-col items-center justify-center gap-1 md:gap-4 py-16 min-h-screen md:min-h-fit md:py-16">
           <ServiceTitle />
@@ -22,7 +22,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col items-center justify-center gap-10 py-8 md:py-10 mt-4">
+      <section className="flex flex-col items-center justify-center gap-10 py-8 md:py-10 mt-4 select-none">
         <IntroEffect type="slideRight">
           <HeroIdentity />
         </IntroEffect>
@@ -30,7 +30,7 @@ export default function Home() {
       </section>
 
       <section
-        className="flex flex-col items-center justify-center gap-4 py-8 md:py-10"
+        className="flex flex-col items-center justify-center gap-4 py-8 md:py-10 select-none"
         id="tool-selector"
       >
         <WaasPromo />
