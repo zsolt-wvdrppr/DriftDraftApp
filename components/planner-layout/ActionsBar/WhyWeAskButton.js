@@ -8,7 +8,7 @@ const WhyWeAskButton = ({ whyDoWeAsk, handleToast }) => {
     <div className="flex flex-col justify-center items-center">
       <button
         aria-label="Why do we ask?"
-        className={`why-we-ask-btn select-none relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden transition-all rounded-full duration-200 text-sm font-medium text-gray-900 group bg-gradient-to-br from-primary/80 to-secondaryTeal/80 grup-ohover:from-secondaryPersianGreen group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-accentMint/20 dark:focus:ring-secondaryPersianGreen/55 
+        className={`why-we-ask-btn select-none relative inline-flex items-center justify-center me-2 overflow-hidden transition-all rounded-full duration-200 text-sm font-medium text-gray-900 group hover:bg-gradient-to-br from-primary/80 to-secondaryTeal/80 grup-ohover:from-secondaryPersianGreen group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-accentMint/20 dark:focus:ring-secondaryPersianGreen/55 
         ${!whyDoWeAsk ? "cursor-not-allowed border border-gray-200 opacity-0" : ""}`}
         disabled={!whyDoWeAsk}
         title={"Why do we ask?"}

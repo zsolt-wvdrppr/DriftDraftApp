@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
-import { Button } from "@heroui/react";
 import { useSearchParams } from "next/navigation";
 
 import useToastSound from "@/lib/hooks/useToastSound";
@@ -34,10 +33,12 @@ const HintButton = ({
   useEffect(() => {
     if (mounted && typeof window !== "undefined") {
       const step = searchParams.get("step") || "unknown";
+
       setStepNumber(step);
 
       // Set lastHint from sessionData
       const savedLastHint = sessionData?.formData?.[step]?.lastHint || "";
+
       setLastHint(savedLastHint);
     }
   }, [mounted, searchParams, sessionData]);
@@ -79,7 +80,7 @@ const HintButton = ({
     <div className="flex flex-col justify-center items-center">
       <button
         aria-label="View AI Suggestion"
-        className={`check-hint-btn ${!hint ? "cursor-not-allowed opacity-40 grayscale" : ""} relative inline-flex items-center justify-center p-0.5 me-2 overflow-hidden transition-all rounded-full duration-200 text-sm font-medium text-gray-900 group bg-gradient-to-br from-accentMint to-secondaryTeal group-hover:from-secondaryPersianGreen group-hover:to-blue-600 hover:text-white dark:text-white disabled:cursor-not-allowed focus:ring-4 focus:outline-none focus:ring-accentMint/20 dark:focus:ring-secondaryPersianGreen/55`}
+        className={`check-hint-btn ${!hint ? "cursor-not-allowed opacity-40 grayscale" : ""} relative inline-flex items-center justify-center me-2 overflow-hidden transition-all rounded-full duration-400 text-sm font-medium text-gray-900 group hover:bg-gradient-to-br from-primary/80 to-secondaryTeal/80 grup-ohover:from-secondaryPersianGreen group-hover:from-secondaryPersianGreen group-hover:to-blue-600 hover:text-white dark:text-white disabled:cursor-not-allowed focus:ring-4 focus:outline-none focus:ring-accentMint/20 dark:focus:ring-secondaryPersianGreen/55`}
         disabled={!hint}
         title={hint ? "View AI Suggestion" : "AI suggestion not available"}
         onClick={(e) => {
