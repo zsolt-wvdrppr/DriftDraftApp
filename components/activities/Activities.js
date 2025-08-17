@@ -37,6 +37,7 @@ import {
 import { useSessionContext } from "@/lib/SessionProvider";
 import { useAuth } from "@/lib/AuthContext";
 import logger from "@/lib/logger";
+import { useReferee } from "@/lib/hooks/useReferee";
 
 import EditableMarkdownModal from "../planner-layout/layout/EditableMarkdownModal";
 
@@ -45,6 +46,7 @@ import { legend } from "./utils";
 import sendSessionToPlanfix from "./sendSessionToPlanfix";
 import ConfirmationModal from "./ConfirmationModal";
 import NewSessionSelectorInner from "./startNewSessionSelectorInner";
+
 
 export default function UserActivities() {
   const sessionContext = useSessionContext();
@@ -93,6 +95,8 @@ export default function UserActivities() {
   const { generatePdf, isPdfGenerating } = useGeneratePdf();
 
   const [isProcessLoading, setIsProcessLoading] = useState(false);
+
+  const { referralEmail } = useReferee(user?.id);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -557,6 +561,7 @@ export default function UserActivities() {
                           View & Edit plan
                         </Tooltip>
                       </div>
+                      {!referralEmail && (
                       <div>
                         <Link
                           alt="Request Quote"
@@ -573,6 +578,7 @@ export default function UserActivities() {
                           Request a Quote from Wavedropper LTD.
                         </Tooltip>
                       </div>
+                      )}
                     </div>
                   </div>
                   <div className="flex justify-around w-full">
