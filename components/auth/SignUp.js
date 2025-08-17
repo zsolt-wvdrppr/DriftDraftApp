@@ -127,19 +127,69 @@ export default function SignUp() {
           emailRedirectTo: `${window.location.origin}${redirectPath}`,
           data: {
             full_name: name,
-            referral_name: referral, // ✅ Store referral name if exists
+            referral_name: referral,
           },
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        logger.error("Signup error details:", error);
 
+        // Handle password-related errors FIRST
+        if (
+          error.message.includes("Password should be at least") ||
+          error.message.includes("Password is known to be weak")
+        ) {
+          throw new Error(
+            "Password must be at least 6 characters long and not easily guessable. Please choose a stronger password."
+          );
+        }
+
+        // Handle email validation errors
+        if (error.message.includes("Invalid email")) {
+          throw new Error("Please enter a valid email address.");
+        }
+
+        // Handle user already exists errors
+        if (
+          error.message.includes("User already registered") ||
+          error.message.includes("already been registered")
+        ) {
+          throw new Error(
+            `This email address is already registered. Please try logging in instead.`
+          );
+        }
+
+        // For 422 errors that aren't password-related, might be existing user
+        if (error.status === 422 && !error.message.includes("Password")) {
+          throw new Error(
+            `This email address is already registered. Please try logging in instead.`
+          );
+        }
+
+        // Generic fallback - show the actual error message
+        throw new Error(error.message);
+      }
+
+      // Check if this is an existing user (Supabase sometimes returns user with no identities)
+      if (
+        data.user &&
+        data.user.identities &&
+        data.user.identities.length === 0
+      ) {
+        logger.info("User already exists - no new identity created");
+        throw new Error(
+          `This email address is already registered. Please try logging in instead.`
+        );
+      }
+
+      // Success case
       setMessage("Check your email to confirm your account.");
       setEmail("");
       setPassword("");
       setName("");
 
-      logger.info("Email signup initiated");
+      logger.info("Email signup completed");
     } catch (err) {
       logger.error("Error during email signup:", err.message);
       setError(err.message);
