@@ -34,7 +34,7 @@
 		"@tailwindcss/typography": "^0.5.16",
 		"clsx": "2.1.1",
 		"crypto-js": "^4.2.0",
-		"framer-motion": "~12.23.9",
+		"framer-motion": "~12.23.12",
 		"fs": "0.0.1-security",
 		"intl-messageformat": "^10.7.15",
 		"js-cookie": "^3.0.5",
