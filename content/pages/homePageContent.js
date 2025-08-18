@@ -1,12 +1,12 @@
 export const homePageContent = {
   hero: {
     identity:
-      "For business owners drowning in website advice, but still don't know what actually converts visitors.",
+      "For business owners who know strategy matters, but need clear direction.",
     headline: {
       line1: "Stop Guessing,",
       line2: "Start Planning",
       line3: "Strategically",
-      line4: "For business owners who know strategy matters, but need clear direction.",
+      line4: "Build Your Website on Strategy",
     },
     cta: "Get Your Blueprint",
     socialProof: "Join 500+ smart business owners who plan before they build",
