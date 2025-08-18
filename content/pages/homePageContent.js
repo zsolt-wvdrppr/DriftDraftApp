@@ -1,7 +1,7 @@
 export const homePageContent = {
   hero: {
     identity:
-      "For business owners drowning in website advice—but still don't know what actually converts visitors.",
+      "For business owners drowning in website advice, but still don't know what actually converts visitors.",
     headline: {
       line1: "Stop Guessing,",
       line2: "Start Planning",
