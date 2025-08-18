@@ -15,7 +15,7 @@ const SignupCreditsNotice = () => {
         Join 500+ smart business owners who plan before they build.
         {user && (
           <>
-            <span className="font-semibold">{" Start Planning"}</span> with your free credits to create your website or landing page plan.
+            <span className="font-semibold">{" Start Planning "}</span>your website or landing page that actually works.
           </>
         )}
         {!user && (
