@@ -6,7 +6,7 @@ export const homePageContent = {
       line1: "Stop Guessing,",
       line2: "Start Planning",
       line3: "Strategically",
-      line4: "Build Your Website on Strategy",
+      line4: "For business owners who know strategy matters, but need clear direction.",
     },
     cta: "Get Your Blueprint",
     socialProof: "Join 500+ smart business owners who plan before they build",
