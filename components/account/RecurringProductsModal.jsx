@@ -218,6 +218,7 @@ const RecurringProductsModal = ({
       {
         <Modal
           isOpen={isOpen}
+          placement="center"
           onClose={() => {
             if (!requiresAuth) {
               onClose();
@@ -287,7 +288,9 @@ const RecurringProductsModal = ({
                       }}
                     >
                       <div className="flex items-center gap-4 border-b-1 pb-3 border-default-200 dark:border-default-200">
+                        <span className="w-6">
                         {icons[product.name]}
+                        </span>
                         <div className="flex flex-col justify-between">
                           <p className="font-semibold">{product.name}</p>
                           <p>{product.description}</p>

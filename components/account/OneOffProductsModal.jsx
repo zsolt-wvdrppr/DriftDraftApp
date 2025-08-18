@@ -20,7 +20,12 @@ import { IconCoins } from "@tabler/icons-react";
 // Utility function to create key from a name
 const createKey = (name) => name.toLowerCase().replace(/ /g, "_");
 
-const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false }) => {
+const OneOffProductsModal = ({
+  isOpen,
+  onClose,
+  onSuccess,
+  isDisabled = false,
+}) => {
   const { products, loading } = useOneOffProducts();
   const [selectedProduct, setSelectedProduct] = useState();
   const { user } = useAuth();
@@ -44,36 +49,40 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false })
   useEffect(() => {
     const handlePaymentConfirmation = async () => {
       if (!clientSecret || !stripe || processingAuth) return;
-      
+
       setProcessingAuth(true);
-      
+
       try {
         logger.debug(`[ONE OFF PRODUCTS] - Confirming payment with 3D Secure`);
-        
-        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret);
-        
+
+        const { error, paymentIntent } =
+          await stripe.confirmCardPayment(clientSecret);
+
         if (error) {
-          logger.error(`[ONE OFF PRODUCTS] - Payment authentication failed:`, error);
+          logger.error(
+            `[ONE OFF PRODUCTS] - Payment authentication failed:`,
+            error
+          );
           setError(error.message || "Payment authentication failed");
           toast.error(error.message || "Payment authentication failed");
           setProcessingAuth(false);
           setClientSecret(null);
           return;
         }
-        
-        if (paymentIntent.status === 'succeeded') {
+
+        if (paymentIntent.status === "succeeded") {
           logger.debug(`[ONE OFF PRODUCTS] - Payment completed successfully`);
-          
+
           // Payment succeeded, refresh credits and close modal
           if (onSuccess) {
             setTimeout(() => {
               onSuccess(); // This should trigger `refreshCredits`
             }, 2000);
           }
-          
+
           setSelectedProduct(null);
           onClose();
-          
+
           toast.success("Payment successful! Credits have been added.", {
             position: "bottom-right",
             closeButton: true,
@@ -84,14 +93,17 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false })
           });
         }
       } catch (err) {
-        logger.error(`[ONE OFF PRODUCTS] - Error during payment confirmation:`, err);
+        logger.error(
+          `[ONE OFF PRODUCTS] - Error during payment confirmation:`,
+          err
+        );
         setError("An error occurred during payment processing.");
       } finally {
         setProcessingAuth(false);
         setClientSecret(null);
       }
     };
-    
+
     if (clientSecret && stripe) {
       handlePaymentConfirmation();
     }
@@ -99,29 +111,29 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false })
 
   const handlePurchase = async () => {
     if (!selectedProduct || !userId || !stripe) return;
-  
+
     setLoadingPayment(true);
     setError(null);
-  
+
     try {
       logger.debug(`[ONE OFF PRODUCTS] - User ID: ${userId}`);
       logger.debug(`[ONE OFF PRODUCTS] - Selected Product:`, selectedProduct);
-  
+
       // ✅ Step 1: Request Payment from API
       const response = await fetch("/api/stripe/purchase-one-off", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userId, priceId: selectedProduct.priceId }),
       });
-  
+
       const data = await response.json();
-  
+
       if (!data.success) {
         setError(data.error || "Payment failed.");
         setLoadingPayment(false);
         return;
       }
-      
+
       // Check for client secret (needed for 3D Secure)
       if (data.clientSecret) {
         logger.debug(`[ONE OFF PRODUCTS] - 3D Secure authentication required`);
@@ -129,17 +141,17 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false })
         // The payment confirmation will be handled by the useEffect
         return;
       }
-  
+
       // If no 3D Secure needed, handle success immediately
       if (onSuccess) {
         setTimeout(() => {
           onSuccess(); // This should trigger `refreshCredits`
         }, 2000);
       }
-  
+
       setSelectedProduct(null);
       onClose();
-  
+
       toast.success("Payment successful! Credits have been added.", {
         position: "bottom-right",
         closeButton: true,
@@ -148,7 +160,6 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false })
           toast: "text-green-800",
         },
       });
-  
     } catch (err) {
       logger.error(`[ONE OFF PRODUCTS] - Unexpected Error:`, err);
       setError("An unexpected error occurred.");
@@ -158,7 +169,7 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false })
       }
     }
   };
- 
+
   const colorVariants = [
     "text-highlightOrange",
     "text-highlightBlue",
@@ -173,8 +184,9 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false })
   return (
     <div>
       {
-        <Modal 
-          isOpen={isOpen} 
+        <Modal
+          isOpen={isOpen}
+          placement="center"
           onClose={() => {
             if (processingAuth) {
               toast.warning("Please wait while payment is being processed", {
@@ -182,7 +194,7 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false })
               });
               return;
             }
-            onClose(); 
+            onClose();
             setSelectedProduct(null);
           }}
         >
@@ -191,22 +203,24 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false })
               {processingAuth ? "Processing Payment" : "Top-up Credits"}
             </ModalHeader>
             <ModalBody>
-              {processingAuth ? (
+              {processingAuth ?
                 <div className="text-center p-4">
-                  <p className="mb-4">Please complete the authentication process to finalize your payment.</p>
-                  <p className="text-sm text-gray-500">Do not close this window until the process is complete.</p>
+                  <p className="mb-4">
+                    Please complete the authentication process to finalize your
+                    payment.
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Do not close this window until the process is complete.
+                  </p>
                 </div>
-              ) : (
-                <Select
+              : <Select
                   aria-label="Select a product"
                   variant="underlined"
                   items={products}
                   isMultiline={true}
                   selectionMode="single"
                   placeholder={
-                    <p className="text-lg">
-                      Select a top-up amount
-                    </p>
+                    <p className="text-lg">Select a top-up amount</p>
                   }
                   classNames={{
                     trigger: "min-h-24",
@@ -244,14 +258,16 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false })
                       }}
                     >
                       <div className="flex items-center gap-4 border-b-1 pb-3 border-default-200 dark:border-default-200">
-                        <IconCoins
-                          size={24}
-                          className={
-                            colorVariants[
-                              products.indexOf(product) % colorVariants.length
-                            ]
-                          }
-                        />
+                        <span className="w-6">
+                          <IconCoins
+                            size={24}
+                            className={
+                              colorVariants[
+                                products.indexOf(product) % colorVariants.length
+                              ]
+                            }
+                          />
+                        </span>
                         <div className="flex flex-col justify-between">
                           <p className="font-semibold">{product.name}</p>
                           <p>{product.description}</p>
@@ -261,10 +277,10 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false })
                     </SelectItem>
                   )}
                 </Select>
-              )}
+              }
             </ModalBody>
             <ModalFooter>
-              {processingAuth ? (
+              {processingAuth ?
                 <Button
                   className="bg-blue-500 text-white"
                   isLoading={true}
@@ -272,8 +288,7 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false })
                 >
                   Processing...
                 </Button>
-              ) : (
-                <>
+              : <>
                   <Button
                     onPress={onClose}
                     className="bg-gray-500 text-white"
@@ -290,7 +305,7 @@ const OneOffProductsModal = ({ isOpen, onClose, onSuccess, isDisabled = false })
                     Confirm Top-up
                   </Button>
                 </>
-              )}
+              }
             </ModalFooter>
           </ModalContent>
         </Modal>

@@ -321,7 +321,7 @@ const SubscriptionAndTopup = () => {
       <Tooltip
         anchorSelect="#total-credits"
         place="top"
-        className="break-words max-w-60"
+        className="break-words max-w-60 z-50"
       >
         {`Total credits are the sum of your non-transferable allowance credits,`}
         <br />
@@ -335,7 +335,7 @@ const SubscriptionAndTopup = () => {
       <Tooltip
         anchorSelect="#manage-button"
         place="top"
-        className="break-words max-w-60"
+        className="break-words max-w-60 z-50"
       >
         {services?.planExpiresAt && expiryDate > now && (
           <span>
@@ -355,7 +355,7 @@ const SubscriptionAndTopup = () => {
       <Tooltip
         anchorSelect="#topup-button"
         place="top"
-        className="break-words max-w-60"
+        className="break-words max-w-60 z-50"
       >
         {paymentMethod && !paymentMethodLoading ? (
           <span>{`Top-up your credits. Select from multiple options.`}</span>
