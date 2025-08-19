@@ -51,7 +51,7 @@ const calculateCost = (model, inputTokens, outputTokens) => {
 };
 
 // Main background function
-const main = async (req, context) => {
+const main = async (req: { json: () => { requestId?: any; userId?: any; sessionId?: any; prompt?: any; clientData?: any; userAgent?: any; ip?: any; pickedModel?: any; requiredCredits?: any; jwt?: any; } | PromiseLike<{ requestId?: any; userId?: any; sessionId?: any; prompt?: any; clientData?: any; userAgent?: any; ip?: any; pickedModel?: any; requiredCredits?: any; jwt?: any; }>; }, context: any) => {
   const startTime = Date.now();
   let body: { requestId?: any; userId?: any; sessionId?: any; prompt?: any; clientData?: any; userAgent?: any; ip?: any; pickedModel?: any; requiredCredits?: any; jwt?: any; } = {};
 

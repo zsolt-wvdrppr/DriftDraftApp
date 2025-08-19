@@ -21,6 +21,7 @@
 		"@lexical/rich-text": "^0.27.1",
 		"@lexical/table": "^0.27.1",
 		"@lexical/utils": "^0.27.1",
+		"@netlify/functions": "^4.2.2",
 		"@next/third-parties": "^15.2.1",
 		"@react-aria/ssr": "3.9.7",
 		"@react-aria/visually-hidden": "3.8.19",
