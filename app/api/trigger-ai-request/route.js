@@ -87,27 +87,47 @@ export async function POST(req) {
       jwt,
     };
 
-    logger.info(`[TRIGGER] Environment variable debugging:`);
-    logger.info(`[TRIGGER] URL: "${process.env.URL}"`);
-    logger.info(`[TRIGGER] DEPLOY_URL: "${process.env.DEPLOY_URL}"`);
-    logger.info(
-      `[TRIGGER] DEPLOY_PRIME_URL: "${process.env.DEPLOY_PRIME_URL}"`
-    );
-    logger.info(`[TRIGGER] CONTEXT: "${process.env.CONTEXT}"`);
-    logger.info(`[TRIGGER] BRANCH: "${process.env.BRANCH}"`);
-    logger.info(`[TRIGGER] NETLIFY: "${process.env.NETLIFY}"`);
-    logger.info(`[TRIGGER] SITE_NAME: "${process.env.SITE_NAME}"`);
-    logger.info(`[TRIGGER] NODE_ENV: "${process.env.NODE_ENV}"`);
+    // Safe URL construction with fallbacks and conditions
+    const getDeployUrl = () => {
+      // For production (your custom domain)
+      if (
+        process.env.NEXT_PUBLIC_CONTEXT === "production" ||
+        (process.env.NODE_ENV === "production" &&
+          process.env.URL?.includes("driftdraft.app"))
+      ) {
+        return process.env.URL; // https://driftdraft.app
+      }
 
-    const constructedUrl = process.env.DEPLOY_PRIME_URL || 
-                      process.env.DEPLOY_URL || 
-                      `https://${process.env.BRANCH}--${process.env.SITE_NAME}.netlify.app` ||
-                      process.env.URL;
+      // For branch/preview deploys - try multiple approaches
+      if (process.env.DEPLOY_URL && process.env.DEPLOY_URL !== "undefined") {
+        return process.env.DEPLOY_URL;
+      }
 
-    logger.info(`[TRIGGER] Final URL: ${constructedUrl}`);
+      if (
+        process.env.DEPLOY_PRIME_URL &&
+        process.env.DEPLOY_PRIME_URL !== "undefined"
+      ) {
+        return process.env.DEPLOY_PRIME_URL;
+      }
+
+      // Use request headers as fallback for branch deploys
+      const host = req.headers.get("host");
+
+      if (host && host.includes("netlify.app")) {
+        return `https://${host}`;
+      }
+
+      // Last resort fallback
+      return process.env.URL;
+    };
+
+    const siteUrl = getDeployUrl();
+    const backgroundUrl = `${siteUrl}/.netlify/functions/ai-request-background`;
+
+    logger.info(`[TRIGGER] Final URL: ${backgroundUrl}`);
 
     // Trigger the background function
-    const backgroundResponse = await fetch(constructedUrl, {
+    const backgroundResponse = await fetch(backgroundUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
