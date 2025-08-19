@@ -91,9 +91,7 @@ export async function POST(req) {
     const getDeployUrl = () => {
       // For production (your custom domain)
       if (
-        process.env.NEXT_PUBLIC_CONTEXT === "production" ||
-        (process.env.NODE_ENV === "production" &&
-          process.env.URL?.includes("driftdraft.app"))
+        process.env.NEXT_PUBLIC_CONTEXT === "production"
       ) {
         return process.env.URL; // https://driftdraft.app
       }
