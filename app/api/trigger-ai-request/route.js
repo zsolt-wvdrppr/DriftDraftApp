@@ -87,24 +87,33 @@ export async function POST(req) {
       jwt,
     };
 
-    const siteUrl = process.env.DEPLOY_URL || process.env.URL;
-    const backgroundUrl = `${siteUrl}/.netlify/functions/ai-request-background`;
+    logger.info(`[TRIGGER] Environment variable debugging:`);
+    logger.info(`[TRIGGER] URL: "${process.env.URL}"`);
+    logger.info(`[TRIGGER] DEPLOY_URL: "${process.env.DEPLOY_URL}"`);
+    logger.info(
+      `[TRIGGER] DEPLOY_PRIME_URL: "${process.env.DEPLOY_PRIME_URL}"`
+    );
+    logger.info(`[TRIGGER] CONTEXT: "${process.env.CONTEXT}"`);
+    logger.info(`[TRIGGER] BRANCH: "${process.env.BRANCH}"`);
+    logger.info(`[TRIGGER] NETLIFY: "${process.env.NETLIFY}"`);
+    logger.info(`[TRIGGER] SITE_NAME: "${process.env.SITE_NAME}"`);
+    logger.info(`[TRIGGER] NODE_ENV: "${process.env.NODE_ENV}"`);
 
-    logger.info(`[TRIGGER] Using DEPLOY_URL: ${process.env.DEPLOY_URL}`);
-    logger.info(`[TRIGGER] Using URL: ${process.env.URL}`);
-    logger.info(`[TRIGGER] Final URL: ${backgroundUrl}`);
+    const constructedUrl = process.env.DEPLOY_PRIME_URL || 
+                      process.env.DEPLOY_URL || 
+                      `https://${process.env.BRANCH}--${process.env.SITE_NAME}.netlify.app` ||
+                      process.env.URL;
+
+    logger.info(`[TRIGGER] Final URL: ${constructedUrl}`);
 
     // Trigger the background function
-    const backgroundResponse = await fetch(
-      backgroundUrl,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(backgroundPayload),
-      }
-    );
+    const backgroundResponse = await fetch(constructedUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(backgroundPayload),
+    });
 
     if (!backgroundResponse.ok) {
       // Update the request status to failed
