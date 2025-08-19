@@ -87,14 +87,16 @@ export async function POST(req) {
       jwt,
     };
 
-    const backgroundUrl = `${process.env.URL}/.netlify/functions/ai-request-background`;
-    
-    logger.info(`[TRIGGER] Calling background function at: ${backgroundUrl}`);
-    logger.info(`[TRIGGER] process.env.URL: ${process.env.URL}`);
+    const siteUrl = process.env.DEPLOY_URL || process.env.URL;
+    const backgroundUrl = `${siteUrl}/.netlify/functions/ai-request-background`;
+
+    logger.info(`[TRIGGER] Using DEPLOY_URL: ${process.env.DEPLOY_URL}`);
+    logger.info(`[TRIGGER] Using URL: ${process.env.URL}`);
+    logger.info(`[TRIGGER] Final URL: ${backgroundUrl}`);
 
     // Trigger the background function
     const backgroundResponse = await fetch(
-      `${process.env.URL}/.netlify/functions/ai-request-background`,
+      backgroundUrl,
       {
         method: "POST",
         headers: {
