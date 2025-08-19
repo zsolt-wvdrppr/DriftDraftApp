@@ -463,7 +463,7 @@ export default function AnimatedBlogPostGrid({
         {/* Sort button */}
         <div >
           <BlogSortButton
-            className="rounded-xl absolute top-[-140px] h-[53.4px] -right-4 md:top-[-117px] md:-right-12"
+            className="rounded-xl absolute top-[-129px] h-[53.4px] -right-4 sm:-right-8 md:top-[-115px] md:-right-9 lg:-right-11 lg:top-[-114px] xl:top-[-85px] xl:-right-16"
             sortOrder={sortOrder}
             onToggleSort={toggleSort}
             variant="bordered"

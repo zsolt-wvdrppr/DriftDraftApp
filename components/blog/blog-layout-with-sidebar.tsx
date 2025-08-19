@@ -140,7 +140,7 @@ export default function BlogLayoutWithSidebar({
         )}
         {/* Top Filter Button - All screen sizes */}
         {showMobileToggle && (
-          <div className="mb-8">
+          <div className="">
             <Button
               aria-label="Toggle filters"
               className="w-fit md:min-w-52 rounded-xl"
