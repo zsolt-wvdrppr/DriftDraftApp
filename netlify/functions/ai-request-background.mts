@@ -1,4 +1,4 @@
-// netlify/functions/ai-request-background.js
+// netlify/functions/ai-request-background.mts
 
 import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
@@ -8,8 +8,8 @@ import { rateLimiter } from "../../lib/rateLimiter.js";
 import logger from "../../lib/logger.js";
 
 // Environment variables
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 // Gemini pricing per 1M tokens (as of 2024 - update as needed)
 const GEMINI_PRICING = {
@@ -53,9 +53,10 @@ const calculateCost = (model, inputTokens, outputTokens) => {
 // Main background function
 const main = async (req, context) => {
   const startTime = Date.now();
+  let body: { requestId?: any; userId?: any; sessionId?: any; prompt?: any; clientData?: any; userAgent?: any; ip?: any; pickedModel?: any; requiredCredits?: any; jwt?: any; } = {};
 
   try {
-    const body = await req.json();
+    body = await req.json();
     const {
       requestId,
       userId,
@@ -72,7 +73,7 @@ const main = async (req, context) => {
     logger.info(`[AI-BG] Starting request ${requestId} for user ${userId}`);
 
     // Initialize Supabase with service role
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
 
     // Update request status to processing
     await supabase
