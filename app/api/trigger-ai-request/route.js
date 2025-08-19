@@ -64,8 +64,8 @@ export async function POST(req) {
     });
 
     if (insertError) {
-      console.error(`[TRIGGER] Supabase insert error:`, insertError);
-      console.error(`[TRIGGER] Insert error details:`, {
+      logger.error(`[TRIGGER] Supabase insert error:`, insertError);
+      logger.error(`[TRIGGER] Insert error details:`, {
         code: insertError.code,
         message: insertError.message,
         details: insertError.details,
@@ -132,7 +132,7 @@ export async function POST(req) {
       }
     );
   } catch (error) {
-    console.error(`[TRIGGER] Error triggering AI request:`, error.message);
+    logger.error(`[TRIGGER] Error triggering AI request:`, error.message);
 
     return new Response(
       JSON.stringify({
