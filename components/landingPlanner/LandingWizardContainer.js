@@ -194,7 +194,7 @@ export default function LandingWizardContainer({}) {
 
     // Check if update is actually needed
     if (JSON.stringify(formData[stepNumber]) === JSON.stringify(update)) {
-      console.debug("No meaningful change detected. Skipping update.");
+      logger.debug("No meaningful change detected. Skipping update.");
 
       return; // Prevent unnecessary update
     }
