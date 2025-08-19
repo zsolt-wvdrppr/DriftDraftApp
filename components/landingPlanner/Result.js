@@ -80,6 +80,7 @@ const Result = () => {
     executeRecaptcha,
     pickedModel: "default",
     jwt,
+    sessionData,
   });
 
   /* Form data */
