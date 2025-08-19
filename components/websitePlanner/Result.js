@@ -677,7 +677,7 @@ Example:
         }
       };
 
-       setGenerateWebsitePlan(() => executeWebsitePlan);
+      setGenerateWebsitePlan(() => executeWebsitePlan);
 
       if (hasCredits) {
         executeWebsitePlan();
@@ -789,6 +789,12 @@ Example:
       return () => intervals.forEach(clearTimeout);
     }
   }, [isLoading, prompts?.length]);
+
+  useEffect(() => {
+    if (error && !isLoading) {
+      setShowRetryButton(true);
+    }
+  }, [error, isLoading]);
 
   const first_name =
     fullName?.split(" ")[0] || sessionData.formData[8].firstname;

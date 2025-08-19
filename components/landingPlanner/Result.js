@@ -821,6 +821,12 @@ FORMATTING RULE:
     }
   }, [isLoading, prompts?.length]);
 
+  useEffect(() => {
+    if (error && !isLoading) {
+      setShowRetryButton(true);
+    }
+  }, [error, isLoading]);
+
   const first_name =
     fullName?.split(" ")[0] || sessionData?.formData?.[8].firstname;
 
