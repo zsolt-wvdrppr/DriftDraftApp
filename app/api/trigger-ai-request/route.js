@@ -64,7 +64,12 @@ export async function POST(req) {
     });
 
     if (insertError) {
-      logger.error(`[TRIGGER] Failed to create AI request:`, insertError);
+      logger.error(`[TRIGGER] Supabase insert error:`, insertError);
+      logger.error(`[TRIGGER] Insert error details:`, {
+        code: insertError.code,
+        message: insertError.message,
+        details: insertError.details,
+      });
       throw new Error(`Failed to create AI request: ${insertError.message}`);
     }
 
