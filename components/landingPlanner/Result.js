@@ -78,7 +78,7 @@ const Result = () => {
     error,
   } = usePromptExecutor({
     executeRecaptcha,
-    pickedModel: "default",
+    pickedModel: "gemini-2.5-flash",
     jwt,
     sessionData,
   });
