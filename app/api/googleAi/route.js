@@ -7,7 +7,7 @@ import logger from "@/lib/logger";
 export async function POST(req) {
   try {
     // Parse the request body
-    const { prompt, pickedModel = null } = await req.json();
+    const { prompt, pickedModel = "gemini-1.5-flash" } = await req.json();
 
     // Ensure prompt is provided
     if (!prompt) {
