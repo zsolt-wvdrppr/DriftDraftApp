@@ -8,7 +8,6 @@ import { slugify } from "@/lib/utils/utils";
 import { formatDate } from "@/lib/utils/utils";
 import BlogStructuredData from "@/components/seo/BlogStructuredData";
 
-
 // Generate static params for all blog posts
 export async function generateStaticParams() {
   return blogPosts
@@ -35,22 +34,72 @@ export async function generateMetadata({ params }) {
   const description = post.content
     .substring(0, 160)
     .replace(/#{1,6}\s+/g, "")
-    .replace(/\*\*(.*?)\*\*/g, "$1");
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // Remove markdown links
+    .trim();
+
+  const publishDate =
+    post.publishDate ||
+    post.publishSchedule?.scheduledDate ||
+    post.publishSchedule?.scheduled_date;
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://driftdraft.app";
+  const postUrl = `${siteUrl}/blog/${_params.slug}`;
+  const imageUrl =
+    post.featuredImage?.src ?
+      post.featuredImage.src.startsWith("http") ?
+        post.featuredImage.src
+      : `${siteUrl}${post.featuredImage.src}`
+    : `${siteUrl}/images/blog-default-og.png`; // Fallback image
 
   return {
     title: post.title,
     description: description,
+    keywords: post.tags || ["blog", "driftdraft", "website planning"],
+    authors: [{ name: post.author || "DriftDraft" }],
     openGraph: {
+      type: "article",
+      locale: "en_GB",
+      url: postUrl,
       title: post.title,
       description: description,
-      ...(post.featuredImage?.src && {
-        images: [
-          {
-            url: post.featuredImage.src,
-            alt: post.featuredImage.alt || post.title,
-          },
-        ],
-      }),
+      siteName: "DriftDraft",
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: post.featuredImage?.alt || post.title,
+          type: "image/png",
+        },
+      ],
+      publishedTime:
+        publishDate ? new Date(publishDate).toISOString() : undefined,
+      authors: [post.author || "DriftDraft"],
+      section: "Technology",
+      tags: post.tags || ["blog", "website planning"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: description,
+      images: [imageUrl],
+      creator: "@driftdraft",
+      site: "@driftdraft",
+    },
+    alternates: {
+      canonical: postUrl,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
   };
 }

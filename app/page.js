@@ -7,6 +7,7 @@ import BlueprintBackground from "@/components/blueprint-bg";
 import WaasPromo from "@/components/notifications/waas-promo";
 import HeroIdentity from "@/components/notifications/hero-identity";
 import IntroEffect from "@/components/intro-effect";
+import { siteConfig } from "@/config/site";
 
 export default function Home() {
   return (
@@ -53,19 +54,25 @@ export async function generateMetadata() {
     openGraph: {
       type: "website",
       locale: "en_GB",
-      url: "https://driftdraft.app",
-      siteName: "DriftDraft.App",
-      title: "Your future website starts here",
-      description:
-        "DriftDraft.App is a strategic planner that transforms your business requirements into a comprehensive website or landing page blueprint.",
+      url: siteConfig.seo.canonical,
+      title: siteConfig.name,
+      description: siteConfig.description,
+      siteName: "DriftDraft",
       images: [
         {
-          url: "/og-image.webp", // Remove the full URL, just use relative path
+          url: siteConfig.seo.ogImage,
           width: 1200,
           height: 630,
-          alt: "The Website Blueprint Creator App",
+          alt: "DriftDraft - Strategic Website Planning Tool",
         },
       ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: siteConfig.name,
+      description: siteConfig.description,
+      images: [siteConfig.seo.twitterImage],
+      creator: "@driftdraft",
     },
   };
 }

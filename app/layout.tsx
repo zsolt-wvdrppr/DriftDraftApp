@@ -51,29 +51,6 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
-  openGraph: {
-    type: "website",
-    locale: "en_GB",
-    url: siteConfig.seo.canonical,
-    title: siteConfig.name,
-    description: siteConfig.description,
-    siteName: "DriftDraft",
-    images: [
-      {
-        url: siteConfig.seo.ogImage,
-        width: 1200,
-        height: 630,
-        alt: "DriftDraft - Strategic Website Planning Tool",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfig.name,
-    description: siteConfig.description,
-    images: [siteConfig.seo.twitterImage],
-    creator: "@driftdraft",
-  },
   alternates: {
     canonical: siteConfig.seo.canonical,
     languages: {
