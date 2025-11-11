@@ -265,34 +265,6 @@ const DynamicCookiesPolicy: React.FC<CookiesListProps> = ({ staticCookies = {} }
       });
     }
 
-    // Add known cookies that might not be set yet
-    Object.entries(cookiePatterns).forEach(([category, patterns]) => {
-      patterns.forEach(pattern => {
-        const cookieName = pattern.pattern.toString().replace(/\/\^|\$\/i|\\|\//g, '').split('|')[0];
-        // Check if this pattern's example cookie already exists in our list
-        const categoryList = detectedCookiesByCategory[category] || [];
-        const exists = categoryList.some(cookie => cookie.name.includes(cookieName.replace('_', '')));
-        
-        if (!exists && cookieName.length > 1 && !cookieName.includes('(')) {
-          const exampleCookie: Cookie = {
-            name: cookieName,
-            domain: pattern.name.includes('Google') ? 'google-analytics.com' : 
-                   pattern.name.includes('Facebook') ? 'facebook.com' : 'Various',
-            description: pattern.description,
-            duration: pattern.duration,
-            category,
-            provider: pattern.name.split(' ')[0],
-          };
-          
-          if (!detectedCookiesByCategory[category]) {
-            detectedCookiesByCategory[category] = [];
-          }
-          
-          detectedCookiesByCategory[category].push(exampleCookie);
-        }
-      });
-    });
-
     // Combine with static cookies if provided
     const combinedCookies = combineCookies(detectedCookiesByCategory);
     
