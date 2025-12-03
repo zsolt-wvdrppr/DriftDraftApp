@@ -13,6 +13,7 @@ import { Navbar } from "@/components/navbar";
 import Footer from "@/components/footer";
 import CookieConsent from "@/components/cookie-consent";
 import StructuredData from "@/components/seo/StructuredData";
+import ServiceSuspendedModal from "@/components/service-suspended-modal";
 
 import { Providers } from "./providers";
 
@@ -163,21 +164,23 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "system" }}>
-          <div className="relative flex flex-col h-screen">
-            <Suspense fallback={<NavbarSkeleton />}>
-              <Navbar />
-            </Suspense>
-            
+          <ServiceSuspendedModal>
+            <div className="relative flex flex-col h-screen">
+              <Suspense fallback={<NavbarSkeleton />}>
+                <Navbar />
+              </Suspense>
+
               <main className="container mx-auto max-w-7xl md:pt-16 md:px-6 flex-grow">
                 {children}
                 <Toaster />
               </main>
-            <Footer />
-          </div>
-          <CookieConsent />
+              <Footer />
+            </div>
+            <CookieConsent />
+          </ServiceSuspendedModal>
         </Providers>
-        {/* Load GTM after consent is initialized */}
-        <GoogleTagManager gtmId="GTM-MRQ8RLMC" />
+        {/* Load GTM after consent is initialized 
+        <GoogleTagManager gtmId="GTM-MRQ8RLMC" />*/}
       </body>
     </html>
   );

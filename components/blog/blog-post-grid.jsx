@@ -480,7 +480,6 @@ export default function AnimatedBlogPostGrid({
           }}
         >
           <AnimatePresence
-            mode="wait"
             onExitComplete={() => {
               // Ensure cards can enter after exit completes
               setTimeout(() => setCanShowNewCards(true), 100);
