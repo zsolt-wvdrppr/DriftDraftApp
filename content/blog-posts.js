@@ -1,23 +1,23 @@
 export const blogPosts = [
-{
+  {
     id: "blog-post-ha5qu6x03k-h3i123x5",
     show: true,
     tags: [
       {
-        type: "website planning"
+        type: "website planning",
       },
       {
-        type: "conversion psychology"
+        type: "conversion psychology",
       },
       {
-        type: "business strategy"
+        type: "business strategy",
       },
       {
-        type: "online presence"
+        type: "online presence",
       },
       {
-        type: "user experience"
-      }
+        type: "user experience",
+      },
     ],
     title: "The 8 Psychological Elements Your Website Needs",
     pinned: false,
@@ -157,43 +157,43 @@ Because every website is already using psychology. The question is whether it's 
 \[7] WordStream. (2023). "What's a Good Conversion Rate? (It's Higher Than You Think)." Available at: [https://www.wordstream.com/blog/ws/2014/03/17/what-is-a-good-conversion-rate](https://www.wordstream.com/blog/ws/2014/03/17/what-is-a-good-conversion-rate)`,
     categories: [
       {
-        type: "Website Strategy"
+        type: "Website Strategy",
       },
       {
-        type: "Business Psychology"
+        type: "Business Psychology",
       },
       {
-        type: "Digital Presence"
-      }
+        type: "Digital Presence",
+      },
     ],
     publishDate: "2025-08-14",
     featuredImage: {
       id: "349998ed-84fc-4662-b36a-b2fcae012c21",
       alt: "website's mind",
-      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1755174851979-websites-mind.webp",
-      mediaId: "349998ed-84fc-4662-b36a-b2fcae012c21"
+      src: "/media/1755174851979-websites-mind.webp",
+      mediaId: "349998ed-84fc-4662-b36a-b2fcae012c21",
     },
-    publishSchedule: null
+    publishSchedule: null,
   },
-{
+  {
     id: "blog-post-ha5qu6x03k-h3i123x5",
     show: false,
     tags: [
       {
-        type: "website planning"
+        type: "website planning",
       },
       {
-        type: "conversion psychology"
+        type: "conversion psychology",
       },
       {
-        type: "business strategy"
+        type: "business strategy",
       },
       {
-        type: "online presence"
+        type: "online presence",
       },
       {
-        type: "user experience"
-      }
+        type: "user experience",
+      },
     ],
     title: "The 8 Psychological Elements Your Website Needs",
     pinned: false,
@@ -317,45 +317,46 @@ DriftDraft guides you through these decisions systematically. You bring your kno
 Because every website is already using psychology. The question is whether it's working for you or against you.`,
     categories: [
       {
-        type: "Website Strategy"
+        type: "Website Strategy",
       },
       {
-        type: "Business Psychology"
+        type: "Business Psychology",
       },
       {
-        type: "Digital Presence"
-      }
+        type: "Digital Presence",
+      },
     ],
     publishDate: "2025-08-14",
     featuredImage: {
       id: "349998ed-84fc-4662-b36a-b2fcae012c21",
       alt: "website's mind",
-      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1755174851979-websites-mind.webp",
-      mediaId: "349998ed-84fc-4662-b36a-b2fcae012c21"
+      src: "/media/1755174851979-websites-mind.webp",
+      mediaId: "349998ed-84fc-4662-b36a-b2fcae012c21",
     },
-    publishSchedule: null
+    publishSchedule: null,
   },
-{
+  {
     id: "blog-post-ha5qu6x03k-h3i123x5",
     show: false,
     tags: [
       {
-        type: "website planning"
+        type: "website planning",
       },
       {
-        type: "conversion psychology"
+        type: "conversion psychology",
       },
       {
-        type: "business strategy"
+        type: "business strategy",
       },
       {
-        type: "online presence"
+        type: "online presence",
       },
       {
-        type: "user experience"
-      }
+        type: "user experience",
+      },
     ],
-    title: "Inside the Mind of Your Website: The Psychology of a Purpose-Built Online Presence",
+    title:
+      "Inside the Mind of Your Website: The Psychology of a Purpose-Built Online Presence",
     pinned: false,
     content: `For business owners who've invested in a website but can't shake the feeling it's not working as hard as it should be... this might explain why.
 
@@ -475,45 +476,46 @@ DriftDraft guides you through these decisions systematically. You bring your kno
 Because every website is already using psychology. The question is whether it's working for you or against you.`,
     categories: [
       {
-        type: "Website Strategy"
+        type: "Website Strategy",
       },
       {
-        type: "Business Psychology"
+        type: "Business Psychology",
       },
       {
-        type: "Digital Presence"
-      }
+        type: "Digital Presence",
+      },
     ],
     publishDate: "2025-08-14",
     featuredImage: {
       id: "349998ed-84fc-4662-b36a-b2fcae012c21",
       alt: "website's mind",
-      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1755174851979-websites-mind.webp",
-      mediaId: "349998ed-84fc-4662-b36a-b2fcae012c21"
+      src: "/media/1755174851979-websites-mind.webp",
+      mediaId: "349998ed-84fc-4662-b36a-b2fcae012c21",
     },
-    publishSchedule: null
+    publishSchedule: null,
   },
-{
+  {
     id: "blog-post-ha5qu6x03k-h3i123x5",
     show: false,
     tags: [
       {
-        type: "website planning"
+        type: "website planning",
       },
       {
-        type: "conversion psychology"
+        type: "conversion psychology",
       },
       {
-        type: "business strategy"
+        type: "business strategy",
       },
       {
-        type: "online presence"
+        type: "online presence",
       },
       {
-        type: "user experience"
-      }
+        type: "user experience",
+      },
     ],
-    title: "Inside the Mind of Your Website: The Psychology of a Purpose-Built Online Presence",
+    title:
+      "Inside the Mind of Your Website: The Psychology of a Purpose-Built Online Presence",
     pinned: false,
     content: `For business owners who've invested in a website but can't shake the feeling it's not working as hard as it should be — this might explain why.
 
@@ -633,43 +635,43 @@ DriftDraft guides you through these decisions systematically. You bring your kno
 Because every website is already using psychology — the question is whether it's working for you or against you.`,
     categories: [
       {
-        type: "Website Strategy"
+        type: "Website Strategy",
       },
       {
-        type: "Business Psychology"
+        type: "Business Psychology",
       },
       {
-        type: "Digital Presence"
-      }
+        type: "Digital Presence",
+      },
     ],
     publishDate: "2025-08-14",
     featuredImage: {
       id: "349998ed-84fc-4662-b36a-b2fcae012c21",
       alt: "",
-      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1755174851979-websites-mind.webp",
-      mediaId: "349998ed-84fc-4662-b36a-b2fcae012c21"
+      src: "/media/1755174851979-websites-mind.webp",
+      mediaId: "349998ed-84fc-4662-b36a-b2fcae012c21",
     },
-    publishSchedule: null
+    publishSchedule: null,
   },
-{
+  {
     id: "blog-post-ha08ilp7e0-29282w1r",
     show: true,
     tags: [
       {
-        type: "website planning"
+        type: "website planning",
       },
       {
-        type: "conversion optimisation"
+        type: "conversion optimisation",
       },
       {
-        type: "competitor analysis"
+        type: "competitor analysis",
       },
       {
-        type: "user journey"
+        type: "user journey",
       },
       {
-        type: "DriftDraft"
-      }
+        type: "DriftDraft",
+      },
     ],
     title: "The 7-Step Website Planning Guide for Smart Business Owners",
     pinned: false,
@@ -788,25 +790,25 @@ You get the full depth of a professional planning process — without becoming y
 [Start your free strategic website plan](/#tool-selector)`,
     categories: [
       {
-        type: "Website Strategy"
+        type: "Website Strategy",
       },
       {
-        type: "Conversion Psychology"
+        type: "Conversion Psychology",
       },
       {
-        type: "Business Growth"
-      }
+        type: "Business Growth",
+      },
     ],
     publishDate: "2025-08-09",
     featuredImage: {
       id: "c8838f09-a551-4ca6-80c2-2f1563d953eb",
       alt: "Mood board on the left and website on the right",
-      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1754750939492-moodboard-to-website.webp",
-      mediaId: "c8838f09-a551-4ca6-80c2-2f1563d953eb"
+      src: "/media/1754750939492-moodboard-to-website.webp",
+      mediaId: "c8838f09-a551-4ca6-80c2-2f1563d953eb",
     },
-    publishSchedule: null
+    publishSchedule: null,
   },
-{
+  {
     id: "blog-post-h9qitp8ztn-1p51263v",
     tags: [
       {
@@ -912,11 +914,11 @@ Your business deserves a website that works as hard as you do. The question isn'
     featuredImage: {
       id: "ab4a4c29-db42-496a-b757-f17bd24bd352",
       alt: "Well oiled cricket bat shoots into the digital world",
-      src: "https://wavedropper-cms.supabase.co/storage/v1/object/public/media/driftdraft.app/1753989620980-cricketbatdigital.webp",
+      src: "/media/1753989620980-cricketbatdigital.webp",
       mediaId: "ab4a4c29-db42-496a-b757-f17bd24bd352",
     },
     publishSchedule: null,
-  }
+  },
 ];
 
 // Auto-generated metadata for efficient listing
